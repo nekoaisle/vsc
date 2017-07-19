@@ -1,7 +1,7 @@
 {
     "name": "togglecharcase",
     "displayName": "ToggleCharCase",
-    "description": "Invert the case of the character at the cursor position.",
+    "description": "Toggle the case of the character at the cursor position.",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {
@@ -11,16 +11,18 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onCommand:extension.toggleCharCase"
     ],
     "main": "./out/src/extension",
     "contributes": {
-        "commands": [
-            {
-                "command": "extension.sayHello",
-                "title": "Hello World"
-            }
-        ]
+        "commands": [{
+                "command": "extension.toggleCharCase",
+                "title": "Toggle the case of the character"
+        }],
+        "keybindings": [{
+            "command": "extension.toggleCharCase",
+            "key": "ctrl ["
+        }]
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
