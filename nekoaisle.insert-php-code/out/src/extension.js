@@ -1,0 +1,197 @@
+'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
+const vscode = require("vscode");
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
+//var ncp = require("copy-paste");
+/**
+ * 起動エントリ
+ */
+function activate(context) {
+    console.log('Start InsertPhpCode.');
+    const extentionKey = "insertPhpCode";
+    const config = vscode.workspace.getConfiguration(extentionKey);
+    //config.get('format', "");
+    let tempDir = config.get("tempDir", `${os.userInfo().homedir}/Dropbox/documents/vsc`);
+    // 先頭の ~ を置換
+    if (tempDir.substr(0, 1) == "~") {
+        tempDir = os.userInfo().homedir + tempDir.substr(1);
+    }
+    let author = config.get("author", "");
+    /**
+     * メッセージを出力
+     * @param str 出力するメッセージ
+     */
+    let putMess = (str) => {
+        vscode.window.showInformationMessage(str);
+    };
+    // 指定文字でパディング
+    let pad = (str, pad, cols) => {
+        pad = pad.repeat(cols);
+        return (pad + str).slice(-cols);
+    };
+    let padNum = (num, cols) => {
+        return pad(num.toString(), "0", cols);
+    };
+    /**
+     * ファイルが存在するか調べる
+     * @param path 調べるファイルの名前
+     */
+    let isExistsFile = (path) => {
+        if (!path) {
+            // ファイル名が指定されなかったときは「存在しない」を返す
+            return false;
+        }
+        try {
+            fs.accessSync(path);
+        }
+        catch (e) {
+            // エラーが発生したので「存在しない」を返す
+            console.log(`catch ${e}`);
+            return false;
+        }
+        // 正常終了したので「存在する」を返す
+        return true;
+    };
+    let loadFile = (fileName) => {
+        console.log(`loadFile = "${fileName}"`);
+        if (!isExistsFile(fileName)) {
+            putMess(`${fileName} が見つかりませんでした。`);
+            return null;
+        }
+        return fs.readFileSync(fileName, "utf-8");
+    };
+    /**
+     * パス情報クラス
+     */
+    class PathInfo {
+        constructor(fileName) {
+            let pinfo = path.parse(fileName);
+            this.path = fileName;
+            this.dir = pinfo.dir;
+            this.base = pinfo.base;
+            this.name = pinfo.name;
+            this.ext = pinfo.ext.substr(1); // 先頭の.を除去
+        }
+    }
+    ;
+    class DateInfo {
+        constructor(date) {
+            this.year = padNum(date.getFullYear(), 4);
+            this.month = padNum(date.getMonth(), 2);
+            this.date = padNum(date.getDate(), 2);
+            this.hour = padNum(date.getHours(), 2);
+            this.min = padNum(date.getMinutes(), 2);
+            this.sec = padNum(date.getSeconds(), 2);
+            this.ymd = `${this.year}-${this.month}-${this.date}`;
+            this.his = `${this.hour}-${this.min}-${this.sec}`;
+            this.ymdhis = `${this.ymd} ${this.his}`;
+        }
+    }
+    ;
+    let editor; // 実行されたときの TextEditor
+    let pinfo; // 実行されたファイルのパス情報
+    let now; // 実行されたときの日時情報
+    /**
+     * 実行部分
+     */
+    let insertPhpCode = () => {
+        editor = vscode.window.activeTextEditor;
+        pinfo = new PathInfo(editor.document.fileName);
+        now = new DateInfo(new Date);
+        // TextEditorを取得
+        // let menuJSON = loadFile(`${tempDir}/${pinfo.ext}/list.json`);
+        // var menu = JSON.parse(menuJson);
+        let menuTSV = loadFile(`${tempDir}/${pinfo.ext}/list.tsv`);
+        console.log(menuTSV);
+        let rows = menuTSV.split("\n");
+        console.log(rows);
+        let menu = [];
+        let cmds = {};
+        for (let row of rows) {
+            let cols = row.split("\t");
+            console.log(cols);
+            menu.push(cols[0]);
+            cmds[cols[0]] = cols[1];
+        }
+        console.log(menu);
+        let options = {
+            placeHolder: '選択してください。'
+        };
+        vscode.window.showQuickPick(menu, options).then((sel) => {
+            // 選択したメニュー文字列の戦闘文字を取得
+            console.log(`command = "${sel}"`);
+            if (!sel) {
+                return;
+            }
+            let str = '';
+            switch (cmds[sel]) {
+                // 日付
+                case "@now.ymd":
+                    str = `${now.year}-${now.month}-${now.date}`;
+                    break;
+                // ファイル名
+                case "@pinfo.base":
+                    str = pinfo.base;
+                    break;
+                // フルパス名
+                case "@pinfo.path":
+                    str = editor.document.fileName;
+                    break;
+                // コマンド以外ならテンプレート
+                default:
+                    str = fromTemplate(editor, `${tempDir}/${pinfo.ext}/${cmds[sel]}`);
+                    break;
+            }
+            // 現在のカーソル位置に挿入
+            if (str) {
+                console.log(`insert\n${str}`);
+                editor.edit(edit => edit.insert(editor.selection.start, str));
+            }
+        });
+    };
+    /**
+     * テンプレートから挿入する段落を作成
+     * @param editor
+     * @param tempName
+     */
+    let fromTemplate = (editor, tempName) => {
+        // テンプレートの読み込み
+        let tempText = loadFile(tempName);
+        // 変換データを準備
+        // テンプレート中に ${} を書くバージョン
+        // このバージョンではエラーがあると一切変換されない…
+        //    return Function(`return \`${tempText}\``).toString();
+        // 置換情報を作成
+        let rep = {
+            "author": author,
+            "pinfo.path": pinfo.path,
+            "pinfo.dir": pinfo.dir,
+            "pinfo.base": pinfo.base,
+            "pinfo.name": pinfo.name,
+            "pinfo.ext": pinfo.ext,
+            "now.year": now.year,
+            "now.month": now.month,
+            "now.date": now.date,
+            "now.hour": now.hour,
+            "now.min": now.min,
+            "now.sec": now.sec,
+        };
+        for (let s in rep) {
+            let re = new RegExp(`{{${s}}}`, "g");
+            tempText = tempText.replace(re, rep[s]);
+        }
+        ;
+        return tempText;
+    };
+    // コマンドの登録
+    let disposable = vscode.commands.registerCommand('extension.insertPhpCode', insertPhpCode);
+    context.subscriptions.push(disposable);
+}
+exports.activate = activate;
+// this method is called when your extension is deactivated
+function deactivate() {
+}
+exports.deactivate = deactivate;
+//# sourceMappingURL=extension.js.map
