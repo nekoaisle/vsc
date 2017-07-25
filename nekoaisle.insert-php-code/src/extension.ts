@@ -12,11 +12,14 @@ export function activate(context: vscode.ExtensionContext) {
     const extentionKey = "insertPhpCode";
     const config = vscode.workspace.getConfiguration(extentionKey);
     //config.get('format', "");
+
+    // settings.json よりテンプレートディレクトリを取得
     let tempDir = config.get("tempDir", `${os.userInfo().homedir}/Dropbox/documents/vsc`);
     // 先頭の ~ を置換
     if ( tempDir.substr(0,1) == "~" ) {
         tempDir = os.userInfo().homedir + tempDir.substr(1);
     }
+    // settings.json より編集者名を取得
     let author = config.get("author", "");
 
     /**
@@ -85,6 +88,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
     };
 
+    /**
+     * 日時情報クラス
+     */
     class DateInfo {
         public year  : string;     // 年 "YYYY"
         public month : string;     // 月 "MM"
@@ -120,12 +126,8 @@ export function activate(context: vscode.ExtensionContext) {
         editor = vscode.window.activeTextEditor;
         pinfo  = new PathInfo(editor.document.fileName);
         now    = new DateInfo(new Date);
-        // TextEditorを取得
 
-        // let menuJSON = loadFile(`${tempDir}/${pinfo.ext}/list.json`);
-        // var menu = JSON.parse(menuJson);
-
-        let menuTSV = loadFile(`${tempDir}/${pinfo.ext}/list.tsv`);
+        let menuTSV = loadFile(`${tempDir}/list-${pinfo.ext}.tsv`);
         console.log(menuTSV);
         let rows = menuTSV.split("\n");
         console.log(rows);
@@ -143,7 +145,6 @@ export function activate(context: vscode.ExtensionContext) {
             placeHolder: '選択してください。'
         };
         vscode.window.showQuickPick( menu, options ).then((sel: string) => {
-            // 選択したメニュー文字列の戦闘文字を取得
             console.log(`command = "${sel}"`);
             if ( !sel ) {
                 return;
@@ -156,19 +157,34 @@ export function activate(context: vscode.ExtensionContext) {
                     str = `${now.year}-${now.month}-${now.date}`; 
                     break;
                 
-                // ファイル名
-                case "@pinfo.base":
-                    str = pinfo.base;
-                    break;
-                
                 // フルパス名
                 case "@pinfo.path":
                     str = editor.document.fileName;
                     break;
 
+                // ディレクトリ名
+                case "@pinfo.dir":
+                    str = pinfo.dir;
+                    break;
+
+                // ファイル名+拡張子
+                case "@pinfo.base":
+                    str = pinfo.base;
+                    break;
+                
+                // ファイル名
+                case "@pinfo.name":
+                    str = pinfo.name;
+                    break;
+                
+                // 拡張子
+                case "@pinfo.ext":
+                    str = pinfo.ext;
+                    break;
+                
                 // コマンド以外ならテンプレート
                 default:
-                    str = fromTemplate(editor, `${tempDir}/${pinfo.ext}/${cmds[sel]}`);
+                    str = fromTemplate(editor, `${tempDir}/${cmds[sel]}`);
                     break;
             }
 

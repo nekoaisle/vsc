@@ -1,7 +1,7 @@
 {
-    "name": "togglecharcase",
-    "displayName": "ToggleCharCase",
-    "description": "Toggle the case of the character at the cursor position.",
+    "name": "cpsswizard",
+    "displayName": "CpssWizard",
+    "description": "テンプレートから初期ソースを作成",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {
@@ -11,22 +11,19 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.toggleCharCase"
+        "onCommand:cpssWizard.fromTemplate"
     ],
     "main": "./out/src/extension",
     "contributes": {
-        "commands": [
-            {
-                "command": "extension.toggleCharCase",
-                "title": "Toggle the case of the character"
-            }
-        ],
-        "keybindings": [
-            {
-                "command": "extension.toggleCharCase",
-                "key": "ctrl ["
-            }
-        ]
+        "commands": [{
+                "command": "cpssWizard.fromTemplate",
+                "title": "Cpss Wizard"
+        }],
+        "keybindings": [{
+            "command": "cpssWizard.fromTemplate",
+            "key": "escape p"
+        }]
+
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",

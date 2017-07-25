@@ -3,20 +3,6 @@
     "version": "0.1.0",
     "configurations": [
         {
-            "type": "extensionHost",
-            "request": "launch",
-            "name": "拡張機能の起動",
-            "runtimeExecutable": "${execPath}",
-            "args": [
-                "--extensionDevelopmentPath=${workspaceRoot}"
-            ],
-            "sourceMaps": true,
-            "outFiles": [
-                "${workspaceRoot}/out/**/*.js"
-            ],
-            "preLaunchTask": "npm"
-        },
-        {
             "name": "Launch Extension",
             "type": "extensionHost",
             "request": "launch",

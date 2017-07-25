@@ -1,0 +1,116 @@
+{
+    "name": "jumptolinenumber",
+    "displayName": "JumpToLineNumber",
+    "description": "Jump to specified line.",
+    "version": "0.0.1",
+    "publisher": "nekoaisle",
+    "engines": {
+        "vscode": "^1.13.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:jumpToLineNumber.jump1",
+        "onCommand:jumpToLineNumber.jump2",
+        "onCommand:jumpToLineNumber.jump3",
+        "onCommand:jumpToLineNumber.jump4",
+        "onCommand:jumpToLineNumber.jump5",
+        "onCommand:jumpToLineNumber.jump6",
+        "onCommand:jumpToLineNumber.jump7",
+        "onCommand:jumpToLineNumber.jump8",
+        "onCommand:jumpToLineNumber.jump9"
+    ],
+    "main": "./out/src/extension",
+    "contributes": {
+        "commands": [
+            {
+                "command": "jumpToLineNumber.jump1",
+                "title": "Jump to line nuber"
+            },
+            {
+                "command": "jumpToLineNumber.jump2",
+                "title": "Jump to line nuber"
+            },
+            {
+                "command": "jumpToLineNumber.jump3",
+                "title": "Jump to line nuber"
+            },
+            {
+                "command": "jumpToLineNumber.jump4",
+                "title": "Jump to line nuber"
+            },
+            {
+                "command": "jumpToLineNumber.jump5",
+                "title": "Jump to line nuber"
+            },
+            {
+                "command": "jumpToLineNumber.jump6",
+                "title": "Jump to line nuber"
+            },
+            {
+                "command": "jumpToLineNumber.jump7",
+                "title": "Jump to line nuber"
+            },
+            {
+                "command": "jumpToLineNumber.jump8",
+                "title": "Jump to line nuber"
+            },
+            {
+                "command": "jumpToLineNumber.jump9",
+                "title": "Jump to line nuber"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "jumpToLineNumber.jump1",
+                "key": "escape 1"
+            },
+            {
+                "command": "jumpToLineNumber.jump2",
+                "key": "escape 2"
+            },
+            {
+                "command": "jumpToLineNumber.jump3",
+                "key": "escape 3"
+            },
+            {
+                "command": "jumpToLineNumber.jump4",
+                "key": "escape 4"
+            },
+            {
+                "command": "jumpToLineNumber.jump5",
+                "key": "escape 5"
+            },
+            {
+                "command": "jumpToLineNumber.jump6",
+                "key": "escape 6"
+            },
+            {
+                "command": "jumpToLineNumber.jump7",
+                "key": "escape 7"
+            },
+            {
+                "command": "jumpToLineNumber.jump8",
+                "key": "escape 8"
+            },
+            {
+                "command": "jumpToLineNumber.jump9",
+                "key": "escape 9"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.0.3",
+        "vscode": "^1.0.0",
+        "mocha": "^2.3.3",
+        "@types/node": "^6.0.40",
+        "@types/mocha": "^2.2.32"
+    }
+}

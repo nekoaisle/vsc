@@ -15,30 +15,34 @@
     ],
     "main": "./out/src/extension",
     "contributes": {
-        "commands": [{
+        "commands": [
+            {
                 "command": "extension.insertPhpCode",
                 "title": "Insert PHP Code"
-        }],
-        "keybindings": [{
-            "command": "extension.insertPhpCode",
-            "key": "escape i"
-        }],
-		"configuration": {
-			"type": "object",
-			"title": "Insert PHP Code configuration",
-			"properties": {
-				"insertPhpCode.tempDir": {
-					"type": "string",
-					"default": "",
-					"description": "テンプレートファイルが格納されているディレクトリを指定してください。"
-				},
-				"insertPhpCode.author": {
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "extension.insertPhpCode",
+                "key": "escape i"
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Insert PHP Code configuration",
+            "properties": {
+                "insertPhpCode.tempDir": {
                     "type": "string",
                     "default": "",
-					"description": "このファイルを作成した人名前を指定してください。"
-				}
-			}
-		}
+                    "description": "テンプレートファイルが格納されているディレクトリを指定してください。"
+                },
+                "insertPhpCode.author": {
+                    "type": "string",
+                    "default": "",
+                    "description": "このファイルを作成した人名前を指定してください。"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",

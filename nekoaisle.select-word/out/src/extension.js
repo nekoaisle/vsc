@@ -27,15 +27,15 @@ function activate(context) {
                 return 0;
             }
             else if (c == 0x20) {
-                // プログラムに使う文字
+                // 半角空白
                 return 1;
             }
             else if (re1.test(s)) {
-                // プログラムに使う文字
+                // シンボルに使う文字
                 return 2;
             }
             else if (c < 0x100) {
-                // 半角文字
+                // それ以外の半角文字
                 return 3;
             }
             else {

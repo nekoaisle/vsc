@@ -1,32 +1,30 @@
 {
-    "name": "togglecharcase",
-    "displayName": "ToggleCharCase",
-    "description": "Toggle the case of the character at the cursor position.",
+    "name": "openthunar",
+    "displayName": "OpenThunar",
+    "description": "Open the folder containing the file you are editing in Thunar.",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {
-        "vscode": "^1.13.0"
+        "vscode": "^1.14.0"
     },
     "categories": [
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.toggleCharCase"
+        "onCommand:openThunar.open"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.toggleCharCase",
-                "title": "Toggle the case of the character"
+                "command": "openThunar.open",
+                "title": "Open Thunar"
             }
         ],
-        "keybindings": [
-            {
-                "command": "extension.toggleCharCase",
-                "key": "ctrl ["
-            }
-        ]
+        "keybindings": [{
+            "command": "openThunar.open",
+            "key": "escape x"
+        }]
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
