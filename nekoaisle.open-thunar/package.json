@@ -11,20 +11,31 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:openThunar.open"
+        "onCommand:nekoaisle.openThunar"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
             {
-                "command": "openThunar.open",
+                "command": "nekoaisle.openThunar",
                 "title": "Open Thunar"
             }
         ],
         "keybindings": [{
-            "command": "openThunar.open",
+            "command": "nekoaisle.openThunar",
             "key": "escape x"
-        }]
+        }],
+        "configuration": {
+            "type": "object",
+            "title": "Open thunar",
+            "properties": {
+                "nekoaisle.filer": {
+                    "type": "string",
+                    "default": "",
+                    "description": "ファイラーのファイル名を指定してください。"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",

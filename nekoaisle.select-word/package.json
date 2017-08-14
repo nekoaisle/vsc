@@ -11,16 +11,16 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.selectWord"
+        "onCommand:nekoaisle.selectWord"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [{
-            "command": "extension.selectWord",
+            "command": "nekoaisle.selectWord",
             "title": "Select Word"
         }],
         "keybindings": [{
-            "command": "extension.selectWord",
+            "command": "nekoaisle.selectWord",
             "key": "shift+enter"
         }]
     },

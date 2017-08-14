@@ -11,16 +11,16 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:cpssWizard.fromTemplate"
+        "onCommand:nekoaisle.cpssWizard"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [{
-                "command": "cpssWizard.fromTemplate",
+                "command": "nekoaisle.cpssWizard",
                 "title": "Cpss Wizard"
         }],
         "keybindings": [{
-            "command": "cpssWizard.fromTemplate",
+            "command": "nekoaisle.cpssWizard",
             "key": "escape p"
         }]
 

@@ -21,13 +21,11 @@ If you have any requirements or dependencies, add a section describing those and
 Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
 
 For example:
-    "cpssWizard.homeDir"    : "/home/kiya",
-    "cpssWizard.wizard"     : "/home/kiya/Dropbox/documents/PHP/CpssWizardUTF8.php",
-    "cpssWizard.outFile"    : "php://stdout",
-    "cpssWizard.templateDir": "/home/kiya/Dropbox/documents/hidemaru",
-    "cpssWizard.author"     : "木屋善夫",
-    "cpssWizard.mode"       : "standard",
+    "cpssWizard.wizard"     : "~/Dropbox/documents/PHP/CpssWizardUTF8.php",
+    "cpssWizard.templateDir": "~/Dropbox/documents/hidemaru",
     "cpssWizard.php"        : "/usr/bin/php"
+    "cpssWizard.outFile"    : "php://stdout",
+    "cpssWizard.author"     : "????",
 
 This extension contributes the following settings:
 

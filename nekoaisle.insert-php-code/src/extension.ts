@@ -124,18 +124,20 @@ export function activate(context: vscode.ExtensionContext) {
      */
     let insertPhpCode = () => {
         editor = vscode.window.activeTextEditor;
+        let lang = editor.document.languageId;
+        console.log(`languageId = "${lang}"`);
         pinfo  = new PathInfo(editor.document.fileName);
         now    = new DateInfo(new Date);
 
         let menuTSV = loadFile(`${tempDir}/list-${pinfo.ext}.tsv`);
-        console.log(menuTSV);
+//        console.log(menuTSV);
         let rows = menuTSV.split("\n");
-        console.log(rows);
+//        console.log(rows);
         let menu: string[] = [];
         let cmds = {};
         for ( let row of rows ) {
             let cols = row.split("\t");
-            console.log(cols);
+//            console.log(cols);
             menu.push( cols[0] );
             cmds[cols[0]] = cols[1];
         }

@@ -1,14 +1,37 @@
 'use strict';
 import * as vscode from 'vscode';
-import * as process from 'child_process';
-import * as fs from 'fs';
 import * as path from 'path';
+import * as chproc from 'child_process';
+import {Util, Extention} from './nekoaisle.lib/nekoaisle';
 
 export function activate(context: vscode.ExtensionContext) {
-    const extentionKey = "openThunar";
-    console.log('Start "OpenThunar"');
+    let extention = new OpenThunar();
+    let disp = vscode.commands.registerCommand(extention.command, () => {
+        extention.entry();
+    });
 
-    context.subscriptions.push(vscode.commands.registerCommand(`${extentionKey}.open`, () => {
+    context.subscriptions.push(disp);
+}
+
+// this method is called when your extension is deactivated
+export function deactivate() {
+}
+
+class OpenThunar extends Extention {
+	/**
+	 * 構築
+	 */
+	constructor() {
+		super('Open Thunar', 'nekoaisle.openThunar');
+	}
+
+	/**
+	 * エントリー
+	 */
+	public entry() {
+        // settings.json からファイラーの名前を取得
+        let filer = this.getConfig('nekoaisle.filer', 'thunar');
+
         //ドキュメントを取得
         let editor = vscode.window.activeTextEditor;
 
@@ -17,25 +40,25 @@ export function activate(context: vscode.ExtensionContext) {
         let pinfo = path.parse(fileName);
 
         // コマンドラインを作成
-        let cmd = `thunar ${pinfo.dir}`;
+        let cmd = `${filer} ${pinfo.dir}`;
         console.log( cmd );
 
         // 非同期実行
-        process.exec( cmd, (err, stdout: string, stderr: string) => {
+        chproc.exec( cmd, (err, stdout: string, stderr: string) => {
             if ( err == null ) {
                 console.log(stdout);
             } else {
                 // エラーが発生
-                console.log("error: " + err.message);
-                console.log("stderr:");
-                console.log(stderr);
-                console.log("stdout:");
-                console.log(stdout);
+                let str = `error:
+${err.message}
+stderr:
+${stderr}
+stdout:
+${stdout}
+trace:
+${err.stack}
+`
             }
         });
-    }));
-}
-
-// this method is called when your extension is deactivated
-export function deactivate() {
+    }
 }
