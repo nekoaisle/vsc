@@ -11,16 +11,20 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onCommand:nekoaisle.phpHelp"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.sayHello",
-                "title": "Hello World"
+                "command": "nekoaisle.phpHelp",
+                "title": "PHP Help"
             }
-        ]
+        ],
+        "keybindings": [{
+            "command": "nekoaisle.phpHelp",
+            "key": "f1"
+        }]
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",

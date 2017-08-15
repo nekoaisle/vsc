@@ -32,7 +32,6 @@ export module Util {
         return pad( num.toString(), "0", cols);
     }
 
-	
 	/**
 	 * 指定文字コードの文字種を取得
 	 * @param c 調べる文字コード
@@ -59,6 +58,41 @@ export module Util {
 	}
 
 	/**
+	 * カーソル位置の単語を取得
+	 * @param editor 対象とするエディタ
+	 */
+	export function getCursorWord(editor: vscode.TextEditor): string {
+		// カーソル位置を取得
+		let pos = editor.selection.active;
+		// カーソル行を取得
+		let line = editor.document.lineAt(pos.line).text;
+
+		let s = pos.character;
+		let t = Util.getCharType(line.charCodeAt(s));   // カーソル位置の文字タイプ
+		while ( (s > 0) && (t == Util.getCharType(line.charCodeAt(s-1))) ) {
+			-- s;
+		}
+
+		// 単語の終わりを探す
+		let e = s;
+		while ( (e < line.length) && (t == Util.getCharType(line.charCodeAt(e))) ) {
+			++ e;
+		}
+
+		return line.substr(s,e -s);
+	}
+
+	/**
+	 * 選択中の文字列を取得
+	 * @param editor 対象とするエディタ
+	 */
+	export function getSelectString(editor: vscode.TextEditor): string {
+        let range = editor.selection;
+        let line = editor.document.lineAt(range.active.line).text;
+		return line.substring(range.start.character, range.end.character);
+	}
+
+	/**
 	 * ホームディレクトリを取得
 	 */
 //	let homeDir: string;	// キャッシュ
@@ -76,6 +110,35 @@ export module Util {
 	 */
 	export function execCmd(cmd: string): string {
 		return ("" + chproc.execSync(cmd)).trim();
+	}
+
+	/**
+	 * 指定uriをブラウザーで開く
+	 * @param uri 開く uri
+	 * @param query 追加の query
+	 */
+	export function browsURL(uri: string, query?: object) {
+		if ( query ) {
+			// queryが指定されているので整形
+			let a: string[] = [];
+			for ( let k in query ) {
+				let v = encodeURIComponent(query[k]);
+				a.push(`${k}=${v}` );
+			}
+
+			// uri にオプションの query を追加
+			if ( uri.indexOf('?') < 0 ) {
+				// uri に query を含まないので ? で始める
+				uri += '?';
+			} else {
+				// uri に query を含むので & で始める
+				uri += '&';
+			}
+			uri += a.join('&');
+		}
+
+		// Chromium を実行
+        Util.execCmd(`chromium-browser '${uri}'`);
 	}
 
 	/**

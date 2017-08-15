@@ -1,29 +1,67 @@
 'use strict';
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import {Util, Extention} from './nekoaisle.lib/nekoaisle';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+/**
+ * エクステンション活性化
+ * @param context 
+ */
 export function activate(context: vscode.ExtensionContext) {
+	let ext = new MyExtention();
+	let disp = vscode.commands.registerCommand(ext.command, () => {
+		ext.entry();
+	});
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "php-help" is now active!');
-
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.sayHello', () => {
-        // The code you place here will be executed every time your command is executed
-
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World!');
-    });
-
-    context.subscriptions.push(disposable);
+	context.subscriptions.push(disp);
 }
 
-// this method is called when your extension is deactivated
+/**
+ * 非活性化
+ */
 export function deactivate() {
+}
+
+/**
+ * エクステンション本体
+ */
+class MyExtention extends Extention {
+	/**
+	 * 構築
+	 */
+	constructor() {
+		super('PHP Help', 'nekoaisle.phpHelp');
+	}
+
+	/**
+	 * エントリー
+	 */
+	public entry() {
+        let editor = vscode.window.activeTextEditor;
+
+        // カーソル位置の単語を取得
+        let word = Util.getCursorWord(editor);
+
+        let addr: string;
+        let query: object;
+        switch ( editor.document.languageId ) {
+            case 'typescript':
+            case 'javascript':
+                addr = 'https://developer.mozilla.org/ja/search';
+                query = {
+                    locale: 'ja',
+                    "q": word
+                };
+                break;
+
+            case 'php':
+                addr = 'http://jp2.php.net/manual-lookup.php';
+                query = {
+                    lang: 'ja',
+                    function: word
+                };
+                break;
+        }
+
+        Util.browsURL(addr, query);
+    }
 }

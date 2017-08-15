@@ -17,6 +17,15 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 }
 
+class ListItem {
+    public filename: string;    // ファイル名またはコマンド名
+    public position: string;    // 挿入位置
+    constructor(filename: string, position: string) {
+        this.filename = filename;
+        this.position = position;
+    }
+};
+
 class InsertPhpCode extends Extention {
     // 言語タイプごとの拡張子一覧
     //
@@ -97,12 +106,12 @@ class InsertPhpCode extends Extention {
         // TSV ファイルを分解して QuickPickOptions 用のメニューと
         // メニューアイテムに対応するコマンド辞書を作成
         let menu: string[] = [];    // QuickPickOptions 用のメニュー
-        let cmds = {};              // メニューアイテムに対応するコマンド辞書
+        let dic: ListItem[] = [];              // メニューアイテムに対応するコマンド辞書
         for ( let row of rows ) {
             let cols = row.split("\t");
 //            console.log(cols);
             menu.push( cols[0] );
-            cmds[cols[0]] = cols[1];
+            dic[cols[0]] = new ListItem(cols[1], cols[2]);
         }
 //        console.log(menu);
 
@@ -115,10 +124,11 @@ class InsertPhpCode extends Extention {
             if ( !sel ) {
                 return;
             }
+            let cmd: ListItem = dic[sel];
 
             // コマンドごとの処理
             let str = '';
-            switch ( cmds[sel] ) {
+            switch ( cmd.filename ) {
                 // 日付
                 case "@now.ymd":
                     str = `${now.year}-${now.month}-${now.date}`; 
@@ -152,15 +162,33 @@ class InsertPhpCode extends Extention {
                 // コマンド以外ならテンプレート
                 default:
                     // テンプレートのファイル名
-                    let fn = `${tempDir}/${cmds[sel]}`;
+                    let fn = `${tempDir}/${cmd.filename}`;
                     str = this.fromTemplate(editor, fn, author, pinfo, now);
                     break;
             }
 
             // 現在のカーソル位置に挿入
             if ( str ) {
-                console.log(`insert\n${str}`);
-                editor.edit(edit => edit.insert(editor.selection.start, str));
+                let pos = editor.selection.active;
+                switch ( cmd.position ) {
+                    // 行頭
+                    case 'line-top':
+                        pos = new vscode.Position(pos.line, 0); 
+                        break;
+
+                    // 行末
+                    case 'line-end':
+                        pos = new vscode.Position(pos.line, editor.document.lineAt(pos.line).text.length);
+                        break;
+
+                    // 次の行
+                    case 'new-line':
+                        pos = new vscode.Position(pos.line+1, 0 );
+                        break;
+                }
+
+                // console.log(`insert\n${str}`);
+                editor.edit(edit => edit.insert(pos, str));
             }
         });
     }
@@ -193,6 +221,8 @@ class InsertPhpCode extends Extention {
             "now.hour"  : now.hour,
             "now.min"   : now.min,
             "now.sec"   : now.sec,
+            "selection" : Util.getSelectString(editor),
+            "clipboard" : '',   // クリップボードの内容の取得法が不明
         };    
 
         for ( let s in rep ) {
