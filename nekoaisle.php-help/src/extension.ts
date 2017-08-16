@@ -60,7 +60,15 @@ class MyExtention extends Extention {
                     function: word
                 };
                 break;
-        }
+
+            case 'sql':
+                addr = 'https://dev.mysql.com/doc/search/';
+                query = {
+                    d: 171,
+                    q: word
+                }
+                break;
+            }
 
         Util.browsURL(addr, query);
     }
