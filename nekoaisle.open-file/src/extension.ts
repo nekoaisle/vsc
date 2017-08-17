@@ -1,6 +1,6 @@
 'use strict';
 import * as vscode from 'vscode';
-import {Util, Extention, SelectFile} from './nekoaisle.lib/nekoaisle';
+import {Extention, SelectFile, PathInfo} from './nekoaisle.lib/nekoaisle';
 
 /**
  * エクステンション起動
@@ -31,7 +31,10 @@ class OpenFile extends Extention {
 	 */
 	public exec() {
 		let selectFile = new SelectFile;
-		let dirName = process.cwd();
+		// アクティブなエディターのファイル名を分解
+		let pinfo = new PathInfo( vscode.window.activeTextEditor.document.fileName );
+		// ディレクトリー名を取得
+		let dirName = pinfo.getDirName();
 		let title = 'ファイルを選択してください。';
 		selectFile.selectFile(dirName, title).then((file: string) => {
 			if ( file.length > 0 ) {

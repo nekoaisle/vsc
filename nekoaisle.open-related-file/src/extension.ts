@@ -75,25 +75,43 @@ class OpenRelatedFile extends Extention {
 	}
 
 	protected php(pinfo: PathInfo) {
-		let fn: string;
-
-		// pc ディレクトリの .html
-		fn = pinfo.getFileName('.html', 'pc');
-		if ( Util.openFile(fn) ) {
+		// pc ディレクトリの .html が存在すれば開く
+		let htmlPC = pinfo.getFileName('.html', 'pc');
+		if ( Util.openFile(htmlPC) ) {
 			return 
 		}
 
-		// sp ディレクトリの .html
-		fn = pinfo.getFileName('.html', 'sp');
-		if ( Util.openFile(fn) ) {
+		// sp ディレクトリの .html が存在すれば開く
+		let htmlSP = pinfo.getFileName('.html', 'sp');
+		if ( Util.openFile(htmlSP) ) {
 			return 
 		}
 
-		// 同一ディレクトリの .phtml
-		fn = pinfo.getFileName('.phtml');
-		if ( Util.openFile(fn) ) {
+		// 同一ディレクトリの .phtml が存在すれば開く
+		let phtml = pinfo.getFileName('.phtml');
+		if ( Util.openFile(phtml) ) {
 			return 
 		}
+
+		// pc ディレクトリが存在するか調べる
+		let dirPC = pinfo.getDirName('pc');
+		if ( Util.isExistsFile(dirPC) ) {
+			// 存在したら pc/xxx.html を新規作成
+			Util.openFile(htmlPC, true);
+			return 
+		}
+
+		// sp ディレクトリが存在するか調べる
+		let dirSP = pinfo.getDirName('sp');
+		if ( Util.isExistsFile(dirSP) ) {
+			// 存在したら sp/xxx.html を新規作成
+			Util.openFile(htmlSP, true);
+			return 
+		}
+
+		// 同一ディレクトリに .phtml を強制作成
+		Util.openFile(phtml, true);
+		return 
 	}
 
 	protected html(pinfo: PathInfo) {
