@@ -1,0 +1,26 @@
+{
+    "name": "wz-editor-memo-file",
+    "displayName": "WZ-Editor memo file",
+    "description": "WZ-Editor memo file Syntax Highlight",
+    "version": "0.0.1",
+    "publisher": "nekoaisle",
+    "engines": {
+        "vscode": "^1.14.0"
+    },
+    "categories": [
+        "Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "mem",
+            "aliases": ["MemoFile", "mem"],
+            "extensions": [".mem"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "mem",
+            "scopeName": "text.mem",
+            "path": "./syntaxes/mem.tmLanguage.json"
+        }]
+    }
+}

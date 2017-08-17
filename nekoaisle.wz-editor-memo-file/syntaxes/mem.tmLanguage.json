@@ -1,0 +1,74 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "MemoFile",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "entry.title1.mem",
+				"match": "^\\.{1}[^\\.].*",
+				"comment": "title 1"
+			},{
+				"name": "entry.title2.mem",
+				"match": "^\\.{2}[^\\.].*",
+				"comment": "title 2"
+			},{
+				"name": "entry.title3.mem",
+				"match": "^\\.{3}[^\\.].*",
+				"comment": "title 3"
+			},{
+				"name": "entry.title4.mem",
+				"match": "^\\.{4}[^\\.].*",
+				"comment": "title 4"
+			},{
+				"name": "entry.title5.mem",
+				"match": "^\\.{5}[^\\.].*",
+				"comment": "title 5"
+			},{
+				"name": "keyword.root_prompt.mem",
+				"match": "^\\[[^@]+@[^\\]]+]#",
+				"comment": "command promt for root"
+			},{
+				"name": "keyword.user_prompt.mem",
+				"match": "^\\[[^@]+@[^\\]]+]$",
+				"comment": "command promt for user"
+			},{
+				"name": "keyword.ip_address.mem",
+				"match": "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+(:[0-9]+)?",
+				"comment": "ip address"
+			},{
+				"name": "keyword.modify_mark.mem",
+				"match": "^(#|;)@@(mod|del|add).*$",
+				"comment": "config file modified mark"
+			},{
+				"name": "keyword.comment_shell.mem",
+				"match": "^[\\s]*#.*$",
+				"comment": ""
+			},{
+				"name": "keyword.important.mem",
+				"match": "^※.*$",
+				"comment": "Important matter"
+			}
+		]
+		},
+		"strings": {
+			"name": "string.quoted.double.mem",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.mem",
+					"match": "\\\\."
+				}
+			]
+		}
+	},
+	"scopeName": "text.mem"
+}
