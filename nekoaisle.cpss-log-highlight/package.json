@@ -1,0 +1,26 @@
+{
+    "name": "cpss-log-highlight",
+    "displayName": "CPSS log Highlight",
+    "description": "Highlight the syntax of the CPSS log file",
+    "version": "0.0.1",
+    "publisher": "nekoaisle",
+    "engines": {
+        "vscode": "^1.14.0"
+    },
+    "categories": [
+        "Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "cpsslog",
+            "aliases": ["CPSS-log", "cpsslog"],
+            "extensions": [".log"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "cpsslog",
+            "scopeName": "text.cpss-log",
+            "path": "./syntaxes/cpsslog.tmLanguage.json"
+        }]
+    }
+}
