@@ -24,6 +24,12 @@ export class Extention {
 	}
 
 	/**
+	 * エントリー
+	 */
+	public exec() {
+	}
+
+	/**
 	 * settings.json からこの拡張機能用の設定を取得
 	 * @param key 設定名
 	 * @param def 設定されていないときに返す値
@@ -31,5 +37,17 @@ export class Extention {
 	 */
 	public getConfig(key: string, def: string): string {
 		return this.config.get(key, def);
+	}
+
+	/**
+	 * コマンドを登録
+	 * @param context 
+	 * @param ext 
+	 */
+	public registerCommand(context: vscode.ExtensionContext) {
+		let disp = vscode.commands.registerCommand(this.command, () => {
+			this.exec();
+		});
+		context.subscriptions.push(disp);
 	}
 }

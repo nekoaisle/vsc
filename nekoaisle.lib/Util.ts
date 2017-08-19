@@ -185,7 +185,7 @@ export module Util {
 
 	/**
 	 * 指定ファイルを開く
-	 * ※ファイルが存在しないときは作成する
+	 * create に true を指定するとファイルが存在しないときは作成する
 	 * @param fileName ファイル名
 	 * @param create true:新規作成する
 	 */
@@ -219,25 +219,41 @@ export module Util {
 	}
 
 	/**
-	 * パスを正規化
-	 * 1. 先頭の ~ を home ディレクトリに変更
-	 * 2. 相対パスならばを絶対パスに変更
-	 * ※この関数を使用する前に activate.homeDir を初期化して置かなければならない
-	 * 
-	 * @param name 正規化するパス名
+	 * ~ で始まるときにホームディレクトリ名と置換
+	 * @param name 
 	 */
-	export function normalizePath(name: string): string {
+	export function normalizeHome(name: string): string {
 		// ディレクトリ名が ~ で始まるときは環境変数 $HOME に置き換える
 		if ( name.substr(0, 1) == '~' ) {
 			name = path.join(getHomeDir(), name.substr(1));
 		}
+		return name;
+	}
 
-		// スキーマがなければ絶対パスに変換
+	/**
+	 * パスを正規化
+	 * 1. 先頭の ~ を home ディレクトリに変更
+	 * 2. 相対パスならばを絶対パスに変更
+	 * 
+	 * @param name 正規化するパス名
+	 * @param cwd? カレントディレクトリ
+	 */
+	export function normalizePath(name: string, cwd?: string): string {
+		// スキーマがあれば何もしない
 		// ※ php://stdout 対策
-		if ( name.indexOf('://') < 0 ) {
-			name = path.resolve(name);
+		if ( name.indexOf('://') >= 0 ) {
+			return name;
 		}
 
+		// ~ で始まるときは環境変数 $HOME に置き換える
+		name = normalizeHome(name);
+
+		// 絶対パスに変換
+		if ( !cwd ) {
+			cwd = '.';
+		}
+		name = path.resolve(cwd, name);
+		
 		// 
 		return name;
 	};

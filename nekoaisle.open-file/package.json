@@ -1,7 +1,7 @@
 {
-    "name": "openfile",
-    "displayName": "OpenFile",
-    "description": "Open file",
+    "name": "open-file",
+    "displayName": "Open File",
+    "description": "Open existing file, Open new file, Open a file that is paired with the current file",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {
@@ -11,21 +11,32 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:nekoaisle.openFile"
+        "onCommand:nekoaisle.openFile",
+        "onCommand:nekoaisle.openNew",
+        "onCommand:nekoaisle.openRelated"
     ],
     "main": "./out/src/extension",
     "contributes": {
-        "commands": [
-            {
-                "command": "nekoaisle.openFile",
-                "title": "Open File"
-            }
-        ],
+        "commands": [{
+            "command": "nekoaisle.openFile",
+            "title": "Open existing file"
+        },{
+            "command": "nekoaisle.openRelated",
+            "title": "Open related file"
+        },{
+            "command": "nekoaisle.openNew",
+            "title": "Open new file"
+        }],
         "keybindings": [{
             "command": "nekoaisle.openFile",
             "key": "escape f"
+        },{
+            "command": "nekoaisle.openRelated",
+            "key": "escape h"
+        },{
+            "command": "nekoaisle.openNew",
+            "key": "escape n"
         }]
-
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
