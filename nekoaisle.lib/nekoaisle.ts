@@ -1,5 +1,5 @@
 export * from './Util';
-export * from './Extention';
+export * from './Extension';
 export * from './SelectFile';
 export * from './PathInfoArgs';
 export * from './PathInfo';

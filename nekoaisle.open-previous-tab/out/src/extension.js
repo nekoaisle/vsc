@@ -3,37 +3,42 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
 function activate(context) {
-    let openPreviousTab = new OpenPreviousTab();
+    let openPreviousTab = new OpenPreviousTab(context);
     context.subscriptions.push(openPreviousTab);
-    let disposable = vscode.commands.registerCommand('nekoaisle.toggleTab', () => {
-        openPreviousTab.entry();
-    });
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated
 function deactivate() {
 }
 exports.deactivate = deactivate;
-class OpenPreviousTab extends nekoaisle_1.Extention {
+class OpenPreviousTab extends nekoaisle_1.Extension {
     /**
      * 構築
      */
-    constructor() {
-        super('Open previous tab', 'nekoaisle.openPreviousTab');
+    constructor(context) {
+        super(context, {
+            name: '拡張機能名',
+            config: 'toggleTab',
+            commands: [
+                {
+                    command: 'nekoaisle.toggleTab',
+                    callback: () => {
+                        this.exec();
+                    }
+                }
+            ]
+        });
         this.fileNames = [null, null];
         // エントリーを登録
         let subscriptions = [];
         vscode.window.onDidChangeActiveTextEditor(this.onEvent, this, subscriptions);
         // create a combined disposable from both event subscriptions
-        this._disposable = vscode.Disposable.from(...subscriptions);
-    }
-    dispose() {
-        this._disposable.dispose();
+        this.disposable = vscode.Disposable.from(...subscriptions);
     }
     /**
      * エントリー
      */
-    entry() {
+    exec() {
         if (!this.fileNames[1]) {
             return;
         }
@@ -54,6 +59,9 @@ class OpenPreviousTab extends nekoaisle_1.Extention {
         this.fileNames[1] = this.fileNames[0];
         // 現在のアクティブタブを記憶
         this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
+    }
+    dispose() {
+        this.disposable.dispose();
     }
 }
 //# sourceMappingURL=extension.js.map

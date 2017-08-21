@@ -1,13 +1,27 @@
 'use strict';
 import * as vscode from 'vscode';
-import {Extention, SelectFile, PathInfo} from './nekoaisle.lib/nekoaisle';
+import {Extension, SelectFile, PathInfo} from './nekoaisle.lib/nekoaisle';
 
 /**
  * エクステンション本体
  */
-class OpenFile extends Extention {
-	constructor() {
-		super('Open existing file', 'nekoaisle.openFile');
+class OpenFile extends Extension {
+	/**
+	 * 構築
+	 */
+	constructor(context: vscode.ExtensionContext) {
+		super(context, {
+			name: 'メニューからファイルを選択して開く',
+			config: 'openFile',
+			commands: [
+				{
+					command: `nekoaisle.openFile`,
+					callback: () => {
+						this.exec()
+					}
+				}
+			]
+		});
 	}
 
 	/**

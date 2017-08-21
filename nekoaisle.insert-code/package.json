@@ -1,7 +1,7 @@
 {
-    "name": "insertcode",
-    "displayName": "InsertCode",
-    "description": "Insert code",
+    "name": "insert-code",
+    "displayName": "Insert Code",
+    "description": "拡張子ごとのメニューから選択してテンプレートを挿入する",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {

@@ -1,14 +1,13 @@
 'use strict';
 import * as vscode from 'vscode';
-import {Util, Extention} from './nekoaisle.lib/nekoaisle';
+import {Util, Extension} from './nekoaisle.lib/nekoaisle';
 
 /**
  * エクステンション活性化
  * @param context 
  */
 export function activate(context: vscode.ExtensionContext) {
-	let ext = new MyExtention();
-	context.subscriptions.push(ext);
+	let ext = new MyExtention(context);
 }
 
 /**
@@ -20,14 +19,17 @@ export function deactivate() {
 /**
  * エクステンション本体
  */
-class MyExtention extends Extention {
+class MyExtention extends Extension {
 	private disposable: vscode.Disposable;
 	private statusBarItem: vscode.StatusBarItem;
 	/**
 	 * 構築
 	 */
-	constructor() {
-		super('Disp Char Code', 'nekoaisle.dispCharCode');
+	constructor(context: vscode.ExtensionContext) {
+		super(context, {
+			name: 'Disp Char Code',
+			commands: []
+		});
 
 		// エントリーを登録
 		let subscriptions: vscode.Disposable[] = [];

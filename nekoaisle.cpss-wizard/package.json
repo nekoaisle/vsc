@@ -1,6 +1,6 @@
 {
-    "name": "cpsswizard",
-    "displayName": "CpssWizard",
+    "name": "cpss-wizard",
+    "displayName": "Cpss Wizard",
     "description": "テンプレートから初期ソースを作成",
     "version": "0.0.1",
     "publisher": "nekoaisle",

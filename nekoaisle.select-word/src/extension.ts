@@ -1,18 +1,13 @@
 'use strict';
 import * as vscode from 'vscode';
-import {Util, Extention} from './nekoaisle.lib/nekoaisle';
+import {Extension, Util} from './nekoaisle.lib/nekoaisle';
 
 /**
  * エクステンション活性化
  * @param context 
  */
 export function activate(context: vscode.ExtensionContext) {
-	let ext = new OpenPreviousTab();
-	let disp = vscode.commands.registerCommand(ext.command, () => {
-		ext.entry();
-	});
-
-	context.subscriptions.push(disp);
+	let ext = new OpenPreviousTab(context);
 }
 
 /**
@@ -24,18 +19,29 @@ export function deactivate() {
 /**
  * エクステンション本体
  */
-class OpenPreviousTab extends Extention {
+class OpenPreviousTab extends Extension {
 	/**
 	 * 構築
 	 */
-	constructor() {
-		super('Select Word', 'nekoaisle.selectWord');
+	constructor(context: vscode.ExtensionContext) {
+		super(context, {
+			name: '拡張機能名',
+			config: 'selectWord',		// 通常はコマンドのサフィックス
+			commands: [
+				{
+					command: 'nekoaisle.selectWord',	// コマンド
+					callback: () => {
+						this.exec()
+					}
+				}
+			]
+		});
 	}
 
 	/**
 	 * エントリー
 	 */
-	public entry() {
+	public exec() {
 		let editor = vscode.window.activeTextEditor;
 		let doc = vscode.window.activeTextEditor.document;
 

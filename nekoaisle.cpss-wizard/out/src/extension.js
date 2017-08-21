@@ -6,11 +6,7 @@ const path = require("path");
 const chproc = require("child_process");
 const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
 function activate(context) {
-    let extention = new CpssWizard();
-    let disp = vscode.commands.registerCommand(extention.command, () => {
-        extention.entry();
-    });
-    context.subscriptions.push(disp);
+    let ext = new CpssWizard(context);
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated
@@ -42,12 +38,41 @@ class Options {
     }
 }
 ;
-class CpssWizard extends nekoaisle_1.Extention {
+/**
+ * 必ず解決(resolve)するプロミス
+ */
+function resolveSurelyPrimise(str) {
+    return new Promise((resolve, reject) => {
+        resolve(str);
+    });
+}
+exports.resolveSurelyPrimise = resolveSurelyPrimise;
+/**
+ * 必ず拒否(reject)するプロミス
+ */
+function rejectSurelyPrimise(str) {
+    return new Promise((resolve, reject) => {
+        reject(str);
+    });
+}
+exports.rejectSurelyPrimise = rejectSurelyPrimise;
+class CpssWizard extends nekoaisle_1.Extension {
     /**
      * 構築
      */
-    constructor() {
-        super('Cpss Wizard', 'nekoaisle.cpssWizard');
+    constructor(context) {
+        super(context, {
+            name: 'Cpss Wizard',
+            config: 'cpssWizard',
+            commands: [
+                {
+                    command: 'nekoaisle.cpssWizard',
+                    callback: () => {
+                        this.entry();
+                    }
+                }
+            ]
+        });
         // メニューに対応するモードとファイル名
         this.modeInfos = {
             '1 標準テンプレート': {
@@ -105,10 +130,8 @@ class CpssWizard extends nekoaisle_1.Extention {
      */
     entry() {
         // 設定を取得
-        const config = vscode.workspace.
-            getConfiguration(this.extentionKey[1]);
         // 設定取得
-        let options = new Options(config, this.defaultOptions);
+        let options = new Options(this.config, this.defaultOptions);
         // 一覧からモードを選択
         // 情報配列からメニューを作成
         let menu = [];
@@ -119,15 +142,15 @@ class CpssWizard extends nekoaisle_1.Extention {
             placeHolder: '選択してください。'
         };
         vscode.window.showQuickPick(menu, opt).then((mode) => {
-            console.log(`mode = "${mode}"`);
             // モードが指定されなかったら終了
             if (!mode) {
-                return;
+                return rejectSurelyPrimise('');
             }
             let info = this.modeInfos[mode];
             if (!info) {
-                return;
+                return rejectSurelyPrimise('');
             }
+            console.log(`mode = "${mode}"`);
             options.mode = info.mode;
             options.name = info.name;
             // InputBoxを表示してタイトルを求める
@@ -138,11 +161,11 @@ class CpssWizard extends nekoaisle_1.Extention {
             };
             return vscode.window.showInputBox(ioption);
         }).then((title) => {
-            console.log(`title = "${title}"`);
-            // タイトルが指定されなかったときは何もしない
-            if (title.trim().length == 0) {
-                return;
+            if (!title || (title.trim().length == 0)) {
+                // タイトルが指定されなかったときは何もしない
+                return rejectSurelyPrimise('');
             }
+            console.log(`title = "${title}"`);
             options.title = title;
             // SQLファイルを選択
             if (fs.existsSync(options.sqlDir)) {
@@ -150,9 +173,7 @@ class CpssWizard extends nekoaisle_1.Extention {
                 return sel.selectFile(`${options.sqlDir}`, 'SQLファイルを選択してください。(不要な場合はESC)');
             }
             else {
-                return new Promise((resolve, reject) => {
-                    resolve('');
-                });
+                return resolveSurelyPrimise('');
             }
         }).then((sqlFile) => {
             console.log(`sqlFile = "${sqlFile}"`);

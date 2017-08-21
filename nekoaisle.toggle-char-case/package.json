@@ -1,7 +1,7 @@
 {
-    "name": "togglecharcase",
-    "displayName": "ToggleCharCase",
-    "description": "Toggle the case of the character at the cursor position.",
+    "name": "toggle-char-case",
+    "displayName": "Toggle Char Case",
+    "description": "カーソル位置の文字の大文字/小文字を切り替える",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {
@@ -11,20 +11,27 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.toggleCharCase"
+        "onCommand:nekoaisle.toggleCharCase",
+        "onCommand:nekoaisle.toggleWordCase"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.toggleCharCase",
+                "command": "nekoaisle.toggleCharCase",
                 "title": "Toggle the case of the character"
+            },{
+                "command": "nekoaisle.toggleWordCase",
+                "title": "Toggle case by first letter"
             }
         ],
         "keybindings": [
             {
-                "command": "extension.toggleCharCase",
-                "key": "ctrl ["
+                "command": "nekoaisle.toggleCharCase",
+                "key": "ctrl+]"
+            },{
+                "command": "nekoaisle.toggleWordCase",
+                "key": "ctrl+["
             }
         ]
     },

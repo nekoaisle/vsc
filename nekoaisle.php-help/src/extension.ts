@@ -1,18 +1,13 @@
 'use strict';
 import * as vscode from 'vscode';
-import {Util, Extention} from './nekoaisle.lib/nekoaisle';
+import {Util, Extension} from './nekoaisle.lib/nekoaisle';
 
 /**
  * エクステンション活性化
  * @param context 
  */
 export function activate(context: vscode.ExtensionContext) {
-	let ext = new MyExtention();
-	let disp = vscode.commands.registerCommand(ext.command, () => {
-		ext.entry();
-	});
-
-	context.subscriptions.push(disp);
+	let ext = new MyExtension(context);
 }
 
 /**
@@ -24,18 +19,29 @@ export function deactivate() {
 /**
  * エクステンション本体
  */
-class MyExtention extends Extention {
+class MyExtension extends Extension {
 	/**
 	 * 構築
 	 */
-	constructor() {
-		super('PHP Help', 'nekoaisle.phpHelp');
+	constructor(context: vscode.ExtensionContext) {
+		super(context, {
+			name: 'カーソル位置の単語でPHPマニュアルを開く',
+			config: 'phpHelp',		// 通常はコマンドのサフィックス
+			commands: [
+				{
+					command: 'nekoaisle.phpHelp',	// コマンド
+					callback: () => {
+						this.exec()
+					}
+				}
+			]
+		});
 	}
 
 	/**
 	 * エントリー
 	 */
-	public entry() {
+	public exec() {
         let editor = vscode.window.activeTextEditor;
 
         // カーソル位置の単語を取得

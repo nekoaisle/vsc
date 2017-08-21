@@ -1,14 +1,28 @@
 'use strict';
 import * as vscode from 'vscode';
 import * as path from 'path';
-import {Extention, Util, SelectFile, PathInfo} from './nekoaisle.lib/nekoaisle';
+import {Extension, Util, SelectFile, PathInfo} from './nekoaisle.lib/nekoaisle';
 
 /**
  * エクステンション本体
  */
-class OpenNew extends Extention {
-	constructor() {
-		super('Open new file', 'nekoaisle.openNew');
+class OpenNew extends Extension {
+	/**
+	 * 構築
+	 */
+	constructor(context: vscode.ExtensionContext) {
+		super(context, {
+			name: 'ファイル名を指定して新規ファイルを開く',
+			config: 'openNew',
+			commands: [
+				{
+					command: `nekoaisle.openNew`,
+					callback: () => {
+						this.exec()
+					}
+				}
+			]
+		});
 	}
 
 	/**

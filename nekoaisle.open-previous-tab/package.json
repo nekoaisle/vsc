@@ -1,7 +1,7 @@
 {
-    "name": "openprevioustab",
+    "name": "open-previous-tab",
     "displayName": "OpenPreviousTab",
-    "description": "Open previous tab.",
+    "description": "直前に開いていたタブを開く",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {

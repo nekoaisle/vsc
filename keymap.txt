@@ -1,0 +1,90 @@
+escape
+	A	
+	B	
+	C	
+	D	
+	E	
+	F	nekoaisle.openFile 既存のファイルをメニューから選択して開く
+	G	
+	H	nekoaisle.openRelated 現在ファイルと対になるファイルを開く
+	I	nekoaisle.insertCode 拡張子ごとのメニューから選択してテンプレートを挿入する
+	J	markjump.jump マークした行にジャンプ
+	K	
+	L	
+	M	markjump.mark カーソル行をマーク
+	N	nekoaisle.openNew ファイル名を指定してファイルを開く(新規ファイルは作成)
+	O	workbench.action.closeActiveEditor
+	P	nekoaisle.cpssWizard 初期コード作成
+	Q	
+	R	markjump.rejump 最後にジャンプした行へ戻る
+	S	
+	T	
+	U	
+	V	
+	W	
+	X	nekoaisle.openThunar 現在のファイルが格納されているディレクトリをThunarで開く
+	Y	
+	Z	
+	0	
+	1	nekoaisle.jumpToLineNumber1 行番号指定ジャンプ(1で始まる行)
+	2	nekoaisle.jumpToLineNumber2 行番号指定ジャンプ(2で始まる行)
+	3	nekoaisle.jumpToLineNumber3 行番号指定ジャンプ(3で始まる行)
+	4	nekoaisle.jumpToLineNumber4 行番号指定ジャンプ(4で始まる行)
+	5	nekoaisle.jumpToLineNumber5 行番号指定ジャンプ(5で始まる行)
+	6	nekoaisle.jumpToLineNumber6 行番号指定ジャンプ(6で始まる行)
+	7	nekoaisle.jumpToLineNumber7 行番号指定ジャンプ(7で始まる行)
+	8	nekoaisle.jumpToLineNumber8 行番号指定ジャンプ(8で始まる行)
+	9	nekoaisle.jumpToLineNumber9 行番号指定ジャンプ(9で始まる行)
+	!	
+	"	
+	#	
+	$	
+	%	
+	&	
+	'	
+	(	
+	)	
+	*	
+	+	
+	,	
+	-	
+	.	
+	/	
+	:	
+	;	
+	<	
+	=	
+	>	
+	?	
+	@	
+	[	
+	\	
+	]	editor.action.jumpToBracket
+	^	
+	_	
+	{	
+	|	
+	}	
+	~	
+	F1	
+	F2	
+	F3	
+	F4	
+	F5	
+	F6	
+	F7	
+	F8	
+	F9	
+	F10	
+	F11	
+	F12	
+	LeftArrow	
+	RightArrow	
+	UpArrow	
+	DownArrow	
+	Enter	
+	PageUp	
+	PageDown	
+	Insert	
+	Delete	
+	BackSpace	

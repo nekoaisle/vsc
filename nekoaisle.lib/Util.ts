@@ -3,6 +3,8 @@ import * as chproc from 'child_process';
 import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
+import {Extension} from './Extension';
+
 
 export module Util {
 	/**
@@ -58,10 +60,10 @@ export module Util {
 	}
 
 	/**
-	 * カーソル位置の単語を取得
+	 * カーソル位置の単語の範囲を取得
 	 * @param editor 対象とするエディタ
 	 */
-	export function getCursorWord(editor: vscode.TextEditor): string {
+	export function getCursorWordRange(editor: vscode.TextEditor): vscode.Range {
 		// カーソル位置を取得
 		let pos = editor.selection.active;
 		// カーソル行を取得
@@ -79,7 +81,89 @@ export module Util {
 			++ e;
 		}
 
-		return line.substr(s,e -s);
+		let start = new vscode.Position(pos.line, s);
+		let end = new vscode.Position(pos.line, e);
+		return new vscode.Range(start, end);
+	}
+
+	/**
+	 * カーソル位置の単語を取得
+	 * @param editor 対象とするエディタ
+	 */
+	export function getCursorWord(editor: vscode.TextEditor): string {
+		// カーソル位置の単語の範囲を取得
+		let range = getCursorWordRange(editor);
+		// 単語の範囲の文字列を返す
+		return editor.document.getText(range);
+	}
+
+	/**
+	 * 指定文字の大文字・小文字を切り替える
+	 * @param c 対象となる文字
+	 * @return string 結果
+	 */
+	export function toggleCharCase(c: string): string {
+		switch ( getCharCase(c) ) {
+			case 'upper':
+				c = c.toLocaleLowerCase();
+				break;
+			case 'lower':
+				c = c.toLocaleUpperCase();
+				break;
+		}
+		return c;
+	}
+
+	/**
+	 * 指定文字の大文字・小文字を切り替える
+	 * @param c 対象となる文字
+	 * @return string 結果
+	 */
+	export function changeCharCase(c: string, mode?: string): string {
+		let cas = getCharCase(c);
+		if ( cas != '' ) {
+			// 変換対象文字
+			if ( (mode == 'togge') || (mode != cas) ) {
+				// トグルは必ず、それ以外は現在と違う時変換
+				if ( cas == 'lower' ) {
+					// 小文字なので大文字に変換
+					c = c.toLocaleUpperCase();
+				} else {
+					// 大文字なので小文字に変換
+					c = c.toLocaleLowerCase();
+				}
+			}
+		}
+		return c;
+    }
+
+	/**
+	 * 指定した文字列が大文字化小文字か調べる
+	 * 文字列の先頭から順に調べ最初に変挺できたケースを返す
+	 * @param str 調べる文字列
+	 * @return 'upper' | 'lower | ''
+	 */
+	export function getCharCase(str: string): string {
+		for ( let i = 0; i < str.length; ++ i ) {
+			// １文字抽出
+			let c = str.substr(i, 1);
+			if ( (c >= "A") && (c <= "Z") ) {
+				// 半角アルファベット大文字
+				return 'upper';
+			} else if ( (c >= "a") && (c <= "z") ) {
+				// 半角アルファベット小文字
+				return 'lower';
+			} else if ( (c >= "Ａ") && (c <= "Ｚ") ) {
+				// 全角アルファベット大文字
+				return 'upper';
+			} else if ( (c >= "ａ") && (c <= "ｚ") ) {
+				// 全角アルファベット小文字
+				return 'lower';
+			}
+		}
+
+		// 最後まで判定できなかった
+		return '';
 	}
 
 	/**
@@ -88,8 +172,16 @@ export module Util {
 	 */
 	export function getSelectString(editor: vscode.TextEditor): string {
         let range = editor.selection;
-        let line = editor.document.lineAt(range.active.line).text;
-		return line.substring(range.start.character, range.end.character);
+		return editor.document.getText(range);
+	}
+
+	/**
+	 * 指定ポジションの文字を取得
+	 * @param editor 対象とするエディタ
+	 */
+	export function getCharFromPos(editor: vscode.TextEditor, pos: vscode.Position): string {
+		let line = editor.document.lineAt(pos.line).text;
+		return line.substr(pos.character, 1);
 	}
 
 	/**

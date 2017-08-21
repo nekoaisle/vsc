@@ -4,9 +4,23 @@ const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
 /**
  * エクステンション本体
  */
-class OpenFile extends nekoaisle_1.Extention {
-    constructor() {
-        super('Open existing file', 'nekoaisle.openFile');
+class OpenFile extends nekoaisle_1.Extension {
+    /**
+     * 構築
+     */
+    constructor(context) {
+        super(context, {
+            name: 'メニューからファイルを選択して開く',
+            config: 'openFile',
+            commands: [
+                {
+                    command: `nekoaisle.openFile`,
+                    callback: () => {
+                        this.exec();
+                    }
+                }
+            ]
+        });
     }
     /**
      * エントリー

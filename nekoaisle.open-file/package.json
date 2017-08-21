@@ -1,7 +1,7 @@
 {
     "name": "open-file",
     "displayName": "Open File",
-    "description": "Open existing file, Open new file, Open a file that is paired with the current file",
+    "description": "新規・既存・関連ファイルを開く",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {

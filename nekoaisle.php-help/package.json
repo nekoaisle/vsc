@@ -1,7 +1,7 @@
 {
     "name": "php-help",
     "displayName": "PHP Help",
-    "description": "Open PHP Manual with word at cursor position",
+    "description": "カーソル位置の単語でPHPマニュアルを検索",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {

@@ -3,11 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
 function activate(context) {
-    let extention = new InsertPhpCode();
-    let disp = vscode.commands.registerCommand(extention.command, () => {
-        extention.entry();
-    });
-    context.subscriptions.push(disp);
+    let ext = new InsertCode(context);
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated
@@ -21,12 +17,23 @@ class ListItem {
     }
 }
 ;
-class InsertPhpCode extends nekoaisle_1.Extention {
+class InsertCode extends nekoaisle_1.Extension {
     /**
      * 構築
      */
-    constructor() {
-        super('Insert Code', 'nekoaisle.insertCode');
+    constructor(context) {
+        super(context, {
+            name: 'Insert Code',
+            config: 'insertCode',
+            commands: [
+                {
+                    command: 'nekoaisle.insertCode',
+                    callback: () => {
+                        this.entry();
+                    }
+                }
+            ]
+        });
         // 言語タイプごとの拡張子一覧
         //
         // console.log('enum languages');

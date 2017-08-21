@@ -1,7 +1,7 @@
 {
-    "name": "dispcharcode",
-    "displayName": "DispCharCode",
-    "description": "Display character code of cursor position",
+    "name": "disp-char-code",
+    "displayName": "Disp Char Code",
+    "description": "カーソル位置の文字コードをステータバーに表示",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {

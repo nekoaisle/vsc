@@ -2,33 +2,39 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as chproc from 'child_process';
-import {Util, Extention} from './nekoaisle.lib/nekoaisle';
+import {Util, Extension} from './nekoaisle.lib/nekoaisle';
 
 export function activate(context: vscode.ExtensionContext) {
-    let extention = new OpenThunar();
-    let disp = vscode.commands.registerCommand(extention.command, () => {
-        extention.entry();
-    });
-
-    context.subscriptions.push(disp);
+    let extention = new OpenThunar(context);
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
 }
 
-class OpenThunar extends Extention {
+class OpenThunar extends Extension {
 	/**
 	 * 構築
 	 */
-	constructor() {
-		super('Open Thunar', 'nekoaisle.openThunar');
+	constructor(context: vscode.ExtensionContext) {
+		super(context, {
+			name: 'Open Thunar',
+			config: 'openThunar',		// 通常はコマンドのサフィックス
+			commands: [
+				{
+					command: 'nekoaisle.openThunar',	// コマンド
+					callback: () => {
+						this.exec()
+					}
+				}
+			]
+		});
 	}
 
 	/**
 	 * エントリー
 	 */
-	public entry() {
+	public exec() {
         // settings.json からファイラーの名前を取得
         let filer = this.getConfig('nekoaisle.filer', 'thunar');
 

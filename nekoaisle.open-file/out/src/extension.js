@@ -8,12 +8,9 @@ const OpenNew = require("./OpenNew");
  * @param context
  */
 function activate(context) {
-    let openFile = new OpenFile();
-    openFile.registerCommand(context);
-    let openRelated = new OpenRelated();
-    openRelated.registerCommand(context);
-    let openNew = new OpenNew();
-    openNew.registerCommand(context);
+    let openFile = new OpenFile(context);
+    let openRelated = new OpenRelated(context);
+    let openNew = new OpenNew(context);
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated

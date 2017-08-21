@@ -1,7 +1,7 @@
 {
     "name": "selectword",
     "displayName": "SelectWord",
-    "description": "Select word at cursor position",
+    "description": "カーソル位置の単語を選択",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {

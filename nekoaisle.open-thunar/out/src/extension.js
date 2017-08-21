@@ -5,28 +5,35 @@ const path = require("path");
 const chproc = require("child_process");
 const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
 function activate(context) {
-    let extention = new OpenThunar();
-    let disp = vscode.commands.registerCommand(extention.command, () => {
-        extention.entry();
-    });
-    context.subscriptions.push(disp);
+    let extention = new OpenThunar(context);
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated
 function deactivate() {
 }
 exports.deactivate = deactivate;
-class OpenThunar extends nekoaisle_1.Extention {
+class OpenThunar extends nekoaisle_1.Extension {
     /**
      * 構築
      */
-    constructor() {
-        super('Open Thunar', 'nekoaisle.openThunar');
+    constructor(context) {
+        super(context, {
+            name: 'Open Thunar',
+            config: 'openThunar',
+            commands: [
+                {
+                    command: 'nekoaisle.openThunar',
+                    callback: () => {
+                        this.exec();
+                    }
+                }
+            ]
+        });
     }
     /**
      * エントリー
      */
-    entry() {
+    exec() {
         // settings.json からファイラーの名前を取得
         let filer = this.getConfig('nekoaisle.filer', 'thunar');
         //ドキュメントを取得

@@ -2,15 +2,10 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import {Util, Extention, PathInfo, DateInfo} from './nekoaisle.lib/nekoaisle';
+import {Util, Extension, PathInfo, DateInfo} from './nekoaisle.lib/nekoaisle';
 
 export function activate(context: vscode.ExtensionContext) {
-    let extention = new InsertPhpCode();
-    let disp = vscode.commands.registerCommand(extention.command, () => {
-        extention.entry();
-    });
-
-    context.subscriptions.push(disp);
+    let ext = new InsertCode(context);
 }
 
 // this method is called when your extension is deactivated
@@ -26,7 +21,7 @@ class ListItem {
     }
 };
 
-class InsertPhpCode extends Extention {
+class InsertCode extends Extension {
     // 言語タイプごとの拡張子一覧
     //
     // console.log('enum languages');
@@ -59,8 +54,19 @@ class InsertPhpCode extends Extention {
     /**
 	 * 構築
 	 */
-	constructor() {
-		super('Insert Code', 'nekoaisle.insertCode');
+	constructor(context: vscode.ExtensionContext) {
+		super(context, {
+            name: 'Insert Code',
+            config: 'insertCode',
+			commands: [
+				{
+					command: 'nekoaisle.insertCode',
+					callback: () => {
+						this.entry()
+					}
+				}
+			]
+		});
 	}
 
 	/**

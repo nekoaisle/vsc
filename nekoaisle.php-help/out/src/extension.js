@@ -7,11 +7,7 @@ const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
  * @param context
  */
 function activate(context) {
-    let ext = new MyExtention();
-    let disp = vscode.commands.registerCommand(ext.command, () => {
-        ext.entry();
-    });
-    context.subscriptions.push(disp);
+    let ext = new MyExtension(context);
 }
 exports.activate = activate;
 /**
@@ -23,17 +19,28 @@ exports.deactivate = deactivate;
 /**
  * エクステンション本体
  */
-class MyExtention extends nekoaisle_1.Extention {
+class MyExtension extends nekoaisle_1.Extension {
     /**
      * 構築
      */
-    constructor() {
-        super('PHP Help', 'nekoaisle.phpHelp');
+    constructor(context) {
+        super(context, {
+            name: 'カーソル位置の単語でPHPマニュアルを開く',
+            config: 'phpHelp',
+            commands: [
+                {
+                    command: 'nekoaisle.phpHelp',
+                    callback: () => {
+                        this.exec();
+                    }
+                }
+            ]
+        });
     }
     /**
      * エントリー
      */
-    entry() {
+    exec() {
         let editor = vscode.window.activeTextEditor;
         // カーソル位置の単語を取得
         let word = nekoaisle_1.Util.getCursorWord(editor);

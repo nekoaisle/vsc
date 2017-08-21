@@ -7,11 +7,7 @@ const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
  * @param context
  */
 function activate(context) {
-    let ext = new OpenPreviousTab();
-    let disp = vscode.commands.registerCommand(ext.command, () => {
-        ext.entry();
-    });
-    context.subscriptions.push(disp);
+    let ext = new OpenPreviousTab(context);
 }
 exports.activate = activate;
 /**
@@ -23,17 +19,28 @@ exports.deactivate = deactivate;
 /**
  * エクステンション本体
  */
-class OpenPreviousTab extends nekoaisle_1.Extention {
+class OpenPreviousTab extends nekoaisle_1.Extension {
     /**
      * 構築
      */
-    constructor() {
-        super('Select Word', 'nekoaisle.selectWord');
+    constructor(context) {
+        super(context, {
+            name: '拡張機能名',
+            config: 'selectWord',
+            commands: [
+                {
+                    command: 'nekoaisle.selectWord',
+                    callback: () => {
+                        this.exec();
+                    }
+                }
+            ]
+        });
     }
     /**
      * エントリー
      */
-    entry() {
+    exec() {
         let editor = vscode.window.activeTextEditor;
         let doc = vscode.window.activeTextEditor.document;
         // カーソル位置を取得

@@ -1,45 +1,48 @@
 import * as vscode from 'vscode';
-import {Util, Extention} from './nekoaisle.lib/nekoaisle';
+import {Util, Extension} from './nekoaisle.lib/nekoaisle';
 
 export function activate(context: vscode.ExtensionContext) {
-    let openPreviousTab = new OpenPreviousTab();
+    let openPreviousTab = new OpenPreviousTab(context);
 	context.subscriptions.push(openPreviousTab);
-
-    let disposable = vscode.commands.registerCommand('nekoaisle.toggleTab', () => {
-        openPreviousTab.entry();
-    });
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
 }
 
-class OpenPreviousTab extends Extention {
+class OpenPreviousTab extends Extension {
 	private fileNames: string[] = [null, null];
-    private _disposable: vscode.Disposable;
+    private disposable: vscode.Disposable;
 
 	/**
 	 * 構築
 	 */
-	constructor() {
-		super('Open previous tab', 'nekoaisle.openPreviousTab');
+	constructor(context: vscode.ExtensionContext) {
+		super(context, {
+			name: '拡張機能名',
+			config: 'toggleTab',
+			commands: [
+				{
+					command: 'nekoaisle.toggleTab',
+					callback: () => {
+						this.exec()
+					}
+				}
+			]
+		});
 
 		// エントリーを登録
 		let subscriptions: vscode.Disposable[] = [];
 		vscode.window.onDidChangeActiveTextEditor(this.onEvent, this, subscriptions);
 
         // create a combined disposable from both event subscriptions
-		this._disposable = vscode.Disposable.from(...subscriptions);
-	}
-
-	public dispose() {
-        this._disposable.dispose();
+		this.disposable = vscode.Disposable.from(...subscriptions);
 	}
 
 	/**
 	 * エントリー
 	 */
-	public entry() {
+	public exec() {
 		if ( !this.fileNames[1] ) {
 			return;
 		}
@@ -64,4 +67,7 @@ class OpenPreviousTab extends Extention {
 		this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
 	}
 
+	public dispose() {
+        this.disposable.dispose();
+	}
 }

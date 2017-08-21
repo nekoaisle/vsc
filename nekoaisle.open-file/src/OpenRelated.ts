@@ -1,13 +1,24 @@
 'use strict';
 import * as vscode from 'vscode';
-import {Extention, Util, SelectFile, PathInfo} from './nekoaisle.lib/nekoaisle';
+import {Extension, Util, SelectFile, PathInfo} from './nekoaisle.lib/nekoaisle';
 
-class OpenRelated extends Extention {
+class OpenRelated extends Extension {
 	/**
 	 * 構築
 	 */
-	constructor() {
-		super('Open Related File', 'nekoaisle.openRelated');
+	constructor(context: vscode.ExtensionContext) {
+		super(context, {
+			name: '現在のファイルと対になるファイルを開く',
+			config: 'openRelated',
+			commands: [
+				{
+					command: 'nekoaisle.openRelated',
+					callback: () => {
+						this.exec()
+					}
+				}
+			]
+		});
 	}
 
 	/**

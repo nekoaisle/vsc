@@ -1,12 +1,23 @@
 'use strict';
 const vscode = require("vscode");
 const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
-class OpenRelated extends nekoaisle_1.Extention {
+class OpenRelated extends nekoaisle_1.Extension {
     /**
      * 構築
      */
-    constructor() {
-        super('Open Related File', 'nekoaisle.openRelated');
+    constructor(context) {
+        super(context, {
+            name: '現在のファイルと対になるファイルを開く',
+            config: 'openRelated',
+            commands: [
+                {
+                    command: 'nekoaisle.openRelated',
+                    callback: () => {
+                        this.exec();
+                    }
+                }
+            ]
+        });
     }
     /**
      * エントリー

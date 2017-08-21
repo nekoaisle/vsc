@@ -7,8 +7,7 @@ const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
  * @param context
  */
 function activate(context) {
-    let ext = new MyExtention();
-    context.subscriptions.push(ext);
+    let ext = new MyExtention(context);
 }
 exports.activate = activate;
 /**
@@ -20,12 +19,15 @@ exports.deactivate = deactivate;
 /**
  * エクステンション本体
  */
-class MyExtention extends nekoaisle_1.Extention {
+class MyExtention extends nekoaisle_1.Extension {
     /**
      * 構築
      */
-    constructor() {
-        super('Disp Char Code', 'nekoaisle.dispCharCode');
+    constructor(context) {
+        super(context, {
+            name: 'Disp Char Code',
+            commands: []
+        });
         // エントリーを登録
         let subscriptions = [];
         vscode.window.onDidChangeActiveTextEditor(this.onEvent, this, subscriptions);

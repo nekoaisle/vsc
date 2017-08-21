@@ -1,6 +1,6 @@
 'use strict';
 import * as vscode from 'vscode';
-import {Extention, SelectFile, PathInfo} from './nekoaisle.lib/nekoaisle';
+import {Extension, SelectFile, PathInfo} from './nekoaisle.lib/nekoaisle';
 import OpenFile = require( './OpenFile' );
 import OpenRelated = require( './OpenRelated' );
 import OpenNew = require( './OpenNew' );
@@ -10,14 +10,9 @@ import OpenNew = require( './OpenNew' );
  * @param context 
  */
 export function activate(context: vscode.ExtensionContext) {
-	let openFile = new OpenFile();
-	openFile.registerCommand(context);
-
-	let openRelated = new OpenRelated();
-	openRelated.registerCommand(context);
-
-	let openNew = new OpenNew();
-	openNew.registerCommand(context);
+	let openFile = new OpenFile(context);
+	let openRelated = new OpenRelated(context);
+	let openNew = new OpenNew(context);
 }
 
 // this method is called when your extension is deactivated

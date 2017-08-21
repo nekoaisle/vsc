@@ -1,6 +1,6 @@
 {
-    "name": "markjump",
-    "displayName": "MarkJump",
+    "name": "mark-jump",
+    "displayName": "Mark Jump",
     "description": "Mark the cursor position and jump to the marked position.",
     "version": "0.0.1",
     "publisher": "nekoaisle",
@@ -23,7 +23,7 @@
             },
             {
                 "command": "markjump.jump",
-                "title": "Mark the cursor position"
+                "title": "Jump to mark position"
             },
             {
                 "command": "markjump.rejump",
