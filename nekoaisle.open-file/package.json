@@ -1,7 +1,7 @@
 {
     "name": "open-file",
     "displayName": "Open File",
-    "description": "新規・既存・関連ファイルを開く",
+    "description": "新規・既存・関連・一時ファイルを開く",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {
@@ -12,8 +12,9 @@
     ],
     "activationEvents": [
         "onCommand:nekoaisle.openFile",
+        "onCommand:nekoaisle.openRelated",
         "onCommand:nekoaisle.openNew",
-        "onCommand:nekoaisle.openRelated"
+        "onCommand:nekoaisle.openTemp"
     ],
     "main": "./out/src/extension",
     "contributes": {
@@ -26,6 +27,9 @@
         },{
             "command": "nekoaisle.openNew",
             "title": "Open new file"
+        },{
+            "command": "nekoaisle.openTemp",
+            "title": "Open temp file"
         }],
         "keybindings": [{
             "command": "nekoaisle.openFile",
@@ -36,6 +40,9 @@
         },{
             "command": "nekoaisle.openNew",
             "key": "escape n"
+        },{
+            "command": "nekoaisle.openTemp",
+            "key": "escape w"
         }]
     },
     "scripts": {

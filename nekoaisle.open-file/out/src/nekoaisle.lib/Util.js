@@ -7,6 +7,10 @@ const fs = require("fs");
 const path = require("path");
 var Util;
 (function (Util) {
+    function getExtensionPath(filename) {
+        return path.resolve(exports.extensionContext.extensionPath, filename);
+    }
+    Util.getExtensionPath = getExtensionPath;
     /**
      * メッセージを出力
      * @param str 出力するメッセージ
