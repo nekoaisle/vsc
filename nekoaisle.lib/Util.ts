@@ -7,6 +7,10 @@ import {Extension} from './Extension';
 
 
 export module Util {
+	export function getExtensionPath(filename: string) {
+		return path.resolve(exports.extensionContext.extensionPath, filename);
+	}
+
 	/**
 	 * メッセージを出力
 	 * @param str 出力するメッセージ

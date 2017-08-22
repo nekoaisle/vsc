@@ -116,8 +116,8 @@ class CpssWizard extends Extension {
 	};
 
 	protected defaultOptions: Options = {
-		wizard     : "~/Dropbox/documents/PHP/CpssWizardUTF8.php",
-		templateDir: "~/Dropbox/documents/hidemaru",
+		wizard     : "php/CpssWizardUTF8.php",			// 拡張機能の保存フォルダーは動的に取得
+		templateDir: "templates",						// 拡張機能の保存フォルダーは動的に取得
 		sqlDir     : '~/network/campt-kiya/Installer/CREATE_TABLE',
 		php        : '/usr/bin/php7.1',
 		outFile    : "php://stdout",
@@ -146,7 +146,10 @@ class CpssWizard extends Extension {
 	 * エントリー
 	 */
 	public entry() {
-		// 設定を取得
+		// オプションのデフォルト値で動的生成しなければならないものを設定
+		this.defaultOptions.wizard      = this.joinExtensionRoot(this.defaultOptions.wizard     );
+		this.defaultOptions.templateDir = this.joinExtensionRoot(this.defaultOptions.templateDir);
+
 		// 設定取得
 		let options: Options = new Options(this.config, this.defaultOptions);
 

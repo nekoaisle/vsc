@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 import {Util} from './Util';
 
 export interface ExtensionCallback {
@@ -21,7 +22,8 @@ export interface ExtensionOptions {
  */
 export class Extension {
     protected config: vscode.WorkspaceConfiguration;
-	
+	protected extensionRoot: string;
+
 	/**
 	 * 構築
 	 * @param name 拡張機能名
@@ -29,6 +31,9 @@ export class Extension {
 	 */
 	constructor(context: vscode.ExtensionContext, options: ExtensionOptions) {
 //		console.log(`${options.name} が起動しました。`);
+
+		// この拡張機能が格納されているディレクトリ名
+		this.extensionRoot = context.extensionPath;
 
 		// 設定の読み込み
 		if ( options.config ) {
@@ -71,5 +76,13 @@ export class Extension {
 			let disp = vscode.commands.registerCommand(cmd.command, cmd.callback );
 			context.subscriptions.push(disp);
 		}
+	}
+
+	/**
+	 * 拡張機能フォルダー内に格納されているファイル名をフルパスにする
+	 * @param filename ファイル名
+	 */
+	public joinExtensionRoot(filename: string): string {
+		return path.join(this.extensionRoot, filename);
 	}
 }

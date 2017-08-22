@@ -117,8 +117,8 @@ class CpssWizard extends nekoaisle_1.Extension {
             },
         };
         this.defaultOptions = {
-            wizard: "~/Dropbox/documents/PHP/CpssWizardUTF8.php",
-            templateDir: "~/Dropbox/documents/hidemaru",
+            wizard: "php/CpssWizardUTF8.php",
+            templateDir: "templates",
             sqlDir: '~/network/campt-kiya/Installer/CREATE_TABLE',
             php: '/usr/bin/php7.1',
             outFile: "php://stdout",
@@ -129,7 +129,9 @@ class CpssWizard extends nekoaisle_1.Extension {
      * エントリー
      */
     entry() {
-        // 設定を取得
+        // オプションのデフォルト値で動的生成しなければならないものを設定
+        this.defaultOptions.wizard = this.joinExtensionRoot(this.defaultOptions.wizard);
+        this.defaultOptions.templateDir = this.joinExtensionRoot(this.defaultOptions.templateDir);
         // 設定取得
         let options = new Options(this.config, this.defaultOptions);
         // 一覧からモードを選択
