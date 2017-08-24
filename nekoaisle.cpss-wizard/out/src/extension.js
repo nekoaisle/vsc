@@ -117,8 +117,8 @@ class CpssWizard extends nekoaisle_1.Extension {
             },
         };
         this.defaultOptions = {
-            wizard: "php/CpssWizardUTF8.php",
-            templateDir: "templates",
+            wizard: "",
+            templateDir: "",
             sqlDir: '~/network/campt-kiya/Installer/CREATE_TABLE',
             php: '/usr/bin/php7.1',
             outFile: "php://stdout",
@@ -130,8 +130,8 @@ class CpssWizard extends nekoaisle_1.Extension {
      */
     entry() {
         // オプションのデフォルト値で動的生成しなければならないものを設定
-        this.defaultOptions.wizard = this.joinExtensionRoot(this.defaultOptions.wizard);
-        this.defaultOptions.templateDir = this.joinExtensionRoot(this.defaultOptions.templateDir);
+        this.defaultOptions.wizard = this.joinExtensionRoot("php/CpssWizardUTF8.php");
+        this.defaultOptions.templateDir = this.joinExtensionRoot("templates");
         // 設定取得
         let options = new Options(this.config, this.defaultOptions);
         // 一覧からモードを選択
@@ -193,10 +193,6 @@ class CpssWizard extends nekoaisle_1.Extension {
         // 現在編集中のファイル名を解析
         let fileName = editor.document.fileName;
         let pinfo = path.parse(fileName);
-        // console.log( "dir  = " + pinfo.dir  );
-        // console.log( "base = " + pinfo.base );
-        // console.log( "name = " + pinfo.name );
-        // console.log( "ext  = " + pinfo.ext  );
         if (!pinfo.ext) {
             // 拡張子がない
             nekoaisle_1.Util.putMess("拡張子のないファイルには対応していません。");

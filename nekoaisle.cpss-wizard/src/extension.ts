@@ -116,8 +116,8 @@ class CpssWizard extends Extension {
 	};
 
 	protected defaultOptions: Options = {
-		wizard     : "php/CpssWizardUTF8.php",			// 拡張機能の保存フォルダーは動的に取得
-		templateDir: "templates",						// 拡張機能の保存フォルダーは動的に取得
+		wizard     : "",			// 拡張機能の保存フォルダーは動的に取得
+		templateDir: "",			// 拡張機能の保存フォルダーは動的に取得
 		sqlDir     : '~/network/campt-kiya/Installer/CREATE_TABLE',
 		php        : '/usr/bin/php7.1',
 		outFile    : "php://stdout",
@@ -147,8 +147,8 @@ class CpssWizard extends Extension {
 	 */
 	public entry() {
 		// オプションのデフォルト値で動的生成しなければならないものを設定
-		this.defaultOptions.wizard      = this.joinExtensionRoot(this.defaultOptions.wizard     );
-		this.defaultOptions.templateDir = this.joinExtensionRoot(this.defaultOptions.templateDir);
+		this.defaultOptions.wizard      = this.joinExtensionRoot("php/CpssWizardUTF8.php");
+		this.defaultOptions.templateDir = this.joinExtensionRoot("templates"             );
 
 		// 設定取得
 		let options: Options = new Options(this.config, this.defaultOptions);
@@ -219,10 +219,6 @@ class CpssWizard extends Extension {
 		// 現在編集中のファイル名を解析
 		let fileName = editor.document.fileName;
 		let pinfo = path.parse( fileName );
-		// console.log( "dir  = " + pinfo.dir  );
-		// console.log( "base = " + pinfo.base );
-		// console.log( "name = " + pinfo.name );
-		// console.log( "ext  = " + pinfo.ext  );
 		if ( !pinfo.ext ) {
 			// 拡張子がない
 			Util.putMess( "拡張子のないファイルには対応していません。" );

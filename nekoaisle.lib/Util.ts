@@ -16,7 +16,9 @@ export module Util {
 	 * @param str 出力するメッセージ
 	 */
 	export function putMess(str: string): string {
-		vscode.window.showInformationMessage(str);
+		for ( let s of str.split('\n') ) {
+			vscode.window.showInformationMessage(s);
+		}
 		return str;
 	}
 

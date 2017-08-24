@@ -56,11 +56,10 @@
 				"match": "^※.*$",
 				"comment": "Important matter"
 			}
-		]
-		},
+		]},
 		"strings": {
 			"name": "string.quoted.double.mem",
-			"begin": "\"",
+			"begin": "\"''''''''",
 			"end": "\"",
 			"patterns": [
 				{

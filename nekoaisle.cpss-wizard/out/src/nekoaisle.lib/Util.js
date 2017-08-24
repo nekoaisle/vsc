@@ -16,7 +16,9 @@ var Util;
      * @param str 出力するメッセージ
      */
     function putMess(str) {
-        vscode.window.showInformationMessage(str);
+        for (let s of str.split('\n')) {
+            vscode.window.showInformationMessage(s);
+        }
         return str;
     }
     Util.putMess = putMess;
@@ -68,6 +70,39 @@ var Util;
         }
     }
     Util.getCharType = getCharType;
+    /**
+     * HTMLエンコード
+     * @param s エンコードする文字列
+     * @return string エンコードした文字列
+     */
+    function encodeHtml(s) {
+        return s.replace(/[&'`"<>\s]/g, function (match) {
+            return {
+                '&': '&amp;',
+                "'": '&#x27;',
+                '`': '&#x60;',
+                '"': '&quot;',
+                '<': '&lt;',
+                '>': '&gt;',
+                ' ': '&nbsp;',
+                '\r\n': '<br />\r\n',
+                '\r': '<br />\r',
+                '\n': '<br />\n',
+            }[match];
+        });
+    }
+    Util.encodeHtml = encodeHtml;
+    function decodeHtml(s) {
+        return s.replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#039;/g, '\'')
+            .replace(/&#044;/g, ',')
+            .replace(/&amp;/g, '&')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/<br(\s*\/)?>(\r\n)?/g, '\r\n');
+    }
+    Util.decodeHtml = decodeHtml;
     /**
      * カーソル位置の単語の範囲を取得
      * @param editor 対象とするエディタ
