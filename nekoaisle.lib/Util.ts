@@ -45,7 +45,6 @@ export module Util {
 	 * @param c 調べる文字コード
 	 */
 	export function getCharType(c: number): number {
-		const re1 = /^[a-zA-z0-9_\$@]$/;
 		let s: string = String.fromCharCode(c);
 		if ( (c == 0x20) || (c==9) ) {
 			// 空白
@@ -53,7 +52,7 @@ export module Util {
 		} else if ( c < 0x20 ) {
 			// 制御文字
 			return 0;
-		} else if ( re1.test( s ) ) {
+		} else if ( /^[a-zA-Z0-9_\$@]$/.test( s ) ) {
 			// プログラムに使う文字
 			return 2;
 		} else if ( c < 0x100 ) {
