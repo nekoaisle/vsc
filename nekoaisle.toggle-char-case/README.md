@@ -1,65 +1,19 @@
 # togglecharcase README
 
-This is the README for your extension "togglecharcase". After writing up a brief description, we recommend including the following sections.
+* `toogleCharCase` カーソル位置の文字の大文字・小文字を変更
+* `toogleCharCase` カーソル位置の単語の大文字・小文字を変更
 
-## Features
+## 特徴
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+toggleCharCase は対象となる文字１文字ごとにケースを入れ替えます。  
 
-For example if there is an image subfolder under your extension project workspace:
+toggleWordCase は対象となる文字の先頭の文字の逆のケースをすべての文字に適用します。
 
-\!\[feature X\]\(images/feature-x.png\)
+上記どちらも範囲選択に対応します。
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## キーバインド
 
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on OSX or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on OSX or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (OSX) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+|コマンド|キーバインド|
+|------------------------|--------|
+|nekoaisle.toggleCharCase|ctrl + ]|
+|nekoaisle.toggleWordCase|ctrl + [|
