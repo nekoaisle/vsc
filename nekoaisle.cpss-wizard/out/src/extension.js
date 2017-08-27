@@ -79,35 +79,35 @@ class CpssWizard extends nekoaisle_1.Extension {
                 mode: 'standard',
                 name: 'template',
             },
-            '2 トランザクション基本クラス': {
+            '2 編集 基本クラス': {
                 mode: 'TransBase',
                 name: 'TransBase',
             },
-            '3 トランザクション初期化ページ': {
+            '3 編集 初期化ページ': {
                 mode: 'TransInit',
                 name: 'TransInit',
             },
-            '4 トランザクション編集ページ': {
+            '4 編集 編集ページ': {
                 mode: 'TransEdit',
                 name: 'TransEdit',
             },
-            '5 トランザクション確認ページ': {
+            '5 編集 確認ページ': {
                 mode: 'TransConfirm',
                 name: 'TransConfirm',
             },
-            '6 トランザクション完了ページ': {
+            '6 編集 完了ページ': {
                 mode: 'TransCompleted',
                 name: 'TransCompleted',
             },
-            '7 一覧基本クラス': {
+            '7 一覧 基本クラス': {
                 mode: 'ListBase',
                 name: 'ListBase',
             },
-            '8 一覧初期化ページ': {
+            '8 一覧 初期化ページ': {
                 mode: 'ListInit',
                 name: 'ListInit',
             },
-            '9 一覧ページ': {
+            '9 一覧 表示ページ': {
                 mode: 'ListList',
                 name: 'ListList',
             },

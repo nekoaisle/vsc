@@ -177,17 +177,37 @@ class InsertCode extends Extension {
             if ( str ) {
                 let pos = editor.selection.active;
                 switch ( cmd.position ) {
+                    // ファイルの先頭
+                    case 'top':
+                    case 'file-start':
+                    case 'file-top':
+                        pos = new vscode.Position(0, 0); 
+                        break;
+
+                    // ファイルの先頭
+                    case 'bottom':
+                    case 'file-end':
+                    case 'file-bottom':
+                        pos = new vscode.Position(0, 0); 
+                    break;
+
                     // 行頭
+                    case 'home':
+                    case 'line-start':
                     case 'line-top':
                         pos = new vscode.Position(pos.line, 0); 
                         break;
 
                     // 行末
+                    case 'end':
                     case 'line-end':
+                    case 'line-bottom':
                         pos = new vscode.Position(pos.line, editor.document.lineAt(pos.line).text.length);
                         break;
 
                     // 次の行
+                    case 'new':
+                    case 'line-new':
                     case 'new-line':
                         pos = new vscode.Position(pos.line+1, 0 );
                         break;
@@ -228,7 +248,7 @@ class InsertCode extends Extension {
             "now.min"   : now.min,
             "now.sec"   : now.sec,
             "selection" : Util.getSelectString(editor),
-            "clipboard" : '',   // クリップボードの内容の取得法が不明
+            "clipboard" : Util.execCmd('xclip -o -selection c'),
         };    
 
         for ( let s in rep ) {

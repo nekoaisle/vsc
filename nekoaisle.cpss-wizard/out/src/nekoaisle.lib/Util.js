@@ -46,7 +46,6 @@ var Util;
      * @param c 調べる文字コード
      */
     function getCharType(c) {
-        const re1 = /^[a-zA-z0-9_\$@]$/;
         let s = String.fromCharCode(c);
         if ((c == 0x20) || (c == 9)) {
             // 空白
@@ -56,7 +55,7 @@ var Util;
             // 制御文字
             return 0;
         }
-        else if (re1.test(s)) {
+        else if (/^[a-zA-Z0-9_\$@]$/.test(s)) {
             // プログラムに使う文字
             return 2;
         }

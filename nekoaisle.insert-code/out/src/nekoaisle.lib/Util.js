@@ -7,12 +7,18 @@ const fs = require("fs");
 const path = require("path");
 var Util;
 (function (Util) {
+    function getExtensionPath(filename) {
+        return path.resolve(exports.extensionContext.extensionPath, filename);
+    }
+    Util.getExtensionPath = getExtensionPath;
     /**
      * メッセージを出力
      * @param str 出力するメッセージ
      */
     function putMess(str) {
-        vscode.window.showInformationMessage(str);
+        for (let s of str.split('\n')) {
+            vscode.window.showInformationMessage(s);
+        }
         return str;
     }
     Util.putMess = putMess;
@@ -40,7 +46,6 @@ var Util;
      * @param c 調べる文字コード
      */
     function getCharType(c) {
-        const re1 = /^[a-zA-z0-9_\$@]$/;
         let s = String.fromCharCode(c);
         if ((c == 0x20) || (c == 9)) {
             // 空白
@@ -50,7 +55,7 @@ var Util;
             // 制御文字
             return 0;
         }
-        else if (re1.test(s)) {
+        else if (/^[a-zA-Z0-9_\$@]$/.test(s)) {
             // プログラムに使う文字
             return 2;
         }
@@ -64,6 +69,39 @@ var Util;
         }
     }
     Util.getCharType = getCharType;
+    /**
+     * HTMLエンコード
+     * @param s エンコードする文字列
+     * @return string エンコードした文字列
+     */
+    function encodeHtml(s) {
+        return s.replace(/[&'`"<>\s]/g, function (match) {
+            return {
+                '&': '&amp;',
+                "'": '&#x27;',
+                '`': '&#x60;',
+                '"': '&quot;',
+                '<': '&lt;',
+                '>': '&gt;',
+                ' ': '&nbsp;',
+                '\r\n': '<br />\r\n',
+                '\r': '<br />\r',
+                '\n': '<br />\n',
+            }[match];
+        });
+    }
+    Util.encodeHtml = encodeHtml;
+    function decodeHtml(s) {
+        return s.replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#039;/g, '\'')
+            .replace(/&#044;/g, ',')
+            .replace(/&amp;/g, '&')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/<br(\s*\/)?>(\r\n)?/g, '\r\n');
+    }
+    Util.decodeHtml = decodeHtml;
     /**
      * カーソル位置の単語の範囲を取得
      * @param editor 対象とするエディタ

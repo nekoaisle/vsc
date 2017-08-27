@@ -1,15 +1,20 @@
-## Features
+## 機能
 
 1. ファイル名を入力して新規ファイルを開く、ファイルが存在しないときには作成してから開く
 2. メニューからファイルを選択して開く
 3. 現在編集中のファイルと対になるファイルを開く、ファイルが存在しないときは作成してから開く
 4. 拡張子をメニューから選択して一時ファイルを開く、ファイルが存在しないときは作成してから開く
 
-## Extension Settings
+## 設定
 
 * `openTemp.dir`: 一時ファイルを格納するディレクトリ名
 * `openTemp.base`: 一時ファイルのベース名
 
-For example:
-	"openTemp.dir": "~/temp"
-	"openTemp.base": "temp"
+例: 
+{  
+	"openTemp.dir": "~/temp"  
+	"openTemp.base": "temp"  
+}
+
+## キーバインド
+escape o
