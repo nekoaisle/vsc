@@ -250,12 +250,27 @@ class InsertCode extends Extension {
             "selection" : Util.getSelectString(editor),
             "clipboard" : Util.execCmd('xclip -o -selection c'),
         };    
-
         for ( let s in rep ) {
             let re = new RegExp( `{{${s}}}`, "g" );
             tempText = tempText.replace( re, rep[s] );
         };
 
+        // 複数行ならばインデントをカーソル位置に合わせる
+        if ( tempText.indexOf("\n") >= 0 ) {
+            // カーソル位置を取得
+            let cur = editor.selection.active;
+            // カーソルの前を取得
+            let tab = editor.document.lineAt(cur.line).text.substr(0,cur.character);
+            // カーソルの前がホワとスペースのみならば
+            if ( /\s+/.test(tab) ) {
+                // 改行で分解
+                let rows = tempText.split("\n");
+                // 行を合成
+                tempText = rows.join(`\n${tab}`);
+            }
+        }
+
+        // 
         return tempText;
     }
 }
