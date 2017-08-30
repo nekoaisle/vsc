@@ -11,7 +11,9 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:nekoaisle.encode"
+        "onCommand:nekoaisle.encode",
+        "onCommand:nekoaisle.encloseInSingleQuotation",
+        "onCommand:nekoaisle.encloseInDoubleQuotation"
     ],
     "main": "./out/src/extension",
     "contributes": {
@@ -22,6 +24,12 @@
         "keybindings": [{
             "command": "nekoaisle.encode",
             "key": "escape e"
+        },{
+            "command": "nekoaisle.encloseInSingleQuotation",
+            "key": "ctrl+7"
+        },{
+            "command": "nekoaisle.encloseInDoubleQuotation",
+            "key": "ctrl+2"
         }]
     },
     "scripts": {

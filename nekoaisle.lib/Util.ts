@@ -101,9 +101,16 @@ export module Util {
 	 * カーソル位置の単語の範囲を取得
 	 * @param editor 対象とするエディタ
 	 */
-	export function getCursorWordRange(editor: vscode.TextEditor): vscode.Range {
-		// カーソル位置を取得
-		let pos = editor.selection.active;
+	export function getCursorWordRange(editor?: vscode.TextEditor, pos?: vscode.Position): vscode.Range {
+		if (!editor) {
+			// 省略されたら現在のエディタ
+			editor = vscode.window.activeTextEditor;
+		}
+
+		if (!pos) {
+			// 省略されたらカーソル位置を取得
+			pos = editor.selection.active;
+		}
 		// カーソル行を取得
 		let line = editor.document.lineAt(pos.line).text;
 
@@ -176,8 +183,8 @@ export module Util {
     }
 
 	/**
-	 * 指定した文字列が大文字化小文字か調べる
-	 * 文字列の先頭から順に調べ最初に変挺できたケースを返す
+	 * 指定した文字列が大文字か小文字か調べる
+	 * 文字列の先頭から順に調べ最初に判定できたケースを返す
 	 * @param str 調べる文字列
 	 * @return 'upper' | 'lower | ''
 	 */
@@ -208,8 +215,13 @@ export module Util {
 	 * 選択中の文字列を取得
 	 * @param editor 対象とするエディタ
 	 */
-	export function getSelectString(editor: vscode.TextEditor): string {
-        let range = editor.selection;
+	export function getSelectString(editor?: vscode.TextEditor): string {
+		if (!editor) {
+			// editor が省略されたので現在のエディタ
+			editor = vscode.window.activeTextEditor;
+		}
+
+		let range = editor.selection;
 		return editor.document.getText(range);
 	}
 
