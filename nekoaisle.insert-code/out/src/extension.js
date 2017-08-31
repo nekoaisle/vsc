@@ -143,15 +143,9 @@ class InsertCode extends nekoaisle_1.Extension {
                             str = pinfo.info.ext;
                             break;
                         // ベースクラス
-                        case '@class.base': {
-                            let name = pinfo.info.name;
-                            let c = name.substr(-1);
-                            if ((c >= '0') && (c <= '9')) {
-                                name = name.substr(0, name.length - 1);
-                            }
-                            str = nekoaisle_1.Util.toCamelCase(name) + 'Base';
+                        case '@class.base':
+                            str = this.getClass('base');
                             break;
-                        }
                     }
                     break;
                 }
@@ -272,26 +266,24 @@ class InsertCode extends nekoaisle_1.Extension {
             key = key.split('.')[0];
             let val;
             switch (key) {
-                case 'author': {
+                case 'author':
                     val = this.getConfig("author", "");
                     break;
-                }
-                case 'pinfo': {
+                case 'pinfo':
                     val = new nekoaisle_1.PathInfo(editor.document.fileName);
                     break;
-                }
-                case 'now': {
+                case 'now':
                     val = new nekoaisle_1.DateInfo();
                     break;
-                }
-                case 'selection': {
+                case 'selection':
                     val = nekoaisle_1.Util.getSelectString(editor);
                     break;
-                }
-                case 'clipboard': {
+                case 'clipboard':
                     val = nekoaisle_1.Util.execCmd('xclip -o -selection c');
                     break;
-                }
+                case 'class':
+                    val = { base: this.getClass('base') };
+                    break;
             }
             if (match[1]) {
                 // クオーツなし
@@ -357,6 +349,27 @@ class InsertCode extends nekoaisle_1.Extension {
             sorted[k] = target[k];
         }
         return sorted;
+    }
+    /**
+     * クラス情報を返す
+     * @param propaty サブキー
+     */
+    getClass(propaty) {
+        let ret;
+        switch (propaty) {
+            case 'base': {
+                let editor = vscode.window.activeTextEditor;
+                let pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
+                let name = pinfo.info.name;
+                let c = name.substr(-1);
+                if ((c >= '0') && (c <= '9')) {
+                    name = name.substr(0, name.length - 1);
+                }
+                ret = nekoaisle_1.Util.toCamelCase(name) + 'Base';
+                break;
+            }
+        }
+        return ret;
     }
 }
 //# sourceMappingURL=extension.js.map

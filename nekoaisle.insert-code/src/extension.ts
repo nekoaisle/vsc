@@ -146,15 +146,7 @@ class InsertCode extends Extension {
                         // 拡張子
                         case "@pinfo.ext":  str = pinfo.info.ext; break;
                         // ベースクラス
-                        case '@class.base': {
-                            let name = pinfo.info.name;
-                            let c = name.substr(-1);
-                            if ((c >= '0') && (c <= '9')) {
-                                name = name.substr(0, name.length-1);
-                            }
-                            str = Util.toCamelCase(name) + 'Base';
-                            break;
-                        }
+                        case '@class.base': str = this.getClass('base'); break;
                     }
                     break;
                 }
@@ -289,26 +281,12 @@ class InsertCode extends Extension {
             key = key.split('.')[0];
             let val;
             switch (key) {
-                case 'author': {
-                    val = this.getConfig("author", "");
-                    break;
-                }
-                case 'pinfo': {
-                    val = new PathInfo(editor.document.fileName);
-                    break;
-                }
-                case 'now': {
-                    val = new DateInfo();
-                    break;
-                }
-                case 'selection': {
-                    val = Util.getSelectString(editor);
-                    break;
-                }
-                case 'clipboard': {
-                    val = Util.execCmd('xclip -o -selection c');
-                    break;
-                }
+                case 'author':      val = this.getConfig("author", ""); break;
+                case 'pinfo':       val = new PathInfo(editor.document.fileName); break;
+                case 'now':         val = new DateInfo(); break;
+                case 'selection':   val = Util.getSelectString(editor); break;
+                case 'clipboard':   val = Util.execCmd('xclip -o -selection c'); break;
+                case 'class':       val = { base: this.getClass('base') }; break;
             }
 
             if (match[1]) {
@@ -381,5 +359,27 @@ class InsertCode extends Extension {
 
         return sorted;
     }
-        
+ 
+    /**
+     * クラス情報を返す
+     * @param propaty サブキー
+     */
+    protected getClass(propaty: string): string {
+        let ret: string;
+        switch (propaty) {
+            case 'base': {
+                let editor = vscode.window.activeTextEditor;
+                let pinfo = new PathInfo(editor.document.fileName);
+                let name = pinfo.info.name;
+                let c = name.substr(-1);
+                if ((c >= '0') && (c <= '9')) {
+                    name = name.substr(0, name.length-1);
+                }
+                ret = Util.toCamelCase(name) + 'Base';
+                break;
+            }
+        }
+
+        return ret;
+    }
 }
