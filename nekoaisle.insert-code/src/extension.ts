@@ -21,14 +21,6 @@ class ListItem {
     }
 };
 
-interface ReplaceKeywordsParam {
-    now: DateInfo,          // 実行されたときの日時情報
-    pinfo: PathInfo,        // ソースファイルのパス情報
-    author: string,         // 著者
-    selection: string,      // 選択範囲の文字列
-    clipboard: string,      // クリップボードの文字列
-};
-
 class InsertCode extends Extension {
     // 言語タイプごとの拡張子一覧
     //
@@ -59,10 +51,6 @@ class InsertCode extends Extension {
         'xml':              '.xml',
     };
 
-    protected mPinfo: PathInfo;
-    protected mNow: DateInfo;
-
-
     /**
 	 * 構築
 	 */
@@ -89,6 +77,7 @@ class InsertCode extends Extension {
         let editor = vscode.window.activeTextEditor;
 
         let pinfo = new PathInfo(editor.document.fileName);
+        let now = new DateInfo();
 
        // デフォルトのテンポラリディレクトリ名
         let tempDir = `${Util.getHomeDir()}/Dropbox/documents/vsc`;
@@ -145,34 +134,27 @@ class InsertCode extends Extension {
                 case '@': {
                     switch (cmd.filename) {
                         // 日付
-                        case "@now.ymd":
-                            str = `${this.mNow.year}-${this.mNow.month}-${this.mNow.date}`;
-                            break;
-                    
+                        case "@now.ymd":    str = `${now.year}-${now.month}-${now.date}`; break;
                         // フルパス名
-                        case "@pinfo.path":
-                            str = editor.document.fileName;
-                            break;
-    
+                        case "@pinfo.path": str = pinfo.path; break;
                         // ディレクトリ名
-                        case "@pinfo.dir":
-                            str = pinfo.info.dir;
-                            break;
-    
+                        case "@pinfo.dir":  str = pinfo.info.dir; break;
                         // ファイル名+拡張子
-                        case "@pinfo.base":
-                            str = pinfo.info.base;
-                            break;
-                    
+                        case "@pinfo.base": str = pinfo.info.base; break;
                         // ファイル名
-                        case "@pinfo.name":
-                            str = pinfo.info.name;
-                            break;
-                    
+                        case "@pinfo.name": str = pinfo.info.name; break;
                         // 拡張子
-                        case "@pinfo.ext":
-                            str = pinfo.info.ext;
+                        case "@pinfo.ext":  str = pinfo.info.ext; break;
+                        // ベースクラス
+                        case '@class.base': {
+                            let name = pinfo.info.name;
+                            let c = name.substr(-1);
+                            if ((c >= '0') && (c <= '9')) {
+                                name = name.substr(0, name.length-1);
+                            }
+                            str = Util.toCamelCase(name) + 'Base';
                             break;
+                        }
                     }
                     break;
                 }

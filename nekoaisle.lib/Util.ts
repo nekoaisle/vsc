@@ -162,6 +162,7 @@ export module Util {
 	/**
 	 * 指定文字の大文字・小文字を切り替える
 	 * @param c 対象となる文字
+	 * @param mode toggle=切り替え lower:小文字 upper:大文字
 	 * @return string 結果
 	 */
 	export function changeCharCase(c: string, mode?: string): string {
@@ -181,6 +182,21 @@ export module Util {
 		}
 		return c;
     }
+
+	/**
+	 * キャメルケースに変換
+	 * スネークケースは _ で分解しそれぞれの単語の先頭を大文字に変換して結合
+	 * それ以外は文字列の先頭文字を大文字それ以外を小文字にします
+	 * @param str 
+	 * @return キャメルケースに変換した文字列
+	 */
+	export function toCamelCase(str: string): string {
+		let ret = [];
+		for (let v of str.split('_')) {
+			ret.push(v.substr(0, 1).toUpperCase() + v.substr(1).toLowerCase());
+		}
+		return ret.join('');
+	}
 
 	/**
 	 * 指定した文字列が大文字か小文字か調べる

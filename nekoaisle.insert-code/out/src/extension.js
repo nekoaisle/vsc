@@ -17,7 +17,6 @@ class ListItem {
     }
 }
 ;
-;
 class InsertCode extends nekoaisle_1.Extension {
     /**
      * 構築
@@ -71,6 +70,7 @@ class InsertCode extends nekoaisle_1.Extension {
         // 実行されたときの TextEditor
         let editor = vscode.window.activeTextEditor;
         let pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
+        let now = new nekoaisle_1.DateInfo();
         // デフォルトのテンポラリディレクトリ名
         let tempDir = `${nekoaisle_1.Util.getHomeDir()}/Dropbox/documents/vsc`;
         // settings.json よりテンプレートディレクトリを取得
@@ -120,11 +120,11 @@ class InsertCode extends nekoaisle_1.Extension {
                     switch (cmd.filename) {
                         // 日付
                         case "@now.ymd":
-                            str = `${this.mNow.year}-${this.mNow.month}-${this.mNow.date}`;
+                            str = `${now.year}-${now.month}-${now.date}`;
                             break;
                         // フルパス名
                         case "@pinfo.path":
-                            str = editor.document.fileName;
+                            str = pinfo.path;
                             break;
                         // ディレクトリ名
                         case "@pinfo.dir":
@@ -142,6 +142,16 @@ class InsertCode extends nekoaisle_1.Extension {
                         case "@pinfo.ext":
                             str = pinfo.info.ext;
                             break;
+                        // ベースクラス
+                        case '@class.base': {
+                            let name = pinfo.info.name;
+                            let c = name.substr(-1);
+                            if ((c >= '0') && (c <= '9')) {
+                                name = name.substr(0, name.length - 1);
+                            }
+                            str = nekoaisle_1.Util.toCamelCase(name) + 'Base';
+                            break;
+                        }
                     }
                     break;
                 }
