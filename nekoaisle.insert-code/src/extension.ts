@@ -21,6 +21,14 @@ class ListItem {
     }
 };
 
+interface ReplaceKeywordsParam {
+    now: DateInfo,          // 実行されたときの日時情報
+    pinfo: PathInfo,        // ソースファイルのパス情報
+    author: string,         // 著者
+    selection: string,      // 選択範囲の文字列
+    clipboard: string,      // クリップボードの文字列
+};
+
 class InsertCode extends Extension {
     // 言語タイプごとの拡張子一覧
     //
@@ -51,6 +59,10 @@ class InsertCode extends Extension {
         'xml':              '.xml',
     };
 
+    protected mPinfo: PathInfo;
+    protected mNow: DateInfo;
+
+
     /**
 	 * 構築
 	 */
@@ -76,11 +88,7 @@ class InsertCode extends Extension {
         // 実行されたときの TextEditor
         let editor = vscode.window.activeTextEditor;
 
-        // 実行されたときの日時情報
-        let now = new DateInfo();
-
-        // settings.json より編集者名を取得
-        let author = this.getConfig("author", "");
+        let pinfo = new PathInfo(editor.document.fileName);
 
        // デフォルトのテンポラリディレクトリ名
         let tempDir = `${Util.getHomeDir()}/Dropbox/documents/vsc`;
@@ -91,8 +99,6 @@ class InsertCode extends Extension {
         // 先頭の ~ を置換
         tempDir = Util.normalizePath(tempDir);
 
-        // ファイル名情報
-        let pinfo  = new PathInfo(editor.document.fileName);
         let ext = pinfo.info.ext;
         if ( !ext ) {
             // 拡張子がないときはこのドキュメントの言語から拡張子を決める
@@ -134,43 +140,56 @@ class InsertCode extends Extension {
 
             // コマンドごとの処理
             let str = '';
-            switch ( cmd.filename ) {
-                // 日付
-                case "@now.ymd":
-                    str = `${now.year}-${now.month}-${now.date}`; 
+            switch (cmd.filename.substr(0, 1)) {
+                // 内部変数
+                case '@': {
+                    switch (cmd.filename) {
+                        // 日付
+                        case "@now.ymd":
+                            str = `${this.mNow.year}-${this.mNow.month}-${this.mNow.date}`;
+                            break;
+                    
+                        // フルパス名
+                        case "@pinfo.path":
+                            str = editor.document.fileName;
+                            break;
+    
+                        // ディレクトリ名
+                        case "@pinfo.dir":
+                            str = pinfo.info.dir;
+                            break;
+    
+                        // ファイル名+拡張子
+                        case "@pinfo.base":
+                            str = pinfo.info.base;
+                            break;
+                    
+                        // ファイル名
+                        case "@pinfo.name":
+                            str = pinfo.info.name;
+                            break;
+                    
+                        // 拡張子
+                        case "@pinfo.ext":
+                            str = pinfo.info.ext;
+                            break;
+                    }
                     break;
+                }
                 
-                // フルパス名
-                case "@pinfo.path":
-                    str = editor.document.fileName;
+                // インラインテンプレート
+                case '#': {
+                    str = this.fromTemplate(cmd.filename.substr(1), editor);
                     break;
-
-                // ディレクトリ名
-                case "@pinfo.dir":
-                    str = pinfo.info.dir;
-                    break;
-
-                // ファイル名+拡張子
-                case "@pinfo.base":
-                    str = pinfo.info.base;
-                    break;
-                
-                // ファイル名
-                case "@pinfo.name":
-                    str = pinfo.info.name;
-                    break;
-                
-                // 拡張子
-                case "@pinfo.ext":
-                    str = pinfo.info.ext;
-                    break;
+                }
                 
                 // コマンド以外ならテンプレート
-                default:
-                    // テンプレートのファイル名
-                    let fn = `${tempDir}/${cmd.filename}`;
-                    str = this.fromTemplate(editor, fn, author, pinfo, now);
+                default: {
+                    // テンプレートの読み込み
+                    let template = Util.loadFile(`${tempDir}/${cmd.filename}`);
+                    str = this.fromTemplate(template, editor);
                     break;
+                }
             }
 
             // 現在のカーソル位置に挿入
@@ -189,7 +208,7 @@ class InsertCode extends Extension {
                     case 'file-end':
                     case 'file-bottom':
                         pos = new vscode.Position(0, 0); 
-                    break;
+                        break;
 
                     // 行頭
                     case 'home':
@@ -205,11 +224,22 @@ class InsertCode extends Extension {
                         pos = new vscode.Position(pos.line, editor.document.lineAt(pos.line).text.length);
                         break;
 
+                    // 前の行
+                    case 'before':
+                        pos = new vscode.Position(pos.line, 0);
+                        if (str.substr(-1) != "\n") {
+                            str += "\n";
+                        }
+                        break;
+
                     // 次の行
                     case 'new':
                     case 'line-new':
                     case 'new-line':
-                        pos = new vscode.Position(pos.line+1, 0 );
+                        pos = new vscode.Position(pos.line + 1, 0);
+                        if (str.substr(-1) != "\n") {
+                            str += "\n";
+                        }
                         break;
                 }
 
@@ -224,39 +254,17 @@ class InsertCode extends Extension {
      * @param editor 
      * @param tempName 
      */
-    protected fromTemplate(editor: vscode.TextEditor, tempName: string, author: string, pinfo: PathInfo, now: DateInfo): string {
-        // テンプレートの読み込み
-        let tempText = Util.loadFile(tempName);
+    protected fromTemplate(template: string, editor: vscode.TextEditor): string {
+        // テンプレート中で使用されているキーワードを抽出
+        // 置換する値を準備する
+        // '' や "" で括られている場合はエスケープ処理もする
+        let params = this.makeParams(template, editor);
 
-        // 変換データを準備
-        // テンプレート中に ${} を書くバージョン
-        // このバージョンではエラーがあると一切変換されない…
-    //    return Function(`return \`${tempText}\``).toString();
-
-        // 置換情報を作成
-        let rep = {
-            "author"    : author,
-            "pinfo.path": pinfo.path,
-            "pinfo.dir" : pinfo.info.dir,
-            "pinfo.base": pinfo.info.base,
-            "pinfo.name": pinfo.info.name,
-            "pinfo.ext" : pinfo.info.ext,
-            "now.year"  : now.year,
-            "now.month" : now.month,
-            "now.date"  : now.date,
-            "now.hour"  : now.hour,
-            "now.min"   : now.min,
-            "now.sec"   : now.sec,
-            "selection" : Util.getSelectString(editor),
-            "clipboard" : Util.execCmd('xclip -o -selection c'),
-        };    
-        for ( let s in rep ) {
-            let re = new RegExp( `{{${s}}}`, "g" );
-            tempText = tempText.replace( re, rep[s] );
-        };
+        // 置換を実行
+        template = this.replaceKeywords(template, params);
 
         // 複数行ならばインデントをカーソル位置に合わせる
-        if ( tempText.indexOf("\n") >= 0 ) {
+        if ( template.indexOf("\n") >= 0 ) {
             // カーソル位置を取得
             let cur = editor.selection.active;
             // カーソルの前を取得
@@ -264,13 +272,132 @@ class InsertCode extends Extension {
             // カーソルの前がホワとスペースのみならば
             if ( /\s+/.test(tab) ) {
                 // 改行で分解
-                let rows = tempText.split("\n");
+                let rows = template.split("\n");
                 // 行を合成
-                tempText = rows.join(`\n${tab}`);
+                template = rows.join(`\n${tab}`);
             }
         }
 
         // 
-        return tempText;
+        return template;
     }
+
+    /**
+     * 置換用パラメータを作成
+     * @param template テンプレート
+     * @param editor 
+     */
+    protected makeParams(template: string, editor: vscode.TextEditor): object {
+        // テンプレート中で使用されているキーワードを抽出
+        // 置換する値を準備する
+        // '' や "" で括られている場合はエスケープ処理もする
+        let params = new Object();
+        let re = /({{(.*?)}})|('{{(.*?)}}')|("{{(.*?)}}")/g;
+        let match;
+        while ((match = re.exec(template)) !== null) {
+            // match には 2,4,6のいずれかにキーワードが入っている
+            let key;
+            for (let i = 2; i < match.length; i += 2) {
+                if (match[i]) {
+                    key = match[i];
+                    break;
+                }
+            }
+            // . で分解して最初の単語を取得
+            key = key.split('.')[0];
+            let val;
+            switch (key) {
+                case 'author': {
+                    val = this.getConfig("author", "");
+                    break;
+                }
+                case 'pinfo': {
+                    val = new PathInfo(editor.document.fileName);
+                    break;
+                }
+                case 'now': {
+                    val = new DateInfo();
+                    break;
+                }
+                case 'selection': {
+                    val = Util.getSelectString(editor);
+                    break;
+                }
+                case 'clipboard': {
+                    val = Util.execCmd('xclip -o -selection c');
+                    break;
+                }
+            }
+
+            if (match[1]) {
+                // クオーツなし
+                key = match[1];
+            } else if (match[3]) {
+                // シングルクオーツ付き
+                val = val.replace(/\\/g, "\\\\");
+                val = val.replace(/'/g, "\\'");
+                val = `'${val}'`;
+                key = match[3];
+            } else if (match[5]) {
+                // ダブルクオーツ付き
+                val = val.replace(/\\/g, "\\\\");
+                val = val.replace(/"/g, '\\"');
+                val = `"${val}"`;
+                key = match[5];
+            }
+
+            // 
+            params[key] = val;
+        }
+
+        // ※ '' や "" で括られているキーと括られていないキーの同時使用備え
+        // キーの長い順に並べ替え
+        params = this.sortKeyLength(params);
+
+        //
+        return params;
+    }
+
+    /**
+     * 要素名で検索して値で置換
+     * @param str 対象文字列
+     * @param params 検索値
+     * @param prefix 検索文字列のプレフィックス
+     * @return 置換完了後の文字列
+     */
+    protected replaceKeywords(str: string, params: object, prefix?: string): string {
+        for (let k in params) {
+            let search = (prefix) ? `${prefix}.${k}` : k;
+            if (typeof params[k] == 'object' ) {
+                str = this.replaceKeywords(str, params[k], search);
+            } else {
+                let re = new RegExp( search, "g" );
+                str = str.replace( re, params[k] );
+            }
+        }
+        return str;
+    }
+
+    // キーの長い順に並べ替え
+    protected sortKeyLength(target: object): object {
+        // キーの抽出
+        let keys = [];
+        for (let k in target) {
+            keys.push(k);
+        }
+
+        // キーの長さでソート
+        keys.sort((a: any, b: any): number => {
+            return b.length - a.length;
+        });
+
+        // 長い順に並べ替えたオブジェクトを再作成
+        let sorted = new Object();
+        for (let k of keys) {
+            sorted[k] = target[k];
+        }
+
+        return sorted;
+    }
+        
 }

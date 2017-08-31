@@ -106,9 +106,15 @@ var Util;
      * カーソル位置の単語の範囲を取得
      * @param editor 対象とするエディタ
      */
-    function getCursorWordRange(editor) {
-        // カーソル位置を取得
-        let pos = editor.selection.active;
+    function getCursorWordRange(editor, pos) {
+        if (!editor) {
+            // 省略されたら現在のエディタ
+            editor = vscode.window.activeTextEditor;
+        }
+        if (!pos) {
+            // 省略されたらカーソル位置を取得
+            pos = editor.selection.active;
+        }
         // カーソル行を取得
         let line = editor.document.lineAt(pos.line).text;
         let s = pos.character;
@@ -179,8 +185,8 @@ var Util;
     }
     Util.changeCharCase = changeCharCase;
     /**
-     * 指定した文字列が大文字化小文字か調べる
-     * 文字列の先頭から順に調べ最初に変挺できたケースを返す
+     * 指定した文字列が大文字か小文字か調べる
+     * 文字列の先頭から順に調べ最初に判定できたケースを返す
      * @param str 調べる文字列
      * @return 'upper' | 'lower | ''
      */
@@ -214,6 +220,10 @@ var Util;
      * @param editor 対象とするエディタ
      */
     function getSelectString(editor) {
+        if (!editor) {
+            // editor が省略されたので現在のエディタ
+            editor = vscode.window.activeTextEditor;
+        }
         let range = editor.selection;
         return editor.document.getText(range);
     }

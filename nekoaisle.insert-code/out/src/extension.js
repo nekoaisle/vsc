@@ -17,6 +17,7 @@ class ListItem {
     }
 }
 ;
+;
 class InsertCode extends nekoaisle_1.Extension {
     /**
      * 構築
@@ -69,18 +70,13 @@ class InsertCode extends nekoaisle_1.Extension {
     entry() {
         // 実行されたときの TextEditor
         let editor = vscode.window.activeTextEditor;
-        // 実行されたときの日時情報
-        let now = new nekoaisle_1.DateInfo();
-        // settings.json より編集者名を取得
-        let author = this.getConfig("author", "");
+        let pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
         // デフォルトのテンポラリディレクトリ名
         let tempDir = `${nekoaisle_1.Util.getHomeDir()}/Dropbox/documents/vsc`;
         // settings.json よりテンプレートディレクトリを取得
         tempDir = this.getConfig("tempDir", tempDir);
         // 先頭の ~ を置換
         tempDir = nekoaisle_1.Util.normalizePath(tempDir);
-        // ファイル名情報
-        let pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
         let ext = pinfo.info.ext;
         if (!ext) {
             // 拡張子がないときはこのドキュメントの言語から拡張子を決める
@@ -118,37 +114,49 @@ class InsertCode extends nekoaisle_1.Extension {
             let cmd = dic[sel];
             // コマンドごとの処理
             let str = '';
-            switch (cmd.filename) {
-                // 日付
-                case "@now.ymd":
-                    str = `${now.year}-${now.month}-${now.date}`;
+            switch (cmd.filename.substr(0, 1)) {
+                // 内部変数
+                case '@': {
+                    switch (cmd.filename) {
+                        // 日付
+                        case "@now.ymd":
+                            str = `${this.mNow.year}-${this.mNow.month}-${this.mNow.date}`;
+                            break;
+                        // フルパス名
+                        case "@pinfo.path":
+                            str = editor.document.fileName;
+                            break;
+                        // ディレクトリ名
+                        case "@pinfo.dir":
+                            str = pinfo.info.dir;
+                            break;
+                        // ファイル名+拡張子
+                        case "@pinfo.base":
+                            str = pinfo.info.base;
+                            break;
+                        // ファイル名
+                        case "@pinfo.name":
+                            str = pinfo.info.name;
+                            break;
+                        // 拡張子
+                        case "@pinfo.ext":
+                            str = pinfo.info.ext;
+                            break;
+                    }
                     break;
-                // フルパス名
-                case "@pinfo.path":
-                    str = editor.document.fileName;
+                }
+                // インラインテンプレート
+                case '#': {
+                    str = this.fromTemplate(cmd.filename.substr(1), editor);
                     break;
-                // ディレクトリ名
-                case "@pinfo.dir":
-                    str = pinfo.info.dir;
-                    break;
-                // ファイル名+拡張子
-                case "@pinfo.base":
-                    str = pinfo.info.base;
-                    break;
-                // ファイル名
-                case "@pinfo.name":
-                    str = pinfo.info.name;
-                    break;
-                // 拡張子
-                case "@pinfo.ext":
-                    str = pinfo.info.ext;
-                    break;
+                }
                 // コマンド以外ならテンプレート
-                default:
-                    // テンプレートのファイル名
-                    let fn = `${tempDir}/${cmd.filename}`;
-                    str = this.fromTemplate(editor, fn, author, pinfo, now);
+                default: {
+                    // テンプレートの読み込み
+                    let template = nekoaisle_1.Util.loadFile(`${tempDir}/${cmd.filename}`);
+                    str = this.fromTemplate(template, editor);
                     break;
+                }
             }
             // 現在のカーソル位置に挿入
             if (str) {
@@ -178,11 +186,21 @@ class InsertCode extends nekoaisle_1.Extension {
                     case 'line-bottom':
                         pos = new vscode.Position(pos.line, editor.document.lineAt(pos.line).text.length);
                         break;
+                    // 前の行
+                    case 'before':
+                        pos = new vscode.Position(pos.line, 0);
+                        if (str.substr(-1) != "\n") {
+                            str += "\n";
+                        }
+                        break;
                     // 次の行
                     case 'new':
                     case 'line-new':
                     case 'new-line':
                         pos = new vscode.Position(pos.line + 1, 0);
+                        if (str.substr(-1) != "\n") {
+                            str += "\n";
+                        }
                         break;
                 }
                 // console.log(`insert\n${str}`);
@@ -195,37 +213,15 @@ class InsertCode extends nekoaisle_1.Extension {
      * @param editor
      * @param tempName
      */
-    fromTemplate(editor, tempName, author, pinfo, now) {
-        // テンプレートの読み込み
-        let tempText = nekoaisle_1.Util.loadFile(tempName);
-        // 変換データを準備
-        // テンプレート中に ${} を書くバージョン
-        // このバージョンではエラーがあると一切変換されない…
-        //    return Function(`return \`${tempText}\``).toString();
-        // 置換情報を作成
-        let rep = {
-            "author": author,
-            "pinfo.path": pinfo.path,
-            "pinfo.dir": pinfo.info.dir,
-            "pinfo.base": pinfo.info.base,
-            "pinfo.name": pinfo.info.name,
-            "pinfo.ext": pinfo.info.ext,
-            "now.year": now.year,
-            "now.month": now.month,
-            "now.date": now.date,
-            "now.hour": now.hour,
-            "now.min": now.min,
-            "now.sec": now.sec,
-            "selection": nekoaisle_1.Util.getSelectString(editor),
-            "clipboard": nekoaisle_1.Util.execCmd('xclip -o -selection c'),
-        };
-        for (let s in rep) {
-            let re = new RegExp(`{{${s}}}`, "g");
-            tempText = tempText.replace(re, rep[s]);
-        }
-        ;
+    fromTemplate(template, editor) {
+        // テンプレート中で使用されているキーワードを抽出
+        // 置換する値を準備する
+        // '' や "" で括られている場合はエスケープ処理もする
+        let params = this.makeParams(template, editor);
+        // 置換を実行
+        template = this.replaceKeywords(template, params);
         // 複数行ならばインデントをカーソル位置に合わせる
-        if (tempText.indexOf("\n") >= 0) {
+        if (template.indexOf("\n") >= 0) {
             // カーソル位置を取得
             let cur = editor.selection.active;
             // カーソルの前を取得
@@ -233,13 +229,124 @@ class InsertCode extends nekoaisle_1.Extension {
             // カーソルの前がホワとスペースのみならば
             if (/\s+/.test(tab)) {
                 // 改行で分解
-                let rows = tempText.split("\n");
+                let rows = template.split("\n");
                 // 行を合成
-                tempText = rows.join(`\n${tab}`);
+                template = rows.join(`\n${tab}`);
             }
         }
         // 
-        return tempText;
+        return template;
+    }
+    /**
+     * 置換用パラメータを作成
+     * @param template テンプレート
+     * @param editor
+     */
+    makeParams(template, editor) {
+        // テンプレート中で使用されているキーワードを抽出
+        // 置換する値を準備する
+        // '' や "" で括られている場合はエスケープ処理もする
+        let params = new Object();
+        let re = /({{(.*?)}})|('{{(.*?)}}')|("{{(.*?)}}")/g;
+        let match;
+        while ((match = re.exec(template)) !== null) {
+            // match には 2,4,6のいずれかにキーワードが入っている
+            let key;
+            for (let i = 2; i < match.length; i += 2) {
+                if (match[i]) {
+                    key = match[i];
+                    break;
+                }
+            }
+            // . で分解して最初の単語を取得
+            key = key.split('.')[0];
+            let val;
+            switch (key) {
+                case 'author': {
+                    val = this.getConfig("author", "");
+                    break;
+                }
+                case 'pinfo': {
+                    val = new nekoaisle_1.PathInfo(editor.document.fileName);
+                    break;
+                }
+                case 'now': {
+                    val = new nekoaisle_1.DateInfo();
+                    break;
+                }
+                case 'selection': {
+                    val = nekoaisle_1.Util.getSelectString(editor);
+                    break;
+                }
+                case 'clipboard': {
+                    val = nekoaisle_1.Util.execCmd('xclip -o -selection c');
+                    break;
+                }
+            }
+            if (match[1]) {
+                // クオーツなし
+                key = match[1];
+            }
+            else if (match[3]) {
+                // シングルクオーツ付き
+                val = val.replace(/\\/g, "\\\\");
+                val = val.replace(/'/g, "\\'");
+                val = `'${val}'`;
+                key = match[3];
+            }
+            else if (match[5]) {
+                // ダブルクオーツ付き
+                val = val.replace(/\\/g, "\\\\");
+                val = val.replace(/"/g, '\\"');
+                val = `"${val}"`;
+                key = match[5];
+            }
+            // 
+            params[key] = val;
+        }
+        // ※ '' や "" で括られているキーと括られていないキーの同時使用備え
+        // キーの長い順に並べ替え
+        params = this.sortKeyLength(params);
+        //
+        return params;
+    }
+    /**
+     * 要素名で検索して値で置換
+     * @param str 対象文字列
+     * @param params 検索値
+     * @param prefix 検索文字列のプレフィックス
+     * @return 置換完了後の文字列
+     */
+    replaceKeywords(str, params, prefix) {
+        for (let k in params) {
+            let search = (prefix) ? `${prefix}.${k}` : k;
+            if (typeof params[k] == 'object') {
+                str = this.replaceKeywords(str, params[k], search);
+            }
+            else {
+                let re = new RegExp(search, "g");
+                str = str.replace(re, params[k]);
+            }
+        }
+        return str;
+    }
+    // キーの長い順に並べ替え
+    sortKeyLength(target) {
+        // キーの抽出
+        let keys = [];
+        for (let k in target) {
+            keys.push(k);
+        }
+        // キーの長さでソート
+        keys.sort((a, b) => {
+            return b.length - a.length;
+        });
+        // 長い順に並べ替えたオブジェクトを再作成
+        let sorted = new Object();
+        for (let k of keys) {
+            sorted[k] = target[k];
+        }
+        return sorted;
     }
 }
 //# sourceMappingURL=extension.js.map
