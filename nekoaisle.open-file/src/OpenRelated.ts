@@ -114,20 +114,34 @@ class OpenRelated extends Extension {
 		return 
 	}
 
+	/**
+	 * HTML の処理
+	 * @param pinfo 
+	 */
 	protected html(pinfo: PathInfo) {
 		let fn: string;
 
-		// 親ディレクトリの .php
-		fn = pinfo.getFileName('.php', '..');
+		// 同一ディレクトリの .phtml
+		fn = pinfo.getFileName('.php');
 		if ( Util.openFile(fn) ) {
 			return 
 		}
 
-		// 同一ディレクトリの .phtml
-		fn = pinfo.getFileName('.phtml');
-		if ( Util.openFile(fn) ) {
-			return 
+		// 自身のディレクトリが pc または sp ならば
+		let dir = pinfo.info.dir.split('/');
+		switch (dir[dir.length - 1]) {
+			case 'pc':
+			case 'sp': {
+				// 親ディレクトリの .php
+				fn = pinfo.getFileName('.php', '..');
+				if ( Util.openFile(fn, true) ) {
+					return 
+				}
+			}
 		}
+
+		return 
+
 	}
 
 }

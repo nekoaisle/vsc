@@ -98,18 +98,30 @@ class OpenRelated extends nekoaisle_1.Extension {
         nekoaisle_1.Util.openFile(phtml, true);
         return;
     }
+    /**
+     * HTML の処理
+     * @param pinfo
+     */
     html(pinfo) {
         let fn;
-        // 親ディレクトリの .php
-        fn = pinfo.getFileName('.php', '..');
-        if (nekoaisle_1.Util.openFile(fn)) {
-            return;
-        }
         // 同一ディレクトリの .phtml
-        fn = pinfo.getFileName('.phtml');
+        fn = pinfo.getFileName('.php');
         if (nekoaisle_1.Util.openFile(fn)) {
             return;
         }
+        // 自身のディレクトリが pc または sp ならば
+        let dir = pinfo.info.dir.split('/');
+        switch (dir[dir.length - 1]) {
+            case 'pc':
+            case 'sp': {
+                // 親ディレクトリの .php
+                fn = pinfo.getFileName('.php', '..');
+                if (nekoaisle_1.Util.openFile(fn, true)) {
+                    return;
+                }
+            }
+        }
+        return;
     }
 }
 module.exports = OpenRelated;
