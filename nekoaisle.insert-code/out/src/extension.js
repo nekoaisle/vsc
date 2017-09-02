@@ -119,8 +119,32 @@ class InsertCode extends nekoaisle_1.Extension {
                 case '@': {
                     switch (cmd.filename) {
                         // 日付
+                        case "@now.year":
+                            str = now.year;
+                            break;
+                        case "@now.month":
+                            str = now.month;
+                            break;
+                        case "@now.date":
+                            str = now.date;
+                            break;
+                        case "@now.hour":
+                            str = now.hour;
+                            break;
+                        case "@now.min":
+                            str = now.min;
+                            break;
+                        case "@now.sec":
+                            str = now.sec;
+                            break;
                         case "@now.ymd":
-                            str = `${now.year}-${now.month}-${now.date}`;
+                            str = now.ymd;
+                            break;
+                        case "@nowhis.":
+                            str = now.his;
+                            break;
+                        case "@now.ymdhis":
+                            str = now.ymdhis;
                             break;
                         // フルパス名
                         case "@pinfo.path":
@@ -145,6 +169,10 @@ class InsertCode extends nekoaisle_1.Extension {
                         // ベースクラス
                         case '@class.base':
                             str = this.getClass('base');
+                            break;
+                        // クラス
+                        case '@class.cpp':
+                            str = this.getClass('cpp');
                             break;
                     }
                     break;
@@ -247,6 +275,9 @@ class InsertCode extends nekoaisle_1.Extension {
      * @param editor
      */
     makeParams(template, editor) {
+        // キャッシュ
+        let pinfo;
+        let now;
         // テンプレート中で使用されているキーワードを抽出
         // 置換する値を準備する
         // '' や "" で括られている場合はエスケープ処理もする
@@ -263,17 +294,11 @@ class InsertCode extends nekoaisle_1.Extension {
                 }
             }
             // . で分解して最初の単語を取得
-            key = key.split('.')[0];
+            let keys = key.split('.');
             let val;
-            switch (key) {
+            switch (keys[0]) {
                 case 'author':
                     val = this.getConfig("author", "");
-                    break;
-                case 'pinfo':
-                    val = new nekoaisle_1.PathInfo(editor.document.fileName);
-                    break;
-                case 'now':
-                    val = new nekoaisle_1.DateInfo();
                     break;
                 case 'selection':
                     val = nekoaisle_1.Util.getSelectString(editor);
@@ -282,8 +307,22 @@ class InsertCode extends nekoaisle_1.Extension {
                     val = nekoaisle_1.Util.execCmd('xclip -o -selection c');
                     break;
                 case 'class':
-                    val = { base: this.getClass('base') };
+                    val = this.getClass(keys[1]);
                     break;
+                case 'pinfo': {
+                    if (!pinfo) {
+                        pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
+                    }
+                    val = pinfo[keys[1]];
+                    break;
+                }
+                case 'now': {
+                    if (!now) {
+                        now = new nekoaisle_1.DateInfo();
+                    }
+                    val = now[keys[1]];
+                    break;
+                }
             }
             if (match[1]) {
                 // クオーツなし
@@ -357,15 +396,28 @@ class InsertCode extends nekoaisle_1.Extension {
     getClass(propaty) {
         let ret;
         switch (propaty) {
+            // CPSS トランザクション用ベースクラス
             case 'base': {
                 let editor = vscode.window.activeTextEditor;
                 let pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
                 let name = pinfo.info.name;
-                let c = name.substr(-1);
-                if ((c >= '0') && (c <= '9')) {
+                // 名前の末尾が数字ならば除去
+                for (;;) {
+                    let c = name.substr(-1);
+                    if ((c < '0') && (c > '9')) {
+                        break;
+                    }
                     name = name.substr(0, name.length - 1);
                 }
+                ;
                 ret = nekoaisle_1.Util.toCamelCase(name) + 'Base';
+                break;
+            }
+            // C++ クラス名
+            case 'cpp': {
+                let editor = vscode.window.activeTextEditor;
+                let pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
+                ret = pinfo.info.name;
                 break;
             }
         }

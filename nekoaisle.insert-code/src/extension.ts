@@ -134,7 +134,15 @@ class InsertCode extends Extension {
                 case '@': {
                     switch (cmd.filename) {
                         // 日付
-                        case "@now.ymd":    str = `${now.year}-${now.month}-${now.date}`; break;
+                        case "@now.year":   str = now.year; break;
+                        case "@now.month":  str = now.month; break;
+                        case "@now.date":   str = now.date; break;
+                        case "@now.hour":   str = now.hour; break;
+                        case "@now.min":    str = now.min; break;
+                        case "@now.sec":    str = now.sec; break;
+                        case "@now.ymd":    str = now.ymd; break;
+                        case "@nowhis.":    str = now.his; break;
+                        case "@now.ymdhis": str = now.ymdhis; break;
                         // フルパス名
                         case "@pinfo.path": str = pinfo.path; break;
                         // ディレクトリ名
@@ -147,6 +155,8 @@ class InsertCode extends Extension {
                         case "@pinfo.ext":  str = pinfo.info.ext; break;
                         // ベースクラス
                         case '@class.base': str = this.getClass('base'); break;
+                        // クラス
+                        case '@class.cpp': str = this.getClass('cpp'); break;
                     }
                     break;
                 }
@@ -262,6 +272,10 @@ class InsertCode extends Extension {
      * @param editor 
      */
     protected makeParams(template: string, editor: vscode.TextEditor): object {
+        // キャッシュ
+        let pinfo: PathInfo;
+        let now: DateInfo;
+
         // テンプレート中で使用されているキーワードを抽出
         // 置換する値を準備する
         // '' や "" で括られている場合はエスケープ処理もする
@@ -278,15 +292,28 @@ class InsertCode extends Extension {
                 }
             }
             // . で分解して最初の単語を取得
-            key = key.split('.')[0];
+            let keys: string[] = key.split('.');
             let val;
-            switch (key) {
+            switch (keys[0]) {
                 case 'author':      val = this.getConfig("author", ""); break;
-                case 'pinfo':       val = new PathInfo(editor.document.fileName); break;
-                case 'now':         val = new DateInfo(); break;
                 case 'selection':   val = Util.getSelectString(editor); break;
                 case 'clipboard':   val = Util.execCmd('xclip -o -selection c'); break;
-                case 'class':       val = { base: this.getClass('base') }; break;
+                case 'class':       val = this.getClass(keys[1]); break;
+
+                case 'pinfo': {
+                    if (!pinfo) {
+                        pinfo = new PathInfo(editor.document.fileName);
+                    }
+                    val = pinfo[keys[1]];
+                    break;
+                }
+                case 'now': {
+                    if (!now) {
+                        now = new DateInfo();
+                    }
+                    val = now[keys[1]];
+                    break;
+                }
             }
 
             if (match[1]) {
@@ -367,15 +394,27 @@ class InsertCode extends Extension {
     protected getClass(propaty: string): string {
         let ret: string;
         switch (propaty) {
+            // CPSS トランザクション用ベースクラス
             case 'base': {
                 let editor = vscode.window.activeTextEditor;
                 let pinfo = new PathInfo(editor.document.fileName);
                 let name = pinfo.info.name;
-                let c = name.substr(-1);
-                if ((c >= '0') && (c <= '9')) {
-                    name = name.substr(0, name.length-1);
-                }
+                // 名前の末尾が数字ならば除去
+                for (;;) {
+                    let c = name.substr(-1);
+                    if ((c < '0') && (c > '9')) {
+                        break;
+                    }
+                    name = name.substr(0, name.length - 1);
+                };
                 ret = Util.toCamelCase(name) + 'Base';
+                break;
+            }
+            // C++ クラス名
+            case 'cpp': {
+                let editor = vscode.window.activeTextEditor;
+                let pinfo = new PathInfo(editor.document.fileName);
+                ret = pinfo.info.name;
                 break;
             }
         }
