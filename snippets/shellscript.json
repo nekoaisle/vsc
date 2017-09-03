@@ -1,0 +1,54 @@
+{
+	"Header": {
+		"prefix": "#!",
+		"body": [
+			"#!/bin/bash",
+			"# $1",
+			"# Copyrights 2017 Creansmaerd.Co.,Ltd."
+		],
+		"description": "ヘッダーを挿入する"
+	},
+	"if": {
+		"prefix": "if",
+		"body": [
+			"if [ ${1:条件} ];then",
+			"\t",
+			"elif [ ${2:条件} ]; then",
+			"\t",
+			"else",
+			"\t",
+			"fi"
+		],
+		"description": "if 文"
+	},
+	"case": {
+		"prefix": "case",
+		"body": [
+			"case ${1:変数} in",
+			"\t)",
+			"\t\t;;",
+			"\t*)",
+			"\t\t;;",
+			"esac"
+		],
+		"description": "case 文"
+	},
+	"while": {
+		"prefix": "while",
+		"body": [
+			"while [ 条件 ]; do",
+			"\t",
+			"done"
+		],
+		"description": "while 文"
+	},
+	"for": {
+		"prefix": "for",
+		"body": [
+			"for ${1:変数} in ${2:引数}; do",
+			"\t",
+			"done"
+		],
+		"description": "for 文"
+	}
+}
