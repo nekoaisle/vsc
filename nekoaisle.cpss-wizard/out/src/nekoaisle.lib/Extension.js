@@ -32,7 +32,11 @@ class Extension {
      * @return string 設定
      */
     getConfig(key, def) {
-        return this.config.get(key, def);
+        let ret = this.config.get(key, def);
+        if (ret) {
+            return ret;
+        }
+        return def;
     }
     /**
      * コマンドを登録
