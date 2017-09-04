@@ -12,14 +12,20 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 }
 
-class ListItem {
-    public filename: string;    // ファイル名またはコマンド名
-    public position: string;    // 挿入位置
-    constructor(filename: string, position: string) {
-        this.filename = filename;
-        this.position = position;
-    }
-};
+interface ListItem {
+    label: string,          // メニューラベル
+    detail?: string,        // 詳細
+    description?: string,   // 説明
+    filename?: string,      // ファイル名
+    command?: string,       // コマンド指定
+    inline?: string,        // インラインテンプレート
+    position?: string,      // 挿入位置
+}
+
+interface GetInsertPosResult {
+    pos: vscode.Position,
+    str: string,
+}
 
 class InsertCode extends Extension {
     // 言語タイプごとの拡張子一覧
@@ -51,6 +57,8 @@ class InsertCode extends Extension {
         'xml':              '.xml',
     };
 
+    protected mNow: DateInfo;
+    
     /**
 	 * 構築
 	 */
@@ -77,161 +85,223 @@ class InsertCode extends Extension {
         let editor = vscode.window.activeTextEditor;
 
         let pinfo = new PathInfo(editor.document.fileName);
-        let now = new DateInfo();
 
-       // デフォルトのテンポラリディレクトリ名
-        // let tempDir = `${Util.getHomeDir()}/Dropbox/documents/vsc`;
-        let tempDir = this.joinExtensionRoot("templates");
-        
-        // settings.json よりテンプレートディレクトリを取得
-        tempDir = this.getConfig("tempDir", tempDir);
+        // テンプレートディレクトリ名を取得
+        let tempDir = this.getTemplatesDir();
 
-        // 先頭の ~ を置換
-        tempDir = Util.normalizePath(tempDir);
-
-        let ext = pinfo.info.ext;
-        if ( !ext ) {
-            // 拡張子がないときはこのドキュメントの言語から拡張子を決める
-            let lang = editor.document.languageId;
-            ext = this.langs[lang];
-            console.log(`languageId = "${lang}", file.ext = "${ext}"`);
-        }
+        // 現在編集中のファイルの拡張子を取得
+        // ※新規作成の場合ファイル名が [Untitled-1] などになり拡張子がないので
+        let ext = this.getCurrentExt(pinfo.info.ext);
         // 先頭の . を除去
         ext = ext.substr(1);
 
         // この拡張子のメニューを読み込む
-        let menuTSV = Util.loadFile(`${tempDir}/list-${pinfo.info.ext.substr(1)}.tsv`);
-//        console.log(menuTSV);
-        let rows = menuTSV.split("\n");
-//        console.log(rows);
+        let menuJson: string = Util.loadFile(`${tempDir}/list-${pinfo.info.ext.substr(1)}.json`);
+        let menuItems: ListItem = JSON.parse(menuJson);
 
-        // TSV ファイルを分解して QuickPickOptions 用のメニューと
-        // メニューアイテムに対応するコマンド辞書を作成
-        let menu: string[] = [];    // QuickPickOptions 用のメニュー
-        let dic: ListItem[] = [];              // メニューアイテムに対応するコマンド辞書
-        for ( let row of rows ) {
-            let cols = row.split("\t");
-//            console.log(cols);
-            menu.push( cols[0] );
-            dic[cols[0]] = new ListItem(cols[1], cols[2]);
+        // QuickPickOptions 用のメニューを作成
+        let menu: vscode.QuickPickItem[] = [];
+        for ( let key in menuItems ) {
+            let item: ListItem = menuItems[key];
+            menu.push({
+                label: (item.label) ? item.label : key,
+                detail: (item.detail) ? item.detail : '',
+                description: (item.description) ? item.description : ''
+            });
         }
-//        console.log(menu);
 
         // メニュー選択
         let options: vscode.QuickPickOptions = {
             placeHolder: '選択してください。'
         };
-        vscode.window.showQuickPick( menu, options ).then((sel: string) => {
-            console.log(`command = "${sel}"`);
+        vscode.window.showQuickPick( menu, options ).then((sel: vscode.QuickPickItem) => {
+            console.log(`command = "${sel.label}"`);
             if ( !sel ) {
                 return;
             }
-            let cmd: ListItem = dic[sel];
+            let item: ListItem;
+            for (let key in menuItems) {
+                let i = menuItems[key];
+                if (i.label == sel.label) {
+                    item = i;
+                }
+            }
 
-            // コマンドごとの処理
+            // 挿入する文字列格納用変数
             let str = '';
-            switch (cmd.filename.substr(0, 1)) {
-                // 内部変数
-                case '@': {
-                    switch (cmd.filename) {
-                        // 日付
-                        case "@now.year":   str = now.year; break;
-                        case "@now.month":  str = now.month; break;
-                        case "@now.date":   str = now.date; break;
-                        case "@now.hour":   str = now.hour; break;
-                        case "@now.min":    str = now.min; break;
-                        case "@now.sec":    str = now.sec; break;
-                        case "@now.ymd":    str = now.ymd; break;
-                        case "@nowhis.":    str = now.his; break;
-                        case "@now.ymdhis": str = now.ymdhis; break;
-                        // フルパス名
-                        case "@pinfo.path": str = pinfo.path; break;
-                        // ディレクトリ名
-                        case "@pinfo.dir":  str = pinfo.info.dir; break;
-                        // ファイル名+拡張子
-                        case "@pinfo.base": str = pinfo.info.base; break;
-                        // ファイル名
-                        case "@pinfo.name": str = pinfo.info.name; break;
-                        // 拡張子
-                        case "@pinfo.ext":  str = pinfo.info.ext; break;
-                        // ベースクラス
-                        case '@class.base': str = this.getClass('base'); break;
-                        // クラス
-                        case '@class.cpp': str = this.getClass('cpp'); break;
-                    }
-                    break;
-                }
-                
+            
+            // タイプ別処理
+            if (item.filename) {
+                // テンプレートファイル名指定
+                str = this.doFile(`${tempDir}/${item.filename}`, editor);
+            } else if (item.inline) {
                 // インラインテンプレート
-                case '#': {
-                    str = this.fromTemplate(cmd.filename.substr(1), editor);
-                    break;
-                }
-                
-                // コマンド以外ならテンプレート
-                default: {
-                    // テンプレートの読み込み
-                    let template = Util.loadFile(`${tempDir}/${cmd.filename}`);
-                    str = this.fromTemplate(template, editor);
-                    break;
-                }
+                str = this.doInline(item.inline, editor);
+            } else if (item.command) {
+                // コマンド
+                str = this.doCommand(item.command, editor);
             }
 
-            // 現在のカーソル位置に挿入
-            if ( str ) {
-                let pos = editor.selection.active;
-                switch ( cmd.position ) {
-                    // ファイルの先頭
-                    case 'top':
-                    case 'file-start':
-                    case 'file-top':
-                        pos = new vscode.Position(0, 0); 
-                        break;
-
-                    // ファイルの先頭
-                    case 'bottom':
-                    case 'file-end':
-                    case 'file-bottom':
-                        pos = new vscode.Position(0, 0); 
-                        break;
-
-                    // 行頭
-                    case 'home':
-                    case 'line-start':
-                    case 'line-top':
-                        pos = new vscode.Position(pos.line, 0); 
-                        break;
-
-                    // 行末
-                    case 'end':
-                    case 'line-end':
-                    case 'line-bottom':
-                        pos = new vscode.Position(pos.line, editor.document.lineAt(pos.line).text.length);
-                        break;
-
-                    // 前の行
-                    case 'before':
-                        pos = new vscode.Position(pos.line, 0);
-                        if (str.substr(-1) != "\n") {
-                            str += "\n";
-                        }
-                        break;
-
-                    // 次の行
-                    case 'new':
-                    case 'line-new':
-                    case 'new-line':
-                        pos = new vscode.Position(pos.line + 1, 0);
-                        if (str.substr(-1) != "\n") {
-                            str += "\n";
-                        }
-                        break;
-                }
-
-                // console.log(`insert\n${str}`);
-                editor.edit(edit => edit.insert(pos, str));
+            // 挿入位置を決める
+            if (!str) {
+                return;
             }
+
+            let res: GetInsertPosResult = this.getInsertPos(item.position, str, editor);
+
+            // console.log(`insert\n${str}`);
+            editor.edit(edit => edit.insert(res.pos, res.str));
         });
+    }
+
+    /**
+     * コマンド実行
+     * @param command コマンド文字列
+     * @return 挿入する文字列
+     */
+    protected doCommand(command: string, editor: vscode.TextEditor): string {
+        // 戻り値
+        let ret = '';
+
+        let cmds = command.split('.');
+
+        switch (cmds[0]) {
+            // 日付
+            case 'now': {
+                let now = new DateInfo();
+                switch (cmds[1]) {
+                    case "year":   ret = now.year; break;
+                    case "month":  ret = now.month; break;
+                    case "date":   ret = now.date; break;
+                    case "hour":   ret = now.hour; break;
+                    case "min":    ret = now.min; break;
+                    case "sec":    ret = now.sec; break;
+                    case "ymdhis": ret = now.ymdhis; break;
+                    case "ymd":    ret = now.ymd; break;
+                    case "his":    ret = now.his; break;
+                }
+                break;
+            }
+            // パス
+            case 'pinfo': {
+                let pinfo = new PathInfo(editor.document.fileName);
+                switch (cmds[1]) {
+                    // フルパス名
+                    case "path": ret = pinfo.path;
+                    // ディレクトリ名
+                    case "dir":  ret = pinfo.info.dir; break;
+                    // ファイル名+拡張子
+                    case "base": ret = pinfo.info.base; break;
+                    // ファイル名
+                    case "name": ret = pinfo.info.name; break;
+                    // 拡張子
+                    case "ext":  ret = pinfo.info.ext; break;
+                }
+                break;
+            }
+
+            // クラス
+            case 'class': {
+                switch (cmds[1]) {
+                    // CPSS トランザクションベースクラス
+                    case 'base': ret = this.getClass('base'); break;
+                    // C++クラス名
+                    case 'cpp':  ret = this.getClass('cpp'); break;
+                }
+                break;
+            }
+        }
+    
+        //
+        return ret;
+    }
+
+    /**
+     * ファイルテンプレート処理
+     * @param filename テンプレートファイル名
+     * @param editor 編集するエディター
+     */
+    protected doFile(filename: string, editor: vscode.TextEditor): string {
+        let template = Util.loadFile(filename);
+        return this.fromTemplate(template, editor);
+    }
+
+    /**
+     * インラインテンプレート処理
+     * @param inline テンプレート文字列
+     * @param editor 編集するエディター
+     */
+    protected doInline(inline: string, editor: vscode.TextEditor): string {
+        return this.fromTemplate(inline, editor);
+    }
+
+    /**
+     * 挿入位置を取得
+     * @param position 
+     * @param str 
+     * @param editor 
+     */
+    protected getInsertPos(position: string, str: string, editor: vscode.TextEditor): GetInsertPosResult {
+        let pos: vscode.Position = editor.selection.active;
+        switch ( position ) {
+            // ファイルの先頭
+            case 'top':
+            case 'file-start':
+            case 'file-top': {
+                pos = new vscode.Position(0, 0);
+                break;
+            }
+
+            // ファイルの先頭
+            case 'bottom':
+            case 'file-end':
+            case 'file-bottom': {
+                pos = new vscode.Position(0, 0);
+                break;
+            }
+
+            // 行頭
+            case 'home':
+            case 'line-start':
+            case 'line-top': {
+                pos = new vscode.Position(pos.line, 0);
+                break;
+            }
+
+            // 行末
+            case 'end':
+            case 'line-end':
+            case 'line-bottom': {
+                pos = new vscode.Position(pos.line, editor.document.lineAt(pos.line).text.length);
+                break;
+            }
+
+            // 前の行
+            case 'before': {
+                pos = new vscode.Position(pos.line, 0);
+                if (str.substr(-1) != "\n") {
+                    str += "\n";
+                }
+                break;
+            }
+
+            // 次の行
+            case 'new':
+            case 'line-new':
+            case 'new-line': {
+                pos = new vscode.Position(pos.line + 1, 0);
+                if (str.substr(-1) != "\n") {
+                    str += "\n";
+                }
+                break;
+            }
+        }
+
+        // 
+        return {
+            pos: pos,
+            str: str,
+        }
     }
 
     /**
@@ -422,4 +492,51 @@ class InsertCode extends Extension {
 
         return ret;
     }
+
+    /**
+     * テンプレート格納ディレクトリ名を取得
+     * @return テンプレート格納ディレクトリ名
+     */
+    protected getTemplatesDir(): string {
+        // デフォルトのテンポラリディレクトリ名
+        let tempDir = this.joinExtensionRoot("templates");
+        
+        // settings.json よりテンプレートディレクトリを取得
+        tempDir = this.getConfig("tempDir", tempDir);
+
+        // 先頭の ~ を置換
+        tempDir = Util.normalizePath(tempDir);
+
+        //
+        return tempDir;
+    }
+
+    /**
+     * 現在編集中のファイルの拡張子を取得
+     * @param ext すでに拡張子を取得済みなら指定する
+     * @return 拡張子
+     */
+    protected getCurrentExt(ext?: string): string {
+        if (typeof ext == undefined) {
+            // 拡張子が省略されたので現在のファイル名から取得
+            let pinfo = new PathInfo(vscode.window.activeTextEditor.document.fileName);
+            let now = new DateInfo();
+    
+            // テンプレートディレクトリ名を取得
+            let tempDir = this.getTemplatesDir();
+            
+            let ext = pinfo.info.ext;
+        }
+
+        if (!ext) {
+            // 拡張子がないときはこのドキュメントの言語から拡張子を決める
+            let lang = vscode.window.activeTextEditor.document.languageId;
+            ext = this.langs[lang];
+            console.log(`languageId = "${lang}", file.ext = "${ext}"`);
+        }
+    
+        return ext;
+    }
+
+
 }

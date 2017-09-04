@@ -1,0 +1,58 @@
+{
+	"fileheader": {
+		"label": "1: ファイルヘッダー",
+		"filename": "fileheader.php"
+	},
+	"method": {
+		"label": "2: メソッド",
+		"filename": "method.php"
+	},
+	"var": {
+		"label": "3: メンバー変数",
+		"filename": "var.php"
+	},
+	"constructor": {
+		"label": "4: constructor",
+		"filename": "constructor.php"
+	},
+	"destractor": {
+		"label": "5: destractor",
+		"filename": "destractor.php"
+	},
+	"onEvent": {
+		"label": "6: イベントハンドラ",
+		"filename": "onEvent.php"
+	},
+	"onAjax": {
+		"label": "7: onAjax",
+		"filename": "onAjax.php"
+	},
+	"function": {
+		"label": "8: function",
+		"filename": "function.php"
+	},
+	"aryGetFormCommandMap": {
+		"label": "9: aryGetFormCommandMap",
+		"filename": "aryGetFormCommandMap.php"
+	},
+	"now.ymd": {
+		"label": "Y: 今日",
+		"command": "now.ymd"
+	},
+	"pinfo.path": {
+		"label": "P: フルパス名",
+		"command": "pinfo.path"
+	},
+	"pinfo.base": {
+		"label": "F: ファイル名+拡張子",
+		"command": "pinfo.base"
+	},
+	"EchoDebug": {
+		"label": "E: EchoDebug(選択範囲)",
+		"inline": "#EchoDebug( '{{clipboard}}', {{clipboard}} );\tbefore"
+	},
+	"class.base": {
+		"label": "B: ベースクラス名",
+		"command": "class.base"
+	}
+}
