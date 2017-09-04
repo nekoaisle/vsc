@@ -1,0 +1,1 @@
+{"version":3,"file":"quick_pick.js","sourceRoot":"","sources":["../../templates/quick_pick.ts"],"names":[],"mappings":"AAAA,UAAU;AACV,IAAI,IAAc,CAAC;AACnB,IAAI,IAAI,GAAG;IACV,MAAM,EAAE,EAAE;IACV,WAAW,EAAE,EAAE;CACf,CAAC;AACF,MAAM,CAAC,MAAM,CAAC,aAAa,CAAC,IAAI,EAAE,IAAI,CAAC;KACtC,IAAI,CAAC,CAAC,GAAW;AAClB,CAAC,CAAC,CAAC"}

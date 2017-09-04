@@ -1,0 +1,15 @@
+1: ファイルヘッダー	fileheader.sh
+2: 関数	function.sh
+3: if	if.sh
+4: case	case.sh
+5: while	while.sh
+6: for	for.sh
+7: yellow	yellow.sh
+8: error_mess	error_mess.sh
+9: getopt	getopt.sh
+Y: 今日	@now.ymd
+P: フルパス名	@pinfo.path
+D: ディレクトリ名	@pinfo.dir
+F: ファイル名+拡張子	@pinfo.base
+N: ファイル名	@pinfo.name
+E: 拡張子	@pinfo.ext

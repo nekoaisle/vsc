@@ -72,7 +72,8 @@ class InsertCode extends nekoaisle_1.Extension {
         let pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
         let now = new nekoaisle_1.DateInfo();
         // デフォルトのテンポラリディレクトリ名
-        let tempDir = `${nekoaisle_1.Util.getHomeDir()}/Dropbox/documents/vsc`;
+        // let tempDir = `${Util.getHomeDir()}/Dropbox/documents/vsc`;
+        let tempDir = this.joinExtensionRoot("templates");
         // settings.json よりテンプレートディレクトリを取得
         tempDir = this.getConfig("tempDir", tempDir);
         // 先頭の ~ を置換

@@ -80,8 +80,9 @@ class InsertCode extends Extension {
         let now = new DateInfo();
 
        // デフォルトのテンポラリディレクトリ名
-        let tempDir = `${Util.getHomeDir()}/Dropbox/documents/vsc`;
-
+        // let tempDir = `${Util.getHomeDir()}/Dropbox/documents/vsc`;
+        let tempDir = this.joinExtensionRoot("templates");
+        
         // settings.json よりテンプレートディレクトリを取得
         tempDir = this.getConfig("tempDir", tempDir);
 

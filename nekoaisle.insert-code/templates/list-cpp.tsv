@@ -1,0 +1,8 @@
+1: ファイルヘッダー	fileheader.cpp
+2: メソッド	method.cpp
+3: constructor	constructor.cpp
+4: destractor	destractor.cpp
+Y: 今日	@now.ymd
+P: フルパス名	@pinfo.path
+F: ファイル名+拡張子	@pinfo.base
+B: ベースクラス名	@class.base

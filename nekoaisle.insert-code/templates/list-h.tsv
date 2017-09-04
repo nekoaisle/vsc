@@ -1,0 +1,10 @@
+1: ファイルヘッダー	fileheader.h
+2: メソッド	method.h
+4: コンストラクタ	constructor.h
+5: デストラクタ	destractor.h
+Y: 今日	@now.ymd
+P: フルパス名	@pinfo.path
+D: ディレクトリ名	@pinfo.dir
+F: ファイル名+拡張子	@pinfo.base
+N: ファイル名	@pinfo.name
+E: 拡張子	@pinfo.ext

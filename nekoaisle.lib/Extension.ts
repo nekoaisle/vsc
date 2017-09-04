@@ -53,7 +53,11 @@ export class Extension {
 	 * @return string 設定
 	 */
 	public getConfig(key: string, def: string): string {
-		return this.config.get(key, def);
+		let ret = this.config.get(key, def);
+		if (ret) {
+			return ret;
+		}
+		return def;
 	}
 
 	/**

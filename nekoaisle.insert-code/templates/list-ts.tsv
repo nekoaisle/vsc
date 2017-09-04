@@ -1,0 +1,8 @@
+1: ファイルヘッダー	fileheader.ts_
+2: コンストラクター	constructor.ts_
+Y: 今日	@now.ymd
+P: フルパス名	@pinfo.path
+D: ディレクトリ名	@pinfo.dir
+F: ファイル名+拡張子	@pinfo.base
+N: ファイル名	@pinfo.name
+E: 拡張子	@pinfo.ext

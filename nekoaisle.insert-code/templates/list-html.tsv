@@ -1,0 +1,10 @@
+1: ファイルヘッダー	fileheader.html
+2: style タグ	style.html
+3: script タグ	script.html
+4: ソースコード用スタイル	code.html
+Y: 今日	@now.ymd
+P: フルパス名	@pinfo.path
+D: ディレクトリ名	@pinfo.dir
+F: ファイル名+拡張子	@pinfo.base
+N: ファイル名	@pinfo.name
+E: 拡張子	@pinfo.ext
