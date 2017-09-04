@@ -80,9 +80,9 @@
 		"body": [
 			"/**",
 			" * ${1:タイトル}",
-			" * @var ${1:型}",
+			" * @var ${2:型}",
 			" */",
-			"public $${2:変数名} = '';",
+			"public $${3:変数名} = '';",
 			""
 		],
 		"description": "プロパティ"
@@ -208,5 +208,19 @@
 			"</style>"
 		],
 		"description": "style タグ"
+	},
+	"SUCCEEDED": {
+		"prefix": "SUCCEEDED",
+		"body": [
+			"SUCCEEDED"
+		],
+		"description": "SUCCEEDED"
+	},
+	"FAILED": {
+		"prefix": "FAILED",
+		"body": [
+			"FAILED"
+		],
+		"description": "FAILED"
 	}
 }
