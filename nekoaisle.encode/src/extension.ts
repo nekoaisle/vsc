@@ -235,39 +235,48 @@ class MyExtention extends Extension {
 	 * @param start 開始文字
 	 * @param end 終了文字
 	 */
-	protected enclose(start: string, end: string) {
+	protected encloseAll(start: string, end: string) {
 		// カーソル位置の単語の範囲を取得
 		let editor = vscode.window.activeTextEditor;
 		let sels = editor.selections;
 		let newSels: vscode.Selection[];
 		for (let key in sels) {
-			let sel = sels[key];
-			let range: vscode.Range;
-			if (sel.start.isEqual(sel.end)) {
-				// 範囲選択されていないのでカーソル位置の単語の範囲を取得
-				range = Util.getCursorWordRange(editor, sel.active);
-			} else {
-				// 範囲選択されているのでその範囲を対象とする
-				range = new vscode.Range(sel.start, sel.end);
-			}
-	
-			let word = editor.document.getText(range);
-	
-			// １文字ずつ前後に広げる
-			let outRange = new vscode.Range(range.start.translate(0, -1), range.end.translate(0, 1));
-			let outWord = editor.document.getText(outRange);
-			
-			if ((outWord.substr(0, 1) == start) && (outWord.substr(-1, 1) == end)) {
-				// すでに括られているの外す
-				editor.edit(edit => edit.replace(outRange, word));
-				newSels.push(new vscode.Selection(outRange.start, outRange.end));
-			} else {
-				// 括られていないので括る
-				editor.edit(edit => edit.replace(range, `${start}${word}${end}`));
-				newSels.push(new vscode.Selection(range.start, range.end));
-			}
+			let sels = this.enclose(start, end);
+			newSels.push(sels);
 		}
 		editor.selections = newSels;
 	}
 
+	protected enclose(start: string, end: string): vscode.Selection {
+		// カーソル位置の単語の範囲を取得
+		let editor = vscode.window.activeTextEditor;
+		let sel = editor.selection;
+		let range: vscode.Range;
+		let newSel: vscode.Selection;
+		if (sel.start.isEqual(sel.end)) {
+			// 範囲選択されていないのでカーソル位置の単語の範囲を取得
+			range = Util.getCursorWordRange(editor, sel.active);
+		} else {
+			// 範囲選択されているのでその範囲を対象とする
+			range = new vscode.Range(sel.start, sel.end);
+		}
+
+		let word = editor.document.getText(range);
+
+		// １文字ずつ前後に広げる
+		let outRange = new vscode.Range(range.start.translate(0, -1), range.end.translate(0, 1));
+		let outWord = editor.document.getText(outRange);
+		
+		if ((outWord.substr(0, 1) == start) && (outWord.substr(-1, 1) == end)) {
+			// すでに括られているの外す
+			editor.edit(edit => edit.replace(outRange, word));
+			newSel = new vscode.Selection(outRange.start, outRange.end);
+		} else {
+			// 括られていないので括る
+			editor.edit(edit => edit.replace(range, `${start}${word}${end}`));
+			newSel = new vscode.Selection(range.start, range.end);
+		}
+
+		return newSel;
+	}
 }

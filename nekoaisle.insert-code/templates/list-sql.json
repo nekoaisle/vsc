@@ -1,8 +1,27 @@
-1: ファイルヘッダー	fileheader.sql
-2: alter table	alter-table.sql
-Y: 今日	@now.ymd
-P: フルパス名	@pinfo.path
-D: ディレクトリ名	@pinfo.dir
-F: ファイル名+拡張子	@pinfo.base
-N: ファイル名	@pinfo.name
-E: 拡張子	@pinfo.ext
+{
+	"fileheader": {
+		"label": "1: ファイルヘッダー",
+		"filename": "fileheader.sql"
+	},
+	"alter table": {
+		"label": "2: alter table",
+		"inline": "alter table {{class.sql}} add {{clipboard}} after ",
+		"description": "SQL文をクリップボードに入れてから実行してください。"
+	},
+	"now.ymd": {
+		"label": "Y: 今日",
+		"command": "now.ymd"
+	},
+	"pinfo.path": {
+		"label": "P: フルパス名",
+		"command": "pinfo.path"
+	},
+	"pinfo.base": {
+		"label": "F: ファイル名+拡張子",
+		"command": "pinfo.base"
+	},
+	"pinfo.name": {
+		"label": "N: ファイル名",
+		"command": "pinfo.name"
+	}
+}

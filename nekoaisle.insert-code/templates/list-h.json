@@ -1,10 +1,42 @@
-1: ファイルヘッダー	fileheader.h
-2: メソッド	method.h
-4: コンストラクタ	constructor.h
-5: デストラクタ	destractor.h
-Y: 今日	@now.ymd
-P: フルパス名	@pinfo.path
-D: ディレクトリ名	@pinfo.dir
-F: ファイル名+拡張子	@pinfo.base
-N: ファイル名	@pinfo.name
-E: 拡張子	@pinfo.ext
+{
+	"fileheader": {
+		"label": "1: ファイルヘッダー",
+		"filename":	"fileheader.h"
+	},
+	"method": {
+		"label": "2: メソッド",
+		"filename":	"method.h"
+	},
+	"constructor": {
+		"label": "4: コンストラクタ",
+		"filename":	"constructor.h"
+	},
+	"destractor": {
+		"label": "5: デストラクタ",
+		"filename":	"destractor.h"
+	},
+	"now.ymd": {
+		"label": "Y: 今日",
+		"command": "now.ymd"
+	},
+	"pinfo.path": {
+		"label": "P: フルパス名",
+		"command": "pinfo.path"
+	},
+	"pinfo.dir": {
+		"label": "D: ディレクトリ名",
+		"command": "pinfo.dir"
+	},
+	"pinfo.base": {
+		"label": "F: ファイル名+拡張子",
+		"command": "pinfo.base"
+	},
+	"pinfo.name": {
+		"label": "N: ファイル名",
+		"command": "pinfo.name"
+	},
+	"pinfo.ext": {
+		"label": "E: 拡張子",
+		"command": "pinfo.ext"
+	}
+}

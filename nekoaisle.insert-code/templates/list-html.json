@@ -1,10 +1,42 @@
-1: ファイルヘッダー	fileheader.html
-2: style タグ	style.html
-3: script タグ	script.html
-4: ソースコード用スタイル	code.html
-Y: 今日	@now.ymd
-P: フルパス名	@pinfo.path
-D: ディレクトリ名	@pinfo.dir
-F: ファイル名+拡張子	@pinfo.base
-N: ファイル名	@pinfo.name
-E: 拡張子	@pinfo.ext
+{
+	"fileheader": {
+		"label": "1: ファイルヘッダー",
+		"filename": "fileheader.html"
+	},
+	"style": {
+		"label": "2: style タグ",
+		"filename": "style.html"
+	},
+	"script": {
+		"label": "3: script タグ",
+		"filename": "script.html"
+	},
+	"code": {
+		"label": "4: ソースコード用スタイル",
+		"filename": "code.html"
+	},
+	"now.ymd": {
+		"label": "Y: 今日",
+		"command": "now.ymd"
+	},
+	"pinfo.path": {
+		"label": "P: フルパス名",
+		"command": "pinfo.path"
+	},
+	"pinfo.dir": {
+		"label": "D: ディレクトリ名",
+		"command": "pinfo.dir"
+	},
+	"pinfo.base": {
+		"label": "F: ファイル名+拡張子",
+		"command": "pinfo.base"
+	},
+	"pinfo.name": {
+		"label": "N: ファイル名",
+		"command": "pinfo.name"
+	},
+	"pinfo.ext": {
+		"label": "E: 拡張子",
+		"command": "pinfo.ext"
+	}
+}

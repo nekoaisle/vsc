@@ -1,8 +1,38 @@
-1: ファイルヘッダー	fileheader.cpp
-2: メソッド	method.cpp
-3: constructor	constructor.cpp
-4: destractor	destractor.cpp
-Y: 今日	@now.ymd
-P: フルパス名	@pinfo.path
-F: ファイル名+拡張子	@pinfo.base
-B: ベースクラス名	@class.base
+{
+	"fileheader": {
+		"label": "1: ファイルヘッダー",
+		"filename": "fileheader.cpp"
+	},
+	"method": {
+		"label": "2: メソッド",
+		"filename": "method.cpp"
+	},
+	"constructor": {
+		"label": "3: constructor",
+		"filename": "constructor.cpp"
+	},
+	"destractor": {
+		"label": "4: destractor",
+		"filename": "destractor.cpp"
+	},
+	"now.ymd": {
+		"label": "Y: 今日",
+		"command": "now.ymd"
+	},
+	"pinfo.path": {
+		"label": "P: フルパス名",
+		"command": "pinfo.path"
+	},
+	"pinfo.dir": {
+		"label": "D: ディレクトリ名",
+		"command": "pinfo.dir"
+	},
+	"pinfo.base": {
+		"label": "F: ファイル名+拡張子",
+		"command": "pinfo.base"
+	},
+	"class.base": {
+		"label": "B: ベースクラス名",
+		"command": "class.base"
+	}
+}

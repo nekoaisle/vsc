@@ -222,5 +222,14 @@
 			"FAILED"
 		],
 		"description": "FAILED"
+	},,
+	"require_once( DOCUMENT_ROOT": {
+		"prefix": "require_once( DOCUMENT_ROOT",
+		"body": [
+			"require_once( DOCUMENT_ROOT . '/.php' );"
+		],
+		"description": ""
 	}
+
+
 }

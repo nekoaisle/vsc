@@ -463,12 +463,13 @@ class InsertCode extends Extension {
      * @param propaty サブキー
      */
     protected getClass(propaty: string): string {
-        let ret: string;
+        let editor = vscode.window.activeTextEditor;
+        let pinfo = new PathInfo(editor.document.fileName);
+
+        let ret: string = '';
         switch (propaty) {
             // CPSS トランザクション用ベースクラス
             case 'base': {
-                let editor = vscode.window.activeTextEditor;
-                let pinfo = new PathInfo(editor.document.fileName);
                 let name = pinfo.info.name;
                 // 名前の末尾が数字ならば除去
                 for (;;) {
@@ -483,11 +484,28 @@ class InsertCode extends Extension {
             }
             // C++ クラス名
             case 'cpp': {
-                let editor = vscode.window.activeTextEditor;
-                let pinfo = new PathInfo(editor.document.fileName);
                 ret = pinfo.info.name;
                 break;
             }
+            // SQL テーブル名
+            case 'sql': {
+                let editor = vscode.window.activeTextEditor;
+                let doc = editor.document;
+                for (let l = 0; l < doc.lineCount; ++l) {
+                    let str = doc.lineAt(0).text;
+                    let res = /CREATE\sTABLE\s([0-9A-Z_]+)/i.exec(str);
+                    if (res && res[0]) {
+                        // 見つけた
+                        ret = res[0];
+                        break;
+                    }
+                }
+                if (!ret) {
+                    // CREATE TABLE が見つからなかったのでファイル名から
+                    ret = pinfo.info.name;
+                }
+                break;
+            }    
         }
 
         return ret;
