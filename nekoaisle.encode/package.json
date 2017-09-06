@@ -12,8 +12,16 @@
     ],
     "activationEvents": [
         "onCommand:nekoaisle.encode",
+        "onCommand:nekoaisle.encodeHtml",
+        "onCommand:nekoaisle.encodeUrl",
+        "onCommand:nekoaisle.encodeBase64",
+        "onCommand:nekoaisle.encodeCString",
+        "onCommand:nekoaisle.encodePreg",
+        "onCommand:nekoaisle.encodeContentsOfSingleQuotation",
+        "onCommand:nekoaisle.encodeContentsOfDoubleQuotation",
         "onCommand:nekoaisle.encloseInSingleQuotation",
-        "onCommand:nekoaisle.encloseInDoubleQuotation"
+        "onCommand:nekoaisle.encloseInDoubleQuotation",
+        "onCommand:nekoaisle.encloseInGraveAccent"
     ],
     "main": "./out/src/extension",
     "contributes": {
@@ -23,13 +31,16 @@
         }],
         "keybindings": [{
             "command": "nekoaisle.encode",
-            "key": "escape e"
+            "key": "escape e",
+            "when": "editorTextFocus && !editorReadonly"
         },{
             "command": "nekoaisle.encloseInSingleQuotation",
-            "key": "ctrl+7"
+            "key": "ctrl+7",
+            "when": "editorTextFocus && !editorReadonly"
         },{
             "command": "nekoaisle.encloseInDoubleQuotation",
-            "key": "ctrl+2"
+            "key": "ctrl+2",
+            "when": "editorTextFocus && !editorReadonly"
         }]
     },
     "scripts": {

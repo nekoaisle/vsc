@@ -71,8 +71,16 @@ class InsertCode extends nekoaisle_1.Extension {
         // 先頭の . を除去
         ext = ext.substr(1);
         // この拡張子のメニューを読み込む
-        let menuJson = nekoaisle_1.Util.loadFile(`${tempDir}/list-${pinfo.info.ext.substr(1)}.json`);
-        let menuItems = JSON.parse(menuJson);
+        let menuFN = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
+        let menuJson = nekoaisle_1.Util.loadFile(menuFN);
+        let menuItems;
+        try {
+            menuItems = JSON.parse(menuJson);
+        }
+        catch (err) {
+            nekoaisle_1.Util.putMess(`${menuFN}: ${err}`);
+            return;
+        }
         // QuickPickOptions 用のメニューを作成
         let menu = [];
         for (let key in menuItems) {
@@ -85,18 +93,35 @@ class InsertCode extends nekoaisle_1.Extension {
         }
         // メニュー選択
         let options = {
-            placeHolder: '選択してください。'
+            placeHolder: '選択してください。',
+            matchOnDetail: true,
+            matchOnDescription: false
         };
         vscode.window.showQuickPick(menu, options).then((sel) => {
             console.log(`command = "${sel.label}"`);
             if (!sel) {
                 return;
             }
-            let item;
+            // デフォルト値
+            let item = {
+                label: '',
+                detail: '',
+                description: '',
+                filename: '',
+                command: '',
+                inline: '',
+                position: '',
+                method: 'insert',
+            };
             for (let key in menuItems) {
                 let i = menuItems[key];
                 if (i.label == sel.label) {
-                    item = i;
+                    // 見つけたので undefined 以外の要素を複写
+                    for (let k in item) {
+                        if (typeof i[k] != undefined) {
+                            item[k] = i[k];
+                        }
+                    }
                 }
             }
             // 挿入する文字列格納用変数
@@ -114,13 +139,32 @@ class InsertCode extends nekoaisle_1.Extension {
                 // コマンド
                 str = this.doCommand(item.command, editor);
             }
-            // 挿入位置を決める
-            if (!str) {
+            else {
+                // 処理が何も指定されていないので何もしない
                 return;
             }
+            // 挿入位置を決める
             let res = this.getInsertPos(item.position, str, editor);
-            // console.log(`insert\n${str}`);
-            editor.edit(edit => edit.insert(res.pos, res.str));
+            // 処理実行
+            switch (item.method) {
+                // 挿入(デフォルト動作)
+                default:
+                case 'insert': {
+                    editor.edit(edit => edit.insert(res.pos, res.str));
+                    break;
+                }
+                // ※ 置換動作してくれない＞＜；
+                case 'replace': {
+                    editor.edit(edit => edit.replace(editor.selection, res.str));
+                    break;
+                }
+                // スニペット挿入
+                case 'snippet': {
+                    let snippet = new vscode.SnippetString(res.str);
+                    editor.insertSnippet(snippet, res.pos);
+                    break;
+                }
+            }
         });
     }
     /**
@@ -194,16 +238,7 @@ class InsertCode extends nekoaisle_1.Extension {
             }
             // クラス
             case 'class': {
-                switch (cmds[1]) {
-                    // CPSS トランザクションベースクラス
-                    case 'base':
-                        ret = this.getClass('base');
-                        break;
-                    // C++クラス名
-                    case 'cpp':
-                        ret = this.getClass('cpp');
-                        break;
-                }
+                ret = this.getClass(cmds[1]);
                 break;
             }
         }
@@ -286,7 +321,7 @@ class InsertCode extends nekoaisle_1.Extension {
         // 
         return {
             pos: pos,
-            str: str,
+            str: str
         };
     }
     /**
@@ -295,6 +330,14 @@ class InsertCode extends nekoaisle_1.Extension {
      * @param tempName
      */
     fromTemplate(template, editor) {
+        // 不要行の削除
+        // "nekoaisle.insert-code delete line" が含まれる行を削除
+        let match = template.match(/^.*\bnekoaisle\.insert-code\sdelete\sline\b.*$\r?\n?/gm);
+        if (match) {
+            for (let line of match) {
+                template = template.replace(line, '');
+            }
+        }
         // テンプレート中で使用されているキーワードを抽出
         // 置換する値を準備する
         // '' や "" で括られている場合はエスケープ処理もする
@@ -302,12 +345,12 @@ class InsertCode extends nekoaisle_1.Extension {
         // 置換を実行
         template = this.replaceKeywords(template, params);
         // 複数行ならばインデントをカーソル位置に合わせる
-        if (template.indexOf("\n") >= 0) {
+        if ((template.indexOf("\n") >= 0) && this.doAutoIndent()) {
             // カーソル位置を取得
             let cur = editor.selection.active;
             // カーソルの前を取得
             let tab = editor.document.lineAt(cur.line).text.substr(0, cur.character);
-            // カーソルの前がホワとスペースのみならば
+            // カーソルの前がホワイトスペースのみならば
             if (/\s+/.test(tab)) {
                 // 改行で分解
                 let rows = template.split("\n");
@@ -524,6 +567,20 @@ class InsertCode extends nekoaisle_1.Extension {
             console.log(`languageId = "${lang}", file.ext = "${ext}"`);
         }
         return ext;
+    }
+    /**
+     * オートインデントする？
+     * vsc のオートインデントがONの場合2行目移行が2重にインデントされてしまう
+     */
+    doAutoIndent() {
+        // エディターの autoIndent が true ならばインデントしない
+        let config = vscode.workspace.getConfiguration('editor');
+        let editorOption = config.get("autoIndent", true);
+        if (editorOption) {
+            return false;
+        }
+        // 自身の設定を取得
+        return this.getConfig("autoIndent", false);
     }
 }
 //# sourceMappingURL=extension.js.map

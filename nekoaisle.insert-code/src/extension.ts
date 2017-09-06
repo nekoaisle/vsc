@@ -2,7 +2,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import {Util, Extension, PathInfo, DateInfo} from './nekoaisle.lib/nekoaisle';
+import { Util, Extension, PathInfo, DateInfo } from './nekoaisle.lib/nekoaisle';
 
 export function activate(context: vscode.ExtensionContext) {
     let ext = new InsertCode(context);
@@ -20,6 +20,7 @@ interface ListItem {
     command?: string,       // コマンド指定
     inline?: string,        // インラインテンプレート
     position?: string,      // 挿入位置
+    method?: string,        // 呼び出すeditメソッド insert, replace, snippet
 }
 
 interface GetInsertPosResult {
@@ -37,50 +38,50 @@ class InsertCode extends Extension {
     //     });
     // });
     protected langs = {
-        'plaintext':        '.txt',
-        'Log':              '.log',
-        'bat':              '.bat',
-        'c':                '.c',
-        'cpp':              '.cpp',
-        'css':              '.css',
-        'html':             '.html',
-        'ini':              '.ini',
-        'java':             '.java',
-        'javascript':       '.js',
-        'json':             '.json',
-        'perl':             '.pl',
-        'php':              '.php',
-        'shellscript':      '.sh',
-        'sql':              '.sql',
-        'typescript':       '.ts',
-        'vb':               '.vb',
-        'xml':              '.xml',
+        'plaintext':   '.txt',
+        'Log':         '.log',
+        'bat':         '.bat',
+        'c':           '.c',
+        'cpp':         '.cpp',
+        'css':         '.css',
+        'html':        '.html',
+        'ini':         '.ini',
+        'java':        '.java',
+        'javascript':  '.js',
+        'json':        '.json',
+        'perl':        '.pl',
+        'php':         '.php',
+        'shellscript': '.sh',
+        'sql':         '.sql',
+        'typescript':  '.ts',
+        'vb':          '.vb',
+        'xml':         '.xml',
     };
 
     protected mNow: DateInfo;
-    
+
     /**
 	 * 構築
 	 */
-	constructor(context: vscode.ExtensionContext) {
-		super(context, {
+    constructor(context: vscode.ExtensionContext) {
+        super(context, {
             name: 'Insert Code',
             config: 'insertCode',
-			commands: [
-				{
-					command: 'nekoaisle.insertCode',
-					callback: () => {
-						this.entry()
-					}
-				}
-			]
-		});
-	}
+            commands: [
+                {
+                    command: 'nekoaisle.insertCode',
+                    callback: () => {
+                        this.entry()
+                    }
+                }
+            ]
+        });
+    }
 
 	/**
 	 * エントリー
 	 */
-	public entry() {
+    public entry() {
         // 実行されたときの TextEditor
         let editor = vscode.window.activeTextEditor;
 
@@ -96,12 +97,19 @@ class InsertCode extends Extension {
         ext = ext.substr(1);
 
         // この拡張子のメニューを読み込む
-        let menuJson: string = Util.loadFile(`${tempDir}/list-${pinfo.info.ext.substr(1)}.json`);
-        let menuItems: ListItem = JSON.parse(menuJson);
+        let menuFN = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
+        let menuJson: string = Util.loadFile(menuFN);
+        let menuItems: ListItem;
+        try {
+            menuItems = JSON.parse(menuJson);
+        } catch (err) {
+            Util.putMess(`${menuFN}: ${err}`);
+            return;
+        }
 
         // QuickPickOptions 用のメニューを作成
         let menu: vscode.QuickPickItem[] = [];
-        for ( let key in menuItems ) {
+        for (let key in menuItems) {
             let item: ListItem = menuItems[key];
             menu.push({
                 label: (item.label) ? item.label : key,
@@ -112,24 +120,41 @@ class InsertCode extends Extension {
 
         // メニュー選択
         let options: vscode.QuickPickOptions = {
-            placeHolder: '選択してください。'
+            placeHolder: '選択してください。',
+            matchOnDetail: true,
+            matchOnDescription: false
         };
-        vscode.window.showQuickPick( menu, options ).then((sel: vscode.QuickPickItem) => {
+        vscode.window.showQuickPick(menu, options).then((sel: vscode.QuickPickItem) => {
             console.log(`command = "${sel.label}"`);
-            if ( !sel ) {
+            if (!sel) {
                 return;
             }
-            let item: ListItem;
+            // デフォルト値
+            let item: ListItem = {
+                label: '',          // メニューラベル
+                detail: '',         // 詳細
+                description: '',    // 説明
+                filename: '',       // ファイル名
+                command: '',        // コマンド指定
+                inline: '',         // インラインテンプレート
+                position: '',       // 挿入位置
+                method: 'insert',   // 呼び出すeditメソッド insert, replace, snippet
+            };
             for (let key in menuItems) {
                 let i = menuItems[key];
                 if (i.label == sel.label) {
-                    item = i;
+                    // 見つけたので undefined 以外の要素を複写
+                    for (let k in item) {
+                        if (typeof i[k] != undefined) {
+                            item[k] = i[k];
+                        }
+                    }
                 }
             }
 
             // 挿入する文字列格納用変数
             let str = '';
-            
+
             // タイプ別処理
             if (item.filename) {
                 // テンプレートファイル名指定
@@ -140,17 +165,34 @@ class InsertCode extends Extension {
             } else if (item.command) {
                 // コマンド
                 str = this.doCommand(item.command, editor);
-            }
-
-            // 挿入位置を決める
-            if (!str) {
+            } else {
+                // 処理が何も指定されていないので何もしない
                 return;
             }
 
+            // 挿入位置を決める
             let res: GetInsertPosResult = this.getInsertPos(item.position, str, editor);
 
-            // console.log(`insert\n${str}`);
-            editor.edit(edit => edit.insert(res.pos, res.str));
+            // 処理実行
+            switch (item.method) {
+                // 挿入(デフォルト動作)
+                default:
+                case 'insert': {
+                    editor.edit(edit => edit.insert(res.pos, res.str));
+                    break;
+                }
+                // ※ 置換動作してくれない＞＜；
+                case 'replace': {
+                    editor.edit(edit => edit.replace(editor.selection, res.str));
+                    break;
+                }
+                // スニペット挿入
+                case 'snippet': {
+                    let snippet = new vscode.SnippetString(res.str);
+                    editor.insertSnippet(snippet, res.pos);
+                    break;
+                }
+            }
         });
     }
 
@@ -170,15 +212,15 @@ class InsertCode extends Extension {
             case 'now': {
                 let now = new DateInfo();
                 switch (cmds[1]) {
-                    case "year":   ret = now.year; break;
-                    case "month":  ret = now.month; break;
-                    case "date":   ret = now.date; break;
-                    case "hour":   ret = now.hour; break;
-                    case "min":    ret = now.min; break;
-                    case "sec":    ret = now.sec; break;
+                    case "year": ret = now.year; break;
+                    case "month": ret = now.month; break;
+                    case "date": ret = now.date; break;
+                    case "hour": ret = now.hour; break;
+                    case "min": ret = now.min; break;
+                    case "sec": ret = now.sec; break;
                     case "ymdhis": ret = now.ymdhis; break;
-                    case "ymd":    ret = now.ymd; break;
-                    case "his":    ret = now.his; break;
+                    case "ymd": ret = now.ymd; break;
+                    case "his": ret = now.his; break;
                 }
                 break;
             }
@@ -189,29 +231,24 @@ class InsertCode extends Extension {
                     // フルパス名
                     case "path": ret = pinfo.path;
                     // ディレクトリ名
-                    case "dir":  ret = pinfo.info.dir; break;
+                    case "dir": ret = pinfo.info.dir; break;
                     // ファイル名+拡張子
                     case "base": ret = pinfo.info.base; break;
                     // ファイル名
                     case "name": ret = pinfo.info.name; break;
                     // 拡張子
-                    case "ext":  ret = pinfo.info.ext; break;
+                    case "ext": ret = pinfo.info.ext; break;
                 }
                 break;
             }
 
             // クラス
             case 'class': {
-                switch (cmds[1]) {
-                    // CPSS トランザクションベースクラス
-                    case 'base': ret = this.getClass('base'); break;
-                    // C++クラス名
-                    case 'cpp':  ret = this.getClass('cpp'); break;
-                }
+                ret = this.getClass(cmds[1]);
                 break;
             }
         }
-    
+
         //
         return ret;
     }
@@ -242,8 +279,8 @@ class InsertCode extends Extension {
      * @param editor 
      */
     protected getInsertPos(position: string, str: string, editor: vscode.TextEditor): GetInsertPosResult {
-        let pos: vscode.Position = editor.selection.active;
-        switch ( position ) {
+        let pos = editor.selection.active;
+        switch (position) {
             // ファイルの先頭
             case 'top':
             case 'file-start':
@@ -300,7 +337,7 @@ class InsertCode extends Extension {
         // 
         return {
             pos: pos,
-            str: str,
+            str: str
         }
     }
 
@@ -310,6 +347,15 @@ class InsertCode extends Extension {
      * @param tempName 
      */
     protected fromTemplate(template: string, editor: vscode.TextEditor): string {
+        // 不要行の削除
+        // "nekoaisle.insert-code delete line" が含まれる行を削除
+        let match = template.match(/^.*\bnekoaisle\.insert-code\sdelete\sline\b.*$\r?\n?/gm);
+        if (match) {
+            for (let line of match) {
+                template = template.replace(line, '');
+            }
+        }
+
         // テンプレート中で使用されているキーワードを抽出
         // 置換する値を準備する
         // '' や "" で括られている場合はエスケープ処理もする
@@ -319,13 +365,13 @@ class InsertCode extends Extension {
         template = this.replaceKeywords(template, params);
 
         // 複数行ならばインデントをカーソル位置に合わせる
-        if ( template.indexOf("\n") >= 0 ) {
+        if ((template.indexOf("\n") >= 0) && this.doAutoIndent()) {
             // カーソル位置を取得
             let cur = editor.selection.active;
             // カーソルの前を取得
-            let tab = editor.document.lineAt(cur.line).text.substr(0,cur.character);
-            // カーソルの前がホワとスペースのみならば
-            if ( /\s+/.test(tab) ) {
+            let tab = editor.document.lineAt(cur.line).text.substr(0, cur.character);
+            // カーソルの前がホワイトスペースのみならば
+            if (/\s+/.test(tab)) {
                 // 改行で分解
                 let rows = template.split("\n");
                 // 行を合成
@@ -366,10 +412,10 @@ class InsertCode extends Extension {
             let keys: string[] = key.split('.');
             let val;
             switch (keys[0]) {
-                case 'author':      val = this.getConfig("author", ""); break;
-                case 'selection':   val = Util.getSelectString(editor); break;
-                case 'clipboard':   val = Util.execCmd('xclip -o -selection c'); break;
-                case 'class':       val = this.getClass(keys[1]); break;
+                case 'author': val = this.getConfig("author", ""); break;
+                case 'selection': val = Util.getSelectString(editor); break;
+                case 'clipboard': val = Util.execCmd('xclip -o -selection c'); break;
+                case 'class': val = this.getClass(keys[1]); break;
 
                 case 'pinfo': {
                     if (!pinfo) {
@@ -426,11 +472,11 @@ class InsertCode extends Extension {
     protected replaceKeywords(str: string, params: object, prefix?: string): string {
         for (let k in params) {
             let search = (prefix) ? `${prefix}.${k}` : k;
-            if (typeof params[k] == 'object' ) {
+            if (typeof params[k] == 'object') {
                 str = this.replaceKeywords(str, params[k], search);
             } else {
-                let re = new RegExp( search, "g" );
-                str = str.replace( re, params[k] );
+                let re = new RegExp(search, "g");
+                str = str.replace(re, params[k]);
             }
         }
         return str;
@@ -457,7 +503,7 @@ class InsertCode extends Extension {
 
         return sorted;
     }
- 
+
     /**
      * クラス情報を返す
      * @param propaty サブキー
@@ -472,7 +518,7 @@ class InsertCode extends Extension {
             case 'base': {
                 let name = pinfo.info.name;
                 // 名前の末尾が数字ならば除去
-                for (;;) {
+                for (; ;) {
                     let c = name.substr(-1);
                     if ((c < '0') && (c > '9')) {
                         break;
@@ -505,7 +551,7 @@ class InsertCode extends Extension {
                     ret = pinfo.info.name;
                 }
                 break;
-            }    
+            }
         }
 
         return ret;
@@ -518,7 +564,7 @@ class InsertCode extends Extension {
     protected getTemplatesDir(): string {
         // デフォルトのテンポラリディレクトリ名
         let tempDir = this.joinExtensionRoot("templates");
-        
+
         // settings.json よりテンプレートディレクトリを取得
         tempDir = this.getConfig("tempDir", tempDir);
 
@@ -539,10 +585,10 @@ class InsertCode extends Extension {
             // 拡張子が省略されたので現在のファイル名から取得
             let pinfo = new PathInfo(vscode.window.activeTextEditor.document.fileName);
             let now = new DateInfo();
-    
+
             // テンプレートディレクトリ名を取得
             let tempDir = this.getTemplatesDir();
-            
+
             let ext = pinfo.info.ext;
         }
 
@@ -552,9 +598,23 @@ class InsertCode extends Extension {
             ext = this.langs[lang];
             console.log(`languageId = "${lang}", file.ext = "${ext}"`);
         }
-    
+
         return ext;
     }
 
+    /**
+     * オートインデントする？
+     * vsc のオートインデントがONの場合2行目移行が2重にインデントされてしまう
+     */
+    protected doAutoIndent(): boolean {
+        // エディターの autoIndent が true ならばインデントしない
+        let config = vscode.workspace.getConfiguration('editor');
+        let editorOption = config.get("autoIndent", true);
+        if (editorOption) {
+            return false;
+        }
 
+        // 自身の設定を取得
+        return this.getConfig("autoIndent", false);
+    }
 }

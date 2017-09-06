@@ -1,39 +1,42 @@
 {
 	"fileheader": {
 		"label": "1: ファイルヘッダー",
-		"filename": "fileheader.php"
+		"filename": "php/fileheader.php"
 	},
 	"method": {
 		"label": "2: メソッド",
-		"filename": "method.php"
+		"filename": "php/method.php",
+        "detail":      "詳細",
+        "description": "説明文"
 	},
 	"var": {
 		"label": "3: メンバー変数",
-		"filename": "var.php"
+		"filename": "php/var.php"
 	},
 	"constructor": {
 		"label": "4: constructor",
-		"filename": "constructor.php"
+		"filename": "php/constructor.php"
 	},
 	"destractor": {
 		"label": "5: destractor",
-		"filename": "destractor.php"
+		"filename": "php/destractor.php"
 	},
 	"onEvent": {
 		"label": "6: イベントハンドラ",
-		"filename": "onEvent.php"
+		"filename": "php/onEvent.php"
 	},
 	"onAjax": {
 		"label": "7: onAjax",
-		"filename": "onAjax.php"
+		"filename": "php/onAjax.php"
 	},
 	"function": {
 		"label": "8: function",
-		"filename": "function.php"
+		"filename": "php/function.php",
+		"method": "snippet"
 	},
 	"aryGetFormCommandMap": {
 		"label": "9: aryGetFormCommandMap",
-		"filename": "aryGetFormCommandMap.php"
+		"filename": "php/aryGetFormCommandMap.php"
 	},
 	"now.ymd": {
 		"label": "Y: 今日",

@@ -52,7 +52,7 @@ export class Extension {
 	 * @param def 設定されていないときに返す値
 	 * @return string 設定
 	 */
-	public getConfig(key: string, def: string): string {
+	public getConfig<TYPE>(key: string, def: TYPE): TYPE {
 		let ret = this.config.get(key, def);
 		if (ret) {
 			return ret;

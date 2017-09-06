@@ -1,0 +1,7 @@
+"{{clipboard}}": {
+    "prefix": "{{clipboard}}",
+    "body": [
+        "{{clipboard}}"
+    ],
+    "description": "${1:説明文}"
+},

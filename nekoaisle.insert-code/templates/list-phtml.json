@@ -1,11 +1,11 @@
 {
 	"fileheader": {
 		"label": "1: ファイルヘッダー",
-		"filename": "fileheader.php"
+		"filename": "phtml/fileheader.phtml"
 	},
 	"function": {
 		"label": "8: function",
-		"filename": "function.php"
+		"filename": "phtml/function.phtml"
 	},
 	"now.ymd": {
 		"label": "Y: 今日",

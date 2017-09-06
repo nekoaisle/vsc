@@ -1,19 +1,19 @@
 {
 	"fileheader": {
 		"label": "1: ファイルヘッダー",
-		"filename":	"fileheader.h"
+		"filename":	"h/fileheader.h"
 	},
 	"method": {
 		"label": "2: メソッド",
-		"filename":	"method.h"
+		"filename":	"h/method.h"
 	},
 	"constructor": {
 		"label": "4: コンストラクタ",
-		"filename":	"constructor.h"
+		"filename":	"h/constructor.h"
 	},
 	"destractor": {
 		"label": "5: デストラクタ",
-		"filename":	"destractor.h"
+		"filename":	"h/destractor.h"
 	},
 	"now.ymd": {
 		"label": "Y: 今日",

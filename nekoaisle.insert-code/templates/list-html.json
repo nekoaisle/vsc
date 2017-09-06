@@ -1,19 +1,19 @@
 {
 	"fileheader": {
 		"label": "1: ファイルヘッダー",
-		"filename": "fileheader.html"
+		"filename": "html/fileheader.html"
 	},
 	"style": {
 		"label": "2: style タグ",
-		"filename": "style.html"
+		"filename": "html/style.html"
 	},
 	"script": {
 		"label": "3: script タグ",
-		"filename": "script.html"
+		"filename": "html/script.html"
 	},
 	"code": {
 		"label": "4: ソースコード用スタイル",
-		"filename": "code.html"
+		"filename": "html/code.html"
 	},
 	"now.ymd": {
 		"label": "Y: 今日",

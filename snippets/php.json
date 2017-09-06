@@ -1,6 +1,6 @@
 {
 /*
-\t// Place your snippets for PHP here. Each snippet is defined under a snippet name and has a prefix, body and 
+	// Place your snippets for PHP here. Each snippet is defined under a snippet name and has a prefix, body and 
 	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
 	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
 	// same ids are connected.
@@ -82,7 +82,7 @@
 			" * ${1:タイトル}",
 			" * @var ${2:型}",
 			" */",
-			"public $${3:変数名} = '';",
+			"public ${3:変数名} = '';",
 			""
 		],
 		"description": "プロパティ"
@@ -188,27 +188,232 @@
 		],
 		"description": "関数"
 	},
-	"Script": {
-		"prefix": "script",
+
+	"$_SERVER['DOCUMENT_ROOT']": {
+		"prefix": "_SERVER['DOCUMENT_ROOT']",
 		"body": [
-			"<script type=\"text/javascript\">",
-			"$(function() {",
-			"}),",
-			"</script>"
+			"$$_SERVER['DOCUMENT_ROOT']"
 		],
-		"description": "scrpt タグ"
+		"description": ""
 	},
-	"Style": {
-		"prefix": "style",
+	"$_SERVER['GATEWAY_INTERFACE']": {
+		"prefix": "_SERVER['GATEWAY_INTERFACE']",
 		"body": [
-			"<style type=\"text/css\">",
-			"${1:セレクタ} {",
-			"\t$2",
-			"}",
-			"</style>"
+			"$$_SERVER['GATEWAY_INTERFACE']"
 		],
-		"description": "style タグ"
+		"description": ""
 	},
+	"$_SERVER['HTTPS']": {
+		"prefix": "_SERVER['HTTPS']",
+		"body": [
+			"$$_SERVER['HTTPS']"
+		],
+		"description": ""
+	},
+	"$_SERVER['HTTP_ACCEPT']": {
+		"prefix": "_SERVER['HTTP_ACCEPT']",
+		"body": [
+			"$$_SERVER['HTTP_ACCEPT']"
+		],
+		"description": ""
+	},
+	"$_SERVER['HTTP_ACCEPT_CHARSET']": {
+		"prefix": "_SERVER['HTTP_ACCEPT_CHARSET']",
+		"body": [
+			"$$_SERVER['HTTP_ACCEPT_CHARSET']"
+		],
+		"description": ""
+	},
+	"$_SERVER['HTTP_ACCEPT_ENCODING']": {
+		"prefix": "_SERVER['HTTP_ACCEPT_ENCODING']",
+		"body": [
+			"$$_SERVER['HTTP_ACCEPT_ENCODING']"
+		],
+		"description": ""
+	},
+	"$_SERVER['HTTP_ACCEPT_LANGUAGE']": {
+		"prefix": "_SERVER['HTTP_ACCEPT_LANGUAGE']",
+		"body": [
+			"$$_SERVER['HTTP_ACCEPT_LANGUAGE']"
+		],
+		"description": ""
+	},
+	"$_SERVER['HTTP_CONNECTION']": {
+		"prefix": "_SERVER['HTTP_CONNECTION']",
+		"body": [
+			"$$_SERVER['HTTP_CONNECTION']"
+		],
+		"description": ""
+	},
+	"$_SERVER['HTTP_HOST']": {
+		"prefix": "_SERVER['HTTP_HOST']",
+		"body": [
+			"$$_SERVER['HTTP_HOST']"
+		],
+		"description": ""
+	},
+	"$_SERVER['HTTP_REFERER']": {
+		"prefix": "_SERVER['HTTP_REFERER']",
+		"body": [
+			"$$_SERVER['HTTP_REFERER']"
+		],
+		"description": ""
+	},
+	"$_SERVER['HTTP_USER_AGENT']": {
+		"prefix": "_SERVER['HTTP_USER_AGENT']",
+		"body": [
+			"$$_SERVER['HTTP_USER_AGENT']"
+		],
+		"description": ""
+	},
+	"$_SERVER['PATH_TRANSLATED']": {
+		"prefix": "_SERVER['PATH_TRANSLATED']",
+		"body": [
+			"$$_SERVER['PATH_TRANSLATED']"
+		],
+		"description": ""
+	},
+	"$_SERVER['PHP_AUTH_DIGEST']": {
+		"prefix": "_SERVER['PHP_AUTH_DIGEST']",
+		"body": [
+			"$$_SERVER['PHP_AUTH_DIGEST']"
+		],
+		"description": ""
+	},
+	"$_SERVER['PHP_AUTH_PW']": {
+		"prefix": "_SERVER['PHP_AUTH_PW']",
+		"body": [
+			"$$_SERVER['PHP_AUTH_PW']"
+		],
+		"description": ""
+	},
+	"$_SERVER['PHP_AUTH_USER']": {
+		"prefix": "_SERVER['PHP_AUTH_USER']",
+		"body": [
+			"$$_SERVER['PHP_AUTH_USER']"
+		],
+		"description": ""
+	},
+	"$_SERVER['PHP_SELF']": {
+		"prefix": "_SERVER['PHP_SELF']",
+		"body": [
+			"$$_SERVER['PHP_SELF']"
+		],
+		"description": ""
+	},
+	"$_SERVER['QUERY_STRING']": {
+		"prefix": "_SERVER['QUERY_STRING']",
+		"body": [
+			"$$_SERVER['QUERY_STRING']"
+		],
+		"description": ""
+	},
+	"$_SERVER['REMOTE_ADDR']": {
+		"prefix": "_SERVER['REMOTE_ADDR']",
+		"body": [
+			"$$_SERVER['REMOTE_ADDR']"
+		],
+		"description": ""
+	},
+	"$_SERVER['REMOTE_HOST']": {
+		"prefix": "_SERVER['REMOTE_HOST']",
+		"body": [
+			"$$_SERVER['REMOTE_HOST']"
+		],
+		"description": ""
+	},
+	"$_SERVER['REMOTE_PORT']": {
+		"prefix": "_SERVER['REMOTE_PORT']",
+		"body": [
+			"$$_SERVER['REMOTE_PORT']"
+		],
+		"description": ""
+	},
+	"$_SERVER['REQUEST_METHOD']": {
+		"prefix": "_SERVER['REQUEST_METHOD']",
+		"body": [
+			"$$_SERVER['REQUEST_METHOD']"
+		],
+		"description": ""
+	},
+	"$_SERVER['REQUEST_TIME']": {
+		"prefix": "_SERVER['REQUEST_TIME']",
+		"body": [
+			"$$_SERVER['REQUEST_TIME']"
+		],
+		"description": ""
+	},
+	"$_SERVER['REQUEST_URI']": {
+		"prefix": "_SERVER['REQUEST_URI']",
+		"body": [
+			"$$_SERVER['REQUEST_URI']"
+		],
+		"description": ""
+	},
+	"$_SERVER['SCRIPT_FILENAME']": {
+		"prefix": "_SERVER['SCRIPT_FILENAME']",
+		"body": [
+			"$$_SERVER['SCRIPT_FILENAME']"
+		],
+		"description": ""
+	},
+	"$_SERVER['SCRIPT_NAME']": {
+		"prefix": "_SERVER['SCRIPT_NAME']",
+		"body": [
+			"$$_SERVER['SCRIPT_NAME']"
+		],
+		"description": ""
+	},
+	"$_SERVER['SERVER_ADDR']": {
+		"prefix": "_SERVER['SERVER_ADDR']",
+		"body": [
+			"$$_SERVER['SERVER_ADDR']"
+		],
+		"description": ""
+	},
+	"$_SERVER['SERVER_ADMIN']": {
+		"prefix": "_SERVER['SERVER_ADMIN']",
+		"body": [
+			"$$_SERVER['SERVER_ADMIN']"
+		],
+		"description": ""
+	},
+	"$_SERVER['SERVER_NAME']": {
+		"prefix": "_SERVER['SERVER_NAME']",
+		"body": [
+			"$$_SERVER['SERVER_NAME']"
+		],
+		"description": ""
+	},
+	"$_SERVER['SERVER_PORT']": {
+		"prefix": "_SERVER['SERVER_PORT']",
+		"body": [
+			"$$_SERVER['SERVER_PORT']"
+		],
+		"description": ""
+	},
+	"$_SERVER['SERVER_PROTOCOL']": {
+		"prefix": "_SERVER['SERVER_PROTOCOL']",
+		"body": [
+			"$$_SERVER['SERVER_PROTOCOL']"
+		],
+		"description": ""
+	},
+	"$_SERVER['SERVER_SIGNATURE']": {
+		"prefix": "_SERVER['SERVER_SIGNATURE']",
+		"body": [
+			"$$_SERVER['SERVER_SIGNATURE']"
+		],
+		"description": ""
+	},
+	"$_SERVER['SERVER_SOFTWARE']": {
+		"prefix": "_SERVER['SERVER_SOFTWARE']",
+		"body": [
+			"$$_SERVER['SERVER_SOFTWARE']"
+		],
+		"description": ""
+	},
+
 	"SUCCEEDED": {
 		"prefix": "SUCCEEDED",
 		"body": [
@@ -222,14 +427,710 @@
 			"FAILED"
 		],
 		"description": "FAILED"
-	},,
+	},
 	"require_once( DOCUMENT_ROOT": {
 		"prefix": "require_once( DOCUMENT_ROOT",
 		"body": [
 			"require_once( DOCUMENT_ROOT . '/.php' );"
 		],
 		"description": ""
+	},
+	"NOW_UNIXTIME": {
+		"prefix": "NOW_UNIXTIME",
+		"body": [
+			"NOW_UNIXTIME"
+		],
+		"description": ""
+	},
+	"SCRIPT_MODULE": {
+		"prefix": "SCRIPT_MODULE",
+		"body": [
+			"SCRIPT_MODULE"
+		],
+		"description": ""
+	},
+	"SCRIPT_CLASS": {
+		"prefix": "SCRIPT_CLASS",
+		"body": [
+			"SCRIPT_CLASS"
+		],
+		"description": ""
+	},
+	"DOCUMENT_ROOT": {
+		"prefix": "DOCUMENT_ROOT",
+		"body": [
+			"DOCUMENT_ROOT"
+		],
+		"description": ""
+	},
+	"MODULE_ROOT": {
+		"prefix": "MODULE_ROOT",
+		"body": [
+			"MODULE_ROOT"
+		],
+		"description": ""
+	},
+	"SCRITP_ROOT": {
+		"prefix": "SCRITP_ROOT",
+		"body": [
+			"SCRITP_ROOT"
+		],
+		"description": ""
+	},
+	"SCRIPT_DIR": {
+		"prefix": "SCRIPT_DIR",
+		"body": [
+			"SCRIPT_DIR"
+		],
+		"description": ""
+	},
+	"SCRIPT_FILENAME": {
+		"prefix": "SCRIPT_FILENAME",
+		"body": [
+			"SCRIPT_FILENAME"
+		],
+		"description": ""
+	},
+	"URL_ROOT": {
+		"prefix": "URL_ROOT",
+		"body": [
+			"URL_ROOT"
+		],
+		"description": ""
+	},
+	"URL_MODULE": {
+		"prefix": "URL_MODULE",
+		"body": [
+			"URL_MODULE"
+		],
+		"description": ""
+	},
+	"URL_CLASS": {
+		"prefix": "URL_CLASS",
+		"body": [
+			"URL_CLASS"
+		],
+		"description": ""
+	},
+	"URL_DIR": {
+		"prefix": "URL_DIR",
+		"body": [
+			"URL_DIR"
+		],
+		"description": ""
+	},
+	"PERMISSION_DELETE": {
+		"prefix": "PERMISSION_DELETE",
+		"body": [
+			"PERMISSION_DELETE"
+		],
+		"description": ""
+	},
+	"PERMISSION_MODIFY": {
+		"prefix": "PERMISSION_MODIFY",
+		"body": [
+			"PERMISSION_MODIFY"
+		],
+		"description": ""
+	},
+	"PERMISSION_READ": {
+		"prefix": "PERMISSION_READ",
+		"body": [
+			"PERMISSION_READ"
+		],
+		"description": ""
+	},
+	"PUT_DEBUGLOG( ' = ' . strDebugVarDump(  ) );": {
+		"prefix": "PUT_DEBUGLOG( ' = ' . strDebugVarDump(  ) );",
+		"body": [
+			"PUT_DEBUGLOG( ' = ' . strDebugVarDump(  ) );"
+		],
+		"description": ""
+	},
+	"PUT_DEBUGLOG(  );": {
+		"prefix": "PUT_DEBUGLOG(  );",
+		"body": [
+			"PUT_DEBUGLOG(  );"
+		],
+		"description": ""
+	},
+	"PUT_ERRORLOG(  );": {
+		"prefix": "PUT_ERRORLOG(  );",
+		"body": [
+			"PUT_ERRORLOG(  );"
+		],
+		"description": ""
+	},
+	"PUT_WARNINGLOG(  );": {
+		"prefix": "PUT_WARNINGLOG(  );",
+		"body": [
+			"PUT_WARNINGLOG(  );"
+		],
+		"description": ""
+	},
+	"var_dump(  );": {
+		"prefix": "var_dump(  );",
+		"body": [
+			"var_dump(  );"
+		],
+		"description": ""
+	},
+	"return FAILED;": {
+		"prefix": "return FAILED;",
+		"body": [
+			"return FAILED;"
+		],
+		"description": ""
+	},
+	"return SUCCEEDED;": {
+		"prefix": "return SUCCEEDED;",
+		"body": [
+			"return SUCCEEDED;"
+		],
+		"description": ""
+	},
+
+	"isset( $_REQUEST['SUBMIT'] ) )": {
+		"prefix": "isset( $_REQUEST['SUBMIT'] ) )",
+		"body": [
+			"isset( $$_REQUEST['SUBMIT'] ) )"
+		],
+		"description": ""
+	},
+	"isHonban( )": {
+		"prefix": "isHonban( )",
+		"body": [
+			"isHonban( )"
+		],
+		"description": ""
+	},
+	"blSendMail( $strTo, $strFrom, $strSubject, $strBody )": {
+		"prefix": "blSendMail( $strTo, $strFrom, $strSubject, $strBody )",
+		"body": [
+			"blSendMail( $$strTo, $$strFrom, $$strSubject, $$strBody )"
+		],
+		"description": ""
+	},
+	"blSendMailEx( $strTo, $strFrom, $strFromName, $strBcc, $strSubject, $strBody )": {
+		"prefix": "blSendMailEx( $strTo, $strFrom, $strFromName, $strBcc, $strSubject, $strBody )",
+		"body": [
+			"blSendMailEx( $$strTo, $$strFrom, $$strFromName, $$strBcc, $$strSubject, $$strBody )"
+		],
+		"description": ""
+	},
+	"iModulus10( $iValue , $iWait )": {
+		"prefix": "iModulus10( $iValue , $iWait )",
+		"body": [
+			"iModulus10( $$iValue , $$iWait )"
+		],
+		"description": ""
+	},
+	"TrimSpace( $str )": {
+		"prefix": "TrimSpace( $str )",
+		"body": [
+			"TrimSpace( $$str )"
+		],
+		"description": ""
+	},
+	"strCreateDateString( $strSrc )": {
+		"prefix": "strCreateDateString( $strSrc )",
+		"body": [
+			"strCreateDateString( $$strSrc )"
+		],
+		"description": ""
+	},
+	"isHash( &$aryData )": {
+		"prefix": "isHash( &$aryData )",
+		"body": [
+			"isHash( &$$aryData )"
+		],
+		"description": ""
+	},
+	"rpad( $str, $iLen )": {
+		"prefix": "rpad( $str, $iLen )",
+		"body": [
+			"rpad( $$str, $$iLen )"
+		],
+		"description": ""
+	},
+	"lpad( $str, $iLen )": {
+		"prefix": "lpad( $str, $iLen )",
+		"body": [
+			"lpad( $$str, $$iLen )"
+		],
+		"description": ""
+	},
+	"strStrPadHTML( $strSrc, $iLen, $strPad )": {
+		"prefix": "strStrPadHTML( $strSrc, $iLen, $strPad )",
+		"body": [
+			"strStrPadHTML( $$strSrc, $$iLen, $$strPad )"
+		],
+		"description": ""
+	},
+	"strGetRequest( $strName, $mixDefault = NULL )": {
+		"prefix": "strGetRequest( $strName, $mixDefault = NULL )",
+		"body": [
+			"strGetRequest( $$strName, $$mixDefault = NULL )"
+		],
+		"description": ""
+	},
+	"iGetRequest( $strName, $iDefault = NULL )": {
+		"prefix": "iGetRequest( $strName, $iDefault = NULL )",
+		"body": [
+			"iGetRequest( $$strName, $$iDefault = NULL )"
+		],
+		"description": ""
+	},
+	"iGetRequest2( $strName, $iDefault = NULL )": {
+		"prefix": "iGetRequest2( $strName, $iDefault = NULL )",
+		"body": [
+			"iGetRequest2( $$strName, $$iDefault = NULL )"
+		],
+		"description": ""
+	},
+	"strToUTF8( $str )": {
+		"prefix": "strToUTF8( $str )",
+		"body": [
+			"strToUTF8( $$str )"
+		],
+		"description": ""
+	},
+	"aryEncodeUTF8( $aryInp )": {
+		"prefix": "aryEncodeUTF8( $aryInp )",
+		"body": [
+			"aryEncodeUTF8( $$aryInp )"
+		],
+		"description": ""
+	},
+	"mixEncodeUTF8( $mixInp )": {
+		"prefix": "mixEncodeUTF8( $mixInp )",
+		"body": [
+			"mixEncodeUTF8( $$mixInp )"
+		],
+		"description": ""
+	},
+	"strGetNow( $strFromat = 'YmdHis' )": {
+		"prefix": "strGetNow( $strFromat = 'YmdHis' )",
+		"body": [
+			"strGetNow( $$strFromat = 'YmdHis' )"
+		],
+		"description": ""
+	},
+	"iStrToTime( $str, $iTime = NOW_UNIXTIME )": {
+		"prefix": "iStrToTime( $str, $iTime = NOW_UNIXTIME )",
+		"body": [
+			"iStrToTime( $$str, $$iTime = NOW_UNIXTIME )"
+		],
+		"description": ""
+	},
+	"strTimeToStr( $strFormat, $iTime = NOW_UNIXTIME )": {
+		"prefix": "strTimeToStr( $strFormat, $iTime = NOW_UNIXTIME )",
+		"body": [
+			"strTimeToStr( $$strFormat, $$iTime = NOW_UNIXTIME )"
+		],
+		"description": ""
+	},
+	"strTimeOffset( $strFormat, $strTime, $mixOffset )": {
+		"prefix": "strTimeOffset( $strFormat, $strTime, $mixOffset )",
+		"body": [
+			"strTimeOffset( $$strFormat, $$strTime, $$mixOffset )"
+		],
+		"description": ""
+	},
+	"strTimeConv( $strFormat, $strFrom )": {
+		"prefix": "strTimeConv( $strFormat, $strFrom )",
+		"body": [
+			"strTimeConv( $$strFormat, $$strFrom )"
+		],
+		"description": ""
+	},
+	"strTimeConvExt( $strFormat, $strFrom )": {
+		"prefix": "strTimeConvExt( $strFormat, $strFrom )",
+		"body": [
+			"strTimeConvExt( $$strFormat, $$strFrom )"
+		],
+		"description": ""
+	},
+	"strGetThisMonthFirst( $str )": {
+		"prefix": "strGetThisMonthFirst( $str )",
+		"body": [
+			"strGetThisMonthFirst( $$str )"
+		],
+		"description": ""
+	},
+	"strGetNextMonthFirst( $str )": {
+		"prefix": "strGetNextMonthFirst( $str )",
+		"body": [
+			"strGetNextMonthFirst( $$str )"
+		],
+		"description": ""
+	},
+	"strGetThisDayFirst( $str )": {
+		"prefix": "strGetThisDayFirst( $str )",
+		"body": [
+			"strGetThisDayFirst( $$str )"
+		],
+		"description": ""
+	},
+	"strGetNextDayFirst( $str )": {
+		"prefix": "strGetNextDayFirst( $str )",
+		"body": [
+			"strGetNextDayFirst( $$str )"
+		],
+		"description": ""
+	},
+	"mixGetValidArgs( $mixArgs, $mixDefault )": {
+		"prefix": "mixGetValidArgs( $mixArgs, $mixDefault )",
+		"body": [
+			"mixGetValidArgs( $$mixArgs, $$mixDefault )"
+		],
+		"description": ""
+	},
+	"blEvalBloolean( $str )": {
+		"prefix": "blEvalBloolean( $str )",
+		"body": [
+			"blEvalBloolean( $$str )"
+		],
+		"description": ""
+	},
+	"strBoolToStr( $bool )": {
+		"prefix": "strBoolToStr( $bool )",
+		"body": [
+			"strBoolToStr( $$bool )"
+		],
+		"description": ""
+	},
+	"aryConvertToArray( $mix )": {
+		"prefix": "aryConvertToArray( $mix )",
+		"body": [
+			"aryConvertToArray( $$mix )"
+		],
+		"description": ""
+	},
+	"strGetRow( $strLine )": {
+		"prefix": "strGetRow( $strLine )",
+		"body": [
+			"strGetRow( $$strLine )"
+		],
+		"description": ""
+	},
+	"aryLoadTSV( $strFileName )": {
+		"prefix": "aryLoadTSV( $strFileName )",
+		"body": [
+			"aryLoadTSV( $$strFileName )"
+		],
+		"description": ""
+	},
+	"strRTrim( $str, $spc = ' 　' )": {
+		"prefix": "strRTrim( $str, $spc = ' 　' )",
+		"body": [
+			"strRTrim( $$str, $$spc = ' 　' )"
+		],
+		"description": ""
+	},
+	"DefaultDef( $strKey, $strVal )": {
+		"prefix": "DefaultDef( $strKey, $strVal )",
+		"body": [
+			"DefaultDef( $$strKey, $$strVal )"
+		],
+		"description": ""
+	},
+	"LoadStringDef( $strFileName )": {
+		"prefix": "LoadStringDef( $strFileName )",
+		"body": [
+			"LoadStringDef( $$strFileName )"
+		],
+		"description": ""
+	},
+	"LoadCustumMess( $strBaseFile, $strSiteID )": {
+		"prefix": "LoadCustumMess( $strBaseFile, $strSiteID )",
+		"body": [
+			"LoadCustumMess( $$strBaseFile, $$strSiteID )"
+		],
+		"description": ""
+	},
+	"aryExplode( $strSep, $strVal )": {
+		"prefix": "aryExplode( $strSep, $strVal )",
+		"body": [
+			"aryExplode( $$strSep, $$strVal )"
+		],
+		"description": ""
+	},
+	"mixGetArrayItem( $aryCond, $mixKey, $mixDefault = NULL )": {
+		"prefix": "mixGetArrayItem( $aryCond, $mixKey, $mixDefault = NULL )",
+		"body": [
+			"mixGetArrayItem( $$aryCond, $$mixKey, $$mixDefault = NULL )"
+		],
+		"description": ""
+	},
+	"blCheckClientIP( $strCheckIP, $strIPList )": {
+		"prefix": "blCheckClientIP( $strCheckIP, $strIPList )",
+		"body": [
+			"blCheckClientIP( $$strCheckIP, $$strIPList )"
+		],
+		"description": ""
+	},
+	"strLoadCache( $strFile, $iExpire )": {
+		"prefix": "strLoadCache( $strFile, $iExpire )",
+		"body": [
+			"strLoadCache( $$strFile, $$iExpire )"
+		],
+		"description": ""
+	},
+	"SaveCache( $strFile, $strValue )": {
+		"prefix": "SaveCache( $strFile, $strValue )",
+		"body": [
+			"SaveCache( $$strFile, $$strValue )"
+		],
+		"description": ""
+	},
+	"mixCallAPI( $strService, $strFunction, $aryParams )": {
+		"prefix": "mixCallAPI( $strService, $strFunction, $aryParams )",
+		"body": [
+			"mixCallAPI( $$strService, $$strFunction, $$aryParams )"
+		],
+		"description": ""
+	},
+	"isAPIError( $aryRes )": {
+		"prefix": "isAPIError( $aryRes )",
+		"body": [
+			"isAPIError( $$aryRes )"
+		],
+		"description": ""
+	},
+	"objGetSingletonObject( '' );": {
+		"prefix": "objGetSingletonObject( '' );",
+		"body": [
+			"objGetSingletonObject( '' );"
+		],
+		"description": ""
+	},
+	"iPregMatch( $strReg, $strVal, &$aryMatches = NULL )": {
+		"prefix": "iPregMatch( $strReg, $strVal, &$aryMatches = NULL )",
+		"body": [
+			"iPregMatch( $$strReg, $$strVal, &$$aryMatches = NULL )"
+		],
+		"description": ""
+	},
+	"iPregMatchAll( $strReg, $strVal, &$aryMatches = NULL )": {
+		"prefix": "iPregMatchAll( $strReg, $strVal, &$aryMatches = NULL )",
+		"body": [
+			"iPregMatchAll( $$strReg, $$strVal, &$$aryMatches = NULL )"
+		],
+		"description": ""
+	},
+	"strPregReplace( $strReg, $strRep, $strSrc )": {
+		"prefix": "strPregReplace( $strReg, $strRep, $strSrc )",
+		"body": [
+			"strPregReplace( $$strReg, $$strRep, $$strSrc )"
+		],
+		"description": ""
+	},
+	"EchoHTML( $str )": {
+		"prefix": "EchoHTML( $str )",
+		"body": [
+			"EchoHTML( $$str )"
+		],
+		"description": ""
+	},
+	"EchoTextarea( $str )": {
+		"prefix": "EchoTextarea( $str )",
+		"body": [
+			"EchoTextarea( $$str )"
+		],
+		"description": ""
+	},
+	"EchoForm( $str )": {
+		"prefix": "EchoForm( $str )",
+		"body": [
+			"EchoForm( $$str )"
+		],
+		"description": ""
+	},
+	"EchoNumber( $i )": {
+		"prefix": "EchoNumber( $i )",
+		"body": [
+			"EchoNumber( $$i )"
+		],
+		"description": ""
+	},
+	"EchoURL( $str )": {
+		"prefix": "EchoURL( $str )",
+		"body": [
+			"EchoURL( $$str )"
+		],
+		"description": ""
+	},
+	"EchoAttrib( $strKey, $strValue )": {
+		"prefix": "EchoAttrib( $strKey, $strValue )",
+		"body": [
+			"EchoAttrib( $$strKey, $$strValue )"
+		],
+		"description": ""
+	},
+	"EchoAnchor( '": {
+		"prefix": "EchoAnchor( '",
+		"body": [
+			"EchoAnchor( '"
+		],
+		"description": ""
+	},
+	"EchoFormDefault( $strType, $mixVal, $mixSel )": {
+		"prefix": "EchoFormDefault( $strType, $mixVal, $mixSel )",
+		"body": [
+			"EchoFormDefault( $$strType, $$mixVal, $$mixSel )"
+		],
+		"description": ""
+	},
+	"EchoHR( $objPage, $iHeight, $strColor )": {
+		"prefix": "EchoHR( $objPage, $iHeight, $strColor )",
+		"body": [
+			"EchoHR( $$objPage, $$iHeight, $$strColor )"
+		],
+		"description": ""
+	},
+	"EchoDate( $mixDate, $strFormat = 'Y/m/d H:i:s' )": {
+		"prefix": "EchoDate( $mixDate, $strFormat = 'Y/m/d H:i:s' )",
+		"body": [
+			"EchoDate( $$mixDate, $$strFormat = 'Y/m/d H:i:s' )"
+		],
+		"description": ""
+	},
+	"EchoDate2( $strFormat, $iTime = NOW_UNIXTIME )": {
+		"prefix": "EchoDate2( $strFormat, $iTime = NOW_UNIXTIME )",
+		"body": [
+			"EchoDate2( $$strFormat, $$iTime = NOW_UNIXTIME )"
+		],
+		"description": ""
+	},
+	"EchoCustumMess( $str )": {
+		"prefix": "EchoCustumMess( $str )",
+		"body": [
+			"EchoCustumMess( $$str )"
+		],
+		"description": ""
+	},
+	"EchoDebug( '', );": {
+		"prefix": "EchoDebug( '', );",
+		"body": [
+			"EchoDebug( '', );"
+		],
+		"description": ""
+	},
+	"DisconnectDB( );": {
+		"prefix": "DisconnectDB( );",
+		"body": [
+			"DisconnectDB( );"
+		],
+		"description": ""
+	},
+	"CommitDB( );": {
+		"prefix": "CommitDB( );",
+		"body": [
+			"CommitDB( );"
+		],
+		"description": ""
+	},
+	"RollbackDB( );": {
+		"prefix": "RollbackDB( );",
+		"body": [
+			"RollbackDB( );"
+		],
+		"description": ""
+	},
+	"rowLockDB( ": {
+		"prefix": "rowLockDB( ",
+		"body": [
+			"rowLockDB( "
+		],
+		"description": ""
+	},
+	"aryQueryDB( $tbl, $sql, $arg );": {
+		"prefix": "aryQueryDB( $tbl, $sql, $arg );",
+		"body": [
+			"aryQueryDB( $$tbl, $$sql, $$arg );"
+		],
+		"description": ""
+	},
+	"rowQueryDB( $tbl, $sql, $arg );": {
+		"prefix": "rowQueryDB( $tbl, $sql, $arg );",
+		"body": [
+			"rowQueryDB( $$tbl, $$sql, $$arg );"
+		],
+		"description": ""
+	},
+	"rsQueryDB( $tbl, $sql, $arg );": {
+		"prefix": "rsQueryDB( $tbl, $sql, $arg );",
+		"body": [
+			"rsQueryDB( $$tbl, $$sql, $$arg );"
+		],
+		"description": ""
+	},
+	"rsExecuteDB( $tbl, $sql, $arg );": {
+		"prefix": "rsExecuteDB( $tbl, $sql, $arg );",
+		"body": [
+			"rsExecuteDB( $$tbl, $$sql, $$arg );"
+		],
+		"description": ""
+	},
+	"rowGetDB( $tbl, $rs )": {
+		"prefix": "rowGetDB( $tbl, $rs )",
+		"body": [
+			"rowGetDB( $$tbl, $$rs )"
+		],
+		"description": ""
+	},
+	"aryGetDB( $tbl, $rs )": {
+		"prefix": "aryGetDB( $tbl, $rs )",
+		"body": [
+			"aryGetDB( $$tbl, $$rs )"
+		],
+		"description": ""
+	},
+	"strGetSequence( $tbl )": {
+		"prefix": "strGetSequence( $tbl )",
+		"body": [
+			"strGetSequence( $$tbl )"
+		],
+		"description": ""
+	},
+	"strNowFuncDB( $tbl )": {
+		"prefix": "strNowFuncDB( $tbl )",
+		"body": [
+			"strNowFuncDB( $$tbl )"
+		],
+		"description": ""
+	},
+	"strCreateWhereIN( $ary )": {
+		"prefix": "strCreateWhereIN( $ary )",
+		"body": [
+			"strCreateWhereIN( $$ary )"
+		],
+		"description": ""
+	},
+	"aryExplodeID( $val, $sep = ',' )": {
+		"prefix": "aryExplodeID( $val, $sep = ',' )",
+		"body": [
+			"aryExplodeID( $$val, $$sep = ',' )"
+		],
+		"description": ""
+	},
+	"iLimitBetween( $iVal, $iMin, $iMax, $iDefMin = NULL, $iDefMax = NULL )": {
+		"prefix": "iLimitBetween( $iVal, $iMin, $iMax, $iDefMin = NULL, $iDefMax = NULL )",
+		"body": [
+			"iLimitBetween( $$iVal, $$iMin, $$iMax, $$iDefMin = NULL, $$iDefMax = NULL )"
+		],
+		"description": ""
+	},
+	"strDebugVarDump(  )": {
+		"prefix": "strDebugVarDump(  )",
+		"body": [
+			"strDebugVarDump(  )"
+		],
+		"description": ""
 	}
+	
 
 
 }
+

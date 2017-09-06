@@ -1,11 +1,11 @@
 {
 	"fileheader": {
 		"label": "1: ファイルヘッダー",
-		"filename": "fileheader.ts"
+		"filename": "ts/fileheader.ts"
 	},
 	"constructor": {
 		"label": "2: コンストラクター",
-		"filename": "constructor.ts"
+		"filename": "ts/constructor.ts"
 	},
 	"now.ymd": {
 		"label": "Y: 今日",

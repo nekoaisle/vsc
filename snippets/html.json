@@ -21,17 +21,17 @@
 		"description": "Blogger用スタイルシート"
 	},
 	"Script": {
-		"prefix": "script",
+		"prefix": "<script",
 		"body": [
 			"<script type=\"text/javascript\">",
 			"$(function() {",
-			"}),",
+			"});",
 			"</script>"
 		],
 		"description": "scrpt タグ"
 	},
 	"Style": {
-		"prefix": "style",
+		"prefix": "<style",
 		"body": [
 			"<style type=\"text/css\">",
 			"${1:セレクタ} {",

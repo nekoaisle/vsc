@@ -1,11 +1,16 @@
 {
 	"keybindings": {
 		"label": "1: keybindings",
-		"filename": "keybindings.json"
+		"filename": "json/keybindings.json"
 	},
 	"patterns": {
 		"label": "2: keywords.patterns",
-		"filename": "patterns.json"
+		"filename": "json/patterns.json"
+	},
+	"snippet": {
+		"label": "E: スニペット(クリップボード)",
+		"filename": "json/snippet.json",
+		"method": "snippet"
 	},
 	"now.ymd": {
 		"label": "Y: 今日",

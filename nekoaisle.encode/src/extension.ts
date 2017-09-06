@@ -11,7 +11,7 @@
  */
 'use strict';
 import * as vscode from 'vscode';
-import {Util, Extension} from './nekoaisle.lib/nekoaisle';
+import { Util, Extension } from './nekoaisle.lib/nekoaisle';
 
 /**
  * エクステンション活性化
@@ -40,19 +40,112 @@ class MyExtention extends Extension {
 			config: 'encode',		// 通常はコマンドのサフィックス
 			commands: [
 				{
-					command: 'nekoaisle.encode',	// コマンド
+					// メニュー表示
+					command: 'nekoaisle.encode',
 					callback: () => {
 						this.menu()
 					}
-				},{
-					command: 'nekoaisle.encloseInSingleQuotation',	// コマンド
+				}, {
+					// HTML エンコード
+					command: 'nekoaisle.encodeHtml',
+					callback: () => {
+						this.encodeSelection('HTML');
+					}
+				}, {
+					// URL エンコード
+					command: 'nekoaisle.encodeUrl',
+					callback: () => {
+						this.encodeSelection('URL');
+					}
+				}, {
+					// BASE64 エンコード
+					command: 'nekoaisle.encodeBase64',
+					callback: () => {
+						this.encodeSelection('BASE64');
+					}
+				}, {
+					// C言語文字列
+					command: 'nekoaisle.encodeCString',
+					callback: () => {
+						this.encodeSelection('c-string');
+					}
+				}, {
+					// 正規表現
+					command: 'nekoaisle.encodePreg',
+					callback: () => {
+						this.encodeSelection('preg');
+					}
+				}, {
+					// '' の中身
+					command: 'nekoaisle.encodeContentsOfSingleQuotation',
+					callback: () => {
+						this.encodeSelection("'");
+					}
+				}, {
+					// "" の中身
+					command: 'nekoaisle.encodeContentsOfDoubleQuotation',
+					callback: () => {
+						this.encodeSelection("'");
+					}
+				}, {
+					// HTML デコード
+					command: 'nekoaisle.decodeHtml',
+					callback: () => {
+						this.decodeSelection('HTML');
+					}
+				}, {
+					// URL デコード
+					command: 'nekoaisle.decodeUrl',
+					callback: () => {
+						this.decodeSelection('URL');
+					}
+				}, {
+					// BASE64 デコード
+					command: 'nekoaisle.decodeBase64',
+					callback: () => {
+						this.decodeSelection('BASE64');
+					}
+				}, {
+					// C言語文字列
+					command: 'nekoaisle.decodeCString',
+					callback: () => {
+						this.decodeSelection('c-string');
+					}
+				}, {
+					// 正規表現
+					command: 'nekoaisle.decodePreg',
+					callback: () => {
+						this.decodeSelection('preg');
+					}
+				}, {
+					// '' の中身
+					command: 'nekoaisle.decodeContentsOfSingleQuotation',
+					callback: () => {
+						this.decodeSelection("'");
+					}
+				}, {
+					// "" の中身
+					command: 'nekoaisle.decodeContentsOfDoubleQuotation',
+					callback: () => {
+						this.decodeSelection("'");
+					}
+				}, {
+					// '' 括り
+					command: 'nekoaisle.encloseInSingleQuotation',
 					callback: () => {
 						this.enclose("'", "'");
 					}
-				},{
-					command: 'nekoaisle.encloseInDoubleQuotation',	// コマンド
+				}, {
+					// "" 括り
+					command: 'nekoaisle.encloseInDoubleQuotation',
 					callback: () => {
 						this.enclose('"', '"');
+					}
+				}, {
+					// `` 括り
+					command: 'nekoaisle.encloseInGraveAccent',
+					callback: () => {
+						this.enclose('\u0060', '\u0060');
 					}
 				}
 			]
@@ -64,87 +157,145 @@ class MyExtention extends Extension {
 	 */
 	public menu() {
 		let menu: vscode.QuickPickItem[] = [
-			{ label: "'''"             , description: '\' で単語または選択範囲を括る/外す' },
-			{ label: '""'              , description: '\' で単語または選択範囲を括る/外す' },
-			{ label: '()'              , description: '() で単語または選択範囲を括る/外す' },
-			{ label: '[]'              , description: '[] で単語または選択範囲を括る/外す' },
-			{ label: '<>'              , description: '<> で単語または選択範囲を括る/外す' },
-			{ label: '{}'              , description: '{} で単語または選択範囲を括る/外す' },
-			{ label: '{{}}'            , description: '{{}} で単語または選択範囲を括る/外す' },
-			{ label: '/**/'            , description: '/**/ で単語または選択範囲を括る/外す' },
-			{ label: '<!-- -->'        , description: 'HTML コメント/外す' },
+			{ label: 'HTML', description: '特殊文字を HTML エンティティに変換する' },
+			{ label: 'URL', description: '文字列を URL エンコードする' },
+			{ label: 'BASE64', description: 'MIME base64 方式でデータをエンコードする' },
+			{ label: 'c-string', description: 'C 言語と同様にスラッシュで文字列をクォートする' },
+			{ label: 'preg', description: '正規表現文字をクオートする' },
+			{ label: "'", description: "' を \\' にする" },
+			{ label: '"', description: '" を \\" にする' },
 
-			{ label: 'HTML'            , description: '特殊文字を HTML エンティティに変換する' },
-			{ label: 'URL'             , description: '文字列を URL エンコードする' },
-			{ label: 'BASE64'          , description: 'MIME base64 方式でデータをエンコードする' },
-			{ label: 'c-string'        , description: 'C 言語と同様にスラッシュで文字列をクォートする' },
-			{ label: 'preg'            , description: '正規表現文字をクオートする' },
-			{ label: "'"               , description: "' を \\' にする" },
-			{ label: '"'               , description: '" を \\" にする' },
-			{ label: 'HTML decode'     , description: 'HTML エンティティを適切な文字に変換する' },
-			{ label: 'URL decode'      , description: 'URL エンコードされた文字列をデコードする' },
-			{ label: 'BASE64 decode'   , description: 'MIME base64 方式によりエンコードされたデータをデコードする' },
-			{ label: 'c-string decode' , description: 'C 言語文字列をアンクォートする' },
-			{ label: 'preg decode'     , description: '正規表現文字をアンクオートする' },
-			{ label: "' decode"        , description: "\\' を ' にする" },
-			{ label: '" decode'        , description: '\\" を " にする' },
+			{ label: "''", description: '\' で単語または選択範囲を括る/外す' },
+			{ label: '""', description: '" で単語または選択範囲を括る/外す' },
+			{ label: '``', description: '\u0060 で単語または選択範囲を括る/外す' },
+			{ label: '()', description: '() で単語または選択範囲を括る/外す' },
+			{ label: '[]', description: '[] で単語または選択範囲を括る/外す' },
+			{ label: '<>', description: '<> で単語または選択範囲を括る/外す' },
+			{ label: '{}', description: '{} で単語または選択範囲を括る/外す' },
+			{ label: '{{}}', description: '{{}} で単語または選択範囲を括る/外す' },
+			{ label: '/**/', description: '/**/ で単語または選択範囲を括る/外す' },
+			{ label: '<!-- -->', description: 'HTML コメント/外す' },
+
+			{ label: 'HTML decode', description: 'HTML エンティティを適切な文字に変換する' },
+			{ label: 'URL decode', description: 'URL エンコードされた文字列をデコードする' },
+			{ label: 'BASE64 decode', description: 'MIME base64 方式によりエンコードされたデータをデコードする' },
+			{ label: 'c-string decode', description: 'C 言語文字列をアンクォートする' },
+			{ label: 'preg decode', description: '正規表現文字をアンクオートする' },
+			{ label: "' decode", description: "\\' を ' にする" },
+			{ label: '" decode', description: '\\" を " にする' },
 		];
 		// ファイルを選択
 		let popt = {
 			placeHolder: 'エンコードの種類を選択してください。',
 		};
 		vscode.window.showQuickPick(menu, popt)
-		.then((sel: vscode.QuickPickItem) => {
-			this.encodeJob(sel.label);
-		});
+			.then((sel: vscode.QuickPickItem) => {
+				switch (sel.label) {
+					case "''": this.enclose("'", "'"); return;
+					case '""': this.enclose('"', '"'); return;
+					case '``': this.enclose('`', '`'); return;
+					case '()': this.enclose('(', ')'); return;
+					case '[]': this.enclose('[', ']'); return;
+					case '{}': this.enclose('{', '}'); return;
+					case '<>': this.enclose('<', '>'); return;
+					case '{{}}': this.enclose('{{', '}}'); return;
+					case '/**/': this.enclose('/*', '*/'); return;
+					case '<!-- -->': this.enclose('<!-- ', ' -->'); return;
+				}
+
+				let cmd = sel.label.split(' ');
+				switch (cmd[0]) {
+					case '':
+					default:	
+					case 'encode': {
+						this.encodeSelection(cmd[0]);
+						break;
+					}
+					case 'decode': {
+						this.decodeSelection(cmd[0]);
+						break;
+					}
+				}
+			});
 	}
 
 	protected encodeJob(sel: string) {
-		switch (sel) {
-			case "''":			this.enclose("'", "'"); return;
-			case '""': 			this.enclose('"', '"'); return;
-			case '()': 			this.enclose('(', ')'); return;
-			case '[]': 			this.enclose('[', ']'); return;
-			case '{}': 			this.enclose('{', '}'); return;
-			case '<>': 			this.enclose('<', '>'); return;
-			case '{{}}': 		this.enclose('{{', '}}'); return;
-			case '/**/':		this.enclose('/*', '*/'); return;
-			case '<!-- -->':	this.enclose('<!-- ', ' -->'); return;
-		}
+	}
 
+	protected encodeSelection(type: string): void {
 		// 選択範囲の文字列を取得
 		let editor = vscode.window.activeTextEditor;
 		let s = Util.getSelectString(editor);
 
 		// 変換
-		switch ( sel ) {
+		switch (type) {
 			// HTML encode
-			case 'HTML':			s = Util.encodeHtml(s); break;
-			case 'HTML decode':		s = Util.decodeHtml(s); break;
+			case 'HTML': s = Util.encodeHtml(s); break;
 			// URL encode
-			case 'URL':				s = encodeURIComponent(s); break;
-			case 'URL decode':		s = decodeURIComponent(s); break;
+			case 'URL': s = encodeURIComponent(s); break;
 			// BASE64
-			case 'BASE64':			s = new Buffer(s).toString('base64'); break;
-			case 'BASE64 decode': 	s = new Buffer(s, 'base64').toString(); break;
+			case 'BASE64': s = new Buffer(s).toString('base64'); break;
 			// C言語文字列
-			case 'c-string':		s = this.encodeCString(s); break;;
-			case 'c-string decode':	s = this.decodeCString(s); break;
+			case 'c-string': s = this.encodeCString(s); break;;
 			// 正規表現
-			case 'preg':			s = this.encodePreg(s); break;
-			case 'preg decode': 	s = this.decodePreg(s); break;
+			case 'preg': s = this.encodePreg(s); break;
 			// ""囲み文字列
-			case '"':				s = s.replace(/"/g, '\\"'); break;
-			case '" decode':		s = s.replace(/\\"/g, '"'); break;
+			case '"':
+				s = s.replace(/\\/g, '\\\\');
+				s = s.replace(/"/g, '\\"');
+				break;
 			// ''囲み文字列
-			case "'":				s = s.replace(/'/g, "\\'"); break;
-			case "\' decode":		s = s.replace(/\\'/g, "'"); break;
+			case "'":
+				s = s.replace(/\\/g, '\\\\');
+				s = s.replace(/'/g, "\\'");
+				break;
+			// ``囲み文字列
+			case "\u0060":
+				s = s.replace(/\u0060/g, "\\u0060");
+				break;
 		}
 
 		// 結果に置換
 		editor.edit(edit => edit.replace(editor.selection, s));
 	}
 
+	protected decodeSelection(type: string): void {
+		// 選択範囲の文字列を取得
+		let editor = vscode.window.activeTextEditor;
+		let s = Util.getSelectString(editor);
+
+		// 変換
+		switch (type) {
+			// HTML encode
+			case 'HTML': s = Util.decodeHtml(s); break;
+			// URL encode
+			case 'URL': s = decodeURIComponent(s); break;
+			// BASE64
+			case 'BASE64': s = new Buffer(s, 'base64').toString(); break;
+			// C言語文字列
+			case 'c-string': s = this.decodeCString(s); break;
+			// 正規表現
+			case 'preg': s = this.decodePreg(s); break;
+			// ""囲み文字列
+			case '"':
+				s = s.replace(/\\"/g, '"');
+				s = s.replace(/\\\\"/g, '\\');
+				break;
+			// ''囲み文字列
+			case "'":
+				s = s.replace(/\\'/g, "'");
+				s = s.replace(/\\\\"/g, '\\');
+				break;
+			// ``囲み文字列
+			case "\\u0060":
+				s = s.replace(/\\u0060/g, "\u0060");
+				break;
+		}
+
+		// 結果に置換
+		editor.edit(edit => edit.replace(editor.selection, s));
+	}
+	
 	/**
 	 * C言語用文字列にエンコード
 	 * @param s エンコードする文字列
@@ -163,10 +314,10 @@ class MyExtention extends Extension {
 				'\\': '\\\\'		// \
 			};
 			let c = s.charCodeAt(0);
-			if ( tbl[c] ) {
+			if (tbl[c]) {
 				// 制御コード
 				s = tbl[c];
-			} 
+			}
 			return s;
 		});
 	}
@@ -177,13 +328,13 @@ class MyExtention extends Extension {
 	 */
 	protected decodeCString(s: string): string {
 		return s.replace(/\\(?:([0-7]+)|x([0-9a-fA-F]+)|(.))/g, (s: string, p1: string, p2: string, p3: string): string => {
-			if ( p1 ) {
+			if (p1) {
 				// ８進数
 				s = String.fromCharCode(parseInt(p1, 8));
-			} else if ( p2 ) {
+			} else if (p2) {
 				// １６進数
 				s = String.fromCharCode(parseInt(p2, 16));
-			} else if ( p3 ) {
+			} else if (p3) {
 				// \に続く１文字
 				const tbl = {
 					'a': '\x07',		// G BELL 警告音
@@ -194,7 +345,7 @@ class MyExtention extends Extension {
 					'f': '\x0c',		// L FF   改ページ
 					'r': '\x0d',		// M CR   復帰
 				};
-				if ( tbl[p3] ) {
+				if (tbl[p3]) {
 					s = tbl[p3];
 				} else {
 					s = p3;
@@ -210,9 +361,9 @@ class MyExtention extends Extension {
 	 */
 	protected encodePreg(s: string): string {
 		let r = '';
-		for ( let i = 0; i < s.length; ++ i ) {
+		for (let i = 0; i < s.length; ++i) {
 			let c = s.substr(i, 1);
-			if ( '.\\+*?[^]$(){}=!<>|:-/'.indexOf(c) >= 0 ) {
+			if ('.\\+*?[^]$(){}=!<>|:-/'.indexOf(c) >= 0) {
 				c = '\\' + c;
 			}
 			r += c;
@@ -235,19 +386,19 @@ class MyExtention extends Extension {
 	 * @param start 開始文字
 	 * @param end 終了文字
 	 */
-	protected encloseAll(start: string, end: string) {
-		// カーソル位置の単語の範囲を取得
-		let editor = vscode.window.activeTextEditor;
-		let sels = editor.selections;
-		let newSels: vscode.Selection[];
-		for (let key in sels) {
-			let sels = this.enclose(start, end);
-			newSels.push(sels);
-		}
-		editor.selections = newSels;
-	}
+	// protected encloseAll(start: string, end: string) {
+	// 	// カーソル位置の単語の範囲を取得
+	// 	let editor = vscode.window.activeTextEditor;
+	// 	let sels = editor.selections;
+	// 	let newSels: vscode.Selection[];
+	// 	for (let key in sels) {
+	// 		let sels = this.enclose(start, end);
+	// 		newSels.push(sels);
+	// 	}
+	// 	editor.selections = newSels;
+	// }
 
-	protected enclose(start: string, end: string): vscode.Selection {
+	protected enclose(start: string, end: string): /*vscode.Selection*/void {
 		// カーソル位置の単語の範囲を取得
 		let editor = vscode.window.activeTextEditor;
 		let sel = editor.selection;
@@ -261,22 +412,36 @@ class MyExtention extends Extension {
 			range = new vscode.Range(sel.start, sel.end);
 		}
 
+		// 対象となる文字列取得
 		let word = editor.document.getText(range);
 
-		// １文字ずつ前後に広げる
-		let outRange = new vscode.Range(range.start.translate(0, -1), range.end.translate(0, 1));
-		let outWord = editor.document.getText(outRange);
-		
-		if ((outWord.substr(0, 1) == start) && (outWord.substr(-1, 1) == end)) {
-			// すでに括られているの外す
-			editor.edit(edit => edit.replace(outRange, word));
-			newSel = new vscode.Selection(outRange.start, outRange.end);
+		// まずはこの文字列がすでに括られているかチェック
+		if ((word.substr(0, start.length) == start) && (word.substr(-end.length) == end)) {
+			// 括られているので外す
+			word = word.substr(start.length, word.length - (start.length + end.length));
+			editor.edit(edit => edit.replace(range, word));
 		} else {
-			// 括られていないので括る
-			editor.edit(edit => edit.replace(range, `${start}${word}${end}`));
-			newSel = new vscode.Selection(range.start, range.end);
+			// 括られた中身だけを選択している場合の対応
+			// １文字ずつ前後に広げる
+			let outRange: vscode.Range;
+			try {
+				outRange = new vscode.Range(range.start.translate(0, -start.length), range.end.translate(0, end.length));
+				let outWord = editor.document.getText(outRange);
+				if ((outWord.substr(0, start.length) == start) && (outWord.substr(-end.length) == end)) {
+					// すでに括られているの外す
+					editor.edit(edit => edit.replace(outRange, word));
+					//				newSel = new vscode.Selection(outRange.start, outRange.end);
+				} else {
+				// 括られていないので括る
+				editor.edit(edit => edit.replace(range, `${start}${word}${end}`));
+				}
+			} catch (err) {
+				// 範囲を広げられなかったということは括られていない
+				// 括られていないので括る
+				editor.edit(edit => edit.replace(range, `${start}${word}${end}`));
+			}
 		}
 
-		return newSel;
+		return;
 	}
 }

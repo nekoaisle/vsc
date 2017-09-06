@@ -1,0 +1,66 @@
+{
+	"if": {
+		"prefix": "if () {",
+		"body": [
+			"if () {",
+			"}"
+		],
+		"description": ""
+	},
+	"else if": {
+		"prefix": "} else if () {",
+		"body": [
+			"} else if () {",
+			"}"
+		],
+		"description": ""
+	},
+	"else": {
+		"prefix": "} else {",
+		"body": [
+			"} else {",
+			"}"
+		],
+		"description": ""
+	},
+	"for in": {
+		"prefix": "for (let key in array) {",
+		"body": [
+			"for (let key in ${1:配列}) {",
+			"\tlet val = ${1:配列}[key];",
+			"}"
+		],
+		"description": "nekoaisle"
+	},
+	"for of": {
+		"prefix": "for (let val of array) {",
+		"body": [
+			"for (let val of ${1:配列}) {",
+			"}"
+		],
+		"description": "nekoaisle"
+	},
+	"switch": {
+		"prefix": "switch() {",
+		"body": [
+			"switch (${1:var}) {",
+			"\tcase '': {",
+			"\t\tbreak;",
+			"\t}",
+			"\tdefault: {",
+			"\t\tbreak;",
+			"\t}",
+			"}"
+			],
+		"description": "switch"
+	},
+	"case": {
+		"prefix": "case '': {",
+		"body": [
+			"case '': {",
+			"\tbreak;",
+			"}"
+			],
+		"description": "switch case"
+	}
+}

@@ -1,39 +1,39 @@
 {
 	"fileheader": {
 		"label": "1: ファイルヘッダー",
-		"filename": "fileheader.sh"
+		"filename": "sh/fileheader.sh"
 	},
 	"function": {
 		"label": "2: 関数",
-		"filename": "function.sh"
+		"filename": "sh/function.sh"
 	},
 	"if": {
 		"label": "3: if",
-		"filename": "if.sh"
+		"filename": "sh/if.sh"
 	},
 	"case": {
 		"label": "4: case",
-		"filename": "case.sh"
+		"filename": "sh/case.sh"
 	},
 	"while": {
 		"label": "5: while",
-		"filename": "while.sh"
+		"filename": "sh/while.sh"
 	},
 	"for": {
 		"label": "6: for",
-		"filename": "for.sh"
+		"filename": "sh/for.sh"
 	},
 	"yellow": {
 		"label": "7: yellow",
-		"filename": "yellow.sh"
+		"filename": "sh/yellow.sh"
 	},
 	"error_mess": {
 		"label": "8: error_mess",
-		"filename": "error_mess.sh"
+		"filename": "sh/error_mess.sh"
 	},
 	"getopt": {
 		"label": "9: getopt",
-		"filename": "getopt.sh"
+		"filename": "sh/getopt.sh"
 	},
 	"now.ymd": {
 		"label": "Y: 今日",
