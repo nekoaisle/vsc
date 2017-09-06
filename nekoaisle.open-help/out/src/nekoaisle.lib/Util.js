@@ -341,6 +341,34 @@ var Util;
     }
     Util.loadFile = loadFile;
     /**
+     * 文字列を json デコード
+     * @param str デコードする JSON
+     * @param except 例外を発生する
+     */
+    function decodeJson(str, except) {
+        let json;
+        try {
+            json = JSON.parse(str);
+        }
+        catch (err) {
+            if (except) {
+                throw err;
+            }
+            Util.putMess(`JSON.parse('${str}'): ${err}`);
+        }
+        return json;
+    }
+    Util.decodeJson = decodeJson;
+    /**
+     * JSONファイルを読み込む
+     * @param fileName ファイル名
+     */
+    function loadFileJson(fileName) {
+        let source = Util.loadFile(fileName);
+        return decodeJson(source);
+    }
+    Util.loadFileJson = loadFileJson;
+    /**
      * 指定ファイルを開く
      * create に true を指定するとファイルが存在しないときは作成する
      * @param fileName ファイル名

@@ -340,6 +340,33 @@ export module Util {
 	}
 
 	/**
+	 * 文字列を json デコード
+	 * @param str デコードする JSON
+	 * @param except 例外を発生する
+	 */
+	export function decodeJson(str: string, except?: boolean): any {
+		let json;
+		try {
+			json = JSON.parse(str);
+		} catch (err) {
+			if (except) {
+				throw err;
+			}
+			Util.putMess(`JSON.parse('${str}'): ${err}`);
+		}
+		return json;
+	}
+
+	/**
+	 * JSONファイルを読み込む
+	 * @param fileName ファイル名
+	 */
+	export function loadFileJson(fileName: string): any {
+		let source: string = Util.loadFile(fileName);
+		return decodeJson(source);
+	}
+
+	/**
 	 * 指定ファイルを開く
 	 * create に true を指定するとファイルが存在しないときは作成する
 	 * @param fileName ファイル名

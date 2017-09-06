@@ -73,12 +73,8 @@ class InsertCode extends nekoaisle_1.Extension {
         // この拡張子のメニューを読み込む
         let menuFN = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
         let menuJson = nekoaisle_1.Util.loadFile(menuFN);
-        let menuItems;
-        try {
-            menuItems = JSON.parse(menuJson);
-        }
-        catch (err) {
-            nekoaisle_1.Util.putMess(`${menuFN}: ${err}`);
+        let menuItems = nekoaisle_1.Util.loadFileJson(menuFN);
+        if (!menuItems) {
             return;
         }
         // QuickPickOptions 用のメニューを作成

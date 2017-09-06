@@ -99,11 +99,8 @@ class InsertCode extends Extension {
         // この拡張子のメニューを読み込む
         let menuFN = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
         let menuJson: string = Util.loadFile(menuFN);
-        let menuItems: ListItem;
-        try {
-            menuItems = JSON.parse(menuJson);
-        } catch (err) {
-            Util.putMess(`${menuFN}: ${err}`);
+        let menuItems: ListItem = Util.loadFileJson(menuFN);
+        if (!menuItems) {
             return;
         }
 
