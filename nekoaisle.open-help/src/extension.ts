@@ -1,13 +1,13 @@
 'use strict';
 import * as vscode from 'vscode';
-import {Util, Extension} from './nekoaisle.lib/nekoaisle';
+import { Util, Extension } from './nekoaisle.lib/nekoaisle';
 
 /**
  * エクステンション活性化
  * @param context 
  */
 export function activate(context: vscode.ExtensionContext) {
-	let ext = new MyExtension(context);
+    let ext = new MyExtension(context);
 }
 
 /**
@@ -23,25 +23,25 @@ class MyExtension extends Extension {
 	/**
 	 * 構築
 	 */
-	constructor(context: vscode.ExtensionContext) {
-		super(context, {
-			name: 'カーソル位置の単語でPHPマニュアルを開く',
-			config: 'phpHelp',		// 通常はコマンドのサフィックス
-			commands: [
-				{
-					command: 'nekoaisle.phpHelp',	// コマンド
-					callback: () => {
-						this.exec()
-					}
-				}
-			]
-		});
-	}
+    constructor(context: vscode.ExtensionContext) {
+        super(context, {
+            name: 'カーソル位置の単語でマニュアルなどを開く',
+            config: 'openHelp',		// 通常はコマンドのサフィックス
+            commands: [
+                {
+                    command: 'nekoaisle.openHelp',	// コマンド
+                    callback: () => {
+                        this.exec()
+                    }
+                }
+            ]
+        });
+    }
 
 	/**
 	 * エントリー
 	 */
-	public exec() {
+    public exec() {
         let editor = vscode.window.activeTextEditor;
 
         // カーソル位置の単語を取得
@@ -49,25 +49,27 @@ class MyExtension extends Extension {
 
         let addr: string;
         let query: object;
-        switch ( editor.document.languageId ) {
+        switch (editor.document.languageId) {
             case 'typescript':
-            case 'javascript':
+            case 'javascript': {
                 addr = 'https://developer.mozilla.org/ja/search';
                 query = {
                     locale: 'ja',
                     "q": word
                 };
                 break;
+            }
 
-            case 'php':
+            case 'php': {
                 addr = 'http://jp2.php.net/manual-lookup.php';
                 query = {
                     lang: 'ja',
                     function: word
                 };
                 break;
+            }
 
-            case 'sql':
+            case 'sql': {
                 addr = 'https://dev.mysql.com/doc/search/';
                 query = {
                     d: 171,
@@ -75,6 +77,12 @@ class MyExtension extends Extension {
                 }
                 break;
             }
+            
+            case 'shellscript': {
+                addr = 'http://shellscript.sunone.me/#index';
+                break;
+            }    
+        }
 
         Util.browsURL(addr, query);
     }

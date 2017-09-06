@@ -5,14 +5,21 @@ const chproc = require("child_process");
 const os = require("os");
 const fs = require("fs");
 const path = require("path");
+const url = require("url");
 var Util;
 (function (Util) {
+    function getExtensionPath(filename) {
+        return path.resolve(exports.extensionContext.extensionPath, filename);
+    }
+    Util.getExtensionPath = getExtensionPath;
     /**
      * メッセージを出力
      * @param str 出力するメッセージ
      */
     function putMess(str) {
-        vscode.window.showInformationMessage(str);
+        for (let s of str.split('\n')) {
+            vscode.window.showInformationMessage(s);
+        }
         return str;
     }
     Util.putMess = putMess;
@@ -40,7 +47,6 @@ var Util;
      * @param c 調べる文字コード
      */
     function getCharType(c) {
-        const re1 = /^[a-zA-z0-9_\$@]$/;
         let s = String.fromCharCode(c);
         if ((c == 0x20) || (c == 9)) {
             // 空白
@@ -50,7 +56,7 @@ var Util;
             // 制御文字
             return 0;
         }
-        else if (re1.test(s)) {
+        else if (/^[a-zA-Z0-9_\$@]$/.test(s)) {
             // プログラムに使う文字
             return 2;
         }
@@ -65,12 +71,51 @@ var Util;
     }
     Util.getCharType = getCharType;
     /**
+     * HTMLエンコード
+     * @param s エンコードする文字列
+     * @return string エンコードした文字列
+     */
+    function encodeHtml(s) {
+        return s.replace(/[&'`"<>\s]/g, function (match) {
+            return {
+                '&': '&amp;',
+                "'": '&#x27;',
+                '`': '&#x60;',
+                '"': '&quot;',
+                '<': '&lt;',
+                '>': '&gt;',
+                ' ': '&nbsp;',
+                '\r\n': '<br />\r\n',
+                '\r': '<br />\r',
+                '\n': '<br />\n',
+            }[match];
+        });
+    }
+    Util.encodeHtml = encodeHtml;
+    function decodeHtml(s) {
+        return s.replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#039;/g, '\'')
+            .replace(/&#044;/g, ',')
+            .replace(/&amp;/g, '&')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/<br(\s*\/)?>(\r\n)?/g, '\r\n');
+    }
+    Util.decodeHtml = decodeHtml;
+    /**
      * カーソル位置の単語の範囲を取得
      * @param editor 対象とするエディタ
      */
-    function getCursorWordRange(editor) {
-        // カーソル位置を取得
-        let pos = editor.selection.active;
+    function getCursorWordRange(editor, pos) {
+        if (!editor) {
+            // 省略されたら現在のエディタ
+            editor = vscode.window.activeTextEditor;
+        }
+        if (!pos) {
+            // 省略されたらカーソル位置を取得
+            pos = editor.selection.active;
+        }
         // カーソル行を取得
         let line = editor.document.lineAt(pos.line).text;
         let s = pos.character;
@@ -119,6 +164,7 @@ var Util;
     /**
      * 指定文字の大文字・小文字を切り替える
      * @param c 対象となる文字
+     * @param mode toggle=切り替え lower:小文字 upper:大文字
      * @return string 結果
      */
     function changeCharCase(c, mode) {
@@ -141,8 +187,23 @@ var Util;
     }
     Util.changeCharCase = changeCharCase;
     /**
-     * 指定した文字列が大文字化小文字か調べる
-     * 文字列の先頭から順に調べ最初に変挺できたケースを返す
+     * キャメルケースに変換
+     * スネークケースは _ で分解しそれぞれの単語の先頭を大文字に変換して結合
+     * それ以外は文字列の先頭文字を大文字それ以外を小文字にします
+     * @param str
+     * @return キャメルケースに変換した文字列
+     */
+    function toCamelCase(str) {
+        let ret = [];
+        for (let v of str.split('_')) {
+            ret.push(v.substr(0, 1).toUpperCase() + v.substr(1).toLowerCase());
+        }
+        return ret.join('');
+    }
+    Util.toCamelCase = toCamelCase;
+    /**
+     * 指定した文字列が大文字か小文字か調べる
+     * 文字列の先頭から順に調べ最初に判定できたケースを返す
      * @param str 調べる文字列
      * @return 'upper' | 'lower | ''
      */
@@ -176,6 +237,10 @@ var Util;
      * @param editor 対象とするエディタ
      */
     function getSelectString(editor) {
+        if (!editor) {
+            // editor が省略されたので現在のエディタ
+            editor = vscode.window.activeTextEditor;
+        }
         let range = editor.selection;
         return editor.document.getText(range);
     }
@@ -215,24 +280,19 @@ var Util;
      * @param query 追加の query
      */
     function browsURL(uri, query) {
+        // uri をパース
+        let urlInfo = url.parse(uri, true);
+        // query を追加
         if (query) {
-            // queryが指定されているので整形
-            let a = [];
-            for (let k in query) {
-                let v = encodeURIComponent(query[k]);
-                a.push(`${k}=${v}`);
+            if (typeof urlInfo.query !== "object") {
+                urlInfo.query = {};
             }
-            // uri にオプションの query を追加
-            if (uri.indexOf('?') < 0) {
-                // uri に query を含まないので ? で始める
-                uri += '?';
+            for (let key in query) {
+                urlInfo.query[key] = query[key];
             }
-            else {
-                // uri に query を含むので & で始める
-                uri += '&';
-            }
-            uri += a.join('&');
         }
+        // パースしたURIを文字列にする
+        uri = url.format(urlInfo);
         // Chromium を実行
         Util.execCmd(`chromium-browser '${uri}'`);
     }

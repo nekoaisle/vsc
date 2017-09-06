@@ -1,7 +1,7 @@
 {
-    "name": "php-help",
-    "displayName": "PHP Help",
-    "description": "カーソル位置の単語でPHPマニュアルを検索",
+    "name": "open-help",
+    "displayName": "Open Help",
+    "description": "カーソル位置の単語でマニュアルなどを開く",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {
@@ -11,18 +11,18 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:nekoaisle.phpHelp"
+        "onCommand:nekoaisle.openHelp"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
             {
-                "command": "nekoaisle.phpHelp",
-                "title": "PHP Help"
+                "command": "nekoaisle.openHelp",
+                "title": "Open Help"
             }
         ],
         "keybindings": [{
-            "command": "nekoaisle.phpHelp",
+            "command": "nekoaisle.openHelp",
             "key": "f1"
         }]
     },

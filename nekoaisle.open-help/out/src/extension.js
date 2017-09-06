@@ -25,11 +25,11 @@ class MyExtension extends nekoaisle_1.Extension {
      */
     constructor(context) {
         super(context, {
-            name: 'カーソル位置の単語でPHPマニュアルを開く',
-            config: 'phpHelp',
+            name: 'カーソル位置の単語でマニュアルなどを開く',
+            config: 'openHelp',
             commands: [
                 {
-                    command: 'nekoaisle.phpHelp',
+                    command: 'nekoaisle.openHelp',
                     callback: () => {
                         this.exec();
                     }
@@ -48,27 +48,34 @@ class MyExtension extends nekoaisle_1.Extension {
         let query;
         switch (editor.document.languageId) {
             case 'typescript':
-            case 'javascript':
+            case 'javascript': {
                 addr = 'https://developer.mozilla.org/ja/search';
                 query = {
                     locale: 'ja',
                     "q": word
                 };
                 break;
-            case 'php':
+            }
+            case 'php': {
                 addr = 'http://jp2.php.net/manual-lookup.php';
                 query = {
                     lang: 'ja',
                     function: word
                 };
                 break;
-            case 'sql':
+            }
+            case 'sql': {
                 addr = 'https://dev.mysql.com/doc/search/';
                 query = {
                     d: 171,
                     q: word
                 };
                 break;
+            }
+            case 'shellscript': {
+                addr = 'http://shellscript.sunone.me/#index';
+                break;
+            }
         }
         nekoaisle_1.Util.browsURL(addr, query);
     }

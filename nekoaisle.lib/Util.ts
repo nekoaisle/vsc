@@ -3,7 +3,8 @@ import * as chproc from 'child_process';
 import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
-import {Extension} from './Extension';
+import * as url from 'url';
+import { Extension } from './Extension';
 
 
 export module Util {
@@ -16,7 +17,7 @@ export module Util {
 	 * @param str 出力するメッセージ
 	 */
 	export function putMess(str: string): string {
-		for ( let s of str.split('\n') ) {
+		for (let s of str.split('\n')) {
 			vscode.window.showInformationMessage(s);
 		}
 		return str;
@@ -31,14 +32,14 @@ export module Util {
 		return str;
 	}
 
-    // 指定文字でパディング
-    export function pad(str: string, pad: string, cols: number): string {
-        pad = pad.repeat(cols);
-        return (pad + str).slice(-cols);
-    }
-    export function padNum(num: number, cols: number): string {
-        return pad( num.toString(), "0", cols);
-    }
+	// 指定文字でパディング
+	export function pad(str: string, pad: string, cols: number): string {
+		pad = pad.repeat(cols);
+		return (pad + str).slice(-cols);
+	}
+	export function padNum(num: number, cols: number): string {
+		return pad(num.toString(), "0", cols);
+	}
 
 	/**
 	 * 指定文字コードの文字種を取得
@@ -46,16 +47,16 @@ export module Util {
 	 */
 	export function getCharType(c: number): number {
 		let s: string = String.fromCharCode(c);
-		if ( (c == 0x20) || (c==9) ) {
+		if ((c == 0x20) || (c == 9)) {
 			// 空白
 			return 1;
-		} else if ( c < 0x20 ) {
+		} else if (c < 0x20) {
 			// 制御文字
 			return 0;
-		} else if ( /^[a-zA-Z0-9_\$@]$/.test( s ) ) {
+		} else if (/^[a-zA-Z0-9_\$@]$/.test(s)) {
 			// プログラムに使う文字
 			return 2;
-		} else if ( c < 0x100 ) {
+		} else if (c < 0x100) {
 			// 半角文字
 			return 3;
 		} else {
@@ -70,31 +71,31 @@ export module Util {
 	 * @return string エンコードした文字列
 	 */
 	export function encodeHtml(s: string): string {
-		return s.replace(/[&'`"<>\s]/g, function(match) {
+		return s.replace(/[&'`"<>\s]/g, function (match) {
 			return {
-			  '&': '&amp;',
-			  "'": '&#x27;',
-			  '`': '&#x60;',
-			  '"': '&quot;',
-			  '<': '&lt;',
-			  '>': '&gt;',
-			  ' ': '&nbsp;',
-			  '\r\n': '<br />\r\n',
-			  '\r': '<br />\r',
-			  '\n': '<br />\n',
+				'&': '&amp;',
+				"'": '&#x27;',
+				'`': '&#x60;',
+				'"': '&quot;',
+				'<': '&lt;',
+				'>': '&gt;',
+				' ': '&nbsp;',
+				'\r\n': '<br />\r\n',
+				'\r': '<br />\r',
+				'\n': '<br />\n',
 			}[match];
 		});
 	}
 
 	export function decodeHtml(s: string): string {
-		return s.replace(/&lt;/g, '<') 
-		.replace(/&gt;/g, '>')
-		.replace(/&quot;/g, '"')
-		.replace(/&#039;/g, '\'')
-		.replace(/&#044;/g, ',')
-		.replace(/&amp;/g, '&')
-		.replace(/&nbsp;/g, ' ')
-		.replace(/<br(\s*\/)?>(\r\n)?/g, '\r\n')
+		return s.replace(/&lt;/g, '<')
+			.replace(/&gt;/g, '>')
+			.replace(/&quot;/g, '"')
+			.replace(/&#039;/g, '\'')
+			.replace(/&#044;/g, ',')
+			.replace(/&amp;/g, '&')
+			.replace(/&nbsp;/g, ' ')
+			.replace(/<br(\s*\/)?>(\r\n)?/g, '\r\n')
 	}
 
 	/**
@@ -116,14 +117,14 @@ export module Util {
 
 		let s = pos.character;
 		let t = Util.getCharType(line.charCodeAt(s));   // カーソル位置の文字タイプ
-		while ( (s > 0) && (t == Util.getCharType(line.charCodeAt(s-1))) ) {
-			-- s;
+		while ((s > 0) && (t == Util.getCharType(line.charCodeAt(s - 1)))) {
+			--s;
 		}
 
 		// 単語の終わりを探す
 		let e = s;
-		while ( (e < line.length) && (t == Util.getCharType(line.charCodeAt(e))) ) {
-			++ e;
+		while ((e < line.length) && (t == Util.getCharType(line.charCodeAt(e)))) {
+			++e;
 		}
 
 		let start = new vscode.Position(pos.line, s);
@@ -148,7 +149,7 @@ export module Util {
 	 * @return string 結果
 	 */
 	export function toggleCharCase(c: string): string {
-		switch ( getCharCase(c) ) {
+		switch (getCharCase(c)) {
 			case 'upper':
 				c = c.toLocaleLowerCase();
 				break;
@@ -167,11 +168,11 @@ export module Util {
 	 */
 	export function changeCharCase(c: string, mode?: string): string {
 		let cas = getCharCase(c);
-		if ( cas != '' ) {
+		if (cas != '') {
 			// 変換対象文字
-			if ( (mode == 'togge') || (mode != cas) ) {
+			if ((mode == 'togge') || (mode != cas)) {
 				// トグルは必ず、それ以外は現在と違う時変換
-				if ( cas == 'lower' ) {
+				if (cas == 'lower') {
 					// 小文字なので大文字に変換
 					c = c.toLocaleUpperCase();
 				} else {
@@ -181,7 +182,7 @@ export module Util {
 			}
 		}
 		return c;
-    }
+	}
 
 	/**
 	 * キャメルケースに変換
@@ -205,19 +206,19 @@ export module Util {
 	 * @return 'upper' | 'lower | ''
 	 */
 	export function getCharCase(str: string): string {
-		for ( let i = 0; i < str.length; ++ i ) {
+		for (let i = 0; i < str.length; ++i) {
 			// １文字抽出
 			let c = str.substr(i, 1);
-			if ( (c >= "A") && (c <= "Z") ) {
+			if ((c >= "A") && (c <= "Z")) {
 				// 半角アルファベット大文字
 				return 'upper';
-			} else if ( (c >= "a") && (c <= "z") ) {
+			} else if ((c >= "a") && (c <= "z")) {
 				// 半角アルファベット小文字
 				return 'lower';
-			} else if ( (c >= "Ａ") && (c <= "Ｚ") ) {
+			} else if ((c >= "Ａ") && (c <= "Ｚ")) {
 				// 全角アルファベット大文字
 				return 'upper';
-			} else if ( (c >= "ａ") && (c <= "ｚ") ) {
+			} else if ((c >= "ａ") && (c <= "ｚ")) {
 				// 全角アルファベット小文字
 				return 'lower';
 			}
@@ -253,7 +254,7 @@ export module Util {
 	/**
 	 * ホームディレクトリを取得
 	 */
-//	let homeDir: string;	// キャッシュ
+	//	let homeDir: string;	// キャッシュ
 	export function getHomeDir(): string {
 		// if ( !homeDir ) {
 		// 	homeDir = ("" + chproc.execSync('echo $HOME')).trim();
@@ -276,34 +277,31 @@ export module Util {
 	 * @param query 追加の query
 	 */
 	export function browsURL(uri: string, query?: object) {
-		if ( query ) {
-			// queryが指定されているので整形
-			let a: string[] = [];
-			for ( let k in query ) {
-				let v = encodeURIComponent(query[k]);
-				a.push(`${k}=${v}` );
-			}
+		// uri をパース
+		let urlInfo = url.parse(uri, true);
 
-			// uri にオプションの query を追加
-			if ( uri.indexOf('?') < 0 ) {
-				// uri に query を含まないので ? で始める
-				uri += '?';
-			} else {
-				// uri に query を含むので & で始める
-				uri += '&';
+		// query を追加
+		if (query) {
+			if (typeof urlInfo.query !== "object") {
+				urlInfo.query = {};
 			}
-			uri += a.join('&');
+			for (let key in query) {
+				urlInfo.query[key] = query[key];
+			}
 		}
 
+		// パースしたURIを文字列にする
+		uri = url.format(urlInfo);
+
 		// Chromium を実行
-        Util.execCmd(`chromium-browser '${uri}'`);
+		Util.execCmd(`chromium-browser '${uri}'`);
 	}
 
 	/**
 	 * touchする
 	 * @param fileName ファイル名
 	 */
-	export function touch(fileName: string ): void {
+	export function touch(fileName: string): void {
 		execCmd(`touch ${fileName}`);
 	}
 
@@ -312,15 +310,15 @@ export module Util {
 	 * @param path 調べるファイルの名前
 	 */
 	export function isExistsFile(path: string): boolean {
-		if ( !path ) {
+		if (!path) {
 			// ファイル名が指定されなかったときは「存在しない」を返す
 			return false;
 		}
 		try {
-			fs.accessSync( path );
-		} catch ( e ) {
+			fs.accessSync(path);
+		} catch (e) {
 			// エラーが発生したので「存在しない」を返す
-	//		console.log(`catch ${e}`);
+			//		console.log(`catch ${e}`);
 			return false;
 		}
 		// 正常終了したので「存在する」を返す
@@ -333,13 +331,13 @@ export module Util {
 	 * @return string 読み込んだファイルの内容
 	 */
 	export function loadFile(fileName: string): string {
-        console.log(`loadFile = "${fileName}"`);
-        if ( !isExistsFile(fileName) ) {
-            putMess( `${fileName} が見つかりませんでした。` );
-            return null;
-        }
-        return fs.readFileSync(fileName, "utf-8");
-    }
+		console.log(`loadFile = "${fileName}"`);
+		if (!isExistsFile(fileName)) {
+			putMess(`${fileName} が見つかりませんでした。`);
+			return null;
+		}
+		return fs.readFileSync(fileName, "utf-8");
+	}
 
 	/**
 	 * 指定ファイルを開く
@@ -349,17 +347,17 @@ export module Util {
 	 */
 	export function openFile(fileName: string, create?: boolean): boolean {
 		// すでに開いていればそれをアクティブに
-		for ( let doc of vscode.workspace.textDocuments ) {
+		for (let doc of vscode.workspace.textDocuments) {
 			let fn = doc.fileName;
-			if ( doc.fileName == fileName ) {
+			if (doc.fileName == fileName) {
 				vscode.window.showTextDocument(doc);
 				return true;
 			}
 		}
 
-		if ( !isExistsFile(fileName) ) {
+		if (!isExistsFile(fileName)) {
 			// ファイルが存在しない
-			if ( !create ) {
+			if (!create) {
 				// 新規構築しないが指定されている
 				return false;
 			}
@@ -382,7 +380,7 @@ export module Util {
 	 */
 	export function normalizeHome(name: string): string {
 		// ディレクトリ名が ~ で始まるときは環境変数 $HOME に置き換える
-		if ( name.substr(0, 1) == '~' ) {
+		if (name.substr(0, 1) == '~') {
 			name = path.join(getHomeDir(), name.substr(1));
 		}
 		return name;
@@ -399,7 +397,7 @@ export module Util {
 	export function normalizePath(name: string, cwd?: string): string {
 		// スキーマがあれば何もしない
 		// ※ php://stdout 対策
-		if ( name.indexOf('://') >= 0 ) {
+		if (name.indexOf('://') >= 0) {
 			return name;
 		}
 
@@ -407,11 +405,11 @@ export module Util {
 		name = normalizeHome(name);
 
 		// 絶対パスに変換
-		if ( !cwd ) {
+		if (!cwd) {
 			cwd = '.';
 		}
 		name = path.resolve(cwd, name);
-		
+
 		// 
 		return name;
 	};
