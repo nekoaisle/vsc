@@ -1,3 +1,4 @@
+<?php /* nekoaisle.insert-code delete line */
 	/**
 	 * []ボタンを押した処理
 	 * 
@@ -9,7 +10,7 @@
 	{
 		// ページ遷移
 		$this->PageRedirect( '' );
-
 		//
 		return SUCCEEDED;
 	}
+/* nekoaisle.insert-code delete line */ ?>

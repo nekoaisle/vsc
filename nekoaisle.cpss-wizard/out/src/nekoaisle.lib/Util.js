@@ -5,6 +5,7 @@ const chproc = require("child_process");
 const os = require("os");
 const fs = require("fs");
 const path = require("path");
+const url = require("url");
 var Util;
 (function (Util) {
     function getExtensionPath(filename) {
@@ -195,7 +196,7 @@ var Util;
     function toCamelCase(str) {
         let ret = [];
         for (let v of str.split('_')) {
-            ret.push(v.substr(0, 1).toUpperCase() + v.substr(1).toLowerCase());
+            ret.push(v.substr(0, 1).toLocaleUpperCase() + v.substr(1).toLocaleLowerCase());
         }
         return ret.join('');
     }
@@ -279,24 +280,19 @@ var Util;
      * @param query 追加の query
      */
     function browsURL(uri, query) {
+        // uri をパース
+        let urlInfo = url.parse(uri, true);
+        // query を追加
         if (query) {
-            // queryが指定されているので整形
-            let a = [];
-            for (let k in query) {
-                let v = encodeURIComponent(query[k]);
-                a.push(`${k}=${v}`);
+            if (typeof urlInfo.query !== "object") {
+                urlInfo.query = {};
             }
-            // uri にオプションの query を追加
-            if (uri.indexOf('?') < 0) {
-                // uri に query を含まないので ? で始める
-                uri += '?';
+            for (let key in query) {
+                urlInfo.query[key] = query[key];
             }
-            else {
-                // uri に query を含むので & で始める
-                uri += '&';
-            }
-            uri += a.join('&');
         }
+        // パースしたURIを文字列にする
+        uri = url.format(urlInfo);
         // Chromium を実行
         Util.execCmd(`chromium-browser '${uri}'`);
     }
@@ -344,6 +340,34 @@ var Util;
         return fs.readFileSync(fileName, "utf-8");
     }
     Util.loadFile = loadFile;
+    /**
+     * 文字列を json デコード
+     * @param str デコードする JSON
+     * @param except 例外を発生する
+     */
+    function decodeJson(str, except) {
+        let json;
+        try {
+            json = JSON.parse(str);
+        }
+        catch (err) {
+            if (except) {
+                throw err;
+            }
+            Util.putMess(`JSON.parse('${str}'): ${err}`);
+        }
+        return json;
+    }
+    Util.decodeJson = decodeJson;
+    /**
+     * JSONファイルを読み込む
+     * @param fileName ファイル名
+     */
+    function loadFileJson(fileName) {
+        let source = Util.loadFile(fileName);
+        return decodeJson(source);
+    }
+    Util.loadFileJson = loadFileJson;
     /**
      * 指定ファイルを開く
      * create に true を指定するとファイルが存在しないときは作成する

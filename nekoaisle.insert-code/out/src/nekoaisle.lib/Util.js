@@ -196,7 +196,7 @@ var Util;
     function toCamelCase(str) {
         let ret = [];
         for (let v of str.split('_')) {
-            ret.push(v.substr(0, 1).toUpperCase() + v.substr(1).toLowerCase());
+            ret.push(v.substr(0, 1).toLocaleUpperCase() + v.substr(1).toLocaleLowerCase());
         }
         return ret.join('');
     }
@@ -341,19 +341,31 @@ var Util;
     }
     Util.loadFile = loadFile;
     /**
+     * 文字列を json デコード
+     * @param str デコードする JSON
+     * @param except 例外を発生する
+     */
+    function decodeJson(str, except) {
+        let json;
+        try {
+            json = JSON.parse(str);
+        }
+        catch (err) {
+            if (except) {
+                throw err;
+            }
+            Util.putMess(`JSON.parse('${str}'): ${err}`);
+        }
+        return json;
+    }
+    Util.decodeJson = decodeJson;
+    /**
      * JSONファイルを読み込む
      * @param fileName ファイル名
      */
     function loadFileJson(fileName) {
         let source = Util.loadFile(fileName);
-        let json;
-        try {
-            json = JSON.parse(source);
-        }
-        catch (err) {
-            Util.putMess(`${fileName}: ${err}`);
-        }
-        return json;
+        return decodeJson(source);
     }
     Util.loadFileJson = loadFileJson;
     /**

@@ -1,6 +1,6 @@
 {
-    "name": "selectword",
-    "displayName": "SelectWord",
+    "name": "select-word",
+    "displayName": "Select Word",
     "description": "カーソル位置の単語を選択",
     "version": "0.0.1",
     "publisher": "nekoaisle",
@@ -21,7 +21,8 @@
         }],
         "keybindings": [{
             "command": "nekoaisle.selectWord",
-            "key": "shift+enter"
+            "key": "shift+enter",
+            "when": "editorTextFocus && !editorReadonly"
         }]
     },
     "scripts": {

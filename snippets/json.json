@@ -12,6 +12,12 @@
 			"}"
 		],
 		"description": "スニペットの追加"
+	},
+	"nekoaisle.insert-code delete line": {
+		"prefix": "nekoaisle.insert-code delete line",
+		"body": [
+			"nekoaisle.insert-code delete line"
+		],
+		"description": "inser-code 行削除命令"
 	}
-
 }

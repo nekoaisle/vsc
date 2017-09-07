@@ -14,6 +14,13 @@
 		"description": "Log output to console"
 	}
 */
+	"nekoaisle.insert-code delete line": {
+		"prefix": "nekoaisle.insert-code delete line",
+		"body": [
+			"/* nekoaisle.insert-code delete line */"
+		],
+		"description": "inser-code 行削除命令"
+	},
 	"php tag": {
 		"prefix": "<?php",
 		"body": [
@@ -431,7 +438,14 @@
 	"require_once( DOCUMENT_ROOT": {
 		"prefix": "require_once( DOCUMENT_ROOT",
 		"body": [
-			"require_once( DOCUMENT_ROOT . '/.php' );"
+			"require_once( DOCUMENT_ROOT . '/$1.php' );"
+		],
+		"description": ""
+	},
+	"require_once( MODULE_ROOT": {
+		"prefix": "require_once( MODULE_ROOT",
+		"body": [
+			"require_once( MODULE_ROOT   . '/$1.php' );"
 		],
 		"description": ""
 	},
@@ -1128,9 +1142,321 @@
 			"strDebugVarDump(  )"
 		],
 		"description": ""
-	}
+	},
 	
-
-
+	"offsetSet( $offset, $value )": {
+		"prefix": "offsetSet( $offset, $value )",
+		"body": [
+			"offsetSet( $$offset, $$value )"
+		],
+		"description": ""
+	},
+	"offsetExists($offset)": {
+		"prefix": "offsetExists($offset)",
+		"body": [
+			"offsetExists($$offset)"
+		],
+		"description": ""
+	},
+	"offsetUnset( $offset )": {
+		"prefix": "offsetUnset( $offset )",
+		"body": [
+			"offsetUnset( $$offset )"
+		],
+		"description": ""
+	},
+	"offsetGet( $offset )": {
+		"prefix": "offsetGet( $offset )",
+		"body": [
+			"offsetGet( $$offset )"
+		],
+		"description": ""
+	},
+	"colNameToVarName( $col )": {
+		"prefix": "colNameToVarName( $col )",
+		"body": [
+			"colNameToVarName( $$col )"
+		],
+		"description": ""
+	},
+	"aryGetFields( )": {
+		"prefix": "aryGetFields( )",
+		"body": [
+			"aryGetFields( )"
+		],
+		"description": ""
+	},
+	"strGetTableName( )": {
+		"prefix": "strGetTableName( )",
+		"body": [
+			"strGetTableName( )"
+		],
+		"description": ""
+	},
+	"strGetFrom( )": {
+		"prefix": "strGetFrom( )",
+		"body": [
+			"strGetFrom( )"
+		],
+		"description": ""
+	},
+	"strGetSequenceName( )": {
+		"prefix": "strGetSequenceName( )",
+		"body": [
+			"strGetSequenceName( )"
+		],
+		"description": ""
+	},
+	"strGetIDField( )": {
+		"prefix": "strGetIDField( )",
+		"body": [
+			"strGetIDField( )"
+		],
+		"description": ""
+	},
+	"strGetIDMember( )": {
+		"prefix": "strGetIDMember( )",
+		"body": [
+			"strGetIDMember( )"
+		],
+		"description": ""
+	},
+	"strGetSessionKey( )": {
+		"prefix": "strGetSessionKey( )",
+		"body": [
+			"strGetSessionKey( )"
+		],
+		"description": ""
+	},
+	"strCreateID( )": {
+		"prefix": "strCreateID( )",
+		"body": [
+			"strCreateID( )"
+		],
+		"description": ""
+	},
+	"strGetID( )": {
+		"prefix": "strGetID( )",
+		"body": [
+			"strGetID( )"
+		],
+		"description": ""
+	},
+	"SetID( $strID )": {
+		"prefix": "SetID( $strID )",
+		"body": [
+			"SetID( $$strID )"
+		],
+		"description": ""
+	},
+	"strGetFields( )": {
+		"prefix": "strGetFields( )",
+		"body": [
+			"strGetFields( )"
+		],
+		"description": ""
+	},
+	"Init( )": {
+		"prefix": "Init( )",
+		"body": [
+			"Init( )"
+		],
+		"description": ""
+	},
+	"strSetID( $strID = NULL )": {
+		"prefix": "strSetID( $strID = NULL )",
+		"body": [
+			"strSetID( $$strID = NULL )"
+		],
+		"description": ""
+	},
+	"blLoadFromID( $strID, $blLock = FALSE )": {
+		"prefix": "blLoadFromID( $strID, $blLock = FALSE )",
+		"body": [
+			"blLoadFromID( $$strID, $$blLock = FALSE )"
+		],
+		"description": ""
+	},
+	"blLoadFromDB( $strWhere, $aryArgs, $strOther = '' )": {
+		"prefix": "blLoadFromDB( $strWhere, $aryArgs, $strOther = '' )",
+		"body": [
+			"blLoadFromDB( $$strWhere, $$aryArgs, $$strOther = '' )"
+		],
+		"description": ""
+	},
+	"rowLoadFromDB( $strWhere, $aryArgs, $strOther = '' )": {
+		"prefix": "rowLoadFromDB( $strWhere, $aryArgs, $strOther = '' )",
+		"body": [
+			"rowLoadFromDB( $$strWhere, $$aryArgs, $$strOther = '' )"
+		],
+		"description": ""
+	},
+	"aryLoadFromDB( $strWhere, $aryArgs, $strOther = '' )": {
+		"prefix": "aryLoadFromDB( $strWhere, $aryArgs, $strOther = '' )",
+		"body": [
+			"aryLoadFromDB( $$strWhere, $$aryArgs, $$strOther = '' )"
+		],
+		"description": ""
+	},
+	"SaveToDB( )": {
+		"prefix": "SaveToDB( )",
+		"body": [
+			"SaveToDB( )"
+		],
+		"description": ""
+	},
+	"InsertToDB( )": {
+		"prefix": "InsertToDB( )",
+		"body": [
+			"InsertToDB( )"
+		],
+		"description": ""
+	},
+	"UpdateToDB( )": {
+		"prefix": "UpdateToDB( )",
+		"body": [
+			"UpdateToDB( )"
+		],
+		"description": ""
+	},
+	"LoadFromArray( $ary )": {
+		"prefix": "LoadFromArray( $ary )",
+		"body": [
+			"LoadFromArray( $$ary )"
+		],
+		"description": ""
+	},
+	"LoadFromArray2( $ary )": {
+		"prefix": "LoadFromArray2( $ary )",
+		"body": [
+			"LoadFromArray2( $$ary )"
+		],
+		"description": ""
+	},
+	"arySaveToArray( )": {
+		"prefix": "arySaveToArray( )",
+		"body": [
+			"arySaveToArray( )"
+		],
+		"description": ""
+	},
+	"SaveToSession( )": {
+		"prefix": "SaveToSession( )",
+		"body": [
+			"SaveToSession( )"
+		],
+		"description": ""
+	},
+	"blLoadFromSession( )": {
+		"prefix": "blLoadFromSession( )",
+		"body": [
+			"blLoadFromSession( )"
+		],
+		"description": ""
+	},
+	"ClearSession( )": {
+		"prefix": "ClearSession( )",
+		"body": [
+			"ClearSession( )"
+		],
+		"description": ""
+	},
+	"isExistFromID( $strID )": {
+		"prefix": "isExistFromID( $strID )",
+		"body": [
+			"isExistFromID( $$strID )"
+		],
+		"description": ""
+	},
+	"fpStrToTempfile( $strData )": {
+		"prefix": "fpStrToTempfile( $strData )",
+		"body": [
+			"fpStrToTempfile( $$strData )"
+		],
+		"description": ""
+	},
+	"mergeArray( )": {
+		"prefix": "mergeArray( )",
+		"body": [
+			"mergeArray( )"
+		],
+		"description": ""
+	},
+	"getFields( $names = NULL )": {
+		"prefix": "getFields( $names = NULL )",
+		"body": [
+			"getFields( $$names = NULL )"
+		],
+		"description": ""
+	},
+	"getFieldNames( $sep = NULL )": {
+		"prefix": "getFieldNames( $sep = NULL )",
+		"body": [
+			"getFieldNames( $$sep = NULL )"
+		],
+		"description": ""
+	},
+	"loadFromDB( $where, $args, $other )": {
+		"prefix": "loadFromDB( $where, $args, $other )",
+		"body": [
+			"loadFromDB( $$where, $$args, $$other )"
+		],
+		"description": ""
+	},
+	"getColArray( $rows, $col, $key = NULL )": {
+		"prefix": "getColArray( $rows, $col, $key = NULL )",
+		"body": [
+			"getColArray( $$rows, $$col, $$key = NULL )"
+		],
+		"description": ""
+	},
+	"getDispOption( $options, $val )": {
+		"prefix": "getDispOption( $options, $val )",
+		"body": [
+			"getDispOption( $$options, $$val )"
+		],
+		"description": ""
+	},
+	"getDispStatus( $val = NULL )": {
+		"prefix": "getDispStatus( $val = NULL )",
+		"body": [
+			"getDispStatus( $$val = NULL )"
+		],
+		"description": ""
+	},
+	"loadColumn( $col, $id, $default = '' )": {
+		"prefix": "loadColumn( $col, $id, $default = '' )",
+		"body": [
+			"loadColumn( $$col, $$id, $$default = '' )"
+		],
+		"description": ""
+	},
+	"UsortCallbackColumnPriority( $a, $b )": {
+		"prefix": "UsortCallbackColumnPriority( $a, $b )",
+		"body": [
+			"UsortCallbackColumnPriority( $$a, $$b )"
+		],
+		"description": ""
+	},
+	"onEvent": {
+		"prefix": "onEvent",
+		"body": [
+			"/**",
+			" * [${1:SUBMIT}]ボタンを押した処理",
+			" * ",
+			" * @access public",
+			" * @param  string \\$value name属性値",
+			" * @return boolean コマンドディスパッチを FAILED:続行, SUCCEEDED:終了",
+			" */",
+			" protected function on${2:Submit}( \\$value )",
+			" {",
+			"\t// ページ遷移",
+			"\t\\$this->PageRedirect( '' );",
+			"\t//",
+			"\treturn SUCCEEDED;",
+			" }"
+ 		],
+		"description": ""
+	}
 }
 

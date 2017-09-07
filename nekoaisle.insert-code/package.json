@@ -15,18 +15,15 @@
     ],
     "main": "./out/src/extension",
     "contributes": {
-        "commands": [
-            {
-                "command": "nekoaisle.insertCode",
-                "title": "Insert Code"
-            }
-        ],
-        "keybindings": [
-            {
-                "command": "nekoaisle.insertCode",
-                "key": "escape i"
-            }
-        ],
+        "commands": [{
+            "command": "nekoaisle.insertCode",
+            "title": "Insert Code"
+        }],
+        "keybindings": [{
+            "command": "nekoaisle.insertCode",
+            "key": "escape i",
+            "when": "editorTextFocus && !editorReadonly"
+        }],
         "configuration": {
             "type": "object",
             "title": "Insert Code configuration",

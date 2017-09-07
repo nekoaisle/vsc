@@ -21,6 +21,7 @@ interface ListItem {
     inline?: string,        // インラインテンプレート
     position?: string,      // 挿入位置
     method?: string,        // 呼び出すeditメソッド insert, replace, snippet
+    autoIndent?: boolean,   // オートインデントする？
 }
 
 interface GetInsertPosResult {
@@ -136,13 +137,14 @@ class InsertCode extends Extension {
                 inline: '',         // インラインテンプレート
                 position: '',       // 挿入位置
                 method: 'insert',   // 呼び出すeditメソッド insert, replace, snippet
+                autoIndent: this.doAutoIndent()
             };
             for (let key in menuItems) {
                 let i = menuItems[key];
                 if (i.label == sel.label) {
                     // 見つけたので undefined 以外の要素を複写
                     for (let k in item) {
-                        if (typeof i[k] != undefined) {
+                        if (typeof i[k] != "undefined") {
                             item[k] = i[k];
                         }
                     }
@@ -409,16 +411,27 @@ class InsertCode extends Extension {
             let keys: string[] = key.split('.');
             let val;
             switch (keys[0]) {
-                case 'author': val = this.getConfig("author", ""); break;
-                case 'selection': val = Util.getSelectString(editor); break;
-                case 'clipboard': val = Util.execCmd('xclip -o -selection c'); break;
-                case 'class': val = this.getClass(keys[1]); break;
-
+                case 'author': {
+                    val = this.getConfig("author", "");
+                    break;
+                }
+                case 'selection': {
+                    val = Util.getSelectString(editor);
+                    break;
+                }
+                case 'clipboard': {
+                    val = Util.execCmd('xclip -o -selection c');
+                    break;
+                }
+                case 'class': {
+                    val = this.getClass(keys[1]);
+                    break;
+                }
                 case 'pinfo': {
                     if (!pinfo) {
                         pinfo = new PathInfo(editor.document.fileName);
                     }
-                    val = pinfo[keys[1]];
+                    val = pinfo.info[keys[1]];
                     break;
                 }
                 case 'now': {

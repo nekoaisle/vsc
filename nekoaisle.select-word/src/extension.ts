@@ -43,30 +43,24 @@ class OpenPreviousTab extends Extension {
 	 */
 	public exec() {
 		let editor = vscode.window.activeTextEditor;
-		let doc = vscode.window.activeTextEditor.document;
 
-		// カーソル位置を取得
-		let cursor  = editor.selection.start;
-		// カーソルの行の内容を取得
-		let line = doc.lineAt(cursor.line).text;
-
-		// 単語の初めを探す
-		let s = cursor.character;
-		let t = Util.getCharType(line.charCodeAt(s));   // カーソル位置の文字タイプ
-		while ( (s > 0) && (t == Util.getCharType(line.charCodeAt(s-1))) ) {
-			-- s;
+		// 範囲選択されている？
+		if (editor.selection.isEmpty) {
+			// 範囲選択されていないのでカーソル位置の単語を範囲選択
+			// カーソル位置の単語の範囲を取得
+			let range = Util.getCursorWordRange(editor);
+			// 現在の選択範囲と等しくないので単語を選択
+			editor.selection = new vscode.Selection(range.start, range.end);
+		} else {
+			// 範囲選択されているときは範囲を拡大
+			try {
+				let sel = editor.selection;
+				let range = new vscode.Range(sel.start.translate(0, -1), sel.end.translate(0, 1));
+				editor.selection = new vscode.Selection(range.start, range.end);
+			} catch (err) {
+				// 範囲を広げられなかった
+			}
 		}
-
-		// 単語の終わりを探す
-		let e = s;
-		while ( (e < line.length) && (t == Util.getCharType(line.charCodeAt(e))) ) {
-			++ e;
-		}
-
-		// 見つけた単語を選択
-		editor.selection = new vscode.Selection( 
-			new vscode.Position(cursor.line,s), 
-			new vscode.Position(cursor.line,e)
-		);
+		return;
 	}
 }

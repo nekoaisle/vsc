@@ -1,5 +1,6 @@
+<?php /* nekoaisle.insert-code delete line */
 /**
- * 
+ * ${1:タイトル}
  * 
  * filename:  {{pinfo.base}}
  * 
@@ -9,3 +10,4 @@
  * @date      {{now.year}}-{{now.month}}-{{now.date}}
  * @author    {{author}}
  */
+/* nekoaisle.insert-code delete line */ ?>

@@ -40,5 +40,12 @@
 			"</style>"
 		],
 		"description": "style タグ"
+	},
+	"<br />": {
+		"prefix": "<br />",
+		"body": [
+			"<br />"
+		],
+		"description": "<br />"
 	}
 }

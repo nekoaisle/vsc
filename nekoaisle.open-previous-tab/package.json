@@ -24,7 +24,8 @@
         ],
         "keybindings": [{
             "command": "nekoaisle.toggleTab",
-            "key": "f10"
+            "key": "f10",
+            "when": "editorTextFocus"
         }]
     },
     "scripts": {

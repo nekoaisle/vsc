@@ -108,13 +108,14 @@ class InsertCode extends nekoaisle_1.Extension {
                 inline: '',
                 position: '',
                 method: 'insert',
+                autoIndent: this.doAutoIndent()
             };
             for (let key in menuItems) {
                 let i = menuItems[key];
                 if (i.label == sel.label) {
                     // 見つけたので undefined 以外の要素を複写
                     for (let k in item) {
-                        if (typeof i[k] != undefined) {
+                        if (typeof i[k] != "undefined") {
                             item[k] = i[k];
                         }
                     }
@@ -385,23 +386,27 @@ class InsertCode extends nekoaisle_1.Extension {
             let keys = key.split('.');
             let val;
             switch (keys[0]) {
-                case 'author':
+                case 'author': {
                     val = this.getConfig("author", "");
                     break;
-                case 'selection':
+                }
+                case 'selection': {
                     val = nekoaisle_1.Util.getSelectString(editor);
                     break;
-                case 'clipboard':
+                }
+                case 'clipboard': {
                     val = nekoaisle_1.Util.execCmd('xclip -o -selection c');
                     break;
-                case 'class':
+                }
+                case 'class': {
                     val = this.getClass(keys[1]);
                     break;
+                }
                 case 'pinfo': {
                     if (!pinfo) {
                         pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
                     }
-                    val = pinfo[keys[1]];
+                    val = pinfo.info[keys[1]];
                     break;
                 }
                 case 'now': {

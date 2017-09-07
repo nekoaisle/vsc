@@ -194,7 +194,7 @@ export module Util {
 	export function toCamelCase(str: string): string {
 		let ret = [];
 		for (let v of str.split('_')) {
-			ret.push(v.substr(0, 1).toUpperCase() + v.substr(1).toLowerCase());
+			ret.push(v.substr(0, 1).toLocaleUpperCase() + v.substr(1).toLocaleLowerCase());
 		}
 		return ret.join('');
 	}

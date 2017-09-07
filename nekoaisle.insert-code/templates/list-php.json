@@ -1,42 +1,50 @@
 {
-	"fileheader": {
-		"label": "1: ファイルヘッダー",
-		"filename": "php/fileheader.php"
-	},
 	"method": {
-		"label": "2: メソッド",
+		"label": "1: メソッド",
 		"filename": "php/method.php",
-        "detail":      "詳細",
-        "description": "説明文"
+		"method": "snippet"
 	},
 	"var": {
-		"label": "3: メンバー変数",
-		"filename": "php/var.php"
-	},
-	"constructor": {
-		"label": "4: constructor",
-		"filename": "php/constructor.php"
-	},
-	"destractor": {
-		"label": "5: destractor",
-		"filename": "php/destractor.php"
+		"label": "2: メンバー変数",
+		"filename": "php/var.php",
+		"method": "snippet"
 	},
 	"onEvent": {
-		"label": "6: イベントハンドラ",
-		"filename": "php/onEvent.php"
+		"label": "3: イベントハンドラ",
+		"filename": "php/onEvent.php",
+		"method": "insert",
+		"autoIndent": true
 	},
 	"onAjax": {
-		"label": "7: onAjax",
-		"filename": "php/onAjax.php"
+		"label": "4: onAjax",
+		"filename": "php/onAjax.php",
+		"method": "insert",
+		"autoIndent": true
 	},
 	"function": {
-		"label": "8: function",
+		"label": "5: function",
 		"filename": "php/function.php",
 		"method": "snippet"
 	},
 	"aryGetFormCommandMap": {
-		"label": "9: aryGetFormCommandMap",
-		"filename": "php/aryGetFormCommandMap.php"
+		"label": "6: aryGetFormCommandMap",
+		"filename": "php/aryGetFormCommandMap.php",
+		"method": "snippet"
+	},
+	"fileheader": {
+		"label": "7: ファイルヘッダー",
+		"filename": "php/fileheader.php",
+		"method": "snippet"
+	},
+	"constructor": {
+		"label": "8: constructor",
+		"filename": "php/constructor.php",
+		"method": "snippet"
+	},
+	"destractor": {
+		"label": "9: destractor",
+		"filename": "php/destractor.php",
+		"method": "snippet"
 	},
 	"now.ymd": {
 		"label": "Y: 今日",

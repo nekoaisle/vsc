@@ -5,6 +5,7 @@ const chproc = require("child_process");
 const os = require("os");
 const fs = require("fs");
 const path = require("path");
+const url = require("url");
 var Util;
 (function (Util) {
     function getExtensionPath(filename) {
@@ -106,9 +107,15 @@ var Util;
      * カーソル位置の単語の範囲を取得
      * @param editor 対象とするエディタ
      */
-    function getCursorWordRange(editor) {
-        // カーソル位置を取得
-        let pos = editor.selection.active;
+    function getCursorWordRange(editor, pos) {
+        if (!editor) {
+            // 省略されたら現在のエディタ
+            editor = vscode.window.activeTextEditor;
+        }
+        if (!pos) {
+            // 省略されたらカーソル位置を取得
+            pos = editor.selection.active;
+        }
         // カーソル行を取得
         let line = editor.document.lineAt(pos.line).text;
         let s = pos.character;
@@ -157,6 +164,7 @@ var Util;
     /**
      * 指定文字の大文字・小文字を切り替える
      * @param c 対象となる文字
+     * @param mode toggle=切り替え lower:小文字 upper:大文字
      * @return string 結果
      */
     function changeCharCase(c, mode) {
@@ -179,8 +187,23 @@ var Util;
     }
     Util.changeCharCase = changeCharCase;
     /**
-     * 指定した文字列が大文字化小文字か調べる
-     * 文字列の先頭から順に調べ最初に変挺できたケースを返す
+     * キャメルケースに変換
+     * スネークケースは _ で分解しそれぞれの単語の先頭を大文字に変換して結合
+     * それ以外は文字列の先頭文字を大文字それ以外を小文字にします
+     * @param str
+     * @return キャメルケースに変換した文字列
+     */
+    function toCamelCase(str) {
+        let ret = [];
+        for (let v of str.split('_')) {
+            ret.push(v.substr(0, 1).toLocaleUpperCase() + v.substr(1).toLocaleLowerCase());
+        }
+        return ret.join('');
+    }
+    Util.toCamelCase = toCamelCase;
+    /**
+     * 指定した文字列が大文字か小文字か調べる
+     * 文字列の先頭から順に調べ最初に判定できたケースを返す
      * @param str 調べる文字列
      * @return 'upper' | 'lower | ''
      */
@@ -214,6 +237,10 @@ var Util;
      * @param editor 対象とするエディタ
      */
     function getSelectString(editor) {
+        if (!editor) {
+            // editor が省略されたので現在のエディタ
+            editor = vscode.window.activeTextEditor;
+        }
         let range = editor.selection;
         return editor.document.getText(range);
     }
@@ -253,24 +280,19 @@ var Util;
      * @param query 追加の query
      */
     function browsURL(uri, query) {
+        // uri をパース
+        let urlInfo = url.parse(uri, true);
+        // query を追加
         if (query) {
-            // queryが指定されているので整形
-            let a = [];
-            for (let k in query) {
-                let v = encodeURIComponent(query[k]);
-                a.push(`${k}=${v}`);
+            if (typeof urlInfo.query !== "object") {
+                urlInfo.query = {};
             }
-            // uri にオプションの query を追加
-            if (uri.indexOf('?') < 0) {
-                // uri に query を含まないので ? で始める
-                uri += '?';
+            for (let key in query) {
+                urlInfo.query[key] = query[key];
             }
-            else {
-                // uri に query を含むので & で始める
-                uri += '&';
-            }
-            uri += a.join('&');
         }
+        // パースしたURIを文字列にする
+        uri = url.format(urlInfo);
         // Chromium を実行
         Util.execCmd(`chromium-browser '${uri}'`);
     }
@@ -318,6 +340,34 @@ var Util;
         return fs.readFileSync(fileName, "utf-8");
     }
     Util.loadFile = loadFile;
+    /**
+     * 文字列を json デコード
+     * @param str デコードする JSON
+     * @param except 例外を発生する
+     */
+    function decodeJson(str, except) {
+        let json;
+        try {
+            json = JSON.parse(str);
+        }
+        catch (err) {
+            if (except) {
+                throw err;
+            }
+            Util.putMess(`JSON.parse('${str}'): ${err}`);
+        }
+        return json;
+    }
+    Util.decodeJson = decodeJson;
+    /**
+     * JSONファイルを読み込む
+     * @param fileName ファイル名
+     */
+    function loadFileJson(fileName) {
+        let source = Util.loadFile(fileName);
+        return decodeJson(source);
+    }
+    Util.loadFileJson = loadFileJson;
     /**
      * 指定ファイルを開く
      * create に true を指定するとファイルが存在しないときは作成する

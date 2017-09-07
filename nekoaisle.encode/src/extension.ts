@@ -164,6 +164,7 @@ class MyExtention extends Extension {
 			{ label: 'preg', description: '正規表現文字をクオートする' },
 			{ label: "'", description: "' を \\' にする" },
 			{ label: '"', description: '" を \\" にする' },
+			{ label: '<br>', description: '\\n を <br /> にする' },
 
 			{ label: "''", description: '\' で単語または選択範囲を括る/外す' },
 			{ label: '""', description: '" で単語または選択範囲を括る/外す' },
@@ -175,6 +176,7 @@ class MyExtention extends Extension {
 			{ label: '{{}}', description: '{{}} で単語または選択範囲を括る/外す' },
 			{ label: '/**/', description: '/**/ で単語または選択範囲を括る/外す' },
 			{ label: '<!-- -->', description: 'HTML コメント/外す' },
+			{ label: '<div class="">', description: '<div class=""></div> で単語または選択範囲を括る/外す' },
 
 			{ label: 'HTML decode', description: 'HTML エンティティを適切な文字に変換する' },
 			{ label: 'URL decode', description: 'URL エンコードされた文字列をデコードする' },
@@ -183,6 +185,7 @@ class MyExtention extends Extension {
 			{ label: 'preg decode', description: '正規表現文字をアンクオートする' },
 			{ label: "' decode", description: "\\' を ' にする" },
 			{ label: '" decode', description: '\\" を " にする' },
+			{ label: '<br> decode', description: '<br /> を \\n にする' },
 		];
 		// ファイルを選択
 		let popt = {
@@ -201,12 +204,13 @@ class MyExtention extends Extension {
 					case '{{}}': this.enclose('{{', '}}'); return;
 					case '/**/': this.enclose('/*', '*/'); return;
 					case '<!-- -->': this.enclose('<!-- ', ' -->'); return;
+					case '<div class="">': this.enclose('<div class="">\n', '\n</div>'); return;
 				}
 
 				let cmd = sel.label.split(' ');
-				switch (cmd[0]) {
+				switch (cmd[1]) {
 					case '':
-					default:	
+					default:
 					case 'encode': {
 						this.encodeSelection(cmd[0]);
 						break;
@@ -253,6 +257,11 @@ class MyExtention extends Extension {
 			case "\u0060":
 				s = s.replace(/\u0060/g, "\\u0060");
 				break;
+			// \n -> <br />
+			case '<br>': {
+				s = s.replace(/(<br(\s*\/)?>)?(\r?\n)/gi, '<br />\n');
+				break;
+			}
 		}
 
 		// 結果に置換
@@ -277,25 +286,32 @@ class MyExtention extends Extension {
 			// 正規表現
 			case 'preg': s = this.decodePreg(s); break;
 			// ""囲み文字列
-			case '"':
+			case '"': {
 				s = s.replace(/\\"/g, '"');
 				s = s.replace(/\\\\"/g, '\\');
 				break;
+			}
 			// ''囲み文字列
-			case "'":
+			case "'": {
 				s = s.replace(/\\'/g, "'");
 				s = s.replace(/\\\\"/g, '\\');
 				break;
+			}
 			// ``囲み文字列
-			case "\\u0060":
+			case "\\u0060": {
 				s = s.replace(/\\u0060/g, "\u0060");
 				break;
+			}
+			// \n -> <br />
+			case '<br>': {
+				s = s.replace(/(<br(\s*\/)?>)(\r?\n)?/gi, '\n');
+				break;
+			}
 		}
-
 		// 結果に置換
 		editor.edit(edit => edit.replace(editor.selection, s));
 	}
-	
+
 	/**
 	 * C言語用文字列にエンコード
 	 * @param s エンコードする文字列
@@ -432,8 +448,8 @@ class MyExtention extends Extension {
 					editor.edit(edit => edit.replace(outRange, word));
 					//				newSel = new vscode.Selection(outRange.start, outRange.end);
 				} else {
-				// 括られていないので括る
-				editor.edit(edit => edit.replace(range, `${start}${word}${end}`));
+					// 括られていないので括る
+					editor.edit(edit => edit.replace(range, `${start}${word}${end}`));
 				}
 			} catch (err) {
 				// 範囲を広げられなかったということは括られていない
