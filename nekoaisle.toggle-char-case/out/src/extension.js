@@ -82,31 +82,38 @@ class MyExtention extends nekoaisle_1.Extension {
         // 現在の選択範囲を取得
         let sel = editor.selection;
         let b = sel.start.isEqual(sel.end);
+        let range;
+        let text;
         if (sel.start.isEqual(sel.end)) {
             // 範囲選択されていないので単語変換
-            let range = nekoaisle_1.Util.getCursorWordRange(editor);
+            range = nekoaisle_1.Util.getCursorWordRange(editor);
             // カーソル位置の単語を取得
-            let word = doc.getText(range);
-            // 大文字小文字を変換
-            word = nekoaisle_1.Util.toggleCharCase(word);
-            // 大文字・小文字変換した文字と置換
-            editor.edit(edit => edit.replace(range, word));
+            text = doc.getText(range);
         }
         else {
             // 範囲選択されているので一括変換
+            range = new vscode.Range(sel.start, sel.end);
             // 全文字を先頭文字のケースの逆に設定
-            let text = doc.getText(sel);
-            switch (nekoaisle_1.Util.getCharCase(text)) {
-                case 'upper':
-                    text = text.toLocaleLowerCase();
-                    break;
-                case 'lower':
-                    text = text.toLocaleUpperCase();
-                    break;
-            }
-            // 大文字・小文字変換した文字と置換
-            editor.edit(edit => edit.replace(sel, text));
+            text = doc.getText(sel);
         }
+        if (/^[A-Z]+$/.test(text)) {
+            // すべて大文字なので小文字に
+            text = text.toLocaleLowerCase();
+        }
+        else if (/^[a-z]+$/.test(text)) {
+            // すべて小文字なのでキャメルケースへ
+            text = text.substr(0, 1).toLocaleUpperCase() + text.substr(1).toLocaleLowerCase();
+        }
+        else if (/^[A-Z][a-z]+$/.test(text)) {
+            // キャメルケースなので大文字へ
+            text = text.toLocaleUpperCase();
+        }
+        else {
+            // 混ざっているので先頭文字の逆
+            text = nekoaisle_1.Util.toggleCharCase(text);
+        }
+        // 大文字・小文字変換した文字と置換
+        editor.edit(edit => edit.replace(range, text));
     }
 }
 //# sourceMappingURL=extension.js.map

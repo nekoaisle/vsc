@@ -12,8 +12,8 @@
 	"onEvent": {
 		"label": "3: イベントハンドラ",
 		"filename": "php/onEvent.php",
-		"method": "insert",
-		"autoIndent": true
+		"method": "snippet",
+		"autoIndent": false
 	},
 	"onAjax": {
 		"label": "4: onAjax",

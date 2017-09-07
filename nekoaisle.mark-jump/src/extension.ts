@@ -7,14 +7,17 @@ export function activate(context: vscode.ExtensionContext) {
      * @return 現在のカーソル位置
      */
     let getCsrPos = (): vscode.Position => {
-        return vscode.window.activeTextEditor.selection.start;
+        let pos = vscode.window.activeTextEditor.selection.anchor;
+        return new vscode.Position(pos.line, pos.character);
     }
     /**
      * 指定位置にジャンプ
      * @param pos ジャンプする位置
      */
     let setCsrPos = (pos: vscode.Position) => {
+        let range = new vscode.Range(pos, pos);
         vscode.window.activeTextEditor.selection = new vscode.Selection(pos, pos);
+        vscode.window.activeTextEditor.revealRange(range);
         console.log(`jump = ${pos.character}, ${pos.line}`);
     }
 
