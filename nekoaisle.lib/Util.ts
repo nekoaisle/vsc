@@ -5,9 +5,38 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as url from 'url';
 import { Extension } from './Extension';
-
+import { PathInfo } from './PathInfo';
 
 export module Util {
+    // 言語タイプごとの拡張子一覧
+    //
+    // console.log('enum languages');
+    // vscode.languages.getLanguages().then((langs: string[]) => {
+    //     langs.forEach( element => {
+    //         console.log(`  ${element}`);
+    //     });
+    // });
+    export var extensionByLanguages = {
+        'plaintext':   '.txt',
+        'Log':         '.log',
+        'bat':         '.bat',
+        'c':           '.c',
+        'cpp':         '.cpp',
+        'css':         '.css',
+        'html':        '.html',
+        'ini':         '.ini',
+        'java':        '.java',
+        'javascript':  '.js',
+        'json':        '.json',
+        'perl':        '.pl',
+        'php':         '.php',
+        'shellscript': '.sh',
+        'sql':         '.sql',
+        'typescript':  '.ts',
+        'vb':          '.vb',
+        'xml':         '.xml',
+    };
+
 	export function getExtensionPath(filename: string) {
 		return path.resolve(exports.extensionContext.extensionPath, filename);
 	}
@@ -440,5 +469,31 @@ export module Util {
 		// 
 		return name;
 	};
+
+	/**
+	 * 指定ドキュメントのファイル名の拡張子を取得
+	 * @param doc ture を指定すると先頭の . を除去します
+	 * @param lessDot ture を指定すると先頭の . を除去します
+	 */
+	export function getDocumentExt(doc: vscode.TextDocument, lessDot?: boolean): string {
+		// 現在編集中のファイル名情報を取得
+		let pinfo = new PathInfo(doc.fileName);
+		let ext;
+		if (pinfo.info.ext) {
+			// 拡張子があるのでそれを返す
+			ext = pinfo.info.ext;
+		} else {
+			// 拡張子がないときはドキュメントの言語から拡張子を決める
+			ext = extensionByLanguages[doc.languageId];
+		}
+
+		// 先頭の . を除去
+		if (lessDot) {
+			ext = ext.substr(1);
+		}
+	
+		//
+		return ext;
+	}
 
 }

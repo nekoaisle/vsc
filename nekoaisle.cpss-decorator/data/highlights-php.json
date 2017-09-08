@@ -1,0 +1,14 @@
+[
+	{
+		"regexp": "\\bSUCCEEDED\\b",
+		"design": "red"
+	},
+	{
+		"regexp": "\\bFAILED\\b",
+		"design": "red"
+	},
+	{
+		"regexp": "( |\\t)*/\\*([\\r\\n]|.)*?\\*/",
+		"design": "bg-grey"
+	}
+]

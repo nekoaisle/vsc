@@ -99,7 +99,6 @@ class InsertCode extends Extension {
 
         // この拡張子のメニューを読み込む
         let menuFN = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
-        let menuJson: string = Util.loadFile(menuFN);
         let menuItems: ListItem = Util.loadFileJson(menuFN);
         if (!menuItems) {
             return;
@@ -123,10 +122,10 @@ class InsertCode extends Extension {
             matchOnDescription: false
         };
         vscode.window.showQuickPick(menu, options).then((sel: vscode.QuickPickItem) => {
-            console.log(`command = "${sel.label}"`);
             if (!sel) {
                 return;
             }
+            // console.log(`command = "${sel.label}"`);
             // デフォルト値
             let item: ListItem = {
                 label: '',          // メニューラベル

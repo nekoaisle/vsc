@@ -89,4 +89,25 @@ export class Extension {
 	public joinExtensionRoot(filename: string): string {
 		return path.join(this.extensionRoot, filename);
 	}
+
+	/**
+     * テンプレート格納ディレクトリ名を取得
+	 * @param dirName ディレクトリ名
+	 * @param settingsKey settings.json のサブキー
+     * @return string テンプレート格納ディレクトリ名
+	 */
+	protected getConfigDir(dirName: string, settingsKey: string): string {
+        // デフォルトのテンポラリディレクトリ名
+        let res = this.joinExtensionRoot(dirName);
+
+        // settings.json よりテンプレートディレクトリを取得
+        res = this.getConfig(settingsKey, res);
+
+        // 先頭の ~ を置換
+        res = Util.normalizePath(res);
+
+        //
+        return res;
+    }
+
 }

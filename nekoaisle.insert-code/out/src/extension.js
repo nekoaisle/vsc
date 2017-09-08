@@ -72,7 +72,6 @@ class InsertCode extends nekoaisle_1.Extension {
         ext = ext.substr(1);
         // この拡張子のメニューを読み込む
         let menuFN = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
-        let menuJson = nekoaisle_1.Util.loadFile(menuFN);
         let menuItems = nekoaisle_1.Util.loadFileJson(menuFN);
         if (!menuItems) {
             return;
@@ -94,10 +93,10 @@ class InsertCode extends nekoaisle_1.Extension {
             matchOnDescription: false
         };
         vscode.window.showQuickPick(menu, options).then((sel) => {
-            console.log(`command = "${sel.label}"`);
             if (!sel) {
                 return;
             }
+            // console.log(`command = "${sel.label}"`);
             // デフォルト値
             let item = {
                 label: '',
