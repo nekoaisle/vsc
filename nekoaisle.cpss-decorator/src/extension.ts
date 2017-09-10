@@ -7,6 +7,22 @@ import { Util, PathInfo, DateInfo } from './nekoaisle.lib/nekoaisle';
 export function activate(context: vscode.ExtensionContext) {
     const configKey = "cpssDecorator";
 
+    let disp = vscode.commands.registerCommand('nekoaisle.cpssDecoratorRefresh', () => {
+        // 読み込み済みのデザインをクリア
+        designs = {};
+        // 読み込み済みの強調表示をクリア
+        highlights = {};
+
+        // 現在編集中のファイル用のデザインと強調表示を読み込む
+        loadSettingByExtension();
+        if (activeEditor) {
+            // 強調表示の設定
+            triggerUpdateDecorations();
+        }
+    });
+    context.subscriptions.push(disp);
+
+
     /**
      * 強調表示情報
      */
@@ -56,22 +72,54 @@ export function activate(context: vscode.ExtensionContext) {
 
     /**
      * 現在の拡張子に対応するデザインとハイライトの読み込み
+     * @param force true を指定すると強制的に読み込みます
      */
     function loadSettingByExtension() {
+        // まずは共通設定の読み込み
+        if (!designs['common']) {
+            let fn = `${configDir}/designs.json`;
+            let json = {};
+            if (Util.isExistsFile(fn)) {
+                json = Util.loadFileJson(fn);
+            }
+            designs['common'] = json;
+        }
+        if (!highlights['common']) {
+            let fn = `${configDir}/highlights.json`;
+            let json = [];
+            if (Util.isExistsFile(fn)) {
+                json = Util.loadFileJson(fn);
+            }
+            highlights['common'] = json;
+        }
+
         // 現在編集中のファイルの拡張子を取得
         let ext = Util.getDocumentExt(activeEditor.document, true);
-        // 未読み込みならばデザインの読み込み
         if (!designs[ext]) {
+            // まず共通設定を設定
+            designs[ext] = designs['common'];
+
+            // 拡張子別設定をマージ
             let fn = `${configDir}/designs-${ext}.json`;
             if (Util.isExistsFile(fn)) {
-                designs[ext] = Util.loadFileJson(fn);
+                let json = Util.loadFileJson(fn);
+                for (let key in json) {
+                    designs[ext][key] = json[key];
+                }
             }
         }
         // 未読み込みならばハイライトの読み込み
         if (!highlights[ext]) {
+            // まず共通設定を設定
+            highlights[ext] = highlights['common'];
+            
+            // 拡張子別設定をマージ
             let fn = `${configDir}/highlights-${ext}.json`;
             if (Util.isExistsFile(fn)) {
-                highlights[ext] = Util.loadFileJson(fn);
+                let json = Util.loadFileJson(fn);
+                for (let key in json) {
+                    highlights[ext].push(json[key]);
+                }
             }
         }
     }
@@ -157,7 +205,8 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
-        for (let info of highlights[ext]) {
+        for (let key in highlights[ext]) {
+            let info = highlights[ext][key];
             if (!designs[ext][info.design]) {
                 // デザインがないので無視
                 continue;

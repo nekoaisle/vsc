@@ -57,7 +57,7 @@
 	"case": {
 		"prefix": "case '': {",
 		"body": [
-			"case '': {",
+			"case '$1': {",
 			"\tbreak;",
 			"}"
 			],

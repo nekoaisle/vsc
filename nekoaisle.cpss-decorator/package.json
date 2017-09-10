@@ -14,6 +14,23 @@
         "*"
     ],
     "main": "./out/src/extension",
+    "contributes": {
+        "commands": [{
+            "command": "nekoaisle.cpssDecoratorRefresh",
+            "title": "CPSS Decorator: Refresh loaded design and highlight."
+        }],
+        "configuration": {
+            "type": "object",
+            "title": "Insert Code configuration",
+            "properties": {
+                "cpssDecorator.dataDir": {
+                    "type": "string",
+                    "default": "",
+                    "description": "デザイン/ハイライトファイルが格納されているディレクトリを指定してください。"
+                }
+            }
+        }
+    },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
         "compile": "tsc -watch -p ./",

@@ -1,0 +1,32 @@
+{
+	"black": {
+		"color": "#000000"
+	},
+	"blue": {
+		"color": "#8888FF"
+	},
+	"red": {
+		"color": "#FF0000"
+	},
+	"magenta": {
+		"color": "#FF00FF"
+	},
+	"green": {
+		"color": "#0000FF"
+	},
+	"yellow": {
+		"color": "#FFFF00"
+	},
+	"cyan": {
+		"color": "#FF00FF"
+	},
+	"white": {
+		"color": "#FFFFFF"
+	},
+	"box": {
+		"outline": "solid 1px #888888"
+	},
+	"bg-grey": {
+		"backgroundColor": "#002222"
+	}
+}
