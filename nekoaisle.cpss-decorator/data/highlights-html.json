@@ -1,0 +1,10 @@
+[
+	{
+		"regexp": "{{.*?}}",
+		"design": "border"
+	},
+	{
+		"regexp": "data-cpss-(id|type|form|merge|delete|strip)",
+		"design": "bg-blue"
+	}
+]

@@ -71,6 +71,46 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     /**
+     * デザイン用 JSON ファイルを読み込む
+     * @param fileName ファイル名
+     */
+    function loadDesign(fileName: string): object {
+        // json ファイルの読み込み
+        let json = Util.loadFileJson(fileName);
+
+        // JSONにかけない変数は文字列として記述されているので変換
+        for (let name in json) {
+            for (let key in json[name]) {
+                switch (key) {
+                    case 'overviewRulerLane': {
+                        let m = /vscode\.OverviewRulerLane\.(.*)/.exec(json[name][key]);
+                        switch (m[1]) {
+                            case 'Left': json[name][key] = vscode.OverviewRulerLane.Left; break;
+                            case 'Center': json[name][key] = vscode.OverviewRulerLane.Center; break;
+                            case 'Right': json[name][key] = vscode.OverviewRulerLane.Right; break;
+                            case 'Full': json[name][key] = vscode.OverviewRulerLane.Full; break;
+                        }
+                        break;
+                    }
+                    case 'rangeBehavior': {
+                        let m = /vscode\.DecorationRangeBehavior\.(.*)/.exec(json[name][key]);
+                        switch (m[1]) {
+                            case 'OpenOpen': json[name][key] = 'OpenOpen'; break;
+                            case 'ClosedClosed': json[name][key] = 'ClosedClosed'; break;
+                            case 'OpenClosed': json[name][key] = 'OpenClosed'; break;
+                            case 'ClosedOpen': json[name][key] = 'ClosedOpen'; break;
+                        }    
+                        break;
+                    }    
+                }
+            }
+        }
+
+        //
+        return json;
+    }
+
+    /**
      * 現在の拡張子に対応するデザインとハイライトの読み込み
      * @param force true を指定すると強制的に読み込みます
      */
@@ -80,7 +120,7 @@ export function activate(context: vscode.ExtensionContext) {
             let fn = `${configDir}/designs.json`;
             let json = {};
             if (Util.isExistsFile(fn)) {
-                json = Util.loadFileJson(fn);
+                json = loadDesign(fn);
             }
             designs['common'] = json;
         }
@@ -102,7 +142,7 @@ export function activate(context: vscode.ExtensionContext) {
             // 拡張子別設定をマージ
             let fn = `${configDir}/designs-${ext}.json`;
             if (Util.isExistsFile(fn)) {
-                let json = Util.loadFileJson(fn);
+                let json = loadDesign(fn);
                 for (let key in json) {
                     designs[ext][key] = json[key];
                 }

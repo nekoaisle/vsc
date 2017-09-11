@@ -28,5 +28,15 @@
 	},
 	"bg-grey": {
 		"backgroundColor": "#002222"
+	},
+	"bg-blue": {
+		"backgroundColor": "rgba(0,0,255,0.8)"
+	},
+	"border": {
+		"borderWidth": "1px",
+		"borderStyle": "solid",
+		"borderColor": "rgba(0,0,255,0.8)",
+		"overviewRulerColor": "rgba(0,0,255,1)",
+		"overviewRulerLane": "vscode.OverviewRulerLane.Right"
 	}
 }
