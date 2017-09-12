@@ -27,7 +27,7 @@
 		"outline": "solid 1px #888888"
 	},
 	"bg-grey": {
-		"backgroundColor": "#002222"
+		"backgroundColor": "rgba(0,255,255,0.1)"
 	},
 	"bg-blue": {
 		"backgroundColor": "rgba(0,0,255,0.8)"

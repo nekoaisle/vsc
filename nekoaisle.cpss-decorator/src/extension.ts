@@ -137,7 +137,7 @@ export function activate(context: vscode.ExtensionContext) {
         let ext = Util.getDocumentExt(activeEditor.document, true);
         if (!designs[ext]) {
             // まず共通設定を設定
-            designs[ext] = designs['common'];
+            designs[ext] = Util.cloneObject( designs['common'] );
 
             // 拡張子別設定をマージ
             let fn = `${configDir}/designs-${ext}.json`;
@@ -151,7 +151,7 @@ export function activate(context: vscode.ExtensionContext) {
         // 未読み込みならばハイライトの読み込み
         if (!highlights[ext]) {
             // まず共通設定を設定
-            highlights[ext] = highlights['common'];
+            highlights[ext] = Util.cloneObject( highlights['common'] );
             
             // 拡張子別設定をマージ
             let fn = `${configDir}/highlights-${ext}.json`;
@@ -233,6 +233,11 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     /**
+     * 設定した装飾
+     */
+    let attachedDecorations: vscode.TextEditorDecorationType[] = [];
+
+    /**
      * 装飾処理
      */
     function updateDecorations() {
@@ -244,6 +249,12 @@ export function activate(context: vscode.ExtensionContext) {
         if (!designs[ext] || !highlights[ext]) {
             return;
         }
+
+        // 前回設定した装飾をクリア
+        for (let deco of attachedDecorations) {
+            deco.dispose();
+        }
+        attachedDecorations = [];
 
         for (let key in highlights[ext]) {
             let info = highlights[ext][key];
@@ -260,13 +271,18 @@ export function activate(context: vscode.ExtensionContext) {
             const re = new RegExp(info.regexp, 'g');
             let match;
             while (match = re.exec(text)) {
-                const start = activeEditor.document.positionAt(match.index);
-                const end = activeEditor.document.positionAt(match.index + match[0].length);
-                ranges.push(new vscode.Range(start, end));
+                ranges.push(new vscode.Range(
+                    activeEditor.document.positionAt(match.index),
+                    activeEditor.document.positionAt(match.index + match[0].length)
+                ));
             }
             if (ranges.length > 0) {
+                // 装飾を作成
                 let deco = vscode.window.createTextEditorDecorationType(designs[ext][info.design]);
+                // 装飾を設定
                 activeEditor.setDecorations(deco, ranges);
+                // 今回設定した装飾を記憶
+                attachedDecorations.push(deco);
             }
         }
     }

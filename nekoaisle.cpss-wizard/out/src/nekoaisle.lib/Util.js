@@ -6,8 +6,37 @@ const os = require("os");
 const fs = require("fs");
 const path = require("path");
 const url = require("url");
+const PathInfo_1 = require("./PathInfo");
 var Util;
 (function (Util) {
+    // 言語タイプごとの拡張子一覧
+    //
+    // console.log('enum languages');
+    // vscode.languages.getLanguages().then((langs: string[]) => {
+    //     langs.forEach( element => {
+    //         console.log(`  ${element}`);
+    //     });
+    // });
+    Util.extensionByLanguages = {
+        'plaintext': '.txt',
+        'Log': '.log',
+        'bat': '.bat',
+        'c': '.c',
+        'cpp': '.cpp',
+        'css': '.css',
+        'html': '.html',
+        'ini': '.ini',
+        'java': '.java',
+        'javascript': '.js',
+        'json': '.json',
+        'perl': '.pl',
+        'php': '.php',
+        'shellscript': '.sh',
+        'sql': '.sql',
+        'typescript': '.ts',
+        'vb': '.vb',
+        'xml': '.xml',
+    };
     function getExtensionPath(filename) {
         return path.resolve(exports.extensionContext.extensionPath, filename);
     }
@@ -32,6 +61,62 @@ var Util;
         return str;
     }
     Util.putLog = putLog;
+    /**
+     * オブジェクトを複製
+     * @param src 複製する対象
+     */
+    function cloneObject(src) {
+        let dst;
+        switch (typeof src) {
+            default: {
+                dst = src;
+                break;
+            }
+            case 'object':
+            case 'function': {
+                switch (Object.prototype.toString.call(src).slice(8, -1)) {
+                    case 'Object': {
+                        //自作クラスはprototype継承される
+                        dst = Object.create(Object.getPrototypeOf(src));
+                        for (let key in src) {
+                            dst[key] = cloneObject(src[key]);
+                        }
+                        break;
+                    }
+                    case 'Array': {
+                        dst = Array();
+                        for (let key in src) {
+                            dst[key] = cloneObject(src[key]);
+                        }
+                        break;
+                    }
+                    case 'Function': {
+                        //ネイティブ関数オブジェクトはcloneできないのでnullを返す;
+                        try {
+                            var anonymous;
+                            eval('dst = ' + src.toString());
+                        }
+                        catch (e) {
+                            dst = null;
+                        }
+                        break;
+                    }
+                    case 'Date': {
+                        dst = new Date(src.valueOf());
+                        break;
+                    }
+                    case 'RegExp': {
+                        dst = new RegExp(src.valueOf());
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        //
+        return dst;
+    }
+    Util.cloneObject = cloneObject;
     // 指定文字でパディング
     function pad(str, pad, cols) {
         pad = pad.repeat(cols);
@@ -145,7 +230,7 @@ var Util;
     }
     Util.getCursorWord = getCursorWord;
     /**
-     * 指定文字の大文字・小文字を切り替える
+     * 指定文字列の先頭文字によって大文字・小文字を切り替える
      * @param c 対象となる文字
      * @return string 結果
      */
@@ -438,5 +523,30 @@ var Util;
     }
     Util.normalizePath = normalizePath;
     ;
+    /**
+     * 指定ドキュメントのファイル名の拡張子を取得
+     * @param doc ture を指定すると先頭の . を除去します
+     * @param lessDot ture を指定すると先頭の . を除去します
+     */
+    function getDocumentExt(doc, lessDot) {
+        // 現在編集中のファイル名情報を取得
+        let pinfo = new PathInfo_1.PathInfo(doc.fileName);
+        let ext;
+        if (pinfo.info.ext) {
+            // 拡張子があるのでそれを返す
+            ext = pinfo.info.ext;
+        }
+        else {
+            // 拡張子がないときはドキュメントの言語から拡張子を決める
+            ext = Util.extensionByLanguages[doc.languageId];
+        }
+        // 先頭の . を除去
+        if (lessDot) {
+            ext = ext.substr(1);
+        }
+        //
+        return ext;
+    }
+    Util.getDocumentExt = getDocumentExt;
 })(Util = exports.Util || (exports.Util = {}));
 //# sourceMappingURL=Util.js.map

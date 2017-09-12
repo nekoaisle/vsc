@@ -60,10 +60,23 @@
 	},
 	"EchoDebug": {
 		"label": "E: EchoDebug(選択範囲)",
-		"inline": "#EchoDebug( '{{clipboard}}', {{clipboard}} );\tbefore"
+		"inline": "EchoDebug( '{{clipboard}}', {{clipboard}} );"
 	},
 	"class.base": {
 		"label": "B: ベースクラス名",
 		"command": "class.base"
+	},
+	"row.name": {
+		"label": "RN: DB 列名 sql-row.name",
+		"command": "sql-row.name"
+	},
+	"row.propaty": {
+		"label": "RM: DB 列に対応するメンバー変数名 sql-row.propaty",
+		"command": "sql-row.propaty"
+	},
+	"row.comment": {
+		"label": "RC: DB 列のコメント sql-row.comment",
+		"command": "sql-row.comment"
 	}
+	
 }

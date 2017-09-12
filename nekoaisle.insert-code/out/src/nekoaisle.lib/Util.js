@@ -61,6 +61,62 @@ var Util;
         return str;
     }
     Util.putLog = putLog;
+    /**
+     * オブジェクトを複製
+     * @param src 複製する対象
+     */
+    function cloneObject(src) {
+        let dst;
+        switch (typeof src) {
+            default: {
+                dst = src;
+                break;
+            }
+            case 'object':
+            case 'function': {
+                switch (Object.prototype.toString.call(src).slice(8, -1)) {
+                    case 'Object': {
+                        //自作クラスはprototype継承される
+                        dst = Object.create(Object.getPrototypeOf(src));
+                        for (let key in src) {
+                            dst[key] = cloneObject(src[key]);
+                        }
+                        break;
+                    }
+                    case 'Array': {
+                        dst = Array();
+                        for (let key in src) {
+                            dst[key] = cloneObject(src[key]);
+                        }
+                        break;
+                    }
+                    case 'Function': {
+                        //ネイティブ関数オブジェクトはcloneできないのでnullを返す;
+                        try {
+                            var anonymous;
+                            eval('dst = ' + src.toString());
+                        }
+                        catch (e) {
+                            dst = null;
+                        }
+                        break;
+                    }
+                    case 'Date': {
+                        dst = new Date(src.valueOf());
+                        break;
+                    }
+                    case 'RegExp': {
+                        dst = new RegExp(src.valueOf());
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        //
+        return dst;
+    }
+    Util.cloneObject = cloneObject;
     // 指定文字でパディング
     function pad(str, pad, cols) {
         pad = pad.repeat(cols);

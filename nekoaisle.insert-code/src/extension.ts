@@ -30,6 +30,12 @@ interface GetInsertPosResult {
     str: string,
 }
 
+interface GetCommandCache {
+    now: DateInfo,
+    pinfo: PathInfo,
+    clipboard: string, 
+}
+
 class InsertCode extends Extension {
     // 言語タイプごとの拡張子一覧
     //
@@ -251,55 +257,8 @@ class InsertCode extends Extension {
      * @return 挿入する文字列
      */
     protected doCommand(command: string, editor: vscode.TextEditor): string {
-        // 戻り値
-        let ret = '';
-
         let cmds = command.split('.');
-
-        switch (cmds[0]) {
-            // 日付
-            case 'now': {
-                let now = new DateInfo();
-                switch (cmds[1]) {
-                    case "year": ret = now.year; break;
-                    case "month": ret = now.month; break;
-                    case "date": ret = now.date; break;
-                    case "hour": ret = now.hour; break;
-                    case "min": ret = now.min; break;
-                    case "sec": ret = now.sec; break;
-                    case "ymdhis": ret = now.ymdhis; break;
-                    case "ymd": ret = now.ymd; break;
-                    case "his": ret = now.his; break;
-                }
-                break;
-            }
-            // パス
-            case 'pinfo': {
-                let pinfo = new PathInfo(editor.document.fileName);
-                switch (cmds[1]) {
-                    // フルパス名
-                    case "path": ret = pinfo.path;
-                    // ディレクトリ名
-                    case "dir": ret = pinfo.info.dir; break;
-                    // ファイル名+拡張子
-                    case "base": ret = pinfo.info.base; break;
-                    // ファイル名
-                    case "name": ret = pinfo.info.name; break;
-                    // 拡張子
-                    case "ext": ret = pinfo.info.ext; break;
-                }
-                break;
-            }
-
-            // クラス
-            case 'class': {
-                ret = this.getClass(cmds[1]);
-                break;
-            }
-        }
-
-        //
-        return ret;
+        return this.getCommandValue(cmds[0], cmds[1], editor);
     }
 
     /**
@@ -319,6 +278,143 @@ class InsertCode extends Extension {
      */
     protected doInline(inline: string, editor: vscode.TextEditor): string {
         return this.fromTemplate(inline, editor);
+    }
+
+    protected getCommandValue(cmd1: string, cmd2: string, editor: vscode.TextEditor, cache?: GetCommandCache): string {
+        /**
+         * クリップボードの内容を取得
+         */
+        const getClipboard = (): string => {
+            if (!cache.clipboard) {
+                cache.clipboard = Util.execCmd('xclip -o -selection c');
+            }
+            return cache.clipboard;
+        }
+
+        /**
+         * パス情報を取得
+         * @param key PathInfo.info の要素名
+         */
+        const getPathInfo = (key: string): string => {
+            let res = '';
+            if (!cache.pinfo) {
+                cache.pinfo = new PathInfo(editor.document.fileName);
+            }
+            if (typeof cache.pinfo.info[key] != "undefined") {
+                res = cache.pinfo.info[key];
+            }
+            return res;
+        }
+
+        /**
+         * 日時情報を取得
+         * @param key DateInfo の要素名
+         */
+        const getDateInfo = (key: string): string => {
+            let res = '';
+            if (!cache.now) {
+                cache.now = new DateInfo();
+            }
+            if (typeof cache.now[key] != "undefined") {
+                res = cache.now[key];
+            }
+            return res;
+        }
+
+        if (!cache) {
+            cache = {
+                now: null,
+                pinfo: null,
+                clipboard: null, 
+            };
+        }
+
+        let val: string = '';
+        switch (cmd1) {
+            case 'author': {
+                val = this.getConfig("author", "");
+                break;
+            }
+            case 'selection': {
+                val = Util.getSelectString(editor);
+                break;
+            }
+            case 'clipboard': {
+                val = getClipboard();
+                break;
+            }
+            case 'class': {
+                val = this.getClass(cmd2);
+                break;
+            }
+            case 'pinfo': {
+                val = getPathInfo(cmd2);
+                break;
+            }
+            case 'now': {
+                val = getDateInfo(cmd2);
+                break;
+            }
+            case 'var': {
+                val = this.mVariable[cmd2];
+                break;
+            }
+            case 'sql-row': {
+                // V_GROUP_ID      VARCHAR( 64) NOT NULL DEFAULT '' -- グループID
+                let clipboard = getClipboard();
+                switch (cmd2) {
+                    case 'name': {
+                        let match = /^,?\s*([^\s]+)\s+/.exec(clipboard);
+                        if (!match) {
+                            break;
+                        }
+                        if (typeof match[1] == "string") {
+                            val = match[1];
+                        }
+                        break;
+                    }
+                    case 'propaty': {
+                        let match = /^,?\s*(N|C|V|B|D)_([^\s]+)\s+/.exec(clipboard);
+                        if (!match) {
+                            break;
+                        }
+                        switch (match[1]) {
+                            case 'N': val = 'm_i{Name}'; break;
+                            case 'C':
+                            case 'V':
+                            case 'B': val = 'm_str{Name}'; break;
+                            case 'D':
+                                val = 'm_str{Name}Date';
+                                if (match[2].substr(-3) == '_DT') {
+                                    match[2] = match[2].substr(0, match[2].length-3);
+                                }    
+                                break;
+                            default: {
+                                break;
+                            }
+                        }
+                        if (typeof match[2] == "string") {
+                            val = val.replace('{Name}', Util.toCamelCase(match[2]));
+                        }
+                        break;
+                    }
+                    case 'comment': {
+                        let match = /-- (.*)/.exec(clipboard);
+                        if (!match) {
+                            break;
+                        }
+                        if (typeof match[1] == "string") {
+                            val = match[1].trim();
+                        }
+                        break;
+                    }    
+                }
+                break;
+            }    
+        }
+
+        //
+        return val;
     }
 
     /**
@@ -443,8 +539,11 @@ class InsertCode extends Extension {
      */
     protected makeParams(template: string, editor: vscode.TextEditor): object {
         // キャッシュ
-        let pinfo: PathInfo;
-        let now: DateInfo;
+        let cache = {
+            pinfo: null,
+            now: null,
+            clipboard: null,
+        }
 
         // テンプレート中で使用されているキーワードを抽出
         // 置換する値を準備する
@@ -466,55 +565,7 @@ class InsertCode extends Extension {
                 continue;
             }
 
-            let val;
-            switch (match[3]) {
-                case 'author': {
-                    val = this.getConfig("author", "");
-                    break;
-                }
-                case 'selection': {
-                    val = Util.getSelectString(editor);
-                    break;
-                }
-                case 'clipboard': {
-                    val = Util.execCmd('xclip -o -selection c');
-                    break;
-                }
-                case 'class': {
-                    val = this.getClass(match[4]);
-                    if (!val) {
-                        // match[4] が無効
-                        continue;
-                    }
-                    break;
-                }
-                case 'pinfo': {
-                    if (!pinfo) {
-                        pinfo = new PathInfo(editor.document.fileName);
-                    }
-                    if (typeof pinfo.info[match[4]] == "undefined") {
-                        // match[4] が無効
-                        continue;
-                    }
-                    val = pinfo.info[match[4]];
-                    break;
-                }
-                case 'now': {
-                    if (!now) {
-                        now = new DateInfo();
-                    }
-                    if (typeof now[match[4]] == "undefined") {
-                        // match[4] が無効
-                        continue;
-                    }
-                    val = now[match[4]];
-                    break;
-                }
-                case 'var': {
-                    val = this.mVariable;
-                    break;
-                }    
-            }
+            let val = this.getCommandValue(match[3], match[4], editor, cache);
 
             switch (match[1]) {
                 // ダブルクオーツ付き
@@ -545,19 +596,25 @@ class InsertCode extends Extension {
         return params;
     }
 
-    protected encodeQuotation(val: any, quote: string): any {
+    protected encodeQuotation(val: any, quote: string, editor:vscode.TextEditor): any {
         switch (typeof val) {
             // オブジェクトなら再帰呼び出し
             case 'object': {
                 for (let key in val) {
-                    val[key] = this.encodeQuotation(val[key], quote);
+                    val[key] = this.encodeQuotation(val[key], quote, editor);
                 }
                 break;
             }
             // 文字列ならエンコード
             case 'string': {
+                // \ -> \\
                 val = val.replace(/\\/g, "\\\\");
-                val = val.replace(new RegExp(quote, 'g'), '\\"');
+                // quote をエスケープ
+                val = val.replace(new RegExp(quote, 'g'), `\\${quote}`);
+                if ((quote == '"') && (Util.getDocumentExt(editor.document) == '.php')) {
+                    // " で PHP ならば $ -> \$
+                    val = val.replace(/$/g, "\\$");
+                }
                 val = `${quote}${val}${quote}`;
                 break;
             }
