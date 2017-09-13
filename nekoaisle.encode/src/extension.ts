@@ -11,7 +11,7 @@
  */
 'use strict';
 import * as vscode from 'vscode';
-import { Util, Extension } from './nekoaisle.lib/nekoaisle';
+import { Util, Extension, DateInfo } from './nekoaisle.lib/nekoaisle';
 
 /**
  * エクステンション活性化
@@ -45,107 +45,170 @@ class MyExtention extends Extension {
 					callback: () => {
 						this.menu()
 					}
-				}, {
+				},
+				
+				// 以下エンコード
+				{
 					// HTML エンコード
 					command: 'nekoaisle.encodeHtml',
 					callback: () => {
-						this.encodeSelection('HTML');
+						this.encodeJob('HTML', vscode.window.activeTextEditor);
 					}
 				}, {
 					// URL エンコード
 					command: 'nekoaisle.encodeUrl',
 					callback: () => {
-						this.encodeSelection('URL');
+						this.encodeJob('URL', vscode.window.activeTextEditor);
 					}
 				}, {
 					// BASE64 エンコード
 					command: 'nekoaisle.encodeBase64',
 					callback: () => {
-						this.encodeSelection('BASE64');
+						this.encodeJob('BASE64', vscode.window.activeTextEditor);
 					}
 				}, {
 					// C言語文字列
 					command: 'nekoaisle.encodeCString',
 					callback: () => {
-						this.encodeSelection('c-string');
+						this.encodeJob('c-string', vscode.window.activeTextEditor);
 					}
 				}, {
 					// 正規表現
 					command: 'nekoaisle.encodePreg',
 					callback: () => {
-						this.encodeSelection('preg');
+						this.encodeJob('preg', vscode.window.activeTextEditor);
 					}
 				}, {
 					// '' の中身
 					command: 'nekoaisle.encodeContentsOfSingleQuotation',
 					callback: () => {
-						this.encodeSelection("'");
+						this.encodeJob("'", vscode.window.activeTextEditor);
 					}
 				}, {
 					// "" の中身
 					command: 'nekoaisle.encodeContentsOfDoubleQuotation',
 					callback: () => {
-						this.encodeSelection("'");
+						this.encodeJob("'", vscode.window.activeTextEditor);
 					}
 				}, {
+					// UNIXTIME
+					command: 'nekoaisle.encodeContentsOfUnixtime',
+					callback: () => {
+						this.encodeJob("UNIXTIME", vscode.window.activeTextEditor);
+					}
+				},
+				
+				// 以下でコード
+				{
 					// HTML デコード
 					command: 'nekoaisle.decodeHtml',
 					callback: () => {
-						this.decodeSelection('HTML');
+						this.decodeJob('HTML', vscode.window.activeTextEditor);
 					}
 				}, {
 					// URL デコード
 					command: 'nekoaisle.decodeUrl',
 					callback: () => {
-						this.decodeSelection('URL');
+						this.decodeJob('URL', vscode.window.activeTextEditor);
 					}
 				}, {
 					// BASE64 デコード
 					command: 'nekoaisle.decodeBase64',
 					callback: () => {
-						this.decodeSelection('BASE64');
+						this.decodeJob('BASE64', vscode.window.activeTextEditor);
 					}
 				}, {
 					// C言語文字列
 					command: 'nekoaisle.decodeCString',
 					callback: () => {
-						this.decodeSelection('c-string');
+						this.decodeJob('c-string', vscode.window.activeTextEditor);
 					}
 				}, {
 					// 正規表現
 					command: 'nekoaisle.decodePreg',
 					callback: () => {
-						this.decodeSelection('preg');
+						this.decodeJob('preg', vscode.window.activeTextEditor);
 					}
 				}, {
 					// '' の中身
 					command: 'nekoaisle.decodeContentsOfSingleQuotation',
 					callback: () => {
-						this.decodeSelection("'");
+						this.decodeJob("'", vscode.window.activeTextEditor);
 					}
 				}, {
 					// "" の中身
 					command: 'nekoaisle.decodeContentsOfDoubleQuotation',
 					callback: () => {
-						this.decodeSelection("'");
+						this.decodeJob("'", vscode.window.activeTextEditor);
 					}
 				}, {
+					// UNIXTIME
+					command: 'nekoaisle.decodeContentsOfUnixtime',
+					callback: () => {
+						this.decodeJob("UNIXTIME", vscode.window.activeTextEditor);
+					}
+				},
+				
+				// 以下 enclose
+				{
 					// '' 括り
 					command: 'nekoaisle.encloseInSingleQuotation',
 					callback: () => {
-						this.enclose("'", "'");
+						this.enclose("'", "'", vscode.window.activeTextEditor);
 					}
 				}, {
 					// "" 括り
 					command: 'nekoaisle.encloseInDoubleQuotation',
 					callback: () => {
-						this.enclose('"', '"');
+						this.enclose('"', '"', vscode.window.activeTextEditor);
 					}
 				}, {
 					// `` 括り
 					command: 'nekoaisle.encloseInGraveAccent',
 					callback: () => {
-						this.enclose('\u0060', '\u0060');
+						this.enclose('\u0060', '\u0060', vscode.window.activeTextEditor);
+					}
+				}, {
+					// () 括り
+					command: 'nekoaisle.encloseParenthesis',
+					callback: () => {
+						this.enclose('(', ')', vscode.window.activeTextEditor);
+					}
+				}, {
+					// [] 括り
+					command: 'nekoaisle.encloseSquareBracket',
+					callback: () => {
+						this.enclose('[', ']', vscode.window.activeTextEditor);
+					}
+				}, {
+					// {} 括り
+					command: 'nekoaisle.encloseCurlyBracket',
+					callback: () => {
+						this.enclose('{', '}', vscode.window.activeTextEditor);
+					}
+				}, {
+					// {{}} 括り
+					command: 'nekoaisle.encloseDoubleCurlyBracket',
+					callback: () => {
+						this.enclose('{{', '}}', vscode.window.activeTextEditor);
+					}
+				}, {
+					// /**/ 括り
+					command: 'nekoaisle.encloseCComment',
+					callback: () => {
+						this.enclose('/*', '*/', vscode.window.activeTextEditor);
+					}
+				}, {
+					// <!-- --> 括り
+					command: 'nekoaisle.encloseHtmlComment',
+					callback: () => {
+						this.enclose('<!-- ', ' -->', vscode.window.activeTextEditor);
+					}
+				}, {
+					// <div class=""></div> 括り
+					command: 'nekoaisle.encloseHtmlDiv',
+					callback: () => {
+						this.enclose('<div class="">\n', '\n</div>',vscode.window.activeTextEditor);
 					}
 				}
 			]
@@ -165,7 +228,8 @@ class MyExtention extends Extension {
 			{ label: "'", description: "' を \\' にする" },
 			{ label: '"', description: '" を \\" にする' },
 			{ label: '<br>', description: '\\n を <br /> にする' },
-
+			{ label: 'UNIXTIME', description: '日時文字列をUNIXTIMEに変換' },
+			
 			{ label: "''", description: '\' で単語または選択範囲を括る/外す' },
 			{ label: '""', description: '" で単語または選択範囲を括る/外す' },
 			{ label: '``', description: '\u0060 で単語または選択範囲を括る/外す' },
@@ -186,6 +250,7 @@ class MyExtention extends Extension {
 			{ label: "' decode", description: "\\' を ' にする" },
 			{ label: '" decode', description: '\\" を " にする' },
 			{ label: '<br> decode', description: '<br /> を \\n にする' },
+			{ label: 'UNIXTIME decode', description: 'UNIXTIMEを日時文字列に変換' },
 		];
 		// ファイルを選択
 		let popt = {
@@ -193,18 +258,18 @@ class MyExtention extends Extension {
 		};
 		vscode.window.showQuickPick(menu, popt)
 			.then((sel: vscode.QuickPickItem) => {
+				let editor = vscode.window.activeTextEditor;
 				switch (sel.label) {
-					case "''": this.enclose("'", "'"); return;
-					case '""': this.enclose('"', '"'); return;
-					case '``': this.enclose('`', '`'); return;
-					case '()': this.enclose('(', ')'); return;
-					case '[]': this.enclose('[', ']'); return;
-					case '{}': this.enclose('{', '}'); return;
-					case '<>': this.enclose('<', '>'); return;
-					case '{{}}': this.enclose('{{', '}}'); return;
-					case '/**/': this.enclose('/*', '*/'); return;
-					case '<!-- -->': this.enclose('<!-- ', ' -->'); return;
-					case '<div class="">': this.enclose('<div class="">\n', '\n</div>'); return;
+					case "''": this.enclose("'", "'", editor); return;
+					case '""': this.enclose('"', '"', editor); return;
+					case '``': this.enclose('`', '`', editor); return;
+					case '()': this.enclose('(', ')', editor); return;
+					case '[]': this.enclose('[', ']', editor); return;
+					case '{}': this.enclose('{', '}', editor); return;
+					case '{{}}': this.enclose('{{', '}}', editor); return;
+					case '/**/': this.enclose('/*', '*/', editor); return;
+					case '<!-- -->': this.enclose('<!-- ', ' -->', editor); return;
+					case '<div class="">': this.enclose('<div class="">\n', '\n</div>',editor); return;
 				}
 
 				let cmd = sel.label.split(' ');
@@ -212,104 +277,139 @@ class MyExtention extends Extension {
 					case '':
 					default:
 					case 'encode': {
-						this.encodeSelection(cmd[0]);
+						this.encodeJob(cmd[0], editor);
 						break;
 					}
 					case 'decode': {
-						this.decodeSelection(cmd[0]);
+						this.decodeJob(cmd[0], editor);
 						break;
 					}
 				}
 			});
 	}
 
-	protected encodeJob(sel: string) {
+	protected encodeJob(type: string, editor: vscode.TextEditor): void {
+		let range = editor.selection;
+		let str: string;
+		if (!range.isEmpty) {
+			// 範囲選択されているのでそれを対象とする
+			str = editor.document.getText(range);
+		} else {
+			// 範囲選択されていないのでクリップボード
+			str = Util.getClipboard();
+		}
+
+		// エンコードする
+		str = this.encode(str, type, editor);
+
+		// 結果に置換
+		editor.edit(edit => edit.replace(editor.selection, str));
 	}
 
-	protected encodeSelection(type: string): void {
-		// 選択範囲の文字列を取得
-		let editor = vscode.window.activeTextEditor;
-		let s = Util.getSelectString(editor);
-
+	protected encode(str: string, type: string, editor: vscode.TextEditor): string {
 		// 変換
 		switch (type) {
 			// HTML encode
-			case 'HTML': s = Util.encodeHtml(s); break;
+			case 'HTML': str = Util.encodeHtml(str); break;
 			// URL encode
-			case 'URL': s = encodeURIComponent(s); break;
+			case 'URL': str = encodeURIComponent(str); break;
 			// BASE64
-			case 'BASE64': s = new Buffer(s).toString('base64'); break;
+			case 'BASE64': str = new Buffer(str).toString('base64'); break;
 			// C言語文字列
-			case 'c-string': s = this.encodeCString(s); break;;
+			case 'c-string': str = this.encodeCString(str); break;;
 			// 正規表現
-			case 'preg': s = this.encodePreg(s); break;
+			case 'preg': str = this.encodePreg(str); break;
 			// ""囲み文字列
 			case '"':
-				s = s.replace(/\\/g, '\\\\');
-				s = s.replace(/"/g, '\\"');
+				str = str.replace(/\\/g, '\\\\');
+				str = str.replace(/"/g, '\\"');
 				break;
 			// ''囲み文字列
 			case "'":
-				s = s.replace(/\\/g, '\\\\');
-				s = s.replace(/'/g, "\\'");
+				str = str.replace(/\\/g, '\\\\');
+				str = str.replace(/'/g, "\\'");
 				break;
 			// ``囲み文字列
 			case "\u0060":
-				s = s.replace(/\u0060/g, "\\u0060");
+				str = str.replace(/\u0060/g, "\\u0060");
 				break;
 			// \n -> <br />
 			case '<br>': {
-				s = s.replace(/(<br(\s*\/)?>)?(\r?\n)/gi, '<br />\n');
+				str = str.replace(/(<br(\str*\/)?>)?(\r?\n)/gi, '<br />\n');
 				break;
 			}
+			// 日時文字列をUNIXTIMEに変換	
+			case 'UNIXTIME': {
+				let ux = Date.parse(str) / 1000;
+				str = '' + ux;
+				break;
+			}	
 		}
-
-		// 結果に置換
-		editor.edit(edit => edit.replace(editor.selection, s));
+		return str;
 	}
 
-	protected decodeSelection(type: string): void {
-		// 選択範囲の文字列を取得
-		let editor = vscode.window.activeTextEditor;
-		let s = Util.getSelectString(editor);
+	protected decodeJob(type: string, editor: vscode.TextEditor): void {
+		let range = editor.selection;
+		let str: string;
+		if (!range.isEmpty) {
+			// 範囲選択されているのでそれを対象とする
+			str = editor.document.getText(range);
+		} else {
+			// 範囲選択されていないのでクリップボード
+			str = Util.getClipboard();
+		}
 
+		// デコードする
+		str =this.decode(str, type, editor);
+		
+		// 結果に置換
+		editor.edit(edit => edit.replace(editor.selection, str));
+	}
+
+	protected decode(str: string, type: string, editor: vscode.TextEditor): string {
 		// 変換
 		switch (type) {
 			// HTML encode
-			case 'HTML': s = Util.decodeHtml(s); break;
+			case 'HTML': str = Util.decodeHtml(str); break;
 			// URL encode
-			case 'URL': s = decodeURIComponent(s); break;
+			case 'URL': str = decodeURIComponent(str); break;
 			// BASE64
-			case 'BASE64': s = new Buffer(s, 'base64').toString(); break;
+			case 'BASE64': str = new Buffer(str, 'base64').toString(); break;
 			// C言語文字列
-			case 'c-string': s = this.decodeCString(s); break;
+			case 'c-string': str = this.decodeCString(str); break;
 			// 正規表現
-			case 'preg': s = this.decodePreg(s); break;
+			case 'preg': str = this.decodePreg(str); break;
 			// ""囲み文字列
 			case '"': {
-				s = s.replace(/\\"/g, '"');
-				s = s.replace(/\\\\"/g, '\\');
+				str = str.replace(/\\"/g, '"');
+				str = str.replace(/\\\\"/g, '\\');
 				break;
 			}
 			// ''囲み文字列
 			case "'": {
-				s = s.replace(/\\'/g, "'");
-				s = s.replace(/\\\\"/g, '\\');
+				str = str.replace(/\\'/g, "'");
+				str = str.replace(/\\\\"/g, '\\');
 				break;
 			}
 			// ``囲み文字列
 			case "\\u0060": {
-				s = s.replace(/\\u0060/g, "\u0060");
+				str = str.replace(/\\u0060/g, "\u0060");
 				break;
 			}
 			// \n -> <br />
 			case '<br>': {
-				s = s.replace(/(<br(\s*\/)?>)(\r?\n)?/gi, '\n');
+				str = str.replace(/(<br(\str*\/)?>)(\r?\n)?/gi, '\n');
 				break;
 			}
+			// UNIXTIME を日時文字列に変換
+			case 'UNIXTIME': {
+				let di = new DateInfo(parseInt(str, 10) * 1000);
+				str = di.ymdhis;
+				break;
+			}	
 		}
-		// 結果に置換
-		editor.edit(edit => edit.replace(editor.selection, s));
+
+		return str;
 	}
 
 	/**
@@ -414,9 +514,8 @@ class MyExtention extends Extension {
 	// 	editor.selections = newSels;
 	// }
 
-	protected enclose(start: string, end: string): /*vscode.Selection*/void {
+	protected enclose(start: string, end: string, editor: vscode.TextEditor): /*vscode.Selection*/void {
 		// カーソル位置の単語の範囲を取得
-		let editor = vscode.window.activeTextEditor;
 		let sel = editor.selection;
 		let range: vscode.Range;
 		let newSel: vscode.Selection;
@@ -457,7 +556,5 @@ class MyExtention extends Extension {
 				editor.edit(edit => edit.replace(range, `${start}${word}${end}`));
 			}
 		}
-
-		return;
 	}
 }

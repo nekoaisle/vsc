@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const path = require("path");
+const Util_1 = require("./Util");
 ;
 /**
  * 拡張機能基本クラス
@@ -13,6 +15,8 @@ class Extension {
      */
     constructor(context, options) {
         //		console.log(`${options.name} が起動しました。`);
+        // この拡張機能が格納されているディレクトリ名
+        this.extensionRoot = context.extensionPath;
         // 設定の読み込み
         if (options.config) {
             this.config = vscode.workspace.getConfiguration(options.config);
@@ -29,7 +33,11 @@ class Extension {
      * @return string 設定
      */
     getConfig(key, def) {
-        return this.config.get(key, def);
+        let ret = this.config.get(key, def);
+        if (ret) {
+            return ret;
+        }
+        return def;
     }
     /**
      * コマンドを登録
@@ -50,6 +58,29 @@ class Extension {
             let disp = vscode.commands.registerCommand(cmd.command, cmd.callback);
             context.subscriptions.push(disp);
         }
+    }
+    /**
+     * 拡張機能フォルダー内に格納されているファイル名をフルパスにする
+     * @param filename ファイル名
+     */
+    joinExtensionRoot(filename) {
+        return path.join(this.extensionRoot, filename);
+    }
+    /**
+     * テンプレート格納ディレクトリ名を取得
+     * @param dirName ディレクトリ名
+     * @param settingsKey settings.json のサブキー
+     * @return string テンプレート格納ディレクトリ名
+     */
+    getConfigDir(dirName, settingsKey) {
+        // デフォルトのテンポラリディレクトリ名
+        let res = this.joinExtensionRoot(dirName);
+        // settings.json よりテンプレートディレクトリを取得
+        res = this.getConfig(settingsKey, res);
+        // 先頭の ~ を置換
+        res = Util_1.Util.normalizePath(res);
+        //
+        return res;
     }
 }
 exports.Extension = Extension;

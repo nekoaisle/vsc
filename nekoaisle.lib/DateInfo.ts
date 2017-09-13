@@ -14,10 +14,30 @@ export class DateInfo {
 	public his   : string;     // 時刻 "HH:II:SS"
 	public ymdhis: string;     // 日時 "YYYY-MM-DD HH:II:SS"
 
-	public constructor (date?: Date) {
-		if ( !date ) {
-			date = new Date;
+	public constructor (date?: any) {
+		switch (Util.getClassName(date)) {
+			case 'Date': {
+				break;
+			}
+			case 'Number': {
+				date = new Date(date);
+				break;
+			}
+			case 'String': {
+				// ISO-8601 は - のはずなんだけどなぁ…
+				date = date.replace( /-/g, '/');
+				date = new Date(date);
+				break;
+			}
+			// 上記以外は全て現在時刻	
+			case 'Null':
+			case 'Undefined':
+			default: {
+				date = new Date();
+				break;
+			}
 		}
+		
 		this.year  = Util.padNum(date.getFullYear(), 4);
 		this.month = Util.padNum(date.getMonth()   , 2);
 		this.date  = Util.padNum(date.getDate()    , 2);

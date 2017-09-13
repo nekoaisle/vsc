@@ -1,50 +1,42 @@
 {
+	"fileheader": {
+		"label": "1: ファイルヘッダー",
+		"filename": "php/fileheader.php"
+	},
 	"method": {
-		"label": "1: メソッド",
+		"label": "2: メソッド",
 		"filename": "php/method.php",
-		"method": "snippet"
+        "detail":      "詳細",
+        "description": "説明文"
 	},
 	"var": {
-		"label": "2: メンバー変数",
-		"filename": "php/var.php",
-		"method": "snippet"
+		"label": "3: メンバー変数",
+		"filename": "php/var.php"
+	},
+	"constructor": {
+		"label": "4: constructor",
+		"filename": "php/constructor.php"
+	},
+	"destractor": {
+		"label": "5: destractor",
+		"filename": "php/destractor.php"
 	},
 	"onEvent": {
-		"label": "3: イベントハンドラ",
-		"filename": "php/onEvent.php",
-		"method": "snippet",
-		"autoIndent": false
+		"label": "6: イベントハンドラ",
+		"filename": "php/onEvent.php"
 	},
 	"onAjax": {
-		"label": "4: onAjax",
-		"filename": "php/onAjax.php",
-		"method": "insert",
-		"autoIndent": true
+		"label": "7: onAjax",
+		"filename": "php/onAjax.php"
 	},
 	"function": {
-		"label": "5: function",
+		"label": "8: function",
 		"filename": "php/function.php",
 		"method": "snippet"
 	},
 	"aryGetFormCommandMap": {
-		"label": "6: aryGetFormCommandMap",
-		"filename": "php/aryGetFormCommandMap.php",
-		"method": "snippet"
-	},
-	"fileheader": {
-		"label": "7: ファイルヘッダー",
-		"filename": "php/fileheader.php",
-		"method": "snippet"
-	},
-	"constructor": {
-		"label": "8: constructor",
-		"filename": "php/constructor.php",
-		"method": "snippet"
-	},
-	"destractor": {
-		"label": "9: destractor",
-		"filename": "php/destractor.php",
-		"method": "snippet"
+		"label": "9: aryGetFormCommandMap",
+		"filename": "php/aryGetFormCommandMap.php"
 	},
 	"now.ymd": {
 		"label": "Y: 今日",
@@ -60,23 +52,10 @@
 	},
 	"EchoDebug": {
 		"label": "E: EchoDebug(選択範囲)",
-		"inline": "EchoDebug( '{{clipboard}}', {{clipboard}} );"
+		"inline": "#EchoDebug( '{{clipboard}}', {{clipboard}} );\tbefore"
 	},
 	"class.base": {
 		"label": "B: ベースクラス名",
 		"command": "class.base"
-	},
-	"row.name": {
-		"label": "RN: DB 列名 sql-row.name",
-		"command": "sql-row.name"
-	},
-	"row.propaty": {
-		"label": "RM: DB 列に対応するメンバー変数名 sql-row.propaty",
-		"command": "sql-row.propaty"
-	},
-	"row.comment": {
-		"label": "RC: DB 列のコメント sql-row.comment",
-		"command": "sql-row.comment"
 	}
-	
 }

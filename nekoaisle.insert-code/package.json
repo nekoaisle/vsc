@@ -11,17 +11,25 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:nekoaisle.insertCode"
+        "onCommand:nekoaisle.insertCode",
+        "onCommand:nekoaisle.insertCodePinfoBase"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [{
             "command": "nekoaisle.insertCode",
             "title": "Insert Code"
+        }, {
+            "command": "nekoaisle.insertCodePinfoBase",
+            "title": "Insert base file name"
         }],
         "keybindings": [{
             "command": "nekoaisle.insertCode",
             "key": "escape i",
+            "when": "editorTextFocus && !editorReadonly"
+        }, {
+            "command": "nekoaisle.insertCodePinfoBase",
+            "key": "escape l",
             "when": "editorTextFocus && !editorReadonly"
         }],
         "configuration": {

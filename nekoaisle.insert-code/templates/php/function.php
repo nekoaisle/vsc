@@ -1,4 +1,4 @@
-<?php /* nekoaisle.insert-code delete line */
+<?php /*! nekoaisle.insert-code delete line !*/
 /**
  * ${1:見出し}
  * 
@@ -11,4 +11,4 @@ function ${2:関数名}( )
 	return;
 }
 
-/* nekoaisle.insert-code delete line */ ?>
+/*! nekoaisle.insert-code delete line !*/ ?>

@@ -1,5 +1,6 @@
 ,
         "keybindings": [{
             "command": "nekoaisle.",
-            "key": ""
+            "key": "escape ",
+            "when": "editorTextFocus && !editorReadonly"
         }]

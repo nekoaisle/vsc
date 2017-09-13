@@ -21,19 +21,11 @@ interface ListItem {
     inline?: string,        // インラインテンプレート
     position?: string,      // 挿入位置
     method?: string,        // 呼び出すeditメソッド insert, replace, snippet
-    autoIndent?: boolean,   // オートインデントする？
-    loop?: string,          // ループ処理方法 line
 }
 
 interface GetInsertPosResult {
     pos: vscode.Position,
     str: string,
-}
-
-interface GetCommandCache {
-    now: DateInfo,
-    pinfo: PathInfo,
-    clipboard: string, 
 }
 
 class InsertCode extends Extension {
@@ -46,28 +38,27 @@ class InsertCode extends Extension {
     //     });
     // });
     protected langs = {
-        'plaintext':   '.txt',
-        'Log':         '.log',
-        'bat':         '.bat',
-        'c':           '.c',
-        'cpp':         '.cpp',
-        'css':         '.css',
-        'html':        '.html',
-        'ini':         '.ini',
-        'java':        '.java',
-        'javascript':  '.js',
-        'json':        '.json',
-        'perl':        '.pl',
-        'php':         '.php',
+        'plaintext': '.txt',
+        'Log': '.log',
+        'bat': '.bat',
+        'c': '.c',
+        'cpp': '.cpp',
+        'css': '.css',
+        'html': '.html',
+        'ini': '.ini',
+        'java': '.java',
+        'javascript': '.js',
+        'json': '.json',
+        'perl': '.pl',
+        'php': '.php',
         'shellscript': '.sh',
-        'sql':         '.sql',
-        'typescript':  '.ts',
-        'vb':          '.vb',
-        'xml':         '.xml',
+        'sql': '.sql',
+        'typescript': '.ts',
+        'vb': '.vb',
+        'xml': '.xml',
     };
 
     protected mNow: DateInfo;
-    protected mVariable: object;
 
     /**
 	 * 構築
@@ -76,24 +67,27 @@ class InsertCode extends Extension {
         super(context, {
             name: 'Insert Code',
             config: 'insertCode',
-            commands: [
-                {
-                    command: 'nekoaisle.insertCode',
-                    callback: () => {
-                        this.entry()
-                    }
-                }
-            ]
+            commands: [{
+                command: 'nekoaisle.insertCode',
+                callback: () => {this.entry()}
+            }, {
+                command: 'nekoaisle.insertCodePinfoBase',
+                callback: () => {this.doCommandInsert('pinfo.base')}
+            }]
         });
+    }
+
+    protected doCommandInsert(cmd: string) {
+        let editor = vscode.window.activeTextEditor;
+        let str = this.doCommand(cmd, editor);
+        let pos = editor.selection.active;
+        editor.edit((edit) => { edit.insert(pos, str); });
     }
 
 	/**
 	 * エントリー
 	 */
     public entry() {
-        // 変数の初期化
-        this.mVariable = {};
-
         // 実行されたときの TextEditor
         let editor = vscode.window.activeTextEditor;
 
@@ -110,6 +104,7 @@ class InsertCode extends Extension {
 
         // この拡張子のメニューを読み込む
         let menuFN = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
+        let menuJson: string = Util.loadFile(menuFN);
         let menuItems: ListItem = Util.loadFileJson(menuFN);
         if (!menuItems) {
             return;
@@ -133,10 +128,10 @@ class InsertCode extends Extension {
             matchOnDescription: false
         };
         vscode.window.showQuickPick(menu, options).then((sel: vscode.QuickPickItem) => {
+            console.log(`command = "${sel.label}"`);
             if (!sel) {
                 return;
             }
-            // console.log(`command = "${sel.label}"`);
             // デフォルト値
             let item: ListItem = {
                 label: '',          // メニューラベル
@@ -147,82 +142,35 @@ class InsertCode extends Extension {
                 inline: '',         // インラインテンプレート
                 position: '',       // 挿入位置
                 method: 'insert',   // 呼び出すeditメソッド insert, replace, snippet
-                autoIndent: this.doAutoIndent(),
-                loop: '1'
             };
             for (let key in menuItems) {
                 let i = menuItems[key];
                 if (i.label == sel.label) {
                     // 見つけたので undefined 以外の要素を複写
                     for (let k in item) {
-                        if (typeof i[k] != "undefined") {
+                        if (typeof i[k] != undefined) {
                             item[k] = i[k];
                         }
                     }
                 }
             }
 
-            // 繰り返し初期化
-            let clipboard: string[] = [];
-            switch (item.loop) {
-                // クリップボードの行を分解して１行づつ
-                case 'clipboard-line': {
-                    // クリップボードを取得
-                    let s = Util.execCmd('xclip -o -selection c');
-                    if (s) {
-                        // 改行で分解する
-                        clipboard = s.split(/\r?\n/);
-                        // 最初の１行を変数に設定
-                        this.mVariable['clipboard'] = clipboard.shift();
-                        break;
-                    } else {
-                        // クリップボードが空なので終了
-                        return;
-                    }
-                }
-            }
-
             // 挿入する文字列格納用変数
-            let str: string = '';
-            for (let done = false; !done; ) {
-                // タイプ別処理
-                if (item.filename) {
-                    // テンプレートファイル名指定
-                    str += this.doFile(`${tempDir}/${item.filename}`, editor);
-                } else if (item.inline) {
-                    // インラインテンプレート
-                    str += this.doInline(item.inline, editor);
-                } else if (item.command) {
-                    // コマンド
-                    str += this.doCommand(item.command, editor);
-                } else {
-                    // 処理が何も指定されていないので何もしない
-                    break;;
-                }
+            let str = '';
 
-                // 繰り返し処理
-                switch (item.loop) {
-                    case 'clipboard-line': {
-                        if (clipboard.length > 0) {
-                            // 次の行をクリップボードへ
-                            this.mVariable['clipboard'] = clipboard.shift();
-                        } else {
-                            // 残りはないので今回で終了
-                            done = true;
-                            break;
-                        }
-                        break;
-                    }
-                    // 1回で処理を終える    
-                    default: {
-                        done = true;
-                        break;
-                    }
-                }
-            };
-
-            if (str.length <= 0) {
-                // 空文字列なので終了
+            // タイプ別処理
+            if (item.filename) {
+                // テンプレートファイル名指定
+                str = this.doFile(`${tempDir}/${item.filename}`, editor);
+            } else if (item.inline) {
+                // インラインテンプレート
+                str = this.doInline(item.inline, editor);
+            } else if (item.command) {
+                // コマンド
+                str = this.doCommand(item.command, editor);
+            } else {
+                // 処理が何も指定されていないので何もしない
+                return;
             }
 
             // 挿入位置を決める
@@ -257,8 +205,55 @@ class InsertCode extends Extension {
      * @return 挿入する文字列
      */
     protected doCommand(command: string, editor: vscode.TextEditor): string {
+        // 戻り値
+        let ret = '';
+
         let cmds = command.split('.');
-        return this.getCommandValue(cmds[0], cmds[1], editor);
+
+        switch (cmds[0]) {
+            // 日付
+            case 'now': {
+                let now = new DateInfo();
+                switch (cmds[1]) {
+                    case "year": ret = now.year; break;
+                    case "month": ret = now.month; break;
+                    case "date": ret = now.date; break;
+                    case "hour": ret = now.hour; break;
+                    case "min": ret = now.min; break;
+                    case "sec": ret = now.sec; break;
+                    case "ymdhis": ret = now.ymdhis; break;
+                    case "ymd": ret = now.ymd; break;
+                    case "his": ret = now.his; break;
+                }
+                break;
+            }
+            // パス
+            case 'pinfo': {
+                let pinfo = new PathInfo(editor.document.fileName);
+                switch (cmds[1]) {
+                    // フルパス名
+                    case "path": ret = pinfo.path;
+                    // ディレクトリ名
+                    case "dir": ret = pinfo.info.dir; break;
+                    // ファイル名+拡張子
+                    case "base": ret = pinfo.info.base; break;
+                    // ファイル名
+                    case "name": ret = pinfo.info.name; break;
+                    // 拡張子
+                    case "ext": ret = pinfo.info.ext; break;
+                }
+                break;
+            }
+
+            // クラス
+            case 'class': {
+                ret = this.getClass(cmds[1]);
+                break;
+            }
+        }
+
+        //
+        return ret;
     }
 
     /**
@@ -278,143 +273,6 @@ class InsertCode extends Extension {
      */
     protected doInline(inline: string, editor: vscode.TextEditor): string {
         return this.fromTemplate(inline, editor);
-    }
-
-    protected getCommandValue(cmd1: string, cmd2: string, editor: vscode.TextEditor, cache?: GetCommandCache): string {
-        /**
-         * クリップボードの内容を取得
-         */
-        const getClipboard = (): string => {
-            if (!cache.clipboard) {
-                cache.clipboard = Util.execCmd('xclip -o -selection c');
-            }
-            return cache.clipboard;
-        }
-
-        /**
-         * パス情報を取得
-         * @param key PathInfo.info の要素名
-         */
-        const getPathInfo = (key: string): string => {
-            let res = '';
-            if (!cache.pinfo) {
-                cache.pinfo = new PathInfo(editor.document.fileName);
-            }
-            if (typeof cache.pinfo.info[key] != "undefined") {
-                res = cache.pinfo.info[key];
-            }
-            return res;
-        }
-
-        /**
-         * 日時情報を取得
-         * @param key DateInfo の要素名
-         */
-        const getDateInfo = (key: string): string => {
-            let res = '';
-            if (!cache.now) {
-                cache.now = new DateInfo();
-            }
-            if (typeof cache.now[key] != "undefined") {
-                res = cache.now[key];
-            }
-            return res;
-        }
-
-        if (!cache) {
-            cache = {
-                now: null,
-                pinfo: null,
-                clipboard: null, 
-            };
-        }
-
-        let val: string = '';
-        switch (cmd1) {
-            case 'author': {
-                val = this.getConfig("author", "");
-                break;
-            }
-            case 'selection': {
-                val = Util.getSelectString(editor);
-                break;
-            }
-            case 'clipboard': {
-                val = getClipboard();
-                break;
-            }
-            case 'class': {
-                val = this.getClass(cmd2);
-                break;
-            }
-            case 'pinfo': {
-                val = getPathInfo(cmd2);
-                break;
-            }
-            case 'now': {
-                val = getDateInfo(cmd2);
-                break;
-            }
-            case 'var': {
-                val = this.mVariable[cmd2];
-                break;
-            }
-            case 'sql-row': {
-                // V_GROUP_ID      VARCHAR( 64) NOT NULL DEFAULT '' -- グループID
-                let clipboard = getClipboard();
-                switch (cmd2) {
-                    case 'name': {
-                        let match = /^,?\s*([^\s]+)\s+/.exec(clipboard);
-                        if (!match) {
-                            break;
-                        }
-                        if (typeof match[1] == "string") {
-                            val = match[1];
-                        }
-                        break;
-                    }
-                    case 'propaty': {
-                        let match = /^,?\s*(N|C|V|B|D)_([^\s]+)\s+/.exec(clipboard);
-                        if (!match) {
-                            break;
-                        }
-                        switch (match[1]) {
-                            case 'N': val = 'm_i{Name}'; break;
-                            case 'C':
-                            case 'V':
-                            case 'B': val = 'm_str{Name}'; break;
-                            case 'D':
-                                val = 'm_str{Name}Date';
-                                if (match[2].substr(-3) == '_DT') {
-                                    match[2] = match[2].substr(0, match[2].length-3);
-                                }    
-                                break;
-                            default: {
-                                break;
-                            }
-                        }
-                        if (typeof match[2] == "string") {
-                            val = val.replace('{Name}', Util.toCamelCase(match[2]));
-                        }
-                        break;
-                    }
-                    case 'comment': {
-                        let match = /-- (.*)/.exec(clipboard);
-                        if (!match) {
-                            break;
-                        }
-                        if (typeof match[1] == "string") {
-                            val = match[1].trim();
-                        }
-                        break;
-                    }    
-                }
-                break;
-            }    
-        }
-
-        //
-        return val;
     }
 
     /**
@@ -507,11 +365,7 @@ class InsertCode extends Extension {
         let params = this.makeParams(template, editor);
 
         // 置換を実行
-        for (let k in params) {
-            let s = k.replace(/\W/g, function(s){return `\\${s}`;});
-            let re = new RegExp(k, "g");
-            template = template.replace(re, params[k]);
-        }
+        template = this.replaceKeywords(template, params);
 
         // 複数行ならばインデントをカーソル位置に合わせる
         if ((template.indexOf("\n") >= 0) && this.doAutoIndent()) {
@@ -539,53 +393,68 @@ class InsertCode extends Extension {
      */
     protected makeParams(template: string, editor: vscode.TextEditor): object {
         // キャッシュ
-        let cache = {
-            pinfo: null,
-            now: null,
-            clipboard: null,
-        }
+        let pinfo: PathInfo;
+        let now: DateInfo;
 
         // テンプレート中で使用されているキーワードを抽出
         // 置換する値を準備する
         // '' や "" で括られている場合はエスケープ処理もする
         let params = new Object();
-//        let re = /('|")?({{(\w+?)(?:\.(\w+?))}})$1/g;
-        let re = /('|")?({{(\w+?)(?:\.(\w+?))?}}\1)/g;
-        //        1     2  3     4
+        let re = /({{(.*?)}})|('{{(.*?)}}')|("{{(.*?)}}")/g;
         let match;
         while ((match = re.exec(template)) !== null) {
-            // ex. "{{pinfo.base}}"
-            // match[0] = "{{pinfo.base}}"
-            // match[1] = "
-            // match[2] = {{pinfo.base}}
-            // match[3] = pinfo
-            // match[4] = base
-            if (params[match[0]]) {
-                // すでに作成済み
-                continue;
+            // match には 2,4,6のいずれかにキーワードが入っている
+            let key;
+            for (let i = 2; i < match.length; i += 2) {
+                if (match[i]) {
+                    key = match[i];
+                    break;
+                }
+            }
+            // . で分解して最初の単語を取得
+            let keys: string[] = key.split('.');
+            let val;
+            switch (keys[0]) {
+                case 'author': val = this.getConfig("author", ""); break;
+                case 'selection': val = Util.getSelectString(editor); break;
+                case 'clipboard': val = Util.execCmd('xclip -o -selection c'); break;
+                case 'class': val = this.getClass(keys[1]); break;
+
+                case 'pinfo': {
+                    if (!pinfo) {
+                        pinfo = new PathInfo(editor.document.fileName);
+                    }
+                    val = pinfo[keys[1]];
+                    break;
+                }
+                case 'now': {
+                    if (!now) {
+                        now = new DateInfo();
+                    }
+                    val = now[keys[1]];
+                    break;
+                }
             }
 
-            let val = this.getCommandValue(match[3], match[4], editor, cache);
-
-            switch (match[1]) {
-                // ダブルクオーツ付き
-                case '"': {
-                    val = this.encodeQuotation(val, '"');
-                    break;
-                }
-                // シングルクオーツ付き
-                case "'": {
-                    val = this.encodeQuotation(val, "'");
-                    break;
-                }    
+            if (match[1]) {
                 // クオーツなし
-                default: {
-                    break;
-                }
+                key = match[1];
+            } else if (match[3]) {
+                // シングルクオーツ付き
+                val = val.replace(/\\/g, "\\\\");
+                val = val.replace(/'/g, "\\'");
+                val = `'${val}'`;
+                key = match[3];
+            } else if (match[5]) {
+                // ダブルクオーツ付き
+                val = val.replace(/\\/g, "\\\\");
+                val = val.replace(/"/g, '\\"');
+                val = `"${val}"`;
+                key = match[5];
             }
 
             // 
-            params[match[0]] = val;
+            params[key] = val;
         }
 
         // ※ '' や "" で括られているキーと括られていないキーの同時使用備え
@@ -596,30 +465,24 @@ class InsertCode extends Extension {
         return params;
     }
 
-    protected encodeQuotation(val: any, quote: string, editor:vscode.TextEditor): any {
-        switch (typeof val) {
-            // オブジェクトなら再帰呼び出し
-            case 'object': {
-                for (let key in val) {
-                    val[key] = this.encodeQuotation(val[key], quote, editor);
-                }
-                break;
-            }
-            // 文字列ならエンコード
-            case 'string': {
-                // \ -> \\
-                val = val.replace(/\\/g, "\\\\");
-                // quote をエスケープ
-                val = val.replace(new RegExp(quote, 'g'), `\\${quote}`);
-                if ((quote == '"') && (Util.getDocumentExt(editor.document) == '.php')) {
-                    // " で PHP ならば $ -> \$
-                    val = val.replace(/$/g, "\\$");
-                }
-                val = `${quote}${val}${quote}`;
-                break;
+    /**
+     * 要素名で検索して値で置換
+     * @param str 対象文字列
+     * @param params 検索値
+     * @param prefix 検索文字列のプレフィックス
+     * @return 置換完了後の文字列
+     */
+    protected replaceKeywords(str: string, params: object, prefix?: string): string {
+        for (let k in params) {
+            let search = (prefix) ? `${prefix}.${k}` : k;
+            if (typeof params[k] == 'object') {
+                str = this.replaceKeywords(str, params[k], search);
+            } else {
+                let re = new RegExp(search, "g");
+                str = str.replace(re, params[k]);
             }
         }
-        return val;
+        return str;
     }
 
     // キーの長い順に並べ替え

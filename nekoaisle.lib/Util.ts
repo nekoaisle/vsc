@@ -62,6 +62,14 @@ export module Util {
 	}
 
 	/**
+	 * 指定オブジェクトのクラス名を取得
+	 * @param obj クラス名を知りたいオブジェクト
+	 */
+	export function getClassName(obj: any): string {
+		return Object.prototype.toString.call(obj).slice(8, -1)
+	}
+
+	/**
 	 * オブジェクトを複製
 	 * @param src 複製する対象
 	 */
@@ -75,7 +83,7 @@ export module Util {
 
 			case 'object':
 			case 'function': {
-				switch (Object.prototype.toString.call(src).slice(8, -1)) {
+				switch (getClassName(src)) {
 					case 'Object': {
 						//自作クラスはprototype継承される
 						dst = Object.create(Object.getPrototypeOf(src));
@@ -355,6 +363,13 @@ export module Util {
 	 */
 	export function execCmd(cmd: string): string {
 		return ("" + chproc.execSync(cmd)).trim();
+	}
+
+	/**
+	 * クリップボードの内容を取得
+	 */
+	export function getClipboard() {
+		return execCmd('xclip -o -selection c');
 	}
 
 	/**

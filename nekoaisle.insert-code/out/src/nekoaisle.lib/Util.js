@@ -62,6 +62,14 @@ var Util;
     }
     Util.putLog = putLog;
     /**
+     * 指定オブジェクトのクラス名を取得
+     * @param obj クラス名を知りたいオブジェクト
+     */
+    function getClassName(obj) {
+        return Object.prototype.toString.call(obj).slice(8, -1);
+    }
+    Util.getClassName = getClassName;
+    /**
      * オブジェクトを複製
      * @param src 複製する対象
      */
@@ -74,7 +82,7 @@ var Util;
             }
             case 'object':
             case 'function': {
-                switch (Object.prototype.toString.call(src).slice(8, -1)) {
+                switch (getClassName(src)) {
                     case 'Object': {
                         //自作クラスはprototype継承される
                         dst = Object.create(Object.getPrototypeOf(src));
@@ -359,6 +367,13 @@ var Util;
         return ("" + chproc.execSync(cmd)).trim();
     }
     Util.execCmd = execCmd;
+    /**
+     * クリップボードの内容を取得
+     */
+    function getClipboard() {
+        return execCmd('xclip -o -selection c');
+    }
+    Util.getClipboard = getClipboard;
     /**
      * 指定uriをブラウザーで開く
      * @param uri 開く uri
