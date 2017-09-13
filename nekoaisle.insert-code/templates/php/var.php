@@ -1,5 +1,7 @@
+<?php /* nekoaisle.insert-code delete line */
 	/**
-	 * 
-	 * @var 
+	 * ${1:タイトル}
+	 * @var ${2:型}
 	 */
-	public ;
+	public ${3:変数名};
+/* nekoaisle.insert-code delete line */ ?>

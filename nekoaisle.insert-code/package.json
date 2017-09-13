@@ -21,7 +21,7 @@
             "title": "Insert Code"
         }, {
             "command": "nekoaisle.insertCodePinfoBase",
-            "title": "Insert base file name"
+            "title": "Insert Code"
         }],
         "keybindings": [{
             "command": "nekoaisle.insertCode",

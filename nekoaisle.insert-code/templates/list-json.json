@@ -8,9 +8,10 @@
 		"filename": "json/patterns.json"
 	},
 	"snippet": {
-		"label": "E: スニペット(クリップボード)",
+		"label": "E: １行スニペット(クリップボード)",
 		"filename": "json/snippet.json",
-		"method": "snippet"
+		"method": "snippet",
+		"loop": "clipboard-line"
 	},
 	"now.ymd": {
 		"label": "Y: 今日",

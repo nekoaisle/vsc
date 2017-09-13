@@ -55,6 +55,10 @@ class InsertCode extends nekoaisle_1.Extension {
             'xml': '.xml',
         };
     }
+    /**
+     * コマンドを現在のカーソル位置に挿入
+     * @param cmd コマンド
+     */
     doCommandInsert(cmd) {
         let editor = vscode.window.activeTextEditor;
         let str = this.doCommand(cmd, editor);
@@ -65,6 +69,8 @@ class InsertCode extends nekoaisle_1.Extension {
      * エントリー
      */
     entry() {
+        // 変数の初期化
+        this.mVariable = {};
         // 実行されたときの TextEditor
         let editor = vscode.window.activeTextEditor;
         let pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
@@ -77,7 +83,6 @@ class InsertCode extends nekoaisle_1.Extension {
         ext = ext.substr(1);
         // この拡張子のメニューを読み込む
         let menuFN = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
-        let menuJson = nekoaisle_1.Util.loadFile(menuFN);
         let menuItems = nekoaisle_1.Util.loadFileJson(menuFN);
         if (!menuItems) {
             return;
@@ -99,10 +104,10 @@ class InsertCode extends nekoaisle_1.Extension {
             matchOnDescription: false
         };
         vscode.window.showQuickPick(menu, options).then((sel) => {
-            console.log(`command = "${sel.label}"`);
             if (!sel) {
                 return;
             }
+            // console.log(`command = "${sel.label}"`);
             // デフォルト値
             let item = {
                 label: '',
@@ -113,36 +118,85 @@ class InsertCode extends nekoaisle_1.Extension {
                 inline: '',
                 position: '',
                 method: 'insert',
+                autoIndent: this.doAutoIndent(),
+                loop: '1'
             };
             for (let key in menuItems) {
                 let i = menuItems[key];
                 if (i.label == sel.label) {
                     // 見つけたので undefined 以外の要素を複写
                     for (let k in item) {
-                        if (typeof i[k] != undefined) {
+                        if (typeof i[k] != "undefined") {
                             item[k] = i[k];
                         }
                     }
                 }
             }
+            // 繰り返し初期化
+            let clipboard = [];
+            switch (item.loop) {
+                // クリップボードの行を分解して１行づつ
+                case 'clipboard-line': {
+                    // クリップボードを取得
+                    let s = nekoaisle_1.Util.execCmd('xclip -o -selection c');
+                    if (s) {
+                        // 改行で分解する
+                        clipboard = s.split(/\r?\n/);
+                        // 最初の１行を変数に設定
+                        this.mVariable['clipboard'] = clipboard.shift();
+                        break;
+                    }
+                    else {
+                        // クリップボードが空なので終了
+                        return;
+                    }
+                }
+            }
             // 挿入する文字列格納用変数
             let str = '';
-            // タイプ別処理
-            if (item.filename) {
-                // テンプレートファイル名指定
-                str = this.doFile(`${tempDir}/${item.filename}`, editor);
+            for (let done = false; !done;) {
+                // タイプ別処理
+                if (item.filename) {
+                    // テンプレートファイル名指定
+                    str += this.doFile(`${tempDir}/${item.filename}`, editor);
+                }
+                else if (item.inline) {
+                    // インラインテンプレート
+                    str += this.doInline(item.inline, editor);
+                }
+                else if (item.command) {
+                    // コマンド
+                    str += this.doCommand(item.command, editor);
+                }
+                else {
+                    // 処理が何も指定されていないので何もしない
+                    break;
+                    ;
+                }
+                // 繰り返し処理
+                switch (item.loop) {
+                    case 'clipboard-line': {
+                        if (clipboard.length > 0) {
+                            // 次の行をクリップボードへ
+                            this.mVariable['clipboard'] = clipboard.shift();
+                        }
+                        else {
+                            // 残りはないので今回で終了
+                            done = true;
+                            break;
+                        }
+                        break;
+                    }
+                    // 1回で処理を終える    
+                    default: {
+                        done = true;
+                        break;
+                    }
+                }
             }
-            else if (item.inline) {
-                // インラインテンプレート
-                str = this.doInline(item.inline, editor);
-            }
-            else if (item.command) {
-                // コマンド
-                str = this.doCommand(item.command, editor);
-            }
-            else {
-                // 処理が何も指定されていないので何もしない
-                return;
+            ;
+            if (str.length <= 0) {
+                // 空文字列なので終了
             }
             // 挿入位置を決める
             let res = this.getInsertPos(item.position, str, editor);
@@ -174,77 +228,8 @@ class InsertCode extends nekoaisle_1.Extension {
      * @return 挿入する文字列
      */
     doCommand(command, editor) {
-        // 戻り値
-        let ret = '';
         let cmds = command.split('.');
-        switch (cmds[0]) {
-            // 日付
-            case 'now': {
-                let now = new nekoaisle_1.DateInfo();
-                switch (cmds[1]) {
-                    case "year":
-                        ret = now.year;
-                        break;
-                    case "month":
-                        ret = now.month;
-                        break;
-                    case "date":
-                        ret = now.date;
-                        break;
-                    case "hour":
-                        ret = now.hour;
-                        break;
-                    case "min":
-                        ret = now.min;
-                        break;
-                    case "sec":
-                        ret = now.sec;
-                        break;
-                    case "ymdhis":
-                        ret = now.ymdhis;
-                        break;
-                    case "ymd":
-                        ret = now.ymd;
-                        break;
-                    case "his":
-                        ret = now.his;
-                        break;
-                }
-                break;
-            }
-            // パス
-            case 'pinfo': {
-                let pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
-                switch (cmds[1]) {
-                    // フルパス名
-                    case "path": ret = pinfo.path;
-                    // ディレクトリ名
-                    case "dir":
-                        ret = pinfo.info.dir;
-                        break;
-                    // ファイル名+拡張子
-                    case "base":
-                        ret = pinfo.info.base;
-                        break;
-                    // ファイル名
-                    case "name":
-                        ret = pinfo.info.name;
-                        break;
-                    // 拡張子
-                    case "ext":
-                        ret = pinfo.info.ext;
-                        break;
-                }
-                break;
-            }
-            // クラス
-            case 'class': {
-                ret = this.getClass(cmds[1]);
-                break;
-            }
-        }
-        //
-        return ret;
+        return this.getCommandValue(cmds[0], cmds[1], editor);
     }
     /**
      * ファイルテンプレート処理
@@ -262,6 +247,141 @@ class InsertCode extends nekoaisle_1.Extension {
      */
     doInline(inline, editor) {
         return this.fromTemplate(inline, editor);
+    }
+    getCommandValue(cmd1, cmd2, editor, cache) {
+        /**
+         * クリップボードの内容を取得
+         */
+        const getClipboard = () => {
+            if (!cache.clipboard) {
+                cache.clipboard = nekoaisle_1.Util.execCmd('xclip -o -selection c');
+            }
+            return cache.clipboard;
+        };
+        /**
+         * パス情報を取得
+         * @param key PathInfo.info の要素名
+         */
+        const getPathInfo = (key) => {
+            let res = '';
+            if (!cache.pinfo) {
+                cache.pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
+            }
+            if (typeof cache.pinfo.info[key] != "undefined") {
+                res = cache.pinfo.info[key];
+            }
+            return res;
+        };
+        /**
+         * 日時情報を取得
+         * @param key DateInfo の要素名
+         */
+        const getDateInfo = (key) => {
+            let res = '';
+            if (!cache.now) {
+                cache.now = new nekoaisle_1.DateInfo();
+            }
+            if (typeof cache.now[key] != "undefined") {
+                res = cache.now[key];
+            }
+            return res;
+        };
+        if (!cache) {
+            cache = {
+                now: null,
+                pinfo: null,
+                clipboard: null,
+            };
+        }
+        let val = '';
+        switch (cmd1) {
+            case 'author': {
+                val = this.getConfig("author", "");
+                break;
+            }
+            case 'selection': {
+                val = nekoaisle_1.Util.getSelectString(editor);
+                break;
+            }
+            case 'clipboard': {
+                val = getClipboard();
+                break;
+            }
+            case 'class': {
+                val = this.getClass(cmd2);
+                break;
+            }
+            case 'pinfo': {
+                val = getPathInfo(cmd2);
+                break;
+            }
+            case 'now': {
+                val = getDateInfo(cmd2);
+                break;
+            }
+            case 'var': {
+                val = this.mVariable[cmd2];
+                break;
+            }
+            case 'sql-row': {
+                // V_GROUP_ID      VARCHAR( 64) NOT NULL DEFAULT '' -- グループID
+                let clipboard = getClipboard();
+                switch (cmd2) {
+                    case 'name': {
+                        let match = /^,?\s*([^\s]+)\s+/.exec(clipboard);
+                        if (!match) {
+                            break;
+                        }
+                        if (typeof match[1] == "string") {
+                            val = match[1];
+                        }
+                        break;
+                    }
+                    case 'propaty': {
+                        let match = /^,?\s*(N|C|V|B|D)_([^\s]+)\s+/.exec(clipboard);
+                        if (!match) {
+                            break;
+                        }
+                        switch (match[1]) {
+                            case 'N':
+                                val = 'm_i{Name}';
+                                break;
+                            case 'C':
+                            case 'V':
+                            case 'B':
+                                val = 'm_str{Name}';
+                                break;
+                            case 'D':
+                                val = 'm_str{Name}Date';
+                                if (match[2].substr(-3) == '_DT') {
+                                    match[2] = match[2].substr(0, match[2].length - 3);
+                                }
+                                break;
+                            default: {
+                                break;
+                            }
+                        }
+                        if (typeof match[2] == "string") {
+                            val = val.replace('{Name}', nekoaisle_1.Util.toCamelCase(match[2]));
+                        }
+                        break;
+                    }
+                    case 'comment': {
+                        let match = /-- (.*)/.exec(clipboard);
+                        if (!match) {
+                            break;
+                        }
+                        if (typeof match[1] == "string") {
+                            val = match[1].trim();
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        //
+        return val;
     }
     /**
      * 挿入位置を取得
@@ -344,7 +464,11 @@ class InsertCode extends nekoaisle_1.Extension {
         // '' や "" で括られている場合はエスケープ処理もする
         let params = this.makeParams(template, editor);
         // 置換を実行
-        template = this.replaceKeywords(template, params);
+        for (let k in params) {
+            let s = k.replace(/\W/g, function (s) { return `\\${s}`; });
+            let re = new RegExp(k, "g");
+            template = template.replace(re, params[k]);
+        }
         // 複数行ならばインデントをカーソル位置に合わせる
         if ((template.indexOf("\n") >= 0) && this.doAutoIndent()) {
             // カーソル位置を取得
@@ -369,74 +493,49 @@ class InsertCode extends nekoaisle_1.Extension {
      */
     makeParams(template, editor) {
         // キャッシュ
-        let pinfo;
-        let now;
+        let cache = {
+            pinfo: null,
+            now: null,
+            clipboard: null,
+        };
         // テンプレート中で使用されているキーワードを抽出
         // 置換する値を準備する
         // '' や "" で括られている場合はエスケープ処理もする
         let params = new Object();
-        let re = /({{(.*?)}})|('{{(.*?)}}')|("{{(.*?)}}")/g;
+        //        let re = /('|")?({{(\w+?)(?:\.(\w+?))}})$1/g;
+        let re = /('|")?({{(\w+?)(?:\.(\w+?))?}}\1)/g;
+        //        1     2  3     4
         let match;
         while ((match = re.exec(template)) !== null) {
-            // match には 2,4,6のいずれかにキーワードが入っている
-            let key;
-            for (let i = 2; i < match.length; i += 2) {
-                if (match[i]) {
-                    key = match[i];
-                    break;
-                }
+            // ex. "{{pinfo.base}}"
+            // match[0] = "{{pinfo.base}}"
+            // match[1] = "
+            // match[2] = {{pinfo.base}}
+            // match[3] = pinfo
+            // match[4] = base
+            if (params[match[0]]) {
+                // すでに作成済み
+                continue;
             }
-            // . で分解して最初の単語を取得
-            let keys = key.split('.');
-            let val;
-            switch (keys[0]) {
-                case 'author':
-                    val = this.getConfig("author", "");
-                    break;
-                case 'selection':
-                    val = nekoaisle_1.Util.getSelectString(editor);
-                    break;
-                case 'clipboard':
-                    val = nekoaisle_1.Util.execCmd('xclip -o -selection c');
-                    break;
-                case 'class':
-                    val = this.getClass(keys[1]);
-                    break;
-                case 'pinfo': {
-                    if (!pinfo) {
-                        pinfo = new nekoaisle_1.PathInfo(editor.document.fileName);
-                    }
-                    val = pinfo[keys[1]];
-                    break;
-                }
-                case 'now': {
-                    if (!now) {
-                        now = new nekoaisle_1.DateInfo();
-                    }
-                    val = now[keys[1]];
-                    break;
-                }
-            }
-            if (match[1]) {
-                // クオーツなし
-                key = match[1];
-            }
-            else if (match[3]) {
-                // シングルクオーツ付き
-                val = val.replace(/\\/g, "\\\\");
-                val = val.replace(/'/g, "\\'");
-                val = `'${val}'`;
-                key = match[3];
-            }
-            else if (match[5]) {
+            let val = this.getCommandValue(match[3], match[4], editor, cache);
+            switch (match[1]) {
                 // ダブルクオーツ付き
-                val = val.replace(/\\/g, "\\\\");
-                val = val.replace(/"/g, '\\"');
-                val = `"${val}"`;
-                key = match[5];
+                case '"': {
+                    val = this.encodeQuotation(val, '"', editor);
+                    break;
+                }
+                // シングルクオーツ付き
+                case "'": {
+                    val = this.encodeQuotation(val, "'", editor);
+                    break;
+                }
+                // クオーツなし
+                default: {
+                    break;
+                }
             }
             // 
-            params[key] = val;
+            params[match[0]] = val;
         }
         // ※ '' や "" で括られているキーと括られていないキーの同時使用備え
         // キーの長い順に並べ替え
@@ -444,25 +543,30 @@ class InsertCode extends nekoaisle_1.Extension {
         //
         return params;
     }
-    /**
-     * 要素名で検索して値で置換
-     * @param str 対象文字列
-     * @param params 検索値
-     * @param prefix 検索文字列のプレフィックス
-     * @return 置換完了後の文字列
-     */
-    replaceKeywords(str, params, prefix) {
-        for (let k in params) {
-            let search = (prefix) ? `${prefix}.${k}` : k;
-            if (typeof params[k] == 'object') {
-                str = this.replaceKeywords(str, params[k], search);
+    encodeQuotation(val, quote, editor) {
+        switch (typeof val) {
+            // オブジェクトなら再帰呼び出し
+            case 'object': {
+                for (let key in val) {
+                    val[key] = this.encodeQuotation(val[key], quote, editor);
+                }
+                break;
             }
-            else {
-                let re = new RegExp(search, "g");
-                str = str.replace(re, params[k]);
+            // 文字列ならエンコード
+            case 'string': {
+                // \ -> \\
+                val = val.replace(/\\/g, "\\\\");
+                // quote をエスケープ
+                val = val.replace(new RegExp(quote, 'g'), `\\${quote}`);
+                if ((quote == '"') && (nekoaisle_1.Util.getDocumentExt(editor.document) == '.php')) {
+                    // " で PHP ならば $ -> \$
+                    val = val.replace(/$/g, "\\$");
+                }
+                val = `${quote}${val}${quote}`;
+                break;
             }
         }
-        return str;
+        return val;
     }
     // キーの長い順に並べ替え
     sortKeyLength(target) {
