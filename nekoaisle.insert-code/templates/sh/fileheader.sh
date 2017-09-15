@@ -15,12 +15,14 @@
 # @params number リターンコード
 # @params string エラーメッセージ(省略可)
 # @return シェルスクリプトを終了するので戻りません
-function help() {
+function usage_exit() {
 	if [ "$2" ] ; then
 		echo ${2}
 	fi
 
-	echo 'usage: $ mnt.sh game2'
+	echo << _EOL_
+usage: $ {{pinfo.base}} 
+_EOL_
 
 	exit $1;
 }

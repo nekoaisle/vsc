@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const path = require("path");
+const Util_1 = require("./Util");
 ;
 /**
  * 拡張機能基本クラス
@@ -32,7 +33,11 @@ class Extension {
      * @return string 設定
      */
     getConfig(key, def) {
-        return this.config.get(key, def);
+        let ret = this.config.get(key, def);
+        if (ret) {
+            return ret;
+        }
+        return def;
     }
     /**
      * コマンドを登録
@@ -60,6 +65,22 @@ class Extension {
      */
     joinExtensionRoot(filename) {
         return path.join(this.extensionRoot, filename);
+    }
+    /**
+     * テンプレート格納ディレクトリ名を取得
+     * @param dirName ディレクトリ名
+     * @param settingsKey settings.json のサブキー
+     * @return string テンプレート格納ディレクトリ名
+     */
+    getConfigDir(dirName, settingsKey) {
+        // デフォルトのテンポラリディレクトリ名
+        let res = this.joinExtensionRoot(dirName);
+        // settings.json よりテンプレートディレクトリを取得
+        res = this.getConfig(settingsKey, res);
+        // 先頭の ~ を置換
+        res = Util_1.Util.normalizePath(res);
+        //
+        return res;
     }
 }
 exports.Extension = Extension;

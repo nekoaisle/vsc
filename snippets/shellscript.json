@@ -13,7 +13,7 @@
 		"body": [
 			"if [ ${1:条件} ];then",
 			"\t",
-			"elif [ ${2:条件} ]; then",
+			"elif [  ]; then",
 			"\t",
 			"else",
 			"\t",
