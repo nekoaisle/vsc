@@ -1,0 +1,26 @@
+{
+    "name": "highlight-tsv",
+    "displayName": "Highlight tsv",
+    "description": "Tab Separated Value file Highlight.",
+    "version": "0.0.1",
+    "publisher": "nekoaisle",
+    "engines": {
+        "vscode": "^1.14.0"
+    },
+    "categories": [
+        "Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "tsv",
+            "aliases": ["Tab Separated Value", "tsv"],
+            "extensions": [".tsv"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "tsv",
+            "scopeName": "text.tsv",
+            "path": "./syntaxes/tsv.tmLanguage.json"
+        }]
+    }
+}
