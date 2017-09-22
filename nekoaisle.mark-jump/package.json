@@ -11,36 +11,38 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:markjump.mark",
-        "onCommand:markjump.jump"
+        "onCommand:nekoaisle.markjumpMark",
+        "onCommand:nekoaisle.markjumpJump",
+        "onCommand:nekoaisle.markjumpReturn",
+        "*"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
             {
-                "command": "markjump.mark",
+                "command": "nekoaisle.markjumpMark",
                 "title": "Mark the cursor position"
             },
             {
-                "command": "markjump.jump",
+                "command": "nekoaisle.markjumpJump",
                 "title": "Jump to mark position"
             },
             {
-                "command": "markjump.rejump",
+                "command": "nekoaisle.markjumpReturn",
                 "title": "Return to the last jump position"
             }
         ],
         "keybindings": [
             {
-                "command": "markjump.mark",
+                "command": "nekoaisle.markjumpMark",
                 "key": "escape m"
             },
             {
-                "command": "markjump.jump",
+                "command": "nekoaisle.markjumpJump",
                 "key": "escape j"
             },
             {
-                "command": "markjump.rejump",
+                "command": "nekoaisle.markjumpReturn",
                 "key": "escape r"
             }
         ]

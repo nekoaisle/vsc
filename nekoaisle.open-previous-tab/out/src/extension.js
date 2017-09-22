@@ -34,6 +34,8 @@ class OpenPreviousTab extends nekoaisle_1.Extension {
         vscode.window.onDidChangeActiveTextEditor(this.onEvent, this, subscriptions);
         // create a combined disposable from both event subscriptions
         this.disposable = vscode.Disposable.from(...subscriptions);
+        // 現在のアクティブタブを記憶
+        this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
     }
     /**
      * エントリー
@@ -54,7 +56,7 @@ class OpenPreviousTab extends nekoaisle_1.Extension {
     /**
      * イベントハンドラ
      */
-    onEvent() {
+    onEvent(e) {
         // 前回のアクティブタブを記憶
         this.fileNames[1] = this.fileNames[0];
         // 現在のアクティブタブを記憶

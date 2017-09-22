@@ -1438,6 +1438,25 @@
 		],
 		"description": ""
 	},
+	"<<< _SQL_": {
+		"prefix": "<<< _SQL_",
+		"body": [
+			"<<<_SQL_",
+			"select *",
+			"from $1",
+			"inner join $2 on $1. = $2.",
+			"where  = ?",
+			"_SQL_;",
+			"\t\t$$arg = [];",
+			"\t\t$$row = rowQueryDB( $$tbl, $$sql, $$arg );",
+			"\t\tif ( empty($$row) ){",
+			"\t\t\t$$this->AddError( '' )",";",
+			"\t\t\treturn;",
+			"\t\t}",
+			""
+		],
+		"description": ""
+	},
 	"onEvent": {
 		"prefix": "onEvent",
 		"body": [
@@ -1457,6 +1476,20 @@
 			" }"
  		],
 		"description": ""
-	}
+	},
+	"V_ID"      : { "prefix": "V_ID"      , "body": ["V_ID"      ]},
+	"C_STATUS"  : { "prefix": "C_STATUS"  , "body": ["C_STATUS"  ]},
+	"D_START_DT": { "prefix": "D_START_DT", "body": ["D_START_DT"]},
+	"D_END_DT":   { "prefix": "D_END_DT"  , "body": ["D_END_DT"]},
+
+	"ACCOUNT.C_CLASS"          : {"prefix": "ACCOUNT.C_CLASS"          , "body": ["ACCOUNT.C_CLASS"          ], "description": "CHAR   (  3) 会員区分"        },
+	"ACCOUNT.C_STATUS"         : {"prefix": "ACCOUNT.C_STATUS"         , "body": ["ACCOUNT.C_STATUS"         ], "description": "CHAR   (  3) 状態"            },
+	"ACCOUNT.V_ACCOUNT"        : {"prefix": "ACCOUNT.V_ACCOUNT"        , "body": ["ACCOUNT.V_ACCOUNT"        ], "description": "VARCHAR( 64) アカウント名"    },
+	"ACCOUNT.V_PASSWORD"       : {"prefix": "ACCOUNT.V_PASSWORD"       , "body": ["ACCOUNT.V_PASSWORD"       ], "description": "VARCHAR( 64) パスワード"      },
+	"ACCOUNT.D_MOD_PASSWORD_DT": {"prefix": "ACCOUNT.D_MOD_PASSWORD_DT", "body": ["ACCOUNT.D_MOD_PASSWORD_DT"], "description": "CHAR   ( 14) パスワード変更日"},
+	"ACCOUNT.C_REGIST_CLASS"   : {"prefix": "ACCOUNT.C_REGIST_CLASS"   , "body": ["ACCOUNT.C_REGIST_CLASS"   ], "description": "CHAR   (  3) 登録方法区分"    },
+	"ACCOUNT.D_ENTRY_DT"       : {"prefix": "ACCOUNT.D_ENTRY_DT"       , "body": ["ACCOUNT.D_ENTRY_DT"       ], "description": "CHAR   ( 14) 入会年月日"      },
+	"ACCOUNT.D_WITHDRAW_DT"    : {"prefix": "ACCOUNT.D_WITHDRAW_DT"    , "body": ["ACCOUNT.D_WITHDRAW_DT"    ], "description": "CHAR   ( 14) 退会年月日"      },
+	"ACCOUNT.V_COMMENT"        : {"prefix": "ACCOUNT.V_COMMENT"        , "body": ["ACCOUNT.V_COMMENT"        ], "description": "VARCHAR(255) コメント"        }
 }
 
