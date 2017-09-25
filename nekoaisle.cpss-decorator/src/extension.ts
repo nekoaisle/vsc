@@ -22,13 +22,12 @@ export function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(disp);
 
-
     /**
      * 強調表示情報
      */
     interface Highlight {
-        regexp: string,     // 対象を特定する正規表現
-        design: string,   // 装飾名
+        regexp: string,                 // 対象を特定する正規表現
+        design: any,                    // 装飾名 | vscode.DecorationRenderOptions とその配列
     };
 
 	/**
@@ -71,39 +70,80 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     /**
+     * 文字列で書かれた vscode.DecorationRenderOptions のプロパティを変換
+     * @param desigh vscode.DecorationRenderOptions の要素を文字列で表したオブジェクト
+     */
+    function correctDesign(desigh: object): object {
+        for (let key in desigh) {
+            switch (key) {
+                case 'overviewRulerLane': {
+                    desigh[key] = Util.strToOverviewRulerLane(desigh[key]);
+                    break;
+                }
+                case 'rangeBehavior': {
+                    desigh[key] = Util.strToDecorationRangeBehavior(desigh[key]);
+                    break;
+                }
+            }
+        }
+
+        //
+        return desigh;
+    }
+
+    function getDesign(param: any, current: any): vscode.DecorationRenderOptions {
+        let design: vscode.DecorationRenderOptions = {};
+        switch (Util.getClassName(param)) {
+            case 'String': {
+                // 文字列ならすでに登録されているデザイン
+                if (current[param]) {
+                    design = current[param];
+                }
+                break;
+            }
+            case 'Object': {
+                // 文字列化 vscode.DecorationRenderOptions
+                design = correctDesign(param);
+                break;
+            }
+            case 'Array': {
+                // 配列なら再帰呼び出しをしてマージ
+                for (let d of param) {
+                    d = getDesign(d, current);
+                    design = Object.assign(design, d);
+                }
+                break;
+            }    
+        }
+        //
+        return design;
+    }
+
+    /**
      * デザイン用 JSON ファイルを読み込む
      * @param fileName ファイル名
      */
-    function loadDesign(fileName: string): object {
+    function loadDesign(fileName: string): vscode.DecorationRenderOptions {
+        // json ファイルの読み込み
+        let json = Util.loadFileJson(fileName);
+        let designs = {};
+
+        // JSONにかけない変数は文字列として記述されているので変換
+        for (let name in json) {
+            designs[name] = getDesign(json[name], designs);
+        }
+
+        //
+        return designs;
+    }
+
+    function loadHighlights(fileName: string, current: any): object[] {
         // json ファイルの読み込み
         let json = Util.loadFileJson(fileName);
 
         // JSONにかけない変数は文字列として記述されているので変換
-        for (let name in json) {
-            for (let key in json[name]) {
-                switch (key) {
-                    case 'overviewRulerLane': {
-                        let m = /vscode\.OverviewRulerLane\.(.*)/.exec(json[name][key]);
-                        switch (m[1]) {
-                            case 'Left': json[name][key] = vscode.OverviewRulerLane.Left; break;
-                            case 'Center': json[name][key] = vscode.OverviewRulerLane.Center; break;
-                            case 'Right': json[name][key] = vscode.OverviewRulerLane.Right; break;
-                            case 'Full': json[name][key] = vscode.OverviewRulerLane.Full; break;
-                        }
-                        break;
-                    }
-                    case 'rangeBehavior': {
-                        let m = /vscode\.DecorationRangeBehavior\.(.*)/.exec(json[name][key]);
-                        switch (m[1]) {
-                            case 'OpenOpen': json[name][key] = 'OpenOpen'; break;
-                            case 'ClosedClosed': json[name][key] = 'ClosedClosed'; break;
-                            case 'OpenClosed': json[name][key] = 'OpenClosed'; break;
-                            case 'ClosedOpen': json[name][key] = 'ClosedOpen'; break;
-                        }    
-                        break;
-                    }    
-                }
-            }
+        for (let highlight of json) {
+            highlight['design'] = getDesign(highlight['design'], current);
         }
 
         //
@@ -126,9 +166,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
         if (!highlights['common']) {
             let fn = `${configDir}/highlights.json`;
-            let json = [];
+            let json = {};
             if (Util.isExistsFile(fn)) {
-                json = Util.loadFileJson(fn);
+                json = loadHighlights(fn, designs['common']);
             }
             highlights['common'] = json;
         }
@@ -142,10 +182,8 @@ export function activate(context: vscode.ExtensionContext) {
             // 拡張子別設定をマージ
             let fn = `${configDir}/designs-${ext}.json`;
             if (Util.isExistsFile(fn)) {
-                let json = loadDesign(fn);
-                for (let key in json) {
-                    designs[ext][key] = json[key];
-                }
+                let d = loadDesign(fn);
+                designs[ext] = Object.assign(designs[ext], d);
             }
         }
         // 未読み込みならばハイライトの読み込み
@@ -156,9 +194,9 @@ export function activate(context: vscode.ExtensionContext) {
             // 拡張子別設定をマージ
             let fn = `${configDir}/highlights-${ext}.json`;
             if (Util.isExistsFile(fn)) {
-                let json = Util.loadFileJson(fn);
-                for (let key in json) {
-                    highlights[ext].push(json[key]);
+                let highlight = loadHighlights(fn, designs[ext]);
+                if (highlight) {
+                    Array.prototype.push.apply(highlights[ext], highlight);
                 }
             }
         }
@@ -257,8 +295,8 @@ export function activate(context: vscode.ExtensionContext) {
         attachedDecorations = [];
 
         for (let key in highlights[ext]) {
-            let info = highlights[ext][key];
-            if (!designs[ext][info.design]) {
+            let info: Highlight = highlights[ext][key];
+            if (!info.design) {
                 // デザインがないので無視
                 continue;
             }
@@ -277,8 +315,8 @@ export function activate(context: vscode.ExtensionContext) {
                 ));
             }
             if (ranges.length > 0) {
-                // 装飾を作成
-                let deco = vscode.window.createTextEditorDecorationType(designs[ext][info.design]);
+                // 装飾を複製
+                let deco = vscode.window.createTextEditorDecorationType(info.design);
                 // 装飾を設定
                 activeEditor.setDecorations(deco, ranges);
                 // 今回設定した装飾を記憶

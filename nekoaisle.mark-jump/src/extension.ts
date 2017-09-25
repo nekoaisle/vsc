@@ -6,16 +6,41 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(myExtension);
 }
 
-interface Data {
-    mark: vscode.Position,
-    last: vscode.Position,
-    cursor: vscode.Position,
-}
-
+/**
+ * ファイルごとの情報
+ */
 class Data {
-    mark: vscode.Position;
-    last: vscode.Position;
-    cursor: vscode.Position;
+    protected _mark: vscode.Position;
+    protected _last: vscode.Position;
+    protected _cursor: vscode.Position;
+
+    protected normalizePos(pos: vscode.Position): vscode.Position {
+        if (pos) {
+            return pos;
+        } else {
+            return null;
+        }
+    }
+
+    get mark(): vscode.Position {
+        return this.normalizePos(this._mark);
+    } 
+    get last(): vscode.Position {
+        return this.normalizePos(this._last);
+    } 
+    get cursor(): vscode.Position {
+        return this.normalizePos(this._cursor);
+    } 
+
+    set mark(pos: vscode.Position) {
+        this._mark = new vscode.Position(pos.line, 0);
+    } 
+    set last(pos: vscode.Position) {
+        this._last = new vscode.Position(pos.line, 0);
+    } 
+    set cursor(pos: vscode.Position) {
+        this._cursor = new vscode.Position(pos.line, 0);
+    } 
 }
     
 // this method is called when your extension is deactivated
@@ -47,53 +72,21 @@ class MyExtension extends Extension {
     }
 
 
-    protected getData(filename: string): Data {
+    /**
+     * 指定したファイルに関するデータを取得
+     * @param filename ファイル名
+     */
+    protected getData(filename?: string): Data {
+        // ファイル名が省略されたら現在アクティブなエディタのファイル名
+        if (!filename) {
+            let filename = vscode.window.activeTextEditor.document.fileName;
+        }
+
+        // まだデータオブジェクトが構築されていなければ作成
         if (!this.data[filename]) {
             this.data[filename] = new Data();
         }
         return this.data[filename];
-    }
-
-    /**
-     * マークした位置を取得
-     */
-    protected getMark(filename: string): vscode.Position {
-        let data = this.getData(filename);
-        if (data.mark) {
-            return data.mark;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * 指定位置をマークする
-     * @param pos マークする位置
-     */
-    protected setMark(pos: vscode.Position, filename: string) {
-        let data = this.getData(filename);
-        data.mark = pos;
-    }
-
-    /**
-     * 前回のカーソル位置を取得
-     */
-    protected getLast(filename: string): vscode.Position {
-        let data = this.getData(filename)
-        if (data.last) {
-            return data.last;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * 指定位置を前回位置とする
-     * @param pos マークする位置
-     */
-    protected setLast(pos: vscode.Position, filename: string) {
-        let data = this.getData(filename);
-        data.last = pos;
     }
 
     /**
@@ -130,62 +123,70 @@ class MyExtension extends Extension {
 
         // create a combined disposable from both event subscriptions
         this.disposable = vscode.Disposable.from(...subscriptions);
+
+        // このファイルのデータを取得
+        let data = this.getData();
+        // 現在のカーソル位置を記憶
+        data.cursor = this.getCsrPos();
     }
 
     // カーソル位置を記憶
     protected markCursor() {
-        // 現在編集中のファイル名を取得
-        let filename = vscode.window.activeTextEditor.document.fileName;
+        // このファイルのデータを取得
+        let data = this.getData();
         // 現在位置を記憶
-        this.setMark(this.getCsrPos(), filename);
+        data.mark = this.getCsrPos();
     }
 
     // カーソル位置にジャンプ
     protected jumpMark() {
-        // 現在編集中のファイル名を取得
-        let filename = vscode.window.activeTextEditor.document.fileName;
+        // このファイルのデータを取得
+        let data = this.getData();
         // マークした位置を取得
-        let mark = this.getMark(filename);
-        if (mark) {
+        if (data.mark) {
             // 同じ位置へはジャンプしない
             let cur = this.getCsrPos();
-            if (!cur.isEqual(mark)) {
+            if (!cur.isEqual(data.mark)) {
                 // ジャンプ前の位置を記憶
-                this.setLast(cur, filename);
-
-                // 記憶した位置にジャンプ
-                this.setCsrPos(mark);
+                data.last = cur;
+                // 記憶していた位置にジャンプ
+                this.setCsrPos(data.mark);
             }
         }
     }
 
     // 最後にジャンプした位置に戻る
     protected jumpLast() {
-        // 現在編集中のファイル名を取得
-        let filename = vscode.window.activeTextEditor.document.fileName;
-        let last = this.getLast(filename);
-        if (last) {
+        // このファイルのデータを取得
+        let data = this.getData();
+        if (data.last) {
             // 最後にジャンプした位置にジャンプ
-            this.setCsrPos(last);
+            this.setCsrPos(data.last);
         }
     }
 
+    /**
+     * 選択範囲変更イベントハンドラ
+     * @param e イベント情報
+     */
     protected onChangeSelection(e: vscode.TextEditorSelectionChangeEvent) {
-        let sel = e.selections[0].active;
-
-        let filename = e.textEditor.document.fileName;
-        let data = this.getData(filename);
+        // 現在のカーソル位置を取得
+        let cur = e.selections[0].active;
         
+        // このファイルのデータを取得
+        let data = this.getData();
         if (data.cursor) {
-            let last = data.cursor;
-            if (Math.abs(last.line - sel.line) > 20) {
-                // 20行以上移動したので前回位置として記憶
-                this.setLast(last, filename);
+            if (data.cursor.line != cur.line) {
+                // 行が移動したので前回位置として記憶
+                data.last = data.cursor;
             }
         }
-        data.cursor = sel;
+        data.cursor = cur;
     }
 
+    /**
+     * 処分
+     */
 	public dispose() {
         this.disposable.dispose();
 	}

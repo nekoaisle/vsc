@@ -1,6 +1,11 @@
 [
 	{
 		"regexp": ",",
-		"design": "magenta"
-	}
+		"design": [
+			"magenta",
+			{
+				"rangeBehavior": "ClosedClosed"
+			}
+		]
+	}	
 ]

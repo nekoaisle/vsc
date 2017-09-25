@@ -568,4 +568,31 @@ export module Util {
 		return ext;
 	}
 
+    /**
+     * 文字列を OverviewRulerLaneのプロパティに変換
+     * @param str OverviewRulerLane のプロパティ名
+     */
+    export function strToOverviewRulerLane(str: string): vscode.OverviewRulerLane {
+        switch (str) {
+            case 'Left': return vscode.OverviewRulerLane.Left;
+            case 'Center': return vscode.OverviewRulerLane.Center;
+            case 'Right': return vscode.OverviewRulerLane.Right;
+            case 'Full': return vscode.OverviewRulerLane.Full;
+            default: return null;    
+        }
+    }
+
+    /**
+     * 文字列を DecorationRangeBehavior のプロパティに変換
+     * @param str DecorationRangeBehavior のプロパティ名
+     */
+    export function strToDecorationRangeBehavior(str: string): vscode.DecorationRangeBehavior {
+        switch (str) {
+            case 'OpenOpen': return vscode.DecorationRangeBehavior.OpenOpen;
+            case 'ClosedClosed': return vscode.DecorationRangeBehavior.ClosedClosed;
+            case 'OpenClosed': return vscode.DecorationRangeBehavior.OpenClosed;
+            case 'ClosedOpen': return vscode.DecorationRangeBehavior.ClosedOpen;
+            default: return vscode.DecorationRangeBehavior.ClosedClosed;
+        }
+    }
 }

@@ -7,7 +7,36 @@ function activate(context) {
     context.subscriptions.push(myExtension);
 }
 exports.activate = activate;
+/**
+ * ファイルごとの情報
+ */
 class Data {
+    normalizePos(pos) {
+        if (pos) {
+            return pos;
+        }
+        else {
+            return null;
+        }
+    }
+    get mark() {
+        return this.normalizePos(this._mark);
+    }
+    get last() {
+        return this.normalizePos(this._last);
+    }
+    get cursor() {
+        return this.normalizePos(this._cursor);
+    }
+    set mark(pos) {
+        this._mark = new vscode.Position(pos.line, 0);
+    }
+    set last(pos) {
+        this._last = new vscode.Position(pos.line, 0);
+    }
+    set cursor(pos) {
+        this._cursor = new vscode.Position(pos.line, 0);
+    }
 }
 // this method is called when your extension is deactivated
 function deactivate() {
@@ -48,6 +77,10 @@ class MyExtension extends nekoaisle_1.Extension {
         vscode.window.onDidChangeTextEditorSelection(this.onChangeSelection, this, subscriptions);
         // create a combined disposable from both event subscriptions
         this.disposable = vscode.Disposable.from(...subscriptions);
+        // このファイルのデータを取得
+        let data = this.getData();
+        // 現在のカーソル位置を記憶
+        data.cursor = this.getCsrPos();
     }
     /**
      * 現在のカーソル位置を取得
@@ -67,99 +100,73 @@ class MyExtension extends nekoaisle_1.Extension {
         vscode.window.activeTextEditor.revealRange(range);
         console.log(`jump = ${pos.character}, ${pos.line}`);
     }
+    /**
+     * 指定したファイルに関するデータを取得
+     * @param filename ファイル名
+     */
     getData(filename) {
+        // ファイル名が省略されたら現在アクティブなエディタのファイル名
+        if (!filename) {
+            let filename = vscode.window.activeTextEditor.document.fileName;
+        }
+        // まだデータオブジェクトが構築されていなければ作成
         if (!this.data[filename]) {
             this.data[filename] = new Data();
         }
         return this.data[filename];
     }
-    /**
-     * マークした位置を取得
-     */
-    getMark(filename) {
-        let data = this.getData(filename);
-        if (data.mark) {
-            return data.mark;
-        }
-        else {
-            return null;
-        }
-    }
-    /**
-     * 指定位置をマークする
-     * @param pos マークする位置
-     */
-    setMark(pos, filename) {
-        let data = this.getData(filename);
-        data.mark = pos;
-    }
-    /**
-     * 前回のカーソル位置を取得
-     */
-    getLast(filename) {
-        let data = this.getData(filename);
-        if (data.last) {
-            return data.last;
-        }
-        else {
-            return null;
-        }
-    }
-    /**
-     * 指定位置を前回位置とする
-     * @param pos マークする位置
-     */
-    setLast(pos, filename) {
-        let data = this.getData(filename);
-        data.last = pos;
-    }
     // カーソル位置を記憶
     markCursor() {
-        // 現在編集中のファイル名を取得
-        let filename = vscode.window.activeTextEditor.document.fileName;
+        // このファイルのデータを取得
+        let data = this.getData();
         // 現在位置を記憶
-        this.setMark(this.getCsrPos(), filename);
+        data.mark = this.getCsrPos();
     }
     // カーソル位置にジャンプ
     jumpMark() {
-        // 現在編集中のファイル名を取得
-        let filename = vscode.window.activeTextEditor.document.fileName;
+        // このファイルのデータを取得
+        let data = this.getData();
         // マークした位置を取得
-        let mark = this.getMark(filename);
-        if (mark) {
+        if (data.mark) {
             // 同じ位置へはジャンプしない
             let cur = this.getCsrPos();
-            if (!cur.isEqual(mark)) {
+            if (!cur.isEqual(data.mark)) {
                 // ジャンプ前の位置を記憶
-                this.setLast(cur, filename);
-                // 記憶した位置にジャンプ
-                this.setCsrPos(mark);
+                data.last = cur;
+                // 記憶していた位置にジャンプ
+                this.setCsrPos(data.mark);
             }
         }
     }
     // 最後にジャンプした位置に戻る
     jumpLast() {
-        // 現在編集中のファイル名を取得
-        let filename = vscode.window.activeTextEditor.document.fileName;
-        let last = this.getLast(filename);
-        if (last) {
+        // このファイルのデータを取得
+        let data = this.getData();
+        if (data.last) {
             // 最後にジャンプした位置にジャンプ
-            this.setCsrPos(last);
+            this.setCsrPos(data.last);
         }
     }
+    /**
+     * 選択範囲変更イベントハンドラ
+     * @param e イベント情報
+     */
     onChangeSelection(e) {
-        let sel = e.selections[0].active;
-        let filename = e.textEditor.document.fileName;
-        let data = this.getData(filename);
+        // 現在のカーソル位置を取得
+        let cur = e.selections[0].active;
+        // このファイルのデータを取得
+        let data = this.getData();
         if (data.cursor) {
-            let last = data.cursor;
-            if (Math.abs(last.line - sel.line) > 20) {
-                // 20行以上移動したので前回位置として記憶
-                this.setLast(last, filename);
+            if (data.cursor.line != cur.line) {
+                // 行が移動したので前回位置として記憶
+                data.last = data.cursor;
             }
         }
-        data.cursor = sel;
+        data.cursor = cur;
     }
+    /**
+     * 処分
+     */
     dispose() {
         this.disposable.dispose();
     }
