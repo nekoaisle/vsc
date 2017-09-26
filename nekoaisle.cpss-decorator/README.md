@@ -1,65 +1,93 @@
-# cpss-decorator README
+# お手軽強調表示
 
-This is the README for your extension "cpss-decorator". After writing up a brief description, we recommend including the following sections.
+テーマを作ったりと言った面倒なことをせずに秀丸のように手軽に好きなところを強調表示できます。
 
-## Features
+## 機能
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+デザイン(vscode.DecorationRenderOptions)と正規表現を .json ファイルに記述することにより自由に強調表示することができます。  
+全ファイル共通設定と拡張子ごとの設定を書くことができます。設定ファイルはテキストファイルですので面倒なコンパイルなどは必要ありません。
 
-For example if there is an image subfolder under your extension project workspace:
+## コマンド
 
-\!\[feature X\]\(images/feature-x.png\)
+|コマンド|機能|キーバインド|
+|---|---|---|
+|nekoaisle.cpssDecoratorRefresh|設定ファイルを再読込します||
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## コンフィグ
 
-## Requirements
+'cpssDecorator.dataDir': '~/.config/cpssDecorator'
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## デザインファイル
 
-## Extension Settings
+<pre
+design.json  
+design-拡張子.json
+{  
+  name: vscode.DecorationRenderOptions  
+    | デザイン名  
+    | [  
+      デザイン名  
+      | vscode.DecorationRenderOptions  
+    ]
+}  
+</pre>
+design.json が読み込まれ、design-拡張子.json によって上書きされます。同じ名前のデザインがの場合はマージされ同じ要素は後から読み込まれたものが優先されます。
+<pre>
+例:
+{
+  "blue": {
+    "color": "#8888FF"  
+  },
+  "bg-blue": {
+    "backgroundColor": "rgba(0,0,255,0.8)"
+  },
+  "blue-blue": {
+    "blue",
+    "bg-blue"
+  },
+  "blue-blue-ruler": {
+    "blue",
+    "bg-blue",
+    "overviewRulerColor": "rgba(0,0,255,1)",
+    "overviewRulerLane": "vscode.OverviewRulerLane.Right"
+  },
+}
+</pre>
+* "blue" という名前のデザインは明るい青文字
+* "bg-blue" という名前のデザインは背景色が半透明の青
+* "blue-blue" という名前のデザインは文字が明るい青で背景色が半透明の青
+* "blue-blue-ruler" という名前のデザインは文字が明るい青で背景色が半透明の青でルーラーの右側に青で表示
+## 強調表示ファイル
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+<pre>
+highlight.json  
+highlight-拡張子.json
+[  
+  regexp: 強調する部分を特定するための正規表現文字列,
+  exclosion: 除外する部分を特定するための正規表現文字列,
+  design: vscode.DecorationRenderOptions  
+    | デザイン名  
+    | [  
+      デザイン名  
+      | vscode.DecorationRenderOptions  
+    ]
+]
+</pre>
+highlight.json が読み込まれ、highlight-拡張子.json が追加されます。デザイン指定は、名前を指定すると曽於の名前のデザインが読み込まれ、vscode.DecorationRenderOptions が指定されるとマージされ同じ要素は後から読み込まれたものが優先されます。
 
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on OSX or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on OSX or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (OSX) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+<pre>
+例:
+[
+	{
+		"regexp": ",",
+    "exposion": "/\\*[\\s\\S]*?\\*/|//.*",
+		"design": [
+			"magenta",
+			{
+				"rangeBehavior": "ClosedClosed"
+			}
+		]
+	}	
+]
+</pre>
+/* */ でくくられている部分以外を magenta という名前のデザインで表示、この強調の先頭と終端で編集を行った場合デザインは継承しない。

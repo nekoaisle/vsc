@@ -17,7 +17,7 @@
     "contributes": {
         "commands": [{
             "command": "nekoaisle.cpssDecoratorRefresh",
-            "title": "CPSS Decorator: Refresh loaded design and highlight."
+            "title": "nekoaisle: CPSS Decorator: Refresh loaded design and highlight."
         }],
         "configuration": {
             "type": "object",
