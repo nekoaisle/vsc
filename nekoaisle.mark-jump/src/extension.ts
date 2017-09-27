@@ -125,9 +125,11 @@ class MyExtension extends Extension {
         this.disposable = vscode.Disposable.from(...subscriptions);
 
         // このファイルのデータを取得
-        let data = this.getData();
-        // 現在のカーソル位置を記憶
-        data.cursor = this.getCsrPos();
+        if (vscode.window.activeTextEditor) {
+            let data = this.getData();
+            // 現在のカーソル位置を記憶
+            data.cursor = this.getCsrPos();
+        }
     }
 
     // カーソル位置を記憶

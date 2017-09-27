@@ -29,13 +29,15 @@ class OpenPreviousTab extends nekoaisle_1.Extension {
             ]
         });
         this.fileNames = [null, null];
-        // エントリーを登録
+        // イベントハンドラーを登録
         let subscriptions = [];
         vscode.window.onDidChangeActiveTextEditor(this.onEvent, this, subscriptions);
         // create a combined disposable from both event subscriptions
         this.disposable = vscode.Disposable.from(...subscriptions);
         // 現在のアクティブタブを記憶
-        this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
+        if (vscode.window.activeTextEditor) {
+            this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
+        }
     }
     /**
      * エントリー

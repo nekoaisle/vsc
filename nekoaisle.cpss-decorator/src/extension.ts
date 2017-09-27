@@ -27,6 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
      */
     interface Highlight {
         regexp: string,                 // 対象を特定する正規表現
+        exclusion: string,              // 除外
         design: any,                    // 装飾名 | vscode.DecorationRenderOptions とその配列
     };
 
@@ -301,18 +302,48 @@ export function activate(context: vscode.ExtensionContext) {
                 continue;
             }
 
-            // 強調する範囲を格納する配列
-            const ranges: vscode.Range[] = [];
             // 全テキストを取得
             const text = activeEditor.document.getText();
-            // const re = new RegExp(info.regexp, 'g');
-            const re = new RegExp(info.regexp, 'g');
+
             let match;
+            let re: RegExp;
+            
+
+            // 除外範囲を格納する配列
+            const exclusions: vscode.Range[] = [];
+            // 強調する範囲を格納する配列
+            const ranges: vscode.Range[] = [];
+
+            // 除外範囲を取得
+            if (info.exclusion) {
+                re = new RegExp(info.exclusion, 'g');
+                while (match = re.exec(text)) {
+                    exclusions.push(new vscode.Range(
+                        activeEditor.document.positionAt(match.index),
+                        activeEditor.document.positionAt(match.index + match[0].length)
+                    ));
+                }
+            }
+
+            // 一致を取得
+            re = new RegExp(info.regexp, 'g');
             while (match = re.exec(text)) {
-                ranges.push(new vscode.Range(
+                let range = new vscode.Range(
                     activeEditor.document.positionAt(match.index),
                     activeEditor.document.positionAt(match.index + match[0].length)
-                ));
+                );
+
+                // 除外範囲内か調べる
+                for (let ex of exclusions) {
+                    if (ex.contains(range)) {
+                        // 除外範囲内
+                        range = null;
+                        break;
+                    }
+                }
+                if (range) {
+                    ranges.push(range);
+                }
             }
             if (ranges.length > 0) {
                 // 装飾を複製

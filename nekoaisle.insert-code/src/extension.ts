@@ -66,8 +66,23 @@ class InsertCode extends Extension {
         'xml': '.xml',
     };
 
+    // 日時情報
     protected mNow: DateInfo;
+    // 処理中に設定する変数(行ごとの値とか…)
     protected mVariable: object;
+    /* 静的文字列
+        keybindings.json に下記を書いたのと同等
+        ,
+	    {
+	    	"key": "ctrl+enter",
+	    	"command": "type",
+	    	"args": { "text": "<br />" },
+	    	"when": "editorTextFocus && !editorReadonly && editorLangId == 'html'"
+	    }
+    */
+    protected mStatic = {
+        br: "<br />",
+    };
 
     /**
 	 * 構築
@@ -80,7 +95,7 @@ class InsertCode extends Extension {
                 command: 'nekoaisle.insertCode',
                 callback: () => { this.entry(); }
             }, {
-                command: 'nekoaisle.insertCodePinfoBase',
+                command: 'nekoaisle.insertCode.pinfoBase',
                 callback: () => { this.doCommandInsert('pinfo.base'); }
             }]
         });
@@ -341,34 +356,46 @@ class InsertCode extends Extension {
 
         let val: string = '';
         switch (cmd1) {
+            // 編集者名
             case 'author': {
                 val = this.getConfig("author", "");
                 break;
             }
+            // 選択範囲    
             case 'selection': {
                 val = Util.getSelectString(editor);
                 break;
             }
+            // クリップボードの内容    
             case 'clipboard': {
                 val = getClipboard();
                 break;
             }
+            //     
             case 'class': {
                 val = this.getClass(cmd2);
                 break;
             }
+            // 現在のファイル名情報    
             case 'pinfo': {
                 val = getPathInfo(cmd2);
                 break;
             }
+            // 現在日時    
             case 'now': {
                 val = getDateInfo(cmd2);
                 break;
             }
+            // 動的変数    
             case 'var': {
                 val = this.mVariable[cmd2];
                 break;
             }
+            // 静的文字列    
+            case 'static': {
+                val = this.mStatic[cmd2];
+                break;
+            }    
             case 'sql-row': {
                 // V_GROUP_ID      VARCHAR( 64) NOT NULL DEFAULT '' -- グループID
                 let clipboard = getClipboard();
@@ -606,6 +633,14 @@ class InsertCode extends Extension {
         return params;
     }
 
+    /**
+     * 処理対象を指定文字でくくる
+     * その際 \ はエスケープ文字として \\ に変換します
+     * また、ファイルの拡張子が .php の場合で "" 括りの場合は $ も \$ とします
+     * @param val 処理対象
+     * @param quote くくる文字列
+     * @param editor 対象エディタ
+     */
     protected encodeQuotation(val: any, quote: string, editor: vscode.TextEditor): any {
         switch (typeof val) {
             // オブジェクトなら再帰呼び出し
@@ -655,8 +690,8 @@ class InsertCode extends Extension {
     }
 
     /**
-     * クラス情報を返す
-     * @param propaty サブキー
+     * ファイル名からクラス名などを作成
+     * @param propaty 'cpp' や 'sql' などクラス名の作成方法
      */
     protected getClass(propaty: string): string {
         let editor = vscode.window.activeTextEditor;

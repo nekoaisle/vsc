@@ -1,6 +1,7 @@
 [
 	{
 		"regexp": ",",
+		"exclusion": "/\\*[\\s\\S]*?\\*/|//.*",
 		"design": [
 			"magenta",
 			{

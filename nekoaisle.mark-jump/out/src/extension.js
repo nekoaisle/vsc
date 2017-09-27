@@ -78,9 +78,11 @@ class MyExtension extends nekoaisle_1.Extension {
         // create a combined disposable from both event subscriptions
         this.disposable = vscode.Disposable.from(...subscriptions);
         // このファイルのデータを取得
-        let data = this.getData();
-        // 現在のカーソル位置を記憶
-        data.cursor = this.getCsrPos();
+        if (vscode.window.activeTextEditor) {
+            let data = this.getData();
+            // 現在のカーソル位置を記憶
+            data.cursor = this.getCsrPos();
+        }
     }
     /**
      * 現在のカーソル位置を取得

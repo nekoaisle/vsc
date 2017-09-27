@@ -563,5 +563,33 @@ var Util;
         return ext;
     }
     Util.getDocumentExt = getDocumentExt;
+    /**
+     * 文字列を OverviewRulerLaneのプロパティに変換
+     * @param str OverviewRulerLane のプロパティ名
+     */
+    function strToOverviewRulerLane(str) {
+        switch (str) {
+            case 'Left': return vscode.OverviewRulerLane.Left;
+            case 'Center': return vscode.OverviewRulerLane.Center;
+            case 'Right': return vscode.OverviewRulerLane.Right;
+            case 'Full': return vscode.OverviewRulerLane.Full;
+            default: return null;
+        }
+    }
+    Util.strToOverviewRulerLane = strToOverviewRulerLane;
+    /**
+     * 文字列を DecorationRangeBehavior のプロパティに変換
+     * @param str DecorationRangeBehavior のプロパティ名
+     */
+    function strToDecorationRangeBehavior(str) {
+        switch (str) {
+            case 'OpenOpen': return vscode.DecorationRangeBehavior.OpenOpen;
+            case 'ClosedClosed': return vscode.DecorationRangeBehavior.ClosedClosed;
+            case 'OpenClosed': return vscode.DecorationRangeBehavior.OpenClosed;
+            case 'ClosedOpen': return vscode.DecorationRangeBehavior.ClosedOpen;
+            default: return vscode.DecorationRangeBehavior.ClosedClosed;
+        }
+    }
+    Util.strToDecorationRangeBehavior = strToDecorationRangeBehavior;
 })(Util = exports.Util || (exports.Util = {}));
 //# sourceMappingURL=Util.js.map

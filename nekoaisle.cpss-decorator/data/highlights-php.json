@@ -1,14 +1,17 @@
 [
 	{
 		"regexp": "\\bSUCCEEDED\\b",
+		"exclusion": "/\\*[\\s\\S]*?\\*/|//.*",
 		"design": "red"
 	},
 	{
 		"regexp": "\\bFAILED\\b",
+		"exclusion": "/\\*[\\s\\S]*?\\*/|//.*",
 		"design": "red"
 	},
 	{
 		"regexp": "( |\\t)*/\\*([\\r\\n]|.)*?\\*/",
+		"exclusion": "/\\*[\\s\\S]*?\\*/|//.*",
 		"design": "bg-grey"
 	}
 ]

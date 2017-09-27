@@ -39,7 +39,9 @@ class OpenPreviousTab extends Extension {
 		this.disposable = vscode.Disposable.from(...subscriptions);
 
 		// 現在のアクティブタブを記憶
-		this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
+		if (vscode.window.activeTextEditor) {
+			this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
+		}
 	}
 
 	/**

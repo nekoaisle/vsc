@@ -12,29 +12,29 @@
     ],
     "activationEvents": [
         "onCommand:nekoaisle.insertCode",
-        "onCommand:nekoaisle.insertCodePinfoBase"
+        "onCommand:nekoaisle.insertCode.pinfoBase"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [{
             "command": "nekoaisle.insertCode",
-            "title": "Insert Code"
+            "title": "nekoaisle: Insert Code"
         }, {
-            "command": "nekoaisle.insertCodePinfoBase",
-            "title": "Insert Code"
+            "command": "nekoaisle.insertCode.pinfoBase",
+            "title": "nekoaisle: Insert base name"
         }],
         "keybindings": [{
             "command": "nekoaisle.insertCode",
             "key": "escape i",
             "when": "editorTextFocus && !editorReadonly"
         }, {
-            "command": "nekoaisle.insertCodePinfoBase",
+            "command": "nekoaisle.insertCode.pinfoBase",
             "key": "escape l",
             "when": "editorTextFocus && !editorReadonly"
         }],
         "configuration": {
             "type": "object",
-            "title": "Insert Code configuration",
+            "title": "nekoaisle: Insert Code configuration",
             "properties": {
                 "insertCode.tempDir": {
                     "type": "string",
