@@ -22,11 +22,8 @@ class InsertCode extends nekoaisle_1.Extension {
                     command: 'nekoaisle.insertCode',
                     callback: () => { this.entry(); }
                 }, {
-                    command: 'nekoaisle.insertCodePinfoBase',
+                    command: 'nekoaisle.insertCode.pinfoBase',
                     callback: () => { this.doCommandInsert('pinfo.base'); }
-                }, {
-                    command: 'nekoaisle.insertCode.br',
-                    callback: () => { this.doCommandInsert('static.br'); }
                 }]
         });
         // 言語タイプごとの拡張子一覧
@@ -285,6 +282,9 @@ class InsertCode extends nekoaisle_1.Extension {
             }
             if (typeof cache.pinfo.info[key] != "undefined") {
                 res = cache.pinfo.info[key];
+            }
+            else if (typeof cache.pinfo[key] != "undefined") {
+                res = cache.pinfo[key];
             }
             return res;
         };

@@ -327,6 +327,8 @@ class InsertCode extends Extension {
             }
             if (typeof cache.pinfo.info[key] != "undefined") {
                 res = cache.pinfo.info[key];
+            } else if (typeof cache.pinfo[key] != "undefined") {
+                res = cache.pinfo[key];
             }
             return res;
         }
