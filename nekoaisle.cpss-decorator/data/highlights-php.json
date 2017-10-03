@@ -10,6 +10,21 @@
 		"design": "red"
 	},
 	{
+		"regexp": "\\bNULL\\b",
+		"exclusion": "/\\*[\\s\\S]*?\\*/|//.*",
+		"design": "red"
+	},
+	{
+		"regexp": "\\bTRUE\\b",
+		"exclusion": "/\\*[\\s\\S]*?\\*/|//.*",
+		"design": "red"
+	},
+	{
+		"regexp": "\\bFALSE\\b",
+		"exclusion": "/\\*[\\s\\S]*?\\*/|//.*",
+		"design": "red"
+	},
+	{
 		"regexp": "( |\\t)*/\\*([\\r\\n]|.)*?\\*/",
 		"exclusion": "/\\*[\\s\\S]*?\\*/|//.*",
 		"design": "bg-grey"

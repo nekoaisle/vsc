@@ -119,7 +119,7 @@ class CpssWizard extends Extension {
 		wizard     : "",			// 拡張機能の保存フォルダーは動的に取得
 		templateDir: "",			// 拡張機能の保存フォルダーは動的に取得
 		sqlDir     : '~/network/campt-kiya/Installer/CREATE_TABLE',
-		php        : '/usr/bin/php7.1',
+		php        : '/usr/bin/php',
 		outFile    : "php://stdout",
 		author     : "木屋善夫",
 	};

@@ -87,7 +87,7 @@
 		"body": [
 			"/**",
 			" * ${1:タイトル}",
-			" * @var ${2:型}",
+			" * @var ${2|string,int,array,boolean,float|}",
 			" */",
 			"public ${3:変数名} = '';",
 			""
@@ -1154,7 +1154,7 @@
 	"offsetExists($offset)": {
 		"prefix": "offsetExists($offset)",
 		"body": [
-			"offsetExists($$offset)"
+			"offsetExists(${$offset})"
 		],
 		"description": ""
 	},

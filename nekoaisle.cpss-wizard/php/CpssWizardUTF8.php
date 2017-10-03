@@ -1055,23 +1055,6 @@ _EOL_;
 
 		$replace = array( );
 
-		// SQL(Row)処理
-		if ( !empty( $sqlFile ) ) {
-			switch ( $mode ) {
-			case 'Row':
-				$this->jobRow( $replace, $sqlFile );
-				break;
-
-			case 'ListBase':
-				$this->jobListSQL( $template, $replace, $sqlFile );
-				break;
-
-			case 'TransBase':
-				$this->jobEditSQL( $template, $replace, $sqlFile );
-				break;
-			}
-		}
-
 		// ファイル名を設定
 		$replace['@@filename@@'] = basename( $filename );
 
@@ -1153,6 +1136,23 @@ _EOL_;
 
 		// ベースクラスを設定
 		$replace['@@parent@@'] = $this->makeCamel( $a ) . 'Base';
+
+		// SQL(Row)処理
+		if ( !empty( $sqlFile ) ) {
+			switch ( $mode ) {
+			case 'Row':
+				$this->jobRow( $replace, $sqlFile );
+				break;
+
+			case 'ListBase':
+				$this->jobListSQL( $template, $replace, $sqlFile );
+				break;
+
+			case 'TransBase':
+				$this->jobEditSQL( $template, $replace, $sqlFile );
+				break;
+			}
+		}
 
 		// 置換
 		$str = str_replace( array_keys( $replace ), array_values( $replace ), $template );

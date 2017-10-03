@@ -5,13 +5,21 @@
 	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
 	// same ids are connected.
 	// Example:
-	"Print to console": {
-		"prefix": "log",
-		"body": [
-			"console.log('$1');",
-			"$2"
-		],
-		"description": "Log output to console"
-	}
 */
+	"V_ACCOUNT_ID": {
+		"prefix": "V_ACCOUNT_ID",
+		"body": [
+			"V_ACCOUNT_ID    VARCHAR( 64) NOT NULL DEFAULT '' -- V_ACCOUNT.V_ID"
+		],
+		"description": "V_ACCOUNT_ID    VARCHAR( 64) NOT NULL DEFAULT '' -- V_ACCOUNT.V_ID"
+	},
+	"CHAR": {
+		"prefix": "CHAR   (  3) NOT NULL DEFAULT '' --",
+		"body": [
+			"CHAR   (  3) NOT NULL DEFAULT '' -- $1"
+		],
+		"description": "CHAR   (  3) NOT NULL DEFAULT '' -- "
+	},
+	
+
 }

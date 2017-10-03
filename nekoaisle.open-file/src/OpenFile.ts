@@ -28,12 +28,24 @@ class OpenFile extends Extension {
 	 * エントリー
 	 */
 	public exec() {
-		let selectFile = new SelectFile;
-		// アクティブなエディターのファイル名を分解
-		let pinfo = new PathInfo( vscode.window.activeTextEditor.document.fileName );
+		// 開始ディレクトリを取得
+		let start: string;
+		if (vscode.window.activeTextEditor) {
+			// アクティブなエディターのファイル名を分解
+			start = vscode.window.activeTextEditor.document.fileName;
+		} else if (vscode.workspace.rootPath) {
+			start = vscode.workspace.rootPath;
+		} else {
+			start = '~/';
+		}
+
+		// ファイル名情報を取得
+		const pinfo = new PathInfo(start);; 
 		// ディレクトリー名を取得
-		let dirName = pinfo.getDirName();
-		let title = 'ファイルを選択してください。';
+		const dirName = pinfo.getDirName();
+
+		const title = 'ファイルを選択してください。';
+		const selectFile = new SelectFile();
 		selectFile.selectFile(dirName, title).then((file: string) => {
 			if ( file.length > 0 ) {
 	            vscode.workspace.openTextDocument(file).then((doc: vscode.TextDocument) => {

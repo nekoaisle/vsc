@@ -26,12 +26,25 @@ class OpenFile extends nekoaisle_1.Extension {
      * エントリー
      */
     exec() {
-        let selectFile = new nekoaisle_1.SelectFile;
-        // アクティブなエディターのファイル名を分解
-        let pinfo = new nekoaisle_1.PathInfo(vscode.window.activeTextEditor.document.fileName);
+        // 開始ディレクトリを取得
+        let start;
+        if (vscode.window.activeTextEditor) {
+            // アクティブなエディターのファイル名を分解
+            start = vscode.window.activeTextEditor.document.fileName;
+        }
+        else if (vscode.workspace.rootPath) {
+            start = vscode.workspace.rootPath;
+        }
+        else {
+            start = '~/';
+        }
+        // ファイル名情報を取得
+        const pinfo = new nekoaisle_1.PathInfo(start);
+        ;
         // ディレクトリー名を取得
-        let dirName = pinfo.getDirName();
-        let title = 'ファイルを選択してください。';
+        const dirName = pinfo.getDirName();
+        const title = 'ファイルを選択してください。';
+        const selectFile = new nekoaisle_1.SelectFile();
         selectFile.selectFile(dirName, title).then((file) => {
             if (file.length > 0) {
                 vscode.workspace.openTextDocument(file).then((doc) => {

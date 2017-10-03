@@ -30,7 +30,7 @@
 		"backgroundColor": "rgba(0,255,255,0.1)"
 	},
 	"bg-blue": {
-		"backgroundColor": "rgba(0,0,255,0.8)"
+		"backgroundColor": "rgba(0,0,255,0.3)"
 	},
 	"border": {
 		"borderWidth": "1px",

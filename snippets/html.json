@@ -47,5 +47,12 @@
 			"<br />"
 		],
 		"description": "<br />"
+	},
+	"data-cpss-": {
+		"prefix": "data-cpss-",
+		"body": [
+			"data-cpss-${1|id,merge,delete,strip,form,show|}=\"$2\""
+		],
+		"description": "data-cpss-"
 	}
 }
