@@ -16,6 +16,16 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 }
 
+interface EditInsert {
+	pos: vscode.Position,
+	str: string,
+};
+
+interface EditReplace {
+	range: vscode.Range,
+	str: string,
+};
+
 /**
  * エクステンション本体
  */
@@ -49,35 +59,46 @@ class MyExtention extends Extension {
 		let editor = vscode.window.activeTextEditor;
 		let doc = vscode.window.activeTextEditor.document;
 		// 現在の選択範囲を取得
-		let sel = editor.selection;
-		let b = sel.start.isEqual(sel.end);
-		if ( sel.start.isEqual(sel.end) ) {
-			// 範囲選択されていないので１文字変換
-			let cursor = sel.active;
+		let range: vscode.Range;
+		let text: string;
+		let move: boolean = false;
+		let ary: EditReplace[] = [];
+		for (let sel of editor.selections) {
+			if (sel.start.isEqual(sel.end)) {
+				// 範囲選択されていないので１文字変換
+				let cursor = sel.active;
 
-			let c = Util.getCharFromPos(editor, cursor);
+				let c = Util.getCharFromPos(editor, cursor);
 
-			// 大文字小文字を変換
-			c = Util.toggleCharCase(c);
+				// 大文字小文字を変換
+				c = Util.toggleCharCase(c);
 
-			// カーソル位置の文字範囲を作成
-			let range = new vscode.Range(cursor, cursor.translate(0, 1));
+				// カーソル位置の文字範囲を作成
+				let range = new vscode.Range(cursor, cursor.translate(0, 1));
 
-			// 大文字・小文字変換した文字と置換
-			editor.edit(edit => edit.replace(range, c));
+				// 大文字・小文字変換した文字と置換
+				ary.push({ range: range, str: c });
 
-			// カーソルを右に1文字移動
-			vscode.commands.executeCommand('cursorRight');
-		} else {
-			// 範囲選択されているので一括変換
-			let text = doc.getText(sel).split('');
+				// カーソル移動指示
+				move = true;
+			} else {
+				// 範囲選択されているので一括変換
+				let text = doc.getText(sel).split('');
 
-			for ( let i = 0; i < text.length; ++ i ) {
-				text[i] = Util.toggleCharCase(text[i]);
+				for (let i = 0; i < text.length; ++i) {
+					text[i] = Util.toggleCharCase(text[i]);
+				}
+
+				// 大文字・小文字変換した文字と置換
+				ary.push({ range: sel, str: text.join('') });
 			}
+		}
 
-			// 大文字・小文字変換した文字と置換
-			editor.edit(edit => edit.replace(sel, text.join('')));
+		this.syncReplace(editor, ary);
+
+		// カーソルを右に1文字移動
+		if (move) {
+			vscode.commands.executeCommand('cursorRight');
 		}
 	}
 
@@ -87,41 +108,91 @@ class MyExtention extends Extension {
 	public toggleWordCase() {
 		let editor = vscode.window.activeTextEditor;
 		let doc = vscode.window.activeTextEditor.document;
-		// 現在の選択範囲を取得
-		let sel = editor.selection;
-		let b = sel.start.isEqual(sel.end);
 		let range: vscode.Range;
 		let text: string;
-		if (sel.start.isEqual(sel.end)) {
-			// 範囲選択されていないので単語変換
-			range = Util.getCursorWordRange(editor);
+		let ary: EditReplace[] = [];
+		for (let sel of editor.selections) {
+			// 現在の選択範囲を取得
+			if (sel.start.isEqual(sel.end)) {
+				// 範囲選択されていないので単語変換
+				range = Util.getCursorWordRange(editor, sel.active);
 
-			// カーソル位置の単語を取得
-			text = doc.getText(range);
+				// カーソル位置の単語を取得
+				text = doc.getText(range);
 
-		} else {
-			// 範囲選択されているので一括変換
-			range = new vscode.Range(sel.start, sel.end);
+			} else {
+				// 範囲選択されているので一括変換
+				range = new vscode.Range(sel.start, sel.end);
 
-			// 全文字を先頭文字のケースの逆に設定
-			text = doc.getText(sel);
+				// 全文字を先頭文字のケースの逆に設定
+				text = doc.getText(sel);
+			}
+
+			if (/^[A-Z]+$/.test(text)) {
+				// すべて大文字なので小文字に
+				text = text.toLocaleLowerCase();
+			} else if (/^[a-z]+$/.test(text)) {
+				// すべて小文字なのでキャメルケースへ
+				text = text.substr(0, 1).toLocaleUpperCase() + text.substr(1).toLocaleLowerCase();
+			} else if (/^[A-Z][a-z]+$/.test(text)) {
+				// キャメルケースなので大文字へ
+				text = text.toLocaleUpperCase();
+			} else {
+				// 混ざっているので先頭文字の逆
+				text = Util.toggleCharCase(text);
+			}
+
+			//
+			ary.push({ range: range, str: text });
 		}
 
-		if (/^[A-Z]+$/.test(text)) {
-			// すべて大文字なので小文字に
-			text = text.toLocaleLowerCase();
-		} else if (/^[a-z]+$/.test(text)) {
-			// すべて小文字なのでキャメルケースへ
-			text = text.substr(0, 1).toLocaleUpperCase() + text.substr(1).toLocaleLowerCase();
-		} else if (/^[A-Z][a-z]+$/.test(text)) {
-			// キャメルケースなので大文字へ
-			text = text.toLocaleUpperCase();
-		} else {
-			// 混ざっているので先頭文字の逆
-			text = Util.toggleCharCase(text);
+		// 編集実行
+		this.syncReplace(editor, ary);
+	}
+
+	/**
+	 * 複数挿入
+	 * @param editor 対象エディター
+	 * @param pos 編集座標
+	 * @param str 挿入文字列
+	 * @param ary 編集情報配列
+	 */
+	public syncInsert(editor: vscode.TextEditor, ary: EditInsert[]) {
+		// 非同期編集を実行
+		let i = 0;
+		let e = (pos: vscode.Position, str: string) => {
+			// 大文字・小文字変換した文字と置換
+			editor.edit(edit => edit.insert(pos, str)).then((val: boolean) => {
+				if (val) {
+					++i;
+					e(ary[i].pos, ary[i].str);
+				}
+			});
 		}
 
-		// 大文字・小文字変換した文字と置換
-		editor.edit(edit => edit.replace(range, text));
+		e(ary[i].pos, ary[i].str);
+	}
+
+	/**
+	 * 複数置換
+	 * @param editor 対象エディター
+	 * @param pos 編集座標
+	 * @param str 挿入文字列
+	 * @param ary 編集情報配列
+	 */
+	public syncReplace(editor: vscode.TextEditor, ary: EditReplace[]) {
+		// 非同期編集を実行
+		let i = 0;
+		let e = (sel: vscode.Range, str: string) => {
+			// 大文字・小文字変換した文字と置換
+			editor.edit(edit => edit.replace(sel, str)).then((val: boolean) => {
+				if (val) {
+					++i;
+					e(ary[i].range, ary[i].str);
+				}
+			});
+		}
+
+		e(ary[i].range, ary[i].str);
 	}
 }
