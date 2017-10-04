@@ -1,7 +1,7 @@
 <?php /* nekoaisle.insert-code delete line */
 /**
  * 構築
- */
+**/
 public function __construct( )
 {
 	// デフォルトインプリメンテーションの呼び出し
