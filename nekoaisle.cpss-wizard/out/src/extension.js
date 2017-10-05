@@ -82,6 +82,7 @@ class CpssWizard extends nekoaisle_1.Extension {
             '2 編集 基本クラス': {
                 mode: 'TransBase',
                 name: 'TransBase',
+                sql: true,
             },
             '3 編集 初期化ページ': {
                 mode: 'TransInit',
@@ -102,6 +103,7 @@ class CpssWizard extends nekoaisle_1.Extension {
             '7 一覧 基本クラス': {
                 mode: 'ListBase',
                 name: 'ListBase',
+                sql: true,
             },
             '8 一覧 初期化ページ': {
                 mode: 'ListInit',
@@ -114,13 +116,14 @@ class CpssWizard extends nekoaisle_1.Extension {
             'A CCamRow 派生クラス': {
                 mode: 'Row',
                 name: 'Row',
+                sql: true,
             },
         };
         this.defaultOptions = {
             wizard: "",
             templateDir: "",
-            sqlDir: '~/network/campt-kiya/Installer/CREATE_TABLE',
-            php: '/usr/bin/php7.1',
+            sqlDir: '~/',
+            php: '/usr/bin/php',
             outFile: "php://stdout",
             author: "木屋善夫",
         };
@@ -137,8 +140,9 @@ class CpssWizard extends nekoaisle_1.Extension {
         // 一覧からモードを選択
         // 情報配列からメニューを作成
         let menu = [];
+        let info;
         for (let key in this.modeInfos) {
-            menu[menu.length] = key;
+            menu.push(key);
         }
         let opt = {
             placeHolder: '選択してください。'
@@ -148,7 +152,7 @@ class CpssWizard extends nekoaisle_1.Extension {
             if (!mode) {
                 return rejectSurelyPrimise('');
             }
-            let info = this.modeInfos[mode];
+            info = this.modeInfos[mode];
             if (!info) {
                 return rejectSurelyPrimise('');
             }
@@ -170,7 +174,7 @@ class CpssWizard extends nekoaisle_1.Extension {
             console.log(`title = "${title}"`);
             options.title = title;
             // SQLファイルを選択
-            if (fs.existsSync(options.sqlDir)) {
+            if ((info.sql) && fs.existsSync(options.sqlDir)) {
                 let sel = new nekoaisle_1.SelectFile();
                 return sel.selectFile(`${options.sqlDir}`, 'SQLファイルを選択してください。(不要な場合はESC)');
             }

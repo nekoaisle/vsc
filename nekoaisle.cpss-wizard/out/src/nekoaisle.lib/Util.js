@@ -62,6 +62,14 @@ var Util;
     }
     Util.putLog = putLog;
     /**
+     * 指定オブジェクトのクラス名を取得
+     * @param obj クラス名を知りたいオブジェクト
+     */
+    function getClassName(obj) {
+        return Object.prototype.toString.call(obj).slice(8, -1);
+    }
+    Util.getClassName = getClassName;
+    /**
      * オブジェクトを複製
      * @param src 複製する対象
      */
@@ -74,7 +82,7 @@ var Util;
             }
             case 'object':
             case 'function': {
-                switch (Object.prototype.toString.call(src).slice(8, -1)) {
+                switch (getClassName(src)) {
                     case 'Object': {
                         //自作クラスはprototype継承される
                         dst = Object.create(Object.getPrototypeOf(src));
@@ -360,6 +368,13 @@ var Util;
     }
     Util.execCmd = execCmd;
     /**
+     * クリップボードの内容を取得
+     */
+    function getClipboard() {
+        return execCmd('xclip -o -selection c');
+    }
+    Util.getClipboard = getClipboard;
+    /**
      * 指定uriをブラウザーで開く
      * @param uri 開く uri
      * @param query 追加の query
@@ -548,5 +563,33 @@ var Util;
         return ext;
     }
     Util.getDocumentExt = getDocumentExt;
+    /**
+     * 文字列を OverviewRulerLaneのプロパティに変換
+     * @param str OverviewRulerLane のプロパティ名
+     */
+    function strToOverviewRulerLane(str) {
+        switch (str) {
+            case 'Left': return vscode.OverviewRulerLane.Left;
+            case 'Center': return vscode.OverviewRulerLane.Center;
+            case 'Right': return vscode.OverviewRulerLane.Right;
+            case 'Full': return vscode.OverviewRulerLane.Full;
+            default: return null;
+        }
+    }
+    Util.strToOverviewRulerLane = strToOverviewRulerLane;
+    /**
+     * 文字列を DecorationRangeBehavior のプロパティに変換
+     * @param str DecorationRangeBehavior のプロパティ名
+     */
+    function strToDecorationRangeBehavior(str) {
+        switch (str) {
+            case 'OpenOpen': return vscode.DecorationRangeBehavior.OpenOpen;
+            case 'ClosedClosed': return vscode.DecorationRangeBehavior.ClosedClosed;
+            case 'OpenClosed': return vscode.DecorationRangeBehavior.OpenClosed;
+            case 'ClosedOpen': return vscode.DecorationRangeBehavior.ClosedOpen;
+            default: return vscode.DecorationRangeBehavior.ClosedClosed;
+        }
+    }
+    Util.strToDecorationRangeBehavior = strToDecorationRangeBehavior;
 })(Util = exports.Util || (exports.Util = {}));
 //# sourceMappingURL=Util.js.map

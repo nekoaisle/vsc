@@ -27,7 +27,7 @@ PHP 5.1 以上が必要です。
 |CCamRow 派生クラス|Row         |
 
 ### 拡張子
-テンプレートのファイル名は template.現在開いているファイルの拡張子を使います。  
+テンプレートのファイル名は template.[現在開いているファイルの拡張子] を使います。  
 
 ### ディレクトリ
 下記の順でディレクトリを探索します。
@@ -44,7 +44,6 @@ PHP 5.1 以上が必要です。
 2. ~/Documents/hoge/TransBase.php
 3. ~/Documents/hoge/template.php
 4. ~/.vscode/extensions/nekoaisle.cpss-wizard/templates/template.php
-
 
 ## 拡張機能の設定
 
