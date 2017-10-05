@@ -35,6 +35,10 @@
 		"label": "9: getopt",
 		"filename": "sh/getopt.sh"
 	},
+	"color_code": {
+		"label": "C: カラーコード",
+		"filename": "sh/color_code.sh"
+	},
 	"now.ymd": {
 		"label": "Y: 今日",
 		"command": "now.ymd"

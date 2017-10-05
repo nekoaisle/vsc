@@ -187,13 +187,21 @@
 			" * @param  ",
 			" * @return ",
 			" */",
-			"function {$2:関数名}( )",
+			"function ${2:関数名}( )",
 			"{",
-			"\t$2",
+			"\t$3",
 			"\treturn;",
 			"}"
 		],
 		"description": "関数"
+	},
+
+	"@param": {
+		"prefix": "@param",
+		"body": [
+			"@param  ${1|string,array,int,boolean,float|}"
+		],
+		"description": "@param"
 	},
 
 	"$_SERVER['DOCUMENT_ROOT']": {
