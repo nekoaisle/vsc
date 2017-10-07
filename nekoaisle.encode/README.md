@@ -61,3 +61,7 @@
 |nekoaisle.encloseCComment                  |/**/ 括る/外す        |          |
 |nekoaisle.encloseHtmlComment               |<!-- --> 括る/外す    |          |
 |nekoaisle.encloseHtmlDiv                   |<div class=""></div> 括る/外す|          |
+
+# 問題点
+カーソル位置がくくる文字だった場合の処理ができていない＞＜；  
+例: 'abcd' の 先頭の ' にカーソルがある場合正しく動作しない。

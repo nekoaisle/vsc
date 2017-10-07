@@ -16,16 +16,6 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 }
 
-interface EditInsert {
-	pos: vscode.Position,
-	str: string,
-};
-
-interface EditReplace {
-	range: vscode.Range,
-	str: string,
-};
-
 /**
  * エクステンション本体
  */
@@ -148,51 +138,5 @@ class MyExtention extends Extension {
 
 		// 編集実行
 		this.syncReplace(editor, ary);
-	}
-
-	/**
-	 * 複数挿入
-	 * @param editor 対象エディター
-	 * @param pos 編集座標
-	 * @param str 挿入文字列
-	 * @param ary 編集情報配列
-	 */
-	public syncInsert(editor: vscode.TextEditor, ary: EditInsert[]) {
-		// 非同期編集を実行
-		let i = 0;
-		let e = (pos: vscode.Position, str: string) => {
-			// 大文字・小文字変換した文字と置換
-			editor.edit(edit => edit.insert(pos, str)).then((val: boolean) => {
-				if (val) {
-					++i;
-					e(ary[i].pos, ary[i].str);
-				}
-			});
-		}
-
-		e(ary[i].pos, ary[i].str);
-	}
-
-	/**
-	 * 複数置換
-	 * @param editor 対象エディター
-	 * @param pos 編集座標
-	 * @param str 挿入文字列
-	 * @param ary 編集情報配列
-	 */
-	public syncReplace(editor: vscode.TextEditor, ary: EditReplace[]) {
-		// 非同期編集を実行
-		let i = 0;
-		let e = (sel: vscode.Range, str: string) => {
-			// 大文字・小文字変換した文字と置換
-			editor.edit(edit => edit.replace(sel, str)).then((val: boolean) => {
-				if (val) {
-					++i;
-					e(ary[i].range, ary[i].str);
-				}
-			});
-		}
-
-		e(ary[i].range, ary[i].str);
 	}
 }
