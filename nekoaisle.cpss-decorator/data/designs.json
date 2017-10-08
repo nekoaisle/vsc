@@ -38,5 +38,14 @@
 		"borderColor": "rgba(0,0,255,0.8)",
 		"overviewRulerColor": "rgba(0,0,255,1)",
 		"overviewRulerLane": "vscode.OverviewRulerLane.Right"
+	},
+	"border-yellow": {
+		"borderWidth": "1px",
+		"borderStyle": "solid",
+		"borderColor": "rgba(255,192,0,0.5)"
+	},
+	"ruler-yellow": {
+		"overviewRulerColor": "rgba(255,192,0,0.5)",
+		"overviewRulerLane": "vscode.OverviewRulerLane.Right"
 	}
 }

@@ -21,6 +21,15 @@
 		],
 		"description": "inser-code 行削除命令"
 	},
+	"foreach": {
+		"prefix": "foreach",
+		"body": [
+			"foreach (\\$${1:valiable} as \\$key => \\$val) {",
+			"\t$2",
+			"}"
+		],
+		"description": "PHP タグ"
+	},
 	"php tag": {
 		"prefix": "<?php",
 		"body": [
@@ -40,7 +49,7 @@
 	"php tag for phtml inline": {
 		"prefix": "EchoHtml",
 		"body": [
-			"<?php EchoHtml( ); ?>"
+			"<?php EchoHtml(); ?>"
 		],
 		"description": "HTML インライン用 PHP タグ"
 	},
@@ -74,7 +83,7 @@
 			" * @param  ",
 			" * @return ",
 			" */",
-			"public function ${2:メソッド名}( ) {",
+			"public function ${2:メソッド名}() {",
 			"\t$3",
 			"\treturn;",
 			"}",
@@ -102,10 +111,10 @@
 			" * ",
 			" * @param  ",
 			" */",
-			"public function __construct( )",
+			"public function __construct()",
 			"{",
 			"\t// デフォルトインプリメンテーションの呼び出し",
-			"\tparent::__construct( ),",
+			"\tparent::__construct(),",
 			"}",
 			""
 		],
@@ -118,10 +127,10 @@
 			" * 消滅",
 			" * ",
 			" */",
-			"public function __destruct( )",
+			"public function __destruct()",
 			"{",
 			"\t// デフォルトインプリメンテーションの呼び出し",
-			"\tparent::__destruct( ),",
+			"\tparent::__destruct(),",
 			"}",
 			""
 		],
@@ -137,12 +146,12 @@
 			" * @param  string $value name属性値",
 			" * @return boolean コマンドディスパッチを FAILED:続行, SUCCEEDED:終了",
 			" */",
-			"protected function on{$2:名前}( $value )",
+			"protected function on{$2:名前}($value)",
 			"{",
 			"\t$3",
 			"\t",
 			"\t// ページ遷移",
-			"\t$this->PageRedirect( '' ),",
+			"\t$this->PageRedirect(''),",
 			"",
 			"\t//",
 			"\treturn SUCCEEDED;",
@@ -161,7 +170,7 @@
 			" * @return boolean コマンドディスパッチを FAILED:継続 SUCCEEDED:終了",
 			" * @throw  ",
 			" */",
-			"public function onAjax{$1:名前}( $val )",
+			"public function onAjax{$1:名前}($val)",
 			"{",
 			"\t// AJAX なので HTML は出力しない",
 			"\t$this->m_blUseHTML = FALSE,",
@@ -170,7 +179,7 @@
 			"\t$data = [],",
 			"",
 			"\t// json を出力",
-			"\t$this->EchoJSON( $data ),",
+			"\t$this->EchoJSON($data),",
 			"",
 			"\t//",
 			"\treturn SUCCEEDED;",
@@ -187,7 +196,7 @@
 			" * @param  ",
 			" * @return ",
 			" */",
-			"function ${2:関数名}( )",
+			"function ${2:関数名}()",
 			"{",
 			"\t$3",
 			"\treturn;",
@@ -443,17 +452,17 @@
 		],
 		"description": "FAILED"
 	},
-	"require_once( DOCUMENT_ROOT": {
-		"prefix": "require_once( DOCUMENT_ROOT",
+	"require_once(DOCUMENT_ROOT": {
+		"prefix": "require_once(DOCUMENT_ROOT",
 		"body": [
-			"require_once( DOCUMENT_ROOT . '/$1.php' );"
+			"require_once(DOCUMENT_ROOT . '/$1.php');"
 		],
 		"description": ""
 	},
-	"require_once( MODULE_ROOT": {
-		"prefix": "require_once( MODULE_ROOT",
+	"require_once(MODULE_ROOT": {
+		"prefix": "require_once(MODULE_ROOT",
 		"body": [
-			"require_once( MODULE_ROOT   . '/$1.php' );"
+			"require_once(MODULE_ROOT   . '/$1.php');"
 		],
 		"description": ""
 	},
@@ -562,38 +571,38 @@
 		],
 		"description": ""
 	},
-	"PUT_DEBUGLOG( ' = ' . strDebugVarDump(  ) );": {
-		"prefix": "PUT_DEBUGLOG( ' = ' . strDebugVarDump(  ) );",
+	"PUT_DEBUGLOG(' = ' . strDebugVarDump());": {
+		"prefix": "PUT_DEBUGLOG(' = ' . strDebugVarDump());",
 		"body": [
-			"PUT_DEBUGLOG( ' = ' . strDebugVarDump(  ) );"
+			"PUT_DEBUGLOG(' = ' . strDebugVarDump());"
 		],
 		"description": ""
 	},
-	"PUT_DEBUGLOG(  );": {
-		"prefix": "PUT_DEBUGLOG(  );",
+	"PUT_DEBUGLOG();": {
+		"prefix": "PUT_DEBUGLOG();",
 		"body": [
-			"PUT_DEBUGLOG(  );"
+			"PUT_DEBUGLOG();"
 		],
 		"description": ""
 	},
-	"PUT_ERRORLOG(  );": {
-		"prefix": "PUT_ERRORLOG(  );",
+	"PUT_ERRORLOG();": {
+		"prefix": "PUT_ERRORLOG();",
 		"body": [
-			"PUT_ERRORLOG(  );"
+			"PUT_ERRORLOG();"
 		],
 		"description": ""
 	},
-	"PUT_WARNINGLOG(  );": {
-		"prefix": "PUT_WARNINGLOG(  );",
+	"PUT_WARNINGLOG();": {
+		"prefix": "PUT_WARNINGLOG();",
 		"body": [
-			"PUT_WARNINGLOG(  );"
+			"PUT_WARNINGLOG();"
 		],
 		"description": ""
 	},
-	"var_dump(  );": {
-		"prefix": "var_dump(  );",
+	"var_dump();": {
+		"prefix": "var_dump();",
 		"body": [
-			"var_dump(  );"
+			"var_dump();"
 		],
 		"description": ""
 	},
@@ -612,550 +621,550 @@
 		"description": ""
 	},
 
-	"isset( $_REQUEST['SUBMIT'] ) )": {
-		"prefix": "isset( $_REQUEST['SUBMIT'] ) )",
+	"isset($_REQUEST['SUBMIT']))": {
+		"prefix": "isset($_REQUEST['SUBMIT']))",
 		"body": [
-			"isset( $$_REQUEST['SUBMIT'] ) )"
+			"isset($$_REQUEST['SUBMIT']))"
 		],
 		"description": ""
 	},
-	"isHonban( )": {
-		"prefix": "isHonban( )",
+	"isHonban()": {
+		"prefix": "isHonban()",
 		"body": [
-			"isHonban( )"
+			"isHonban()"
 		],
 		"description": ""
 	},
-	"blSendMail( $strTo, $strFrom, $strSubject, $strBody )": {
-		"prefix": "blSendMail( $strTo, $strFrom, $strSubject, $strBody )",
+	"blSendMail($strTo, $strFrom, $strSubject, $strBody)": {
+		"prefix": "blSendMail($strTo, $strFrom, $strSubject, $strBody)",
 		"body": [
-			"blSendMail( $$strTo, $$strFrom, $$strSubject, $$strBody )"
+			"blSendMail($$strTo, $$strFrom, $$strSubject, $$strBody)"
 		],
 		"description": ""
 	},
-	"blSendMailEx( $strTo, $strFrom, $strFromName, $strBcc, $strSubject, $strBody )": {
-		"prefix": "blSendMailEx( $strTo, $strFrom, $strFromName, $strBcc, $strSubject, $strBody )",
+	"blSendMailEx($strTo, $strFrom, $strFromName, $strBcc, $strSubject, $strBody)": {
+		"prefix": "blSendMailEx($strTo, $strFrom, $strFromName, $strBcc, $strSubject, $strBody)",
 		"body": [
-			"blSendMailEx( $$strTo, $$strFrom, $$strFromName, $$strBcc, $$strSubject, $$strBody )"
+			"blSendMailEx($$strTo, $$strFrom, $$strFromName, $$strBcc, $$strSubject, $$strBody)"
 		],
 		"description": ""
 	},
-	"iModulus10( $iValue , $iWait )": {
-		"prefix": "iModulus10( $iValue , $iWait )",
+	"iModulus10($iValue , $iWait)": {
+		"prefix": "iModulus10($iValue , $iWait)",
 		"body": [
-			"iModulus10( $$iValue , $$iWait )"
+			"iModulus10($$iValue , $$iWait)"
 		],
 		"description": ""
 	},
-	"TrimSpace( $str )": {
-		"prefix": "TrimSpace( $str )",
+	"TrimSpace($str)": {
+		"prefix": "TrimSpace($str)",
 		"body": [
-			"TrimSpace( $$str )"
+			"TrimSpace($$str)"
 		],
 		"description": ""
 	},
-	"strCreateDateString( $strSrc )": {
-		"prefix": "strCreateDateString( $strSrc )",
+	"strCreateDateString($strSrc)": {
+		"prefix": "strCreateDateString($strSrc)",
 		"body": [
-			"strCreateDateString( $$strSrc )"
+			"strCreateDateString($$strSrc)"
 		],
 		"description": ""
 	},
-	"isHash( &$aryData )": {
-		"prefix": "isHash( &$aryData )",
+	"isHash(&$aryData)": {
+		"prefix": "isHash(&$aryData)",
 		"body": [
-			"isHash( &$$aryData )"
+			"isHash(&$$aryData)"
 		],
 		"description": ""
 	},
-	"rpad( $str, $iLen )": {
-		"prefix": "rpad( $str, $iLen )",
+	"rpad($str, $iLen)": {
+		"prefix": "rpad($str, $iLen)",
 		"body": [
-			"rpad( $$str, $$iLen )"
+			"rpad($$str, $$iLen)"
 		],
 		"description": ""
 	},
-	"lpad( $str, $iLen )": {
-		"prefix": "lpad( $str, $iLen )",
+	"lpad($str, $iLen)": {
+		"prefix": "lpad($str, $iLen)",
 		"body": [
-			"lpad( $$str, $$iLen )"
+			"lpad($$str, $$iLen)"
 		],
 		"description": ""
 	},
-	"strStrPadHTML( $strSrc, $iLen, $strPad )": {
-		"prefix": "strStrPadHTML( $strSrc, $iLen, $strPad )",
+	"strStrPadHTML($strSrc, $iLen, $strPad)": {
+		"prefix": "strStrPadHTML($strSrc, $iLen, $strPad)",
 		"body": [
-			"strStrPadHTML( $$strSrc, $$iLen, $$strPad )"
+			"strStrPadHTML($$strSrc, $$iLen, $$strPad)"
 		],
 		"description": ""
 	},
-	"strGetRequest( $strName, $mixDefault = NULL )": {
-		"prefix": "strGetRequest( $strName, $mixDefault = NULL )",
+	"strGetRequest($strName, $mixDefault = NULL)": {
+		"prefix": "strGetRequest($strName, $mixDefault = NULL)",
 		"body": [
-			"strGetRequest( $$strName, $$mixDefault = NULL )"
+			"strGetRequest($$strName, $$mixDefault = NULL)"
 		],
 		"description": ""
 	},
-	"iGetRequest( $strName, $iDefault = NULL )": {
-		"prefix": "iGetRequest( $strName, $iDefault = NULL )",
+	"iGetRequest($strName, $iDefault = NULL)": {
+		"prefix": "iGetRequest($strName, $iDefault = NULL)",
 		"body": [
-			"iGetRequest( $$strName, $$iDefault = NULL )"
+			"iGetRequest($$strName, $$iDefault = NULL)"
 		],
 		"description": ""
 	},
-	"iGetRequest2( $strName, $iDefault = NULL )": {
-		"prefix": "iGetRequest2( $strName, $iDefault = NULL )",
+	"iGetRequest2($strName, $iDefault = NULL)": {
+		"prefix": "iGetRequest2($strName, $iDefault = NULL)",
 		"body": [
-			"iGetRequest2( $$strName, $$iDefault = NULL )"
+			"iGetRequest2($$strName, $$iDefault = NULL)"
 		],
 		"description": ""
 	},
-	"strToUTF8( $str )": {
-		"prefix": "strToUTF8( $str )",
+	"strToUTF8($str)": {
+		"prefix": "strToUTF8($str)",
 		"body": [
-			"strToUTF8( $$str )"
+			"strToUTF8($$str)"
 		],
 		"description": ""
 	},
-	"aryEncodeUTF8( $aryInp )": {
-		"prefix": "aryEncodeUTF8( $aryInp )",
+	"aryEncodeUTF8($aryInp)": {
+		"prefix": "aryEncodeUTF8($aryInp)",
 		"body": [
-			"aryEncodeUTF8( $$aryInp )"
+			"aryEncodeUTF8($$aryInp)"
 		],
 		"description": ""
 	},
-	"mixEncodeUTF8( $mixInp )": {
-		"prefix": "mixEncodeUTF8( $mixInp )",
+	"mixEncodeUTF8($mixInp)": {
+		"prefix": "mixEncodeUTF8($mixInp)",
 		"body": [
-			"mixEncodeUTF8( $$mixInp )"
+			"mixEncodeUTF8($$mixInp)"
 		],
 		"description": ""
 	},
-	"strGetNow( $strFromat = 'YmdHis' )": {
-		"prefix": "strGetNow( $strFromat = 'YmdHis' )",
+	"strGetNow($strFromat = 'YmdHis')": {
+		"prefix": "strGetNow($strFromat = 'YmdHis')",
 		"body": [
-			"strGetNow( $$strFromat = 'YmdHis' )"
+			"strGetNow($$strFromat = 'YmdHis')"
 		],
 		"description": ""
 	},
-	"iStrToTime( $str, $iTime = NOW_UNIXTIME )": {
-		"prefix": "iStrToTime( $str, $iTime = NOW_UNIXTIME )",
+	"iStrToTime($str, $iTime = NOW_UNIXTIME)": {
+		"prefix": "iStrToTime($str, $iTime = NOW_UNIXTIME)",
 		"body": [
-			"iStrToTime( $$str, $$iTime = NOW_UNIXTIME )"
+			"iStrToTime($$str, $$iTime = NOW_UNIXTIME)"
 		],
 		"description": ""
 	},
-	"strTimeToStr( $strFormat, $iTime = NOW_UNIXTIME )": {
-		"prefix": "strTimeToStr( $strFormat, $iTime = NOW_UNIXTIME )",
+	"strTimeToStr($strFormat, $iTime = NOW_UNIXTIME)": {
+		"prefix": "strTimeToStr($strFormat, $iTime = NOW_UNIXTIME)",
 		"body": [
-			"strTimeToStr( $$strFormat, $$iTime = NOW_UNIXTIME )"
+			"strTimeToStr($$strFormat, $$iTime = NOW_UNIXTIME)"
 		],
 		"description": ""
 	},
-	"strTimeOffset( $strFormat, $strTime, $mixOffset )": {
-		"prefix": "strTimeOffset( $strFormat, $strTime, $mixOffset )",
+	"strTimeOffset($strFormat, $strTime, $mixOffset)": {
+		"prefix": "strTimeOffset($strFormat, $strTime, $mixOffset)",
 		"body": [
-			"strTimeOffset( $$strFormat, $$strTime, $$mixOffset )"
+			"strTimeOffset($$strFormat, $$strTime, $$mixOffset)"
 		],
 		"description": ""
 	},
-	"strTimeConv( $strFormat, $strFrom )": {
-		"prefix": "strTimeConv( $strFormat, $strFrom )",
+	"strTimeConv($strFormat, $strFrom)": {
+		"prefix": "strTimeConv($strFormat, $strFrom)",
 		"body": [
-			"strTimeConv( $$strFormat, $$strFrom )"
+			"strTimeConv($$strFormat, $$strFrom)"
 		],
 		"description": ""
 	},
-	"strTimeConvExt( $strFormat, $strFrom )": {
-		"prefix": "strTimeConvExt( $strFormat, $strFrom )",
+	"strTimeConvExt($strFormat, $strFrom)": {
+		"prefix": "strTimeConvExt($strFormat, $strFrom)",
 		"body": [
-			"strTimeConvExt( $$strFormat, $$strFrom )"
+			"strTimeConvExt($$strFormat, $$strFrom)"
 		],
 		"description": ""
 	},
-	"strGetThisMonthFirst( $str )": {
-		"prefix": "strGetThisMonthFirst( $str )",
+	"strGetThisMonthFirst($str)": {
+		"prefix": "strGetThisMonthFirst($str)",
 		"body": [
-			"strGetThisMonthFirst( $$str )"
+			"strGetThisMonthFirst($$str)"
 		],
 		"description": ""
 	},
-	"strGetNextMonthFirst( $str )": {
-		"prefix": "strGetNextMonthFirst( $str )",
+	"strGetNextMonthFirst($str)": {
+		"prefix": "strGetNextMonthFirst($str)",
 		"body": [
-			"strGetNextMonthFirst( $$str )"
+			"strGetNextMonthFirst($$str)"
 		],
 		"description": ""
 	},
-	"strGetThisDayFirst( $str )": {
-		"prefix": "strGetThisDayFirst( $str )",
+	"strGetThisDayFirst($str)": {
+		"prefix": "strGetThisDayFirst($str)",
 		"body": [
-			"strGetThisDayFirst( $$str )"
+			"strGetThisDayFirst($$str)"
 		],
 		"description": ""
 	},
-	"strGetNextDayFirst( $str )": {
-		"prefix": "strGetNextDayFirst( $str )",
+	"strGetNextDayFirst($str)": {
+		"prefix": "strGetNextDayFirst($str)",
 		"body": [
-			"strGetNextDayFirst( $$str )"
+			"strGetNextDayFirst($$str)"
 		],
 		"description": ""
 	},
-	"mixGetValidArgs( $mixArgs, $mixDefault )": {
-		"prefix": "mixGetValidArgs( $mixArgs, $mixDefault )",
+	"mixGetValidArgs($mixArgs, $mixDefault)": {
+		"prefix": "mixGetValidArgs($mixArgs, $mixDefault)",
 		"body": [
-			"mixGetValidArgs( $$mixArgs, $$mixDefault )"
+			"mixGetValidArgs($$mixArgs, $$mixDefault)"
 		],
 		"description": ""
 	},
-	"blEvalBloolean( $str )": {
-		"prefix": "blEvalBloolean( $str )",
+	"blEvalBloolean($str)": {
+		"prefix": "blEvalBloolean($str)",
 		"body": [
-			"blEvalBloolean( $$str )"
+			"blEvalBloolean($$str)"
 		],
 		"description": ""
 	},
-	"strBoolToStr( $bool )": {
-		"prefix": "strBoolToStr( $bool )",
+	"strBoolToStr($bool)": {
+		"prefix": "strBoolToStr($bool)",
 		"body": [
-			"strBoolToStr( $$bool )"
+			"strBoolToStr($$bool)"
 		],
 		"description": ""
 	},
-	"aryConvertToArray( $mix )": {
-		"prefix": "aryConvertToArray( $mix )",
+	"aryConvertToArray($mix)": {
+		"prefix": "aryConvertToArray($mix)",
 		"body": [
-			"aryConvertToArray( $$mix )"
+			"aryConvertToArray($$mix)"
 		],
 		"description": ""
 	},
-	"strGetRow( $strLine )": {
-		"prefix": "strGetRow( $strLine )",
+	"strGetRow($strLine)": {
+		"prefix": "strGetRow($strLine)",
 		"body": [
-			"strGetRow( $$strLine )"
+			"strGetRow($$strLine)"
 		],
 		"description": ""
 	},
-	"aryLoadTSV( $strFileName )": {
-		"prefix": "aryLoadTSV( $strFileName )",
+	"aryLoadTSV($strFileName)": {
+		"prefix": "aryLoadTSV($strFileName)",
 		"body": [
-			"aryLoadTSV( $$strFileName )"
+			"aryLoadTSV($$strFileName)"
 		],
 		"description": ""
 	},
-	"strRTrim( $str, $spc = ' 　' )": {
-		"prefix": "strRTrim( $str, $spc = ' 　' )",
+	"strRTrim($str, $spc = ' 　')": {
+		"prefix": "strRTrim($str, $spc = ' 　')",
 		"body": [
-			"strRTrim( $$str, $$spc = ' 　' )"
+			"strRTrim($$str, $$spc = ' 　')"
 		],
 		"description": ""
 	},
-	"DefaultDef( $strKey, $strVal )": {
-		"prefix": "DefaultDef( $strKey, $strVal )",
+	"DefaultDef($strKey, $strVal)": {
+		"prefix": "DefaultDef($strKey, $strVal)",
 		"body": [
-			"DefaultDef( $$strKey, $$strVal )"
+			"DefaultDef($$strKey, $$strVal)"
 		],
 		"description": ""
 	},
-	"LoadStringDef( $strFileName )": {
-		"prefix": "LoadStringDef( $strFileName )",
+	"LoadStringDef($strFileName)": {
+		"prefix": "LoadStringDef($strFileName)",
 		"body": [
-			"LoadStringDef( $$strFileName )"
+			"LoadStringDef($$strFileName)"
 		],
 		"description": ""
 	},
-	"LoadCustumMess( $strBaseFile, $strSiteID )": {
-		"prefix": "LoadCustumMess( $strBaseFile, $strSiteID )",
+	"LoadCustumMess($strBaseFile, $strSiteID)": {
+		"prefix": "LoadCustumMess($strBaseFile, $strSiteID)",
 		"body": [
-			"LoadCustumMess( $$strBaseFile, $$strSiteID )"
+			"LoadCustumMess($$strBaseFile, $$strSiteID)"
 		],
 		"description": ""
 	},
-	"aryExplode( $strSep, $strVal )": {
-		"prefix": "aryExplode( $strSep, $strVal )",
+	"aryExplode($strSep, $strVal)": {
+		"prefix": "aryExplode($strSep, $strVal)",
 		"body": [
-			"aryExplode( $$strSep, $$strVal )"
+			"aryExplode($$strSep, $$strVal)"
 		],
 		"description": ""
 	},
-	"mixGetArrayItem( $aryCond, $mixKey, $mixDefault = NULL )": {
-		"prefix": "mixGetArrayItem( $aryCond, $mixKey, $mixDefault = NULL )",
+	"mixGetArrayItem($condition, $key, $default = NULL)": {
+		"prefix": "mixGetArrayItem(",
 		"body": [
-			"mixGetArrayItem( $$aryCond, $$mixKey, $$mixDefault = NULL )"
+			"mixGetArrayItem($${1:array}, '${2:key}, $${3:default})"
 		],
-		"description": ""
+		"description": "mixGetArrayItem($condition, $key, $default = NULL)"
 	},
-	"blCheckClientIP( $strCheckIP, $strIPList )": {
-		"prefix": "blCheckClientIP( $strCheckIP, $strIPList )",
+	"blCheckClientIP($strCheckIP, $strIPList)": {
+		"prefix": "blCheckClientIP($strCheckIP, $strIPList)",
 		"body": [
-			"blCheckClientIP( $$strCheckIP, $$strIPList )"
+			"blCheckClientIP($$strCheckIP, $$strIPList)"
 		],
 		"description": ""
 	},
-	"strLoadCache( $strFile, $iExpire )": {
-		"prefix": "strLoadCache( $strFile, $iExpire )",
+	"strLoadCache($strFile, $iExpire)": {
+		"prefix": "strLoadCache($strFile, $iExpire)",
 		"body": [
-			"strLoadCache( $$strFile, $$iExpire )"
+			"strLoadCache($$strFile, $$iExpire)"
 		],
 		"description": ""
 	},
-	"SaveCache( $strFile, $strValue )": {
-		"prefix": "SaveCache( $strFile, $strValue )",
+	"SaveCache($strFile, $strValue)": {
+		"prefix": "SaveCache($strFile, $strValue)",
 		"body": [
-			"SaveCache( $$strFile, $$strValue )"
+			"SaveCache($$strFile, $$strValue)"
 		],
 		"description": ""
 	},
-	"mixCallAPI( $strService, $strFunction, $aryParams )": {
-		"prefix": "mixCallAPI( $strService, $strFunction, $aryParams )",
+	"mixCallAPI($strService, $strFunction, $aryParams)": {
+		"prefix": "mixCallAPI($strService, $strFunction, $aryParams)",
 		"body": [
-			"mixCallAPI( $$strService, $$strFunction, $$aryParams )"
+			"mixCallAPI($$strService, $$strFunction, $$aryParams)"
 		],
 		"description": ""
 	},
-	"isAPIError( $aryRes )": {
-		"prefix": "isAPIError( $aryRes )",
+	"isAPIError($aryRes)": {
+		"prefix": "isAPIError($aryRes)",
 		"body": [
-			"isAPIError( $$aryRes )"
+			"isAPIError($$aryRes)"
 		],
 		"description": ""
 	},
-	"objGetSingletonObject( '' );": {
-		"prefix": "objGetSingletonObject( '' );",
+	"objGetSingletonObject('');": {
+		"prefix": "objGetSingletonObject('');",
 		"body": [
-			"objGetSingletonObject( '' );"
+			"objGetSingletonObject('');"
 		],
 		"description": ""
 	},
-	"iPregMatch( $strReg, $strVal, &$aryMatches = NULL )": {
-		"prefix": "iPregMatch( $strReg, $strVal, &$aryMatches = NULL )",
+	"iPregMatch($strReg, $strVal, &$aryMatches = NULL)": {
+		"prefix": "iPregMatch($strReg, $strVal, &$aryMatches = NULL)",
 		"body": [
-			"iPregMatch( $$strReg, $$strVal, &$$aryMatches = NULL )"
+			"iPregMatch($$strReg, $$strVal, &$$aryMatches = NULL)"
 		],
 		"description": ""
 	},
-	"iPregMatchAll( $strReg, $strVal, &$aryMatches = NULL )": {
-		"prefix": "iPregMatchAll( $strReg, $strVal, &$aryMatches = NULL )",
+	"iPregMatchAll($strReg, $strVal, &$aryMatches = NULL)": {
+		"prefix": "iPregMatchAll($strReg, $strVal, &$aryMatches = NULL)",
 		"body": [
-			"iPregMatchAll( $$strReg, $$strVal, &$$aryMatches = NULL )"
+			"iPregMatchAll($$strReg, $$strVal, &$$aryMatches = NULL)"
 		],
 		"description": ""
 	},
-	"strPregReplace( $strReg, $strRep, $strSrc )": {
-		"prefix": "strPregReplace( $strReg, $strRep, $strSrc )",
+	"strPregReplace($strReg, $strRep, $strSrc)": {
+		"prefix": "strPregReplace($strReg, $strRep, $strSrc)",
 		"body": [
-			"strPregReplace( $$strReg, $$strRep, $$strSrc )"
+			"strPregReplace($$strReg, $$strRep, $$strSrc)"
 		],
 		"description": ""
 	},
-	"EchoHTML( $str )": {
-		"prefix": "EchoHTML( $str )",
+	"EchoHTML($str)": {
+		"prefix": "EchoHTML($str)",
 		"body": [
-			"EchoHTML( $$str )"
+			"EchoHTML($$str)"
 		],
 		"description": ""
 	},
-	"EchoTextarea( $str )": {
-		"prefix": "EchoTextarea( $str )",
+	"EchoTextarea($str)": {
+		"prefix": "EchoTextarea($str)",
 		"body": [
-			"EchoTextarea( $$str )"
+			"EchoTextarea($$str)"
 		],
 		"description": ""
 	},
-	"EchoForm( $str )": {
-		"prefix": "EchoForm( $str )",
+	"EchoForm($str)": {
+		"prefix": "EchoForm($str)",
 		"body": [
-			"EchoForm( $$str )"
+			"EchoForm($$str)"
 		],
 		"description": ""
 	},
-	"EchoNumber( $i )": {
-		"prefix": "EchoNumber( $i )",
+	"EchoNumber($i)": {
+		"prefix": "EchoNumber($i)",
 		"body": [
-			"EchoNumber( $$i )"
+			"EchoNumber($$i)"
 		],
 		"description": ""
 	},
-	"EchoURL( $str )": {
-		"prefix": "EchoURL( $str )",
+	"EchoURL($str)": {
+		"prefix": "EchoURL($str)",
 		"body": [
-			"EchoURL( $$str )"
+			"EchoURL($$str)"
 		],
 		"description": ""
 	},
-	"EchoAttrib( $strKey, $strValue )": {
-		"prefix": "EchoAttrib( $strKey, $strValue )",
+	"EchoAttrib($strKey, $strValue)": {
+		"prefix": "EchoAttrib($strKey, $strValue)",
 		"body": [
-			"EchoAttrib( $$strKey, $$strValue )"
+			"EchoAttrib($$strKey, $$strValue)"
 		],
 		"description": ""
 	},
-	"EchoAnchor( '": {
-		"prefix": "EchoAnchor( '",
+	"EchoAnchor('": {
+		"prefix": "EchoAnchor('",
 		"body": [
-			"EchoAnchor( '"
+			"EchoAnchor('"
 		],
 		"description": ""
 	},
-	"EchoFormDefault( $strType, $mixVal, $mixSel )": {
-		"prefix": "EchoFormDefault( $strType, $mixVal, $mixSel )",
+	"EchoFormDefault($strType, $mixVal, $mixSel)": {
+		"prefix": "EchoFormDefault($strType, $mixVal, $mixSel)",
 		"body": [
-			"EchoFormDefault( $$strType, $$mixVal, $$mixSel )"
+			"EchoFormDefault($$strType, $$mixVal, $$mixSel)"
 		],
 		"description": ""
 	},
-	"EchoHR( $objPage, $iHeight, $strColor )": {
-		"prefix": "EchoHR( $objPage, $iHeight, $strColor )",
+	"EchoHR($objPage, $iHeight, $strColor)": {
+		"prefix": "EchoHR($objPage, $iHeight, $strColor)",
 		"body": [
-			"EchoHR( $$objPage, $$iHeight, $$strColor )"
+			"EchoHR($$objPage, $$iHeight, $$strColor)"
 		],
 		"description": ""
 	},
-	"EchoDate( $mixDate, $strFormat = 'Y/m/d H:i:s' )": {
-		"prefix": "EchoDate( $mixDate, $strFormat = 'Y/m/d H:i:s' )",
+	"EchoDate($mixDate, $strFormat = 'Y/m/d H:i:s')": {
+		"prefix": "EchoDate($mixDate, $strFormat = 'Y/m/d H:i:s')",
 		"body": [
-			"EchoDate( $$mixDate, $$strFormat = 'Y/m/d H:i:s' )"
+			"EchoDate($$mixDate, $$strFormat = 'Y/m/d H:i:s')"
 		],
 		"description": ""
 	},
-	"EchoDate2( $strFormat, $iTime = NOW_UNIXTIME )": {
-		"prefix": "EchoDate2( $strFormat, $iTime = NOW_UNIXTIME )",
+	"EchoDate2($strFormat, $iTime = NOW_UNIXTIME)": {
+		"prefix": "EchoDate2($strFormat, $iTime = NOW_UNIXTIME)",
 		"body": [
-			"EchoDate2( $$strFormat, $$iTime = NOW_UNIXTIME )"
+			"EchoDate2($$strFormat, $$iTime = NOW_UNIXTIME)"
 		],
 		"description": ""
 	},
-	"EchoCustumMess( $str )": {
-		"prefix": "EchoCustumMess( $str )",
+	"EchoCustumMess($str)": {
+		"prefix": "EchoCustumMess($str)",
 		"body": [
-			"EchoCustumMess( $$str )"
+			"EchoCustumMess($$str)"
 		],
 		"description": ""
 	},
-	"EchoDebug( '', );": {
-		"prefix": "EchoDebug( '', );",
+	"EchoDebug('',);": {
+		"prefix": "EchoDebug('',);",
 		"body": [
-			"EchoDebug( '', );"
+			"EchoDebug('',);"
 		],
 		"description": ""
 	},
-	"DisconnectDB( );": {
-		"prefix": "DisconnectDB( );",
+	"DisconnectDB();": {
+		"prefix": "DisconnectDB();",
 		"body": [
-			"DisconnectDB( );"
+			"DisconnectDB();"
 		],
 		"description": ""
 	},
-	"CommitDB( );": {
-		"prefix": "CommitDB( );",
+	"CommitDB();": {
+		"prefix": "CommitDB();",
 		"body": [
-			"CommitDB( );"
+			"CommitDB();"
 		],
 		"description": ""
 	},
-	"RollbackDB( );": {
-		"prefix": "RollbackDB( );",
+	"RollbackDB();": {
+		"prefix": "RollbackDB();",
 		"body": [
-			"RollbackDB( );"
+			"RollbackDB();"
 		],
 		"description": ""
 	},
-	"rowLockDB( ": {
-		"prefix": "rowLockDB( ",
+	"rowLockDB(": {
+		"prefix": "rowLockDB(",
 		"body": [
-			"rowLockDB( "
+			"rowLockDB("
 		],
 		"description": ""
 	},
-	"aryQueryDB( $tbl, $sql, $arg );": {
-		"prefix": "aryQueryDB( $tbl, $sql, $arg );",
+	"aryQueryDB($tbl, $sql, $arg);": {
+		"prefix": "aryQueryDB($tbl, $sql, $arg);",
 		"body": [
-			"aryQueryDB( $$tbl, $$sql, $$arg );"
+			"aryQueryDB($$tbl, $$sql, $$arg);"
 		],
 		"description": ""
 	},
-	"rowQueryDB( $tbl, $sql, $arg );": {
-		"prefix": "rowQueryDB( $tbl, $sql, $arg );",
+	"rowQueryDB($tbl, $sql, $arg);": {
+		"prefix": "rowQueryDB($tbl, $sql, $arg);",
 		"body": [
-			"rowQueryDB( $$tbl, $$sql, $$arg );"
+			"rowQueryDB($$tbl, $$sql, $$arg);"
 		],
 		"description": ""
 	},
-	"rsQueryDB( $tbl, $sql, $arg );": {
-		"prefix": "rsQueryDB( $tbl, $sql, $arg );",
+	"rsQueryDB($tbl, $sql, $arg);": {
+		"prefix": "rsQueryDB($tbl, $sql, $arg);",
 		"body": [
-			"rsQueryDB( $$tbl, $$sql, $$arg );"
+			"rsQueryDB($$tbl, $$sql, $$arg);"
 		],
 		"description": ""
 	},
-	"rsExecuteDB( $tbl, $sql, $arg );": {
-		"prefix": "rsExecuteDB( $tbl, $sql, $arg );",
+	"rsExecuteDB($tbl, $sql, $arg);": {
+		"prefix": "rsExecuteDB($tbl, $sql, $arg);",
 		"body": [
-			"rsExecuteDB( $$tbl, $$sql, $$arg );"
+			"rsExecuteDB($$tbl, $$sql, $$arg);"
 		],
 		"description": ""
 	},
-	"rowGetDB( $tbl, $rs )": {
-		"prefix": "rowGetDB( $tbl, $rs )",
+	"rowGetDB($tbl, $rs)": {
+		"prefix": "rowGetDB($tbl, $rs)",
 		"body": [
-			"rowGetDB( $$tbl, $$rs )"
+			"rowGetDB($$tbl, $$rs)"
 		],
 		"description": ""
 	},
-	"aryGetDB( $tbl, $rs )": {
-		"prefix": "aryGetDB( $tbl, $rs )",
+	"aryGetDB($tbl, $rs)": {
+		"prefix": "aryGetDB($tbl, $rs)",
 		"body": [
-			"aryGetDB( $$tbl, $$rs )"
+			"aryGetDB($$tbl, $$rs)"
 		],
 		"description": ""
 	},
-	"strGetSequence( $tbl )": {
-		"prefix": "strGetSequence( $tbl )",
+	"strGetSequence($tbl)": {
+		"prefix": "strGetSequence($tbl)",
 		"body": [
-			"strGetSequence( $$tbl )"
+			"strGetSequence($$tbl)"
 		],
 		"description": ""
 	},
-	"strNowFuncDB( $tbl )": {
-		"prefix": "strNowFuncDB( $tbl )",
+	"strNowFuncDB($tbl)": {
+		"prefix": "strNowFuncDB($tbl)",
 		"body": [
-			"strNowFuncDB( $$tbl )"
+			"strNowFuncDB($$tbl)"
 		],
 		"description": ""
 	},
-	"strCreateWhereIN( $ary )": {
-		"prefix": "strCreateWhereIN( $ary )",
+	"strCreateWhereIN($ary)": {
+		"prefix": "strCreateWhereIN($ary)",
 		"body": [
-			"strCreateWhereIN( $$ary )"
+			"strCreateWhereIN($$ary)"
 		],
 		"description": ""
 	},
-	"aryExplodeID( $val, $sep = ',' )": {
-		"prefix": "aryExplodeID( $val, $sep = ',' )",
+	"aryExplodeID($val, $sep = ',')": {
+		"prefix": "aryExplodeID($val, $sep = ',')",
 		"body": [
-			"aryExplodeID( $$val, $$sep = ',' )"
+			"aryExplodeID($$val, $$sep = ',')"
 		],
 		"description": ""
 	},
-	"iLimitBetween( $iVal, $iMin, $iMax, $iDefMin = NULL, $iDefMax = NULL )": {
-		"prefix": "iLimitBetween( $iVal, $iMin, $iMax, $iDefMin = NULL, $iDefMax = NULL )",
+	"iLimitBetween($iVal, $iMin, $iMax, $iDefMin = NULL, $iDefMax = NULL)": {
+		"prefix": "iLimitBetween($iVal, $iMin, $iMax, $iDefMin = NULL, $iDefMax = NULL)",
 		"body": [
-			"iLimitBetween( $$iVal, $$iMin, $$iMax, $$iDefMin = NULL, $$iDefMax = NULL )"
+			"iLimitBetween($$iVal, $$iMin, $$iMax, $$iDefMin = NULL, $$iDefMax = NULL)"
 		],
 		"description": ""
 	},
-	"strDebugVarDump(  )": {
-		"prefix": "strDebugVarDump(  )",
+	"strDebugVarDump()": {
+		"prefix": "strDebugVarDump()",
 		"body": [
-			"strDebugVarDump(  )"
+			"strDebugVarDump()"
 		],
 		"description": ""
 	},
 	
-	"offsetSet( $offset, $value )": {
-		"prefix": "offsetSet( $offset, $value )",
+	"offsetSet($offset, $value)": {
+		"prefix": "offsetSet($offset, $value)",
 		"body": [
-			"offsetSet( $$offset, $$value )"
+			"offsetSet($$offset, $$value)"
 		],
 		"description": ""
 	},
@@ -1166,283 +1175,283 @@
 		],
 		"description": ""
 	},
-	"offsetUnset( $offset )": {
-		"prefix": "offsetUnset( $offset )",
+	"offsetUnset($offset)": {
+		"prefix": "offsetUnset($offset)",
 		"body": [
-			"offsetUnset( $$offset )"
+			"offsetUnset($$offset)"
 		],
 		"description": ""
 	},
-	"offsetGet( $offset )": {
-		"prefix": "offsetGet( $offset )",
+	"offsetGet($offset)": {
+		"prefix": "offsetGet($offset)",
 		"body": [
-			"offsetGet( $$offset )"
+			"offsetGet($$offset)"
 		],
 		"description": ""
 	},
-	"colNameToVarName( $col )": {
-		"prefix": "colNameToVarName( $col )",
+	"colNameToVarName($col)": {
+		"prefix": "colNameToVarName($col)",
 		"body": [
-			"colNameToVarName( $$col )"
+			"colNameToVarName($$col)"
 		],
 		"description": ""
 	},
-	"aryGetFields( )": {
-		"prefix": "aryGetFields( )",
+	"aryGetFields()": {
+		"prefix": "aryGetFields()",
 		"body": [
-			"aryGetFields( )"
+			"aryGetFields()"
 		],
 		"description": ""
 	},
-	"strGetTableName( )": {
-		"prefix": "strGetTableName( )",
+	"strGetTableName()": {
+		"prefix": "strGetTableName()",
 		"body": [
-			"strGetTableName( )"
+			"strGetTableName()"
 		],
 		"description": ""
 	},
-	"strGetFrom( )": {
-		"prefix": "strGetFrom( )",
+	"strGetFrom()": {
+		"prefix": "strGetFrom()",
 		"body": [
-			"strGetFrom( )"
+			"strGetFrom()"
 		],
 		"description": ""
 	},
-	"strGetSequenceName( )": {
-		"prefix": "strGetSequenceName( )",
+	"strGetSequenceName()": {
+		"prefix": "strGetSequenceName()",
 		"body": [
-			"strGetSequenceName( )"
+			"strGetSequenceName()"
 		],
 		"description": ""
 	},
-	"strGetIDField( )": {
-		"prefix": "strGetIDField( )",
+	"strGetIDField()": {
+		"prefix": "strGetIDField()",
 		"body": [
-			"strGetIDField( )"
+			"strGetIDField()"
 		],
 		"description": ""
 	},
-	"strGetIDMember( )": {
-		"prefix": "strGetIDMember( )",
+	"strGetIDMember()": {
+		"prefix": "strGetIDMember()",
 		"body": [
-			"strGetIDMember( )"
+			"strGetIDMember()"
 		],
 		"description": ""
 	},
-	"strGetSessionKey( )": {
-		"prefix": "strGetSessionKey( )",
+	"strGetSessionKey()": {
+		"prefix": "strGetSessionKey()",
 		"body": [
-			"strGetSessionKey( )"
+			"strGetSessionKey()"
 		],
 		"description": ""
 	},
-	"strCreateID( )": {
-		"prefix": "strCreateID( )",
+	"strCreateID()": {
+		"prefix": "strCreateID()",
 		"body": [
-			"strCreateID( )"
+			"strCreateID()"
 		],
 		"description": ""
 	},
-	"strGetID( )": {
-		"prefix": "strGetID( )",
+	"strGetID()": {
+		"prefix": "strGetID()",
 		"body": [
-			"strGetID( )"
+			"strGetID()"
 		],
 		"description": ""
 	},
-	"SetID( $strID )": {
-		"prefix": "SetID( $strID )",
+	"SetID($strID)": {
+		"prefix": "SetID($strID)",
 		"body": [
-			"SetID( $$strID )"
+			"SetID($$strID)"
 		],
 		"description": ""
 	},
-	"strGetFields( )": {
-		"prefix": "strGetFields( )",
+	"strGetFields()": {
+		"prefix": "strGetFields()",
 		"body": [
-			"strGetFields( )"
+			"strGetFields()"
 		],
 		"description": ""
 	},
-	"Init( )": {
-		"prefix": "Init( )",
+	"Init()": {
+		"prefix": "Init()",
 		"body": [
-			"Init( )"
+			"Init()"
 		],
 		"description": ""
 	},
-	"strSetID( $strID = NULL )": {
-		"prefix": "strSetID( $strID = NULL )",
+	"strSetID($strID = NULL)": {
+		"prefix": "strSetID($strID = NULL)",
 		"body": [
-			"strSetID( $$strID = NULL )"
+			"strSetID($$strID = NULL)"
 		],
 		"description": ""
 	},
-	"blLoadFromID( $strID, $blLock = FALSE )": {
-		"prefix": "blLoadFromID( $strID, $blLock = FALSE )",
+	"blLoadFromID($strID, $blLock = FALSE)": {
+		"prefix": "blLoadFromID($strID, $blLock = FALSE)",
 		"body": [
-			"blLoadFromID( $$strID, $$blLock = FALSE )"
+			"blLoadFromID($$strID, $$blLock = FALSE)"
 		],
 		"description": ""
 	},
-	"blLoadFromDB( $strWhere, $aryArgs, $strOther = '' )": {
-		"prefix": "blLoadFromDB( $strWhere, $aryArgs, $strOther = '' )",
+	"blLoadFromDB($strWhere, $aryArgs, $strOther = '')": {
+		"prefix": "blLoadFromDB($strWhere, $aryArgs, $strOther = '')",
 		"body": [
-			"blLoadFromDB( $$strWhere, $$aryArgs, $$strOther = '' )"
+			"blLoadFromDB($$strWhere, $$aryArgs, $$strOther = '')"
 		],
 		"description": ""
 	},
-	"rowLoadFromDB( $strWhere, $aryArgs, $strOther = '' )": {
-		"prefix": "rowLoadFromDB( $strWhere, $aryArgs, $strOther = '' )",
+	"rowLoadFromDB($strWhere, $aryArgs, $strOther = '')": {
+		"prefix": "rowLoadFromDB($strWhere, $aryArgs, $strOther = '')",
 		"body": [
-			"rowLoadFromDB( $$strWhere, $$aryArgs, $$strOther = '' )"
+			"rowLoadFromDB($$strWhere, $$aryArgs, $$strOther = '')"
 		],
 		"description": ""
 	},
-	"aryLoadFromDB( $strWhere, $aryArgs, $strOther = '' )": {
-		"prefix": "aryLoadFromDB( $strWhere, $aryArgs, $strOther = '' )",
+	"aryLoadFromDB($strWhere, $aryArgs, $strOther = '')": {
+		"prefix": "aryLoadFromDB($strWhere, $aryArgs, $strOther = '')",
 		"body": [
-			"aryLoadFromDB( $$strWhere, $$aryArgs, $$strOther = '' )"
+			"aryLoadFromDB($$strWhere, $$aryArgs, $$strOther = '')"
 		],
 		"description": ""
 	},
-	"SaveToDB( )": {
-		"prefix": "SaveToDB( )",
+	"SaveToDB()": {
+		"prefix": "SaveToDB()",
 		"body": [
-			"SaveToDB( )"
+			"SaveToDB()"
 		],
 		"description": ""
 	},
-	"InsertToDB( )": {
-		"prefix": "InsertToDB( )",
+	"InsertToDB()": {
+		"prefix": "InsertToDB()",
 		"body": [
-			"InsertToDB( )"
+			"InsertToDB()"
 		],
 		"description": ""
 	},
-	"UpdateToDB( )": {
-		"prefix": "UpdateToDB( )",
+	"UpdateToDB()": {
+		"prefix": "UpdateToDB()",
 		"body": [
-			"UpdateToDB( )"
+			"UpdateToDB()"
 		],
 		"description": ""
 	},
-	"LoadFromArray( $ary )": {
-		"prefix": "LoadFromArray( $ary )",
+	"LoadFromArray($ary)": {
+		"prefix": "LoadFromArray($ary)",
 		"body": [
-			"LoadFromArray( $$ary )"
+			"LoadFromArray($$ary)"
 		],
 		"description": ""
 	},
-	"LoadFromArray2( $ary )": {
-		"prefix": "LoadFromArray2( $ary )",
+	"LoadFromArray2($ary)": {
+		"prefix": "LoadFromArray2($ary)",
 		"body": [
-			"LoadFromArray2( $$ary )"
+			"LoadFromArray2($$ary)"
 		],
 		"description": ""
 	},
-	"arySaveToArray( )": {
-		"prefix": "arySaveToArray( )",
+	"arySaveToArray()": {
+		"prefix": "arySaveToArray()",
 		"body": [
-			"arySaveToArray( )"
+			"arySaveToArray()"
 		],
 		"description": ""
 	},
-	"SaveToSession( )": {
-		"prefix": "SaveToSession( )",
+	"SaveToSession()": {
+		"prefix": "SaveToSession()",
 		"body": [
-			"SaveToSession( )"
+			"SaveToSession()"
 		],
 		"description": ""
 	},
-	"blLoadFromSession( )": {
-		"prefix": "blLoadFromSession( )",
+	"blLoadFromSession()": {
+		"prefix": "blLoadFromSession()",
 		"body": [
-			"blLoadFromSession( )"
+			"blLoadFromSession()"
 		],
 		"description": ""
 	},
-	"ClearSession( )": {
-		"prefix": "ClearSession( )",
+	"ClearSession()": {
+		"prefix": "ClearSession()",
 		"body": [
-			"ClearSession( )"
+			"ClearSession()"
 		],
 		"description": ""
 	},
-	"isExistFromID( $strID )": {
-		"prefix": "isExistFromID( $strID )",
+	"isExistFromID($strID)": {
+		"prefix": "isExistFromID($strID)",
 		"body": [
-			"isExistFromID( $$strID )"
+			"isExistFromID($$strID)"
 		],
 		"description": ""
 	},
-	"fpStrToTempfile( $strData )": {
-		"prefix": "fpStrToTempfile( $strData )",
+	"fpStrToTempfile($strData)": {
+		"prefix": "fpStrToTempfile($strData)",
 		"body": [
-			"fpStrToTempfile( $$strData )"
+			"fpStrToTempfile($$strData)"
 		],
 		"description": ""
 	},
-	"mergeArray( )": {
-		"prefix": "mergeArray( )",
+	"mergeArray()": {
+		"prefix": "mergeArray()",
 		"body": [
-			"mergeArray( )"
+			"mergeArray()"
 		],
 		"description": ""
 	},
-	"getFields( $names = NULL )": {
-		"prefix": "getFields( $names = NULL )",
+	"getFields($names = NULL)": {
+		"prefix": "getFields($names = NULL)",
 		"body": [
-			"getFields( $$names = NULL )"
+			"getFields($$names = NULL)"
 		],
 		"description": ""
 	},
-	"getFieldNames( $sep = NULL )": {
-		"prefix": "getFieldNames( $sep = NULL )",
+	"getFieldNames($sep = NULL)": {
+		"prefix": "getFieldNames($sep = NULL)",
 		"body": [
-			"getFieldNames( $$sep = NULL )"
+			"getFieldNames($$sep = NULL)"
 		],
 		"description": ""
 	},
-	"loadFromDB( $where, $args, $other )": {
-		"prefix": "loadFromDB( $where, $args, $other )",
+	"loadFromDB($where, $args, $other)": {
+		"prefix": "loadFromDB($where, $args, $other)",
 		"body": [
-			"loadFromDB( $$where, $$args, $$other )"
+			"loadFromDB($$where, $$args, $$other)"
 		],
 		"description": ""
 	},
-	"getColArray( $rows, $col, $key = NULL )": {
-		"prefix": "getColArray( $rows, $col, $key = NULL )",
+	"getColArray($rows, $col, $key = NULL)": {
+		"prefix": "getColArray($rows, $col, $key = NULL)",
 		"body": [
-			"getColArray( $$rows, $$col, $$key = NULL )"
+			"getColArray($$rows, $$col, $$key = NULL)"
 		],
 		"description": ""
 	},
-	"getDispOption( $options, $val )": {
-		"prefix": "getDispOption( $options, $val )",
+	"getDispOption($options, $val)": {
+		"prefix": "getDispOption($options, $val)",
 		"body": [
-			"getDispOption( $$options, $$val )"
+			"getDispOption($$options, $$val)"
 		],
 		"description": ""
 	},
-	"getDispStatus( $val = NULL )": {
-		"prefix": "getDispStatus( $val = NULL )",
+	"getDispStatus($val = NULL)": {
+		"prefix": "getDispStatus($val = NULL)",
 		"body": [
-			"getDispStatus( $$val = NULL )"
+			"getDispStatus($$val = NULL)"
 		],
 		"description": ""
 	},
-	"loadColumn( $col, $id, $default = '' )": {
-		"prefix": "loadColumn( $col, $id, $default = '' )",
+	"loadColumn($col, $id, $default = '')": {
+		"prefix": "loadColumn($col, $id, $default = '')",
 		"body": [
-			"loadColumn( $$col, $$id, $$default = '' )"
+			"loadColumn($$col, $$id, $$default = '')"
 		],
 		"description": ""
 	},
-	"UsortCallbackColumnPriority( $a, $b )": {
-		"prefix": "UsortCallbackColumnPriority( $a, $b )",
+	"UsortCallbackColumnPriority($a, $b)": {
+		"prefix": "UsortCallbackColumnPriority($a, $b)",
 		"body": [
-			"UsortCallbackColumnPriority( $$a, $$b )"
+			"UsortCallbackColumnPriority($$a, $$b)"
 		],
 		"description": ""
 	},
@@ -1456,9 +1465,9 @@
 			"where  = ?",
 			"_SQL_;",
 			"\t\t$$arg = [];",
-			"\t\t$$row = rowQueryDB( $$tbl, $$sql, $$arg );",
-			"\t\tif ( empty($$row) ){",
-			"\t\t\t$$this->AddError( '' )",";",
+			"\t\t$$row = rowQueryDB($$tbl, $$sql, $$arg);",
+			"\t\tif (empty($$row)){",
+			"\t\t\t$$this->AddError('')",";",
 			"\t\t\treturn;",
 			"\t\t}",
 			""
@@ -1475,10 +1484,10 @@
 			" * @param  string \\$value name属性値",
 			" * @return boolean コマンドディスパッチを FAILED:続行, SUCCEEDED:終了",
 			" */",
-			" protected function on${2:Submit}( \\$value )",
+			" protected function on${2:Submit}(\\$value)",
 			" {",
 			"\t// ページ遷移",
-			"\t\\$this->PageRedirect( '' );",
+			"\t\\$this->PageRedirect('');",
 			"\t//",
 			"\treturn SUCCEEDED;",
 			" }"
@@ -1490,14 +1499,14 @@
 	"D_START_DT": { "prefix": "D_START_DT", "body": ["D_START_DT"]},
 	"D_END_DT":   { "prefix": "D_END_DT"  , "body": ["D_END_DT"]},
 
-	"ACCOUNT.C_CLASS"          : {"prefix": "ACCOUNT.C_CLASS"          , "body": ["ACCOUNT.C_CLASS"          ], "description": "CHAR   (  3) 会員区分"        },
-	"ACCOUNT.C_STATUS"         : {"prefix": "ACCOUNT.C_STATUS"         , "body": ["ACCOUNT.C_STATUS"         ], "description": "CHAR   (  3) 状態"            },
-	"ACCOUNT.V_ACCOUNT"        : {"prefix": "ACCOUNT.V_ACCOUNT"        , "body": ["ACCOUNT.V_ACCOUNT"        ], "description": "VARCHAR( 64) アカウント名"    },
-	"ACCOUNT.V_PASSWORD"       : {"prefix": "ACCOUNT.V_PASSWORD"       , "body": ["ACCOUNT.V_PASSWORD"       ], "description": "VARCHAR( 64) パスワード"      },
-	"ACCOUNT.D_MOD_PASSWORD_DT": {"prefix": "ACCOUNT.D_MOD_PASSWORD_DT", "body": ["ACCOUNT.D_MOD_PASSWORD_DT"], "description": "CHAR   ( 14) パスワード変更日"},
-	"ACCOUNT.C_REGIST_CLASS"   : {"prefix": "ACCOUNT.C_REGIST_CLASS"   , "body": ["ACCOUNT.C_REGIST_CLASS"   ], "description": "CHAR   (  3) 登録方法区分"    },
-	"ACCOUNT.D_ENTRY_DT"       : {"prefix": "ACCOUNT.D_ENTRY_DT"       , "body": ["ACCOUNT.D_ENTRY_DT"       ], "description": "CHAR   ( 14) 入会年月日"      },
-	"ACCOUNT.D_WITHDRAW_DT"    : {"prefix": "ACCOUNT.D_WITHDRAW_DT"    , "body": ["ACCOUNT.D_WITHDRAW_DT"    ], "description": "CHAR   ( 14) 退会年月日"      },
+	"ACCOUNT.C_CLASS"          : {"prefix": "ACCOUNT.C_CLASS"          , "body": ["ACCOUNT.C_CLASS"          ], "description": "CHAR   ( 3) 会員区分"        },
+	"ACCOUNT.C_STATUS"         : {"prefix": "ACCOUNT.C_STATUS"         , "body": ["ACCOUNT.C_STATUS"         ], "description": "CHAR   ( 3) 状態"            },
+	"ACCOUNT.V_ACCOUNT"        : {"prefix": "ACCOUNT.V_ACCOUNT"        , "body": ["ACCOUNT.V_ACCOUNT"        ], "description": "VARCHAR(64) アカウント名"    },
+	"ACCOUNT.V_PASSWORD"       : {"prefix": "ACCOUNT.V_PASSWORD"       , "body": ["ACCOUNT.V_PASSWORD"       ], "description": "VARCHAR(64) パスワード"      },
+	"ACCOUNT.D_MOD_PASSWORD_DT": {"prefix": "ACCOUNT.D_MOD_PASSWORD_DT", "body": ["ACCOUNT.D_MOD_PASSWORD_DT"], "description": "CHAR   (14) パスワード変更日"},
+	"ACCOUNT.C_REGIST_CLASS"   : {"prefix": "ACCOUNT.C_REGIST_CLASS"   , "body": ["ACCOUNT.C_REGIST_CLASS"   ], "description": "CHAR   ( 3) 登録方法区分"    },
+	"ACCOUNT.D_ENTRY_DT"       : {"prefix": "ACCOUNT.D_ENTRY_DT"       , "body": ["ACCOUNT.D_ENTRY_DT"       ], "description": "CHAR   (14) 入会年月日"      },
+	"ACCOUNT.D_WITHDRAW_DT"    : {"prefix": "ACCOUNT.D_WITHDRAW_DT"    , "body": ["ACCOUNT.D_WITHDRAW_DT"    ], "description": "CHAR   (14) 退会年月日"      },
 	"ACCOUNT.V_COMMENT"        : {"prefix": "ACCOUNT.V_COMMENT"        , "body": ["ACCOUNT.V_COMMENT"        ], "description": "VARCHAR(255) コメント"        }
 }
 
