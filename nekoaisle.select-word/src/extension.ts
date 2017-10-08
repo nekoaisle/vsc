@@ -43,24 +43,36 @@ class OpenPreviousTab extends Extension {
 	 */
 	public exec() {
 		let editor = vscode.window.activeTextEditor;
+		let i = 0;
 
+		let sels: vscode.Selection[] = [];
+		for (let selection of editor.selections) {
+			let sel = this.job(editor, selection);
+			if (sel) {
+				sels.push(sel);
+			}
+		}
+		vscode.window.activeTextEditor.selections = sels;
+	}
+
+	protected job(editor: vscode.TextEditor, selection: vscode.Selection): vscode.Selection {
 		// 範囲選択されている？
-		if (editor.selection.isEmpty) {
+		if (selection.isEmpty) {
 			// 範囲選択されていないのでカーソル位置の単語を範囲選択
 			// カーソル位置の単語の範囲を取得
-			let range = Util.getCursorWordRange(editor);
+			let range = Util.getCursorWordRange(editor, selection.active);
 			// 現在の選択範囲と等しくないので単語を選択
-			editor.selection = new vscode.Selection(range.start, range.end);
+			return new vscode.Selection(range.start, range.end);
 		} else {
 			// 範囲選択されているときは範囲を拡大
 			try {
-				let sel = editor.selection;
-				let range = new vscode.Range(sel.start.translate(0, -1), sel.end.translate(0, 1));
-				editor.selection = new vscode.Selection(range.start, range.end);
+				let range = new vscode.Range(selection.start.translate(0, -1), selection.end.translate(0, 1));
+				return new vscode.Selection(range.start, range.end);
 			} catch (err) {
 				// 範囲を広げられなかった
+				return null;
 			}
 		}
-		return;
 	}
+
 }

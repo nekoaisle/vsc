@@ -1,6 +1,6 @@
 'use strict';
 import * as vscode from 'vscode';
-import {Util, Extension} from './nekoaisle.lib/nekoaisle';
+import {Util, Extension, EditReplace} from './nekoaisle.lib/nekoaisle';
 
 /**
  * エクステンション活性化
