@@ -16,8 +16,6 @@ exports.activate = activate;
 function deactivate() {
 }
 exports.deactivate = deactivate;
-;
-;
 /**
  * エクステンション本体
  */
@@ -128,48 +126,6 @@ class MyExtention extends nekoaisle_1.Extension {
         }
         // 編集実行
         this.syncReplace(editor, ary);
-    }
-    /**
-     * 複数挿入
-     * @param editor 対象エディター
-     * @param pos 編集座標
-     * @param str 挿入文字列
-     * @param ary 編集情報配列
-     */
-    syncInsert(editor, ary) {
-        // 非同期編集を実行
-        let i = 0;
-        let e = (pos, str) => {
-            // 大文字・小文字変換した文字と置換
-            editor.edit(edit => edit.insert(pos, str)).then((val) => {
-                if (val) {
-                    ++i;
-                    e(ary[i].pos, ary[i].str);
-                }
-            });
-        };
-        e(ary[i].pos, ary[i].str);
-    }
-    /**
-     * 複数置換
-     * @param editor 対象エディター
-     * @param pos 編集座標
-     * @param str 挿入文字列
-     * @param ary 編集情報配列
-     */
-    syncReplace(editor, ary) {
-        // 非同期編集を実行
-        let i = 0;
-        let e = (sel, str) => {
-            // 大文字・小文字変換した文字と置換
-            editor.edit(edit => edit.replace(sel, str)).then((val) => {
-                if (val) {
-                    ++i;
-                    e(ary[i].range, ary[i].str);
-                }
-            });
-        };
-        e(ary[i].range, ary[i].str);
     }
 }
 //# sourceMappingURL=extension.js.map

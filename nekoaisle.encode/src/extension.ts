@@ -229,6 +229,9 @@ class MyExtention extends Extension {
 			{ label: '"', description: '" を \\" にする' },
 			{ label: '<br>', description: '\\n を <br /> にする' },
 			{ label: 'UNIXTIME', description: '日時文字列をUNIXTIMEに変換' },
+			{ label: 'ASCII', description: '文字をASCIIコードに変換' },
+			{ label: 'Camel', description: 'キャメルケースに変換' },
+			{ label: 'Snake', description: 'スネークケースに変換' },
 			
 			{ label: "''", description: '\' で単語または選択範囲を括る/外す' },
 			{ label: '""', description: '" で単語または選択範囲を括る/外す' },
@@ -288,24 +291,74 @@ class MyExtention extends Extension {
 			});
 	}
 
+	/**
+	 * すべてのカーソル位置をエンコードする
+	 * @param type 変換名
+	 * @param editor 対象エディター
+	 */
 	protected encodeJob(type: string, editor: vscode.TextEditor): void {
-		let range = editor.selection;
-		let str: string;
-		if (!range.isEmpty) {
-			// 範囲選択されているのでそれを対象とする
-			str = editor.document.getText(range);
-		} else {
-			// 範囲選択されていないのでクリップボード
-			str = Util.getClipboard();
+		let datas: EditReplace[] = [];
+		for (let range of editor.selections) {
+			let str: string;
+			if (!range.isEmpty) {
+				// 範囲選択されているのでそれを対象とする
+				str = editor.document.getText(range);
+			} else {
+				// 範囲選択されていないのでクリップボード
+				str = Util.getClipboard();
+			}
+
+			// エンコードする
+			str = this.encode(str, type, editor);
+
+			// 処理を配列に保存
+			datas.push({
+				range: range,
+				str: str,
+			});
 		}
 
-		// エンコードする
-		str = this.encode(str, type, editor);
-
 		// 結果に置換
-		editor.edit(edit => edit.replace(editor.selection, str));
+		this.syncReplace(editor, datas);
 	}
 
+	/**
+	 * すべてのカーソル位置をデコードする
+	 * @param type 変換名
+	 * @param editor 対象エディター
+	 */
+	protected decodeJob(type: string, editor: vscode.TextEditor): void {
+		let datas: EditReplace[] = [];
+		for (let range of editor.selections) {
+			let str: string;
+			if (!range.isEmpty) {
+				// 範囲選択されているのでそれを対象とする
+				str = editor.document.getText(range);
+			} else {
+				// 範囲選択されていないのでクリップボード
+				str = Util.getClipboard();
+			}
+
+			// デコードする
+			str =this.decode(str, type, editor);
+
+			// 処理を配列に保存
+			datas.push({
+				range: range,
+				str: str,
+			});
+		}
+		
+		// 結果に置換
+		this.syncReplace(editor, datas);
+	}
+
+	/**
+	 * 指定文字列をエンコードする
+	 * @param str 対象文字列
+	 * @param type 変換方法
+	 * @param editor 対象エディター
+	 */
 	protected encode(str: string, type: string, editor: vscode.TextEditor): string {
 		// 変換
 		switch (type) {
@@ -343,29 +396,46 @@ class MyExtention extends Extension {
 				let ux = Date.parse(str) / 1000;
 				str = '' + ux;
 				break;
+			}
+			// ASCIIコードに変換	
+			case 'ASCII': {
+				let a: string[] = [];
+				for (let i = 0; i < str.length; ++ i) {
+					a.push("0x" + str.charCodeAt(i).toString(16));
+				}
+				str = a.join(', ');
+				break;
+			}
+			// キャメルケースに変換	
+			case 'Camel': {
+				let a: string[] = [];
+				for (let s of str.split("_")) {
+					a.push(s.substr(0, 1).toLocaleUpperCase() + s.substr(1).toLocaleLowerCase());
+				}
+				str = a.join('');
+				break;
+			}
+			// スネークケースに変換
+			case 'Snake': {
+				let a: string[] = [];
+				let re = /[A-Z][^A-Z]*/g;
+				let m;
+				while (m = re.exec(str)) {
+					a.push(m[0].toLocaleLowerCase());
+				}
+				str = a.join('_');
+				break;
 			}	
 		}
 		return str;
 	}
 
-	protected decodeJob(type: string, editor: vscode.TextEditor): void {
-		let range = editor.selection;
-		let str: string;
-		if (!range.isEmpty) {
-			// 範囲選択されているのでそれを対象とする
-			str = editor.document.getText(range);
-		} else {
-			// 範囲選択されていないのでクリップボード
-			str = Util.getClipboard();
-		}
-
-		// デコードする
-		str =this.decode(str, type, editor);
-		
-		// 結果に置換
-		editor.edit(edit => edit.replace(editor.selection, str));
-	}
-
+	/**
+	 * 指定文字列をデコードする
+	 * @param str 対象文字列
+	 * @param type 変換方法
+	 * @param editor 対象エディター
+	 */
 	protected decode(str: string, type: string, editor: vscode.TextEditor): string {
 		// 変換
 		switch (type) {
