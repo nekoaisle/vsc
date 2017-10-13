@@ -1,7 +1,7 @@
 <?php /* nekoaisle.insert-code delete line */
 /**
  * 消滅
-**/
+ */
 public function __destruct(  )
 {
 	$1

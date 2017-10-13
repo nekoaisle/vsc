@@ -5,7 +5,7 @@
  * @param  
  * @return 
  * @throw  
-**/
+ */
 function ${2:関数名}( )
 {
 	return;
