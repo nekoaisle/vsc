@@ -213,6 +213,41 @@
 		"description": "@param"
 	},
 
+	"getLinkInfo": {
+		"prefix": "getLinkInfo",
+		"body": [
+			"// ",
+			"$$ary['${1:COMMAND}'] = [",
+			"\t'Handler'    => 'on$1',",
+			"\t'Permission' => PERMISSION_${2|READ,MODIFY,DELETE|},",
+			"\t// 'RightCommand' => '',",
+			"\t// 'RightValue'   => NULL,",
+			"\t'LeftCommand' => '!@$1 delete',",
+			"\t'LeftValue'   => TRUE,",
+			"];"
+		],
+		"description": "BimmsPagePC::getLinkInfo() の要素を追加"
+	},
+
+	"CCamSQL": {
+		"prefix": "sql = new CCamSQL();",
+		"body": [
+			"$$sql = new CCamSQL();",
+			"$$sql->AddFrom('');",
+			"$$sql->AddField('', '');"
+		],
+		"description": "CCamSQL 使用時の雛形"
+	},
+
+	"$this->m_aryArgs": {
+		"prefix": "this->m_aryArgs",
+		"body": [
+			"$$this-->m_aryArgs$1"
+		],
+		"description": "$this-m_aryArgs$1"
+	},
+	
+
 	"$_SERVER['DOCUMENT_ROOT']": {
 		"prefix": "_SERVER['DOCUMENT_ROOT']",
 		"body": [

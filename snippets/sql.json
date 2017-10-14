@@ -14,12 +14,31 @@
 		"description": "V_ACCOUNT_ID    VARCHAR( 64) NOT NULL DEFAULT '' -- V_ACCOUNT.V_ID"
 	},
 	"CHAR": {
-		"prefix": "CHAR   (  3) NOT NULL DEFAULT '' --",
+		"prefix": "CHAR   (  3) NOT NULL DEFAULT '' -- ",
 		"body": [
-			"CHAR   (  3) NOT NULL DEFAULT '' -- $1"
+			"CHAR   (${1:  3}) NOT NULL DEFAULT '' -- $2"
 		],
 		"description": "CHAR   (  3) NOT NULL DEFAULT '' -- "
 	},
-	
-
+	"VARCHAR( 64) NOT NULL DEFAULT '' --": {
+		"prefix": "VARCHAR( 64) NOT NULL DEFAULT '' --",
+		"body": [
+			"VARCHAR(${1: 64}) NOT NULL DEFAULT '' -- $2"
+		],
+		"description": "VARCHAR( 64) NOT NULL DEFAULT '' --"
+	},
+	"VARCHAR(255) NOT NULL DEFAULT '' -- ": {
+		"prefix": "VARCHAR(255) NOT NULL DEFAULT '' -- ",
+		"body": [
+			"VARCHAR(${1:255}) NOT NULL DEFAULT '' -- $2"
+		],
+		"description": "VARCHAR(255) NOT NULL DEFAULT '' -- "
+	},
+	"NUMERIC(  9) NOT NULL DEFAULT 0  --": {
+		"prefix": "NUMERIC(  9) NOT NULL DEFAULT 0  -- ",
+		"body": [
+			"NUMERIC(  9) NOT NULL DEFAULT 0  -- $1"
+		],
+		"description": "NUMERIC(  9) NOT NULL DEFAULT 0  --"
+	}
 }

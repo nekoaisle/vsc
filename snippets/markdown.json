@@ -19,7 +19,7 @@
 		"body": [
 			"`kiya@kiya-ubuntu:~$` "
 		],
-		"description": "Log output to console"
+		"description": "`kiya@kiya-ubuntu:~$` "
 	},
 	"apt-get install": {
 		"prefix": "sudo apt-get",

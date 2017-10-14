@@ -464,121 +464,121 @@ __USAGE__;
 		$temple = array();
 		$temple['V_ID'] = <<<_EOL_
 			'V_ID' => [ 
-				  'CLASS'   => 'string'
-				, 'TAG'     => 'input'
-				, 'TYPE'    => 'text'
-				, 'DEFAULT' => ''
-				, 'TITLE'   => 'ID'
-				, 'LESS'    => TRUE
-				, 'MAXLEN'  => 64
-				, 'ATTRIB'  => 'size="48"'
-				, 'search'  => 'like'
-			]
+				'CLASS'   => 'string',
+				'TAG'     => 'input',
+				'TYPE'    => 'text',
+				'DEFAULT' => '',
+				'TITLE'   => 'ID',
+				'LESS'    => TRUE,
+				'MAXLEN'  => 64,
+				'ATTRIB'  => 'size="48"',
+				'search'  => 'like',
+			],
 _EOL_;
 	$temple['C_STATUS'] = <<<_EOL_
 			'C_STATUS' => [ 
-				  'CLASS'   => 'string'
-				, 'TAG'     => 'select'
-				, 'DEFAULT' => ''
-				, 'TITLE'   => '状態'
-				, 'MAXLEN'  =>   3
-				, 'LESS'    => TRUE
-				, 'OPTION'  => array( ''=>'' )
-				, 'search'  => 'status'
-			]
+				'CLASS'   => 'string',
+				'TAG'     => 'select',
+				'DEFAULT' => '',
+				'TITLE'   => '状態',
+				'MAXLEN'  =>   3,
+				'LESS'    => TRUE,
+				'OPTION'  => array( ''=>'' ),
+				'search'  => 'status',
+			],
 _EOL_;
 	$temple['NUMERIC'] = <<<_EOL_
 			'@@name@@' => [
-				  'CLASS'   => 'number'
-				, 'TAG'     => 'input'
-				, 'TYPE'    => 'text'
-				, 'DEFAULT' => @@default@@
-				, 'TITLE'   => '@@title@@'
-				, 'LESS'    => FALSE
-				, 'MINNUM'  => 0
-				, 'MAXNUM'  => 9999999
-				, 'search'  => 'like'
-			]
+				'CLASS'   => 'number',
+				'TAG'     => 'input',
+				'TYPE'    => 'text',
+				'DEFAULT' => @@default@@,
+				'TITLE'   => '@@title@@',
+				'LESS'    => FALSE,
+				'MINNUM'  => 0,
+				'MAXNUM'  => 9999999,
+				'search'  => 'like',
+			],
 _EOL_;
 	$temple['BLOB'] = <<<_EOL_
 			'@@name@@' => [
-				  'CLASS'   => 'string'
-				, 'TAG'     => 'textarea'
-				, 'DEFAULT' => @@default@@
-				, 'TITLE'   => '@@title@@'
-				, 'LESS'    => FALSE
-				, 'MAXLEN'  => 4096
-				, 'ATTRIB'  => 'rows="5"'
-				, 'CTRL'    => "\t\r\n"
-				, 'HTML'    => TRUE			// <>"' を許可
-				, 'search'  => 'like'
-			]
+				'CLASS'   => 'string',
+				'TAG'     => 'textarea',
+				'DEFAULT' => @@default@@,
+				'TITLE'   => '@@title@@',
+				'LESS'    => FALSE,
+				'MAXLEN'  => 4096,
+				'ATTRIB'  => 'rows="5"',
+				'CTRL'    => "\t\r\n",
+				'HTML'    => TRUE,			// <>"' を許可
+				'search'  => 'like',
+			],
 _EOL_;
 	$temple['VARCHAR'] = <<<_EOL_
 			'@@name@@' => [
-				  'CLASS'   => 'string'
-				, 'TAG'     => 'input'
-				, 'TYPE'    => 'text'
-				, 'DEFAULT' => @@default@@
-				, 'TITLE'   => '@@title@@'
-				, 'LESS'    => FALSE
-				, 'search'  => 'like'
-			]
+				'CLASS'   => 'string',
+				'TAG'     => 'input',
+				'TYPE'    => 'text',
+				'DEFAULT' => @@default@@,
+				'TITLE'   => '@@title@@',
+				'LESS'    => FALSE,
+				'search'  => 'like',
+			],
 _EOL_;
 	$temple['CHAR'] = <<<_EOL_
 			'@@name@@' => [
-				  'CLASS'   => 'string'
-				, 'TAG'     => 'select'
-				, 'DEFAULT' => @@default@@
-				, 'TITLE'   => '@@title@@'
-				, 'MAXLEN'  =>   3
-				, 'LESS'    => TRUE
-				, 'OPTION'  => array( ''=>'' )
-				, 'search'  => 'status'
-			]
+				'CLASS'   => 'string',
+				'TAG'     => 'select',
+				'DEFAULT' => @@default@@,
+				'TITLE'   => '@@title@@',
+				'MAXLEN'  =>   3,
+				'LESS'    => TRUE,
+				'OPTION'  => [''=>''],
+				'search'  => 'status',
+			],
 _EOL_;
 	$temple['DATE'] = <<<_EOL_
 			'@@name@@' => [
-				  'CLASS'   => 'date'
-				, 'TAG'     => 'input'
-				, 'TYPE'    => 'text'
-				, 'DEFAULT' => ''
-				, 'TITLE'   => '@@title@@(最小)'
-				, 'DTFMT'   => 'YmdHis'
-				, 'DSPFMT'  => 'Y/m/d H:i:s'
-				, 'LESS'    => TRUE
-				, 'ATTRIB'  => 'data-cpss="datetime"'
-				, 'search'  => 'between @@name@@_END'
-				, 'head'    => '開始日時'
-				, 'style'   => 'width:12em;'
+				'CLASS'   => 'date',
+				'TAG'     => 'input',
+				'TYPE'    => 'text',
+				'DEFAULT' => '',
+				'TITLE'   => '@@title@@(最小)',
+				'DTFMT'   => 'YmdHis',
+				'DSPFMT'  => 'Y/m/d H:i:s',
+				'LESS'    => TRUE,
+				'ATTRIB'  => 'data-cpss="datetime"',
+				'search'  => 'between @@name@@_END',
+				'head'    => '開始日時',
+				'style'   => 'width:12em;',
 			],
 			'@@name@@' => [
-				  'CLASS'   => 'date'
-				, 'TAG'     => 'input'
-				, 'TYPE'    => 'text'
-				, 'DEFAULT' => ''
-				, 'TITLE'   => '@@title@@(最大)'
-				, 'DTFMT'   => 'YmdHis'
-				, 'DSPFMT'  => 'Y/m/d H:i:s'
-				, 'LESS'    => TRUE
-				, 'ATTRIB'  => 'data-cpss="datetime"'
-				, 'search'  => 'between'
-				, 'combine' => TRUE
-				, 'style'   => 'width:12em;'
-				, 'prefix'  => ' ～ '
-			]
+				'CLASS'   => 'date',
+				'TAG'     => 'input',
+				'TYPE'    => 'text',
+				'DEFAULT' => '',
+				'TITLE'   => '@@title@@(最大)',
+				'DTFMT'   => 'YmdHis',
+				'DSPFMT'  => 'Y/m/d H:i:s',
+				'LESS'    => TRUE,
+				'ATTRIB'  => 'data-cpss="datetime"',
+				'search'  => 'between',
+				'combine' => TRUE,
+				'style'   => 'width:12em;',
+				'prefix'  => ' ～ ',
+			],
 _EOL_;
 
 	/*     記述例
 	//@@row_form_temple NUMERIC {
 				'@@name@@'      => [ 
-					  'CLASS'   => 'string'
-					, 'TAG'     => 'input'
-					, 'TYPE'    => 'text'
-					, 'DEFAULT' => 848635851342 
-					, 'TITLE'   => '@@title@@'              
-					, 'MAXLEN'  => 19
-					, 'ACCEPT'  => '0-9'
+					'CLASS'   => 'string',
+					'TAG'     => 'input',
+					'TYPE'    => 'text',
+					'DEFAULT' => 848635851342 ,
+					'TITLE'   => '@@title@@',
+					'MAXLEN'  => 19,
+					'ACCEPT'  => '0-9',
 				],
 	//}@@
 	*/
@@ -593,7 +593,6 @@ _EOL_;
 		;
 		if ( preg_match_all( $re, $template, $m, PREG_SET_ORDER ) >= 1 ) {		
 			// テンプレートを取得
-			unset( $m[0] );
 			foreach ( $m as $p ) {
 				$temple[$p[1]] = $p[2];
 			}
@@ -765,67 +764,67 @@ _EOL_;
 		$temple = array();
 		$temple['V_ID'] = <<<_EOL_
 			'V_ID' => [ 
-				  'CLASS'   => 'string'
-				, 'TAG'     => 'static'
-				, 'DEFAULT' => ''
-				, 'TITLE'   => 'ID'
-				, 'LESS'    => TRUE
-				, 'MAXLEN'  => 64
-				, 'ATTRIB'  => 'size="48"'
+				'CLASS'   => 'string',
+				'TAG'     => 'static',
+				'DEFAULT' => '',
+				'TITLE'   => 'ID',
+				'LESS'    => TRUE,
+				'MAXLEN'  => 64,
+				'ATTRIB'  => 'size="48"',
 			]
 _EOL_;
 	$temple['C_STATUS'] = <<<_EOL_
 			'C_STATUS' => [ 
-				  'CLASS'   => 'string'
-				, 'TAG'     => 'select'
-				, 'DEFAULT' => 'VLD'
-				, 'TITLE'   => '状態'
-				, 'MAXLEN'  => 3
-				, 'OPTION'  => array( ''=>'' )
+				'CLASS'   => 'string',
+				'TAG'     => 'select',
+				'DEFAULT' => 'VLD',
+				'TITLE'   => '状態',
+				'MAXLEN'  => 3,
+				'OPTION'  => array( ''=>'' ),
 			]
 _EOL_;
 	$temple['NUMERIC'] = <<<_EOL_
 			'@@name@@' => [
-				  'CLASS'   => 'string'
-				, 'TAG'     => 'text'
-				, 'DEFAULT' => @@default@@
-				, 'TITLE'   => '@@title@@'
-				, 'LESS'    => FALSE
-				, 'MINNUM'  => 0
-				, 'MAXNUM'  => 9999999
+				'CLASS'   => 'string',
+				'TAG'     => 'text',
+				'DEFAULT' => @@default@@,
+				'TITLE'   => '@@title@@',
+				'LESS'    => FALSE,
+				'MINNUM'  => 0,
+				'MAXNUM'  => 9999999,
 			]
 _EOL_;
 	$temple['BLOB'] = <<<_EOL_
 			'@@name@@' => [
-				  'CLASS'   => 'string'
-				, 'TAG'     => 'textarea'
-				, 'DEFAULT' => @@default@@
-				, 'TITLE'   => '@@title@@'
-				, 'LESS'    => FALSE
-				, 'MAXLEN'  => 4096
-				, 'ATTRIB'  => 'rows="5"'
-				, 'CTRL'    => "\t\r\n"
-				, 'HTML'    => TRUE			// <>"' を許可
+				'CLASS'   => 'string',
+				'TAG'     => 'textarea',
+				'DEFAULT' => @@default@@,
+				'TITLE'   => '@@title@@',
+				'LESS'    => FALSE,
+				'MAXLEN'  => 4096,
+				'ATTRIB'  => 'rows="5"',
+				'CTRL'    => "\t\r\n",
+				'HTML'    => TRUE,			// <>"' を許可
 			]
 _EOL_;
 	$temple['VARCHAR'] = <<<_EOL_
 			'@@name@@' => [
-				  'CLASS'   => 'string'
-				, 'TAG'     => 'input'
-				, 'TYPE'    => 'text'
-				, 'DEFAULT' => @@default@@
-				, 'TITLE'   => '@@title@@'
-				, 'LESS'    => FALSE
+				'CLASS'   => 'string',
+				'TAG'     => 'input',
+				'TYPE'    => 'text',
+				'DEFAULT' => @@default@@,
+				'TITLE'   => '@@title@@',
+				'LESS'    => FALSE,
 			]
 _EOL_;
 	$temple['CHAR'] = <<<_EOL_
 			'@@name@@' => [
-				  'CLASS'   => 'string'
-				, 'TAG'     => 'input'
-				, 'TYPE'    => 'text'
-				, 'DEFAULT' => @@default@@
-				, 'TITLE'   => '@@title@@'
-				, 'LESS'    => FALSE
+				'CLASS'   => 'string',
+				'TAG'     => 'input',
+				'TYPE'    => 'text',
+				'DEFAULT' => @@default@@,
+				'TITLE'   => '@@title@@',
+				'LESS'    => FALSE,
 			]
 _EOL_;
 
@@ -853,11 +852,10 @@ _EOL_;
 		;
 		if ( preg_match_all( $re, $template, $m, PREG_SET_ORDER ) >= 1 ) {		
 			// テンプレートを取得
-			unset( $m[0] );
 			foreach ( $m as $p ) {
 				$temple[$p[1]] = $p[2];
 			}
-
+			
 			// テンプレートを削除
 			$template = preg_replace( $re, '', $template );
 		}
@@ -1155,7 +1153,11 @@ _EOL_;
 		}
 
 		// 置換
-		$str = str_replace( array_keys( $replace ), array_values( $replace ), $template );
+		$search = array_keys( $replace );
+		$replace = array_values( $replace );
+		$str = str_replace( $search, $replace, $template );
+		// 置換結果にマクロが含まれていることがあるので2回処理
+		$str = str_replace( $search, $replace, $str );
 
 		// 出力
 		$fp = fopen( $output, 'w' );
