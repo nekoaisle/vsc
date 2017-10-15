@@ -31,12 +31,13 @@ class Options {
 	public author     : string;
 
 	// モード
-	public mode?      : string = '';	// CpssWizerd.php に与えるモジュール名
-	public title?     : string = '';	// CpssWizerd.php に与えるタイトル
-	public name?      : string = '';	// テンプレートファイルのベース名
-	public sqlFile?   : string = '';	// SQL ファイル名
-	public module?    : string = '';	// 一括時のモジュール名
-	public fileName?  : string = '';	// 出力ファイル名
+	public mode?    : string = '';	// CpssWizerd.php に与えるモジュール名
+	public title?   : string = '';	// CpssWizerd.php に与えるタイトル
+	public name?    : string = '';	// テンプレートファイルのベース名
+	public sqlFile? : string = '';	// SQL ファイル名
+	public module?  : string = '';	// 一括時のモジュール名
+	public fileName?: string = '';	// 出力ファイル名
+	public batch?: any[] = [];		// バッチ情報
 
 	/**
 	 * 構築
@@ -120,7 +121,7 @@ class CpssWizard extends Extension {
 		},
 		'B 一括 テーブル管理': {
 			mode: 'Batch',
-			name: [
+			batch: [
 				{
 					mode: 'Row',
 					name: 'Row',
@@ -224,8 +225,10 @@ class CpssWizard extends Extension {
 
 			options.mode = info.mode;
 			options.name = info.name;
-
+			
 			if (options.mode == 'Batch') {
+				// 一括登録
+				options.batch = info.batch;
 				// 一括登録は InputBoxを表示してモジュール名求める
 				let ioption: vscode.InputBoxOptions = {
 					prompt: "モジュール名を入力してください。",
@@ -272,7 +275,7 @@ class CpssWizard extends Extension {
 				this.batchExec(options);
 			} else {
 				// 1回のみ
-				this.execWizard(options);
+				this.execWizard([options], 0);
 			}
 		}); 
 	}
@@ -281,28 +284,28 @@ class CpssWizard extends Extension {
 	 * 一括処理
 	 * @param options Options オプション
 	 */
-	protected batchExec(options: Options) {
+	protected batchExec(template: Options) {
 		// 一括登録
 		// batch は options.name が配列になっている
-		let names = options.name;
-		options.name = null;	// クローンの負荷を減らすため
+		let batch = template.batch;
+		template.batch = null;	// クローンの負荷を減らすため
 
 		// SQLファイル名を分解
 		// ※先頭の数字と_スペースは除去
-		let pinfo = path.parse(options.sqlFile);
+		let pinfo = path.parse(template.sqlFile);
 		let re: RegExp = /^[0-9_ ]*([^\.]+).sql$/i;
 		let name = re.exec(pinfo.base)[1];
 		let sqls = name.split('_');
-		if (options.module) {
+		if (template.module) {
 			// モジュール名が指定されている
-			if (sqls[0].toLocaleUpperCase == options.module.toLocaleUpperCase) {
+			if (sqls[0].toLocaleUpperCase == template.module.toLocaleUpperCase) {
 				// SQLのファイル名の先頭パーツとモジュール名が
 				// 一致しているので先頭を除去
 				// 'BIMMS', 'BIMMS_GROUP.sql' -> 
 				// BimmsRowGroup.php
 				// GroupListBase.php
 				// group_list.php
-				sqls.shift();
+				sqls.unshift();
 			} else {
 				// 'CPSS', '00_ACCOUNT.sql'
 				// CpssRowAccount
@@ -321,14 +324,24 @@ class CpssWizard extends Extension {
 			sqls[key] = sqls[key].toLocaleLowerCase();
 		}
 
-		// すべてのオプションを格納する配列
-		let opts: Options[] = [];
-		for (let name of names) {
+		this.makeOptionSync(template, [], batch, sqls, 0).then((options: Options[]) => {
+			this.execWizard(options, 0);
+		});
+	}
+
+	// すべてのオプションを格納する配列
+	protected makeOptionSync(template: Options, options: Options[], batch: any[], sqls: string[], index: number): Promise<Options[]> {
+		const promise = new Promise<Options[]>((resolve, reject) => {
+			// names 配列を超えたら終了
+			if (batch.length <= index) {
+				return resolve(options);
+			}
+
 			// まずはオプションを複製
-			let opt: Options = Util.cloneObject(options);
+			let opt: Options = Util.cloneObject(template);
 			// テンプレートファイルのベース名を設定
-			opt.mode = name['mode'];
-			opt.name = name['name'];
+			opt.mode = batch[index]['mode'];
+			opt.name = batch[index]['name'];
 
 			// 出力ファイル名を作成
 			let parts: string[] = [];
@@ -336,7 +349,7 @@ class CpssWizard extends Extension {
 				// DAO
 				case 'Row': {
 					// 先頭がモジュール名
-					parts.push(Util.toCamelCase(options.module));
+					parts.push(Util.toCamelCase(template.module));
 					// 2番目は Row 固定
 					parts.push('Row');
 					// 3番目以降は SQL ファイル名のパーツをキャメルケースで結合
@@ -360,7 +373,7 @@ class CpssWizard extends Extension {
 				case 'ListInit': {
 					// 'BIMMS_GROUP.sql' -> group_list.php
 					parts.push(sqls[0].toLocaleLowerCase());
-					for (let i = 1; i < sqls.length; ++ i) {
+					for (let i = 1; i < parts.length; ++i) {
 						parts.push('_' + sqls[i].toLocaleLowerCase());
 					}
 					// '_list' を追加
@@ -373,7 +386,7 @@ class CpssWizard extends Extension {
 					// SQLの先頭部品を小文字で設定
 					parts.push(sqls[0].toLocaleLowerCase());
 					// SQLの残り部品を '_' + 小文字で追加
-					for (let i = 1; i < sqls.length; ++ i) {
+					for (let i = 1; i < parts.length; ++i) {
 						parts.push('_' + sqls[i].toLocaleLowerCase());
 					}
 					// '_list1' を追加
@@ -396,7 +409,7 @@ class CpssWizard extends Extension {
 					// SQLの先頭部品を小文字で設定
 					parts.push(sqls[0].toLocaleLowerCase());
 					// SQLの残り部品を '_' + 小文字で追加
-					for (let i = 1; i < sqls.length; ++ i) {
+					for (let i = 1; i < parts.length; ++i) {
 						parts.push('_' + sqls[i].toLocaleLowerCase());
 					}
 					// '_edit' を追加
@@ -409,7 +422,7 @@ class CpssWizard extends Extension {
 					// SQLの先頭部品を小文字で設定
 					parts.push(sqls[0].toLocaleLowerCase());
 					// SQLの残り部品を '_' + 小文字で追加
-					for (let i = 1; i < sqls.length; ++ i) {
+					for (let i = 1; i < parts.length; ++i) {
 						parts.push('_' + sqls[i].toLocaleLowerCase());
 					}
 					// '_edit' を追加
@@ -422,7 +435,7 @@ class CpssWizard extends Extension {
 					// SQLの先頭部品を小文字で設定
 					parts.push(sqls[0].toLocaleLowerCase());
 					// SQLの残り部品を '_' + 小文字で追加
-					for (let i = 1; i < sqls.length; ++ i) {
+					for (let i = 1; i < parts.length; ++i) {
 						parts.push('_' + sqls[i].toLocaleLowerCase());
 					}
 					// '_edit' を追加
@@ -435,7 +448,7 @@ class CpssWizard extends Extension {
 					// SQLの先頭部品を小文字で設定
 					parts.push(sqls[0].toLocaleLowerCase());
 					// SQLの残り部品を '_' + 小文字で追加
-					for (let i = 1; i < sqls.length; ++ i) {
+					for (let i = 1; i < parts.length; ++i) {
 						parts.push('_' + sqls[i].toLocaleLowerCase());
 					}
 					// '_edit' を追加
@@ -449,28 +462,75 @@ class CpssWizard extends Extension {
 			let pinfo = path.parse(vscode.window.activeTextEditor.document.fileName);
 			opt.fileName = parts.join('');
 			opt.fileName = path.join(pinfo.dir, opt.fileName);
-			opts.push(opt);
-		}
 
-		// 実行
-		let err: string[] = [];
-		for (let opt of opts) {
-			if (fs.existsSync(opt.fileName)) {
-				Util.putMess(`${opt.fileName} を削除してください。`);
-				return;
+			// 作ったオプションを配列に保存
+			options.push(opt);
+
+			if (!fs.existsSync(opt.fileName)) {
+				return this.makeOptionSync(template, options, batch, sqls, index + 1);
+			} else {
+				// 存在するの上書き確認
+				vscode.window.showQuickPick(['Y はい', 'N いいえ'], { placeHolder: `${opt.fileName} に上書きしますか？` }).then((ret: string) => {
+					if (ret.substr(0, 1) == 'Y') {
+						return this.makeOptionSync(template, options, batch, sqls, index + 1);
+					} else {
+						// 上書きしないなので終了
+						return reject();
+					}
+				});
 			}
-		}
+		});
+	
+		return promise;
+	};
+	
+	protected execWizard(options: Options[], index) {
+		let promise = new Promise<void>((resolve, reject) => {
+			if (options.length <= index) {
+				// おしまい
+				return resolve();
+			}
 
-		// 実行
-		for (let opt of opts) {
-			this.execWizard(opt);
-		}
+			let option: Options = options[index];
+
+			// コマンドラインを作成
+			let cmd = this.makeCommand(option);
+			if (!cmd) {
+				return reject();
+			}
+
+			// 実行
+			chproc.exec(cmd, (err, stdout: string, stderr: string) => {
+				if (err == null) {
+					// console.log(stdout);
+					if (option.fileName.length != 0) {
+						// 出力ファイル名が指定されている
+						let fn = Util.normalizeHome(option.fileName);
+						console.log(`save: ${fn}`);
+						// fs.writeFile(fn, stdout);
+					} else {
+						// 出力ファイルがないときは貼り付け
+						// これも非同期ですが複数ファイルへの貼付けはないので手抜きします
+						vscode.window.activeTextEditor.edit(function (edit) {
+							edit.insert(new vscode.Position(0, 0), stdout);
+						});
+					}
+				} else {
+					// エラーが発生
+					console.log(`error: ${err.message}\nstderr: ${stderr}\nstdout: ${stdout}`);
+					Util.putMess(err.message);
+					return reject();
+				}
+
+				// 次へ
+				return this.execWizard(options, index + 1);
+			});
+
+			return promise;
+		});
 	}
 
-	protected execWizard(options: Options) {
-		//ドキュメントを取得
-		let editor = vscode.window.activeTextEditor;
-
+	protected makeCommand(options: Options): string {
 		// // 出力ウィンドウの生成
 		// var overview = vscode.window.createOutputChannel( "quick-filter" );
 		// // 出力ウィンドウをクリア
@@ -483,13 +543,13 @@ class CpssWizard extends Extension {
 			fileName = options.fileName;
 		} else {
 			// 現在編集中のファイル名を解析
-			fileName = editor.document.fileName;
+			fileName = vscode.window.activeTextEditor.document.fileName;
 		}
 		let pinfo = path.parse( fileName );
 		if ( !pinfo.ext ) {
 			// 拡張子がない
 			Util.putMess( `拡張子のないファイルには対応していません。'${fileName}'` );
-			return false;
+			return null;
 		}
 
 		// テンプレートファイルを探す
@@ -519,7 +579,7 @@ class CpssWizard extends Extension {
 				s += t[k] + "\n";
 			}
 			Util.putMess( s );
-			return false;
+			return null;
 		}
 
 		// コマンドラインを作成
@@ -527,33 +587,8 @@ class CpssWizard extends Extension {
 options.title}" "-a=${options.author}" "-out=${options.outFile}" "-tmpl=${tmpl}" "-sql=${options.sqlFile}"`;
 		console.log( cmd );
 
-		// 実行
-		chproc.exec( cmd, (err, stdout: string, stderr: string) => {
-			if ( err == null ) {
-				// console.log(stdout);
-				if (options.fileName.length != 0) {
-					// 出力ファイル名が指定されている
-					let fn = Util.normalizeHome(options.fileName);
-					console.log(`save: ${fn}`);
-					fs.writeFile(fn, stdout, (err: NodeJS.ErrnoException) => {
-						// エラーが発生
-						console.log(`error: ${err.message}`);
-					}) ;
-				} else {
-					// 出力ファイルがないときは貼り付け
-					editor.edit(function (edit) {
-						edit.insert(new vscode.Position(0, 0), stdout);
-					});
-				}
-			} else {
-				// エラーが発生
-				console.log(`error: ${err.message}
-stderr: ${stderr}
-stdout: ${stdout}`);
-				Util.putMess(err.message);
-				return false;
-			}
-		});
+		//
+		return cmd;
 	}
 }
 

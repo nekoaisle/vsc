@@ -63,7 +63,17 @@ export module Util {
 
 	/**
 	 * 指定オブジェクトのクラス名を取得
+	 *  String
+	 *  Number
+	 *  Boolean
+	 *  Date
+	 *  Error
+	 *  Array
+	 *  Function
+	 *  RegExp
+	 *  Object
 	 * @param obj クラス名を知りたいオブジェクト
+	 * @return string
 	 */
 	export function getClassName(obj: any): string {
 		return Object.prototype.toString.call(obj).slice(8, -1)
@@ -291,6 +301,24 @@ export module Util {
 			ret.push(v.substr(0, 1).toLocaleUpperCase() + v.substr(1).toLocaleLowerCase());
 		}
 		return ret.join('');
+	}
+
+	/**
+	 * スネークケースに変換
+	 * @param any string | string[] 可変長引数
+	 * @returns string スネークケース文字列
+	 */
+	export function toSnakeCase(...args: (string | string[])[]): string {
+		let ary/*: string[]*/ = [];
+		for (let val of args) {
+			if (getClassName(val) == 'Array') {
+				// 配列なら再起呼び出し
+				ary = ary.concat(toSnakeCase(val));
+			} else {
+				ary.push(val);
+			}
+		}
+		return ary.join('_');
 	}
 
 	/**
