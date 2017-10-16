@@ -62,5 +62,12 @@
 			"V_NAME          VARCHAR(255) NOT NULL DEFAULT '' -- 名前"
 		],
 		"description": "V_NAME        VARCHAR(255) NOT NULL DEFAULT '' -- 名前"
+	},
+	"V_COMMENT": {
+		"prefix": "V_COMMENT",
+		"body": [
+			"V_COMMENT       VARCHAR(255) NOT NULL DEFAULT '' -- コメント"
+		],
+		"description": "V_COMMENT       VARCHAR(255) NOT NULL DEFAULT '' -- コメント"
 	}
 }

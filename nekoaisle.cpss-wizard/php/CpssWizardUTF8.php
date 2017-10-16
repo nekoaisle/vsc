@@ -857,8 +857,8 @@ _EOL_;
 			// 表示する列を指定
 			// 値が 'ADD' ならば自動生成
 			'COLUMN' => [
-				'V_ID'       => 'FIX',
-				'V_LINK'     => 'FIX',
+				'V_ID' => 'FIX',
+				'V_LINK' => 'FIX',
 _EOL_;
 		foreach ($table['ROWS'] as $row) {
 			// SQL 読み込み
@@ -878,8 +878,8 @@ _EOL_;
 		$strs[] = <<<_EOL_
 			// 列に設定する HtmlViewコマンド
 			// 指定されていない列は "'@{$key} set"
-			'COMMAND'        => [
-				'V_LINK'     => '@V_LINK     set @ href',
+			'COMMAND' => [
+				'V_LINK' => '@V_LINK set @ href',
 _EOL_;
 		foreach ($table['ROWS'] as $row) {
 			// SQL 読み込み
@@ -1025,7 +1025,7 @@ _EOL_;
 		// 行を処理
 		$search = array();
 		$sort   = array('' => '');
-		foreach ($table['ROW'] as $a) {
+		foreach ($table['ROWS'] as $a) {
 			// SQL 読み込み
 			switch ($a['name']) {
 			case 'D_REGIST_DT':
