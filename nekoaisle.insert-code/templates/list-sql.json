@@ -7,21 +7,5 @@
 		"label": "2: alter table",
 		"inline": "alter table {{class.sql}} add {{clipboard}} after ",
 		"description": "SQL文をクリップボードに入れてから実行してください。"
-	},
-	"now.ymd": {
-		"label": "Y: 今日",
-		"command": "now.ymd"
-	},
-	"pinfo.path": {
-		"label": "P: フルパス名",
-		"command": "pinfo.path"
-	},
-	"pinfo.base": {
-		"label": "F: ファイル名+拡張子",
-		"command": "pinfo.base"
-	},
-	"pinfo.name": {
-		"label": "N: ファイル名",
-		"command": "pinfo.name"
 	}
 }

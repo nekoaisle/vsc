@@ -133,12 +133,24 @@ class InsertCode extends Extension {
         // 先頭の . を除去
         ext = ext.substr(1);
 
-        // この拡張子のメニューを読み込む
-        let menuFN = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
-        let menuItems: ListItem = Util.loadFileJson(menuFN);
+        let fn: string;
+
+        // 共通メニューを読み込む
+        fn = `${tempDir}/list.json`;
+        let menuItems = Util.loadFileJson(fn);
         if (!menuItems) {
             return;
         }
+
+        // この拡張子のメニューを読み込む
+        fn = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
+        let items: ListItem[] = Util.loadFileJson(fn);
+        if (!items) {
+            return;
+        }
+
+        // 今日津メニューに追加
+        Object.assign(menuItems, items);
 
         // QuickPickOptions 用のメニューを作成
         let menu: vscode.QuickPickItem[] = [];

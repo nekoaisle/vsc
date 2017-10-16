@@ -14,29 +14,5 @@
 	"destractor": {
 		"label": "5: デストラクタ",
 		"filename":	"h/destractor.h"
-	},
-	"now.ymd": {
-		"label": "Y: 今日",
-		"command": "now.ymd"
-	},
-	"pinfo.path": {
-		"label": "P: フルパス名",
-		"command": "pinfo.path"
-	},
-	"pinfo.dir": {
-		"label": "D: ディレクトリ名",
-		"command": "pinfo.dir"
-	},
-	"pinfo.base": {
-		"label": "F: ファイル名+拡張子",
-		"command": "pinfo.base"
-	},
-	"pinfo.name": {
-		"label": "N: ファイル名",
-		"command": "pinfo.name"
-	},
-	"pinfo.ext": {
-		"label": "E: 拡張子",
-		"command": "pinfo.ext"
 	}
 }

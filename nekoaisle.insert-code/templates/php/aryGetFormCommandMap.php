@@ -17,6 +17,7 @@
  * 
  * @access public
  * @return array [ ボタン名 => 処理関数名 ]
+ * @author {{author}}
  */
 protected function aryGetFormCommandMap( )
 {

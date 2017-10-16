@@ -5,6 +5,7 @@
  * @access public
  * @param  string \$val 
  * @return boolean コマンドディスパッチを FAILED:継続 SUCCEEDED:終了
+ * @author {{author}}
  * @throw  
  */
 public function onGet$1( \$val )

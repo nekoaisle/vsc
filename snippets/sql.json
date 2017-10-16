@@ -45,21 +45,21 @@
 	"C_STATUS": {
 		"prefix": "C_STATUS",
 		"body": [
-			"C_STATUS      CHAR   (  3) NOT NULL DEFAULT '' -- 状態"
+			"C_STATUS        CHAR   (  3) NOT NULL DEFAULT '' -- 状態"
 		],
 		"description": "C_STATUS      CHAR   (  3) NOT NULL DEFAULT '' -- 状態"
 	},
 	"V_SITE_ID": {
 		"prefix": "V_SITE_ID",
 		"body": [
-			"V_SITE_ID     VARCHAR( 64) NOT NULL DEFAULT '' -- サイトID"
+			"V_SITE_ID       VARCHAR( 64) NOT NULL DEFAULT '' -- サイトID"
 		],
 		"description": "V_SITE_ID     VARCHAR( 64) NOT NULL DEFAULT '' -- サイトID"
 	},
 	"V_NAME": {
 		"prefix": "V_NAME",
 		"body": [
-			"V_NAME        VARCHAR(255) NOT NULL DEFAULT '' -- 名前"
+			"V_NAME          VARCHAR(255) NOT NULL DEFAULT '' -- 名前"
 		],
 		"description": "V_NAME        VARCHAR(255) NOT NULL DEFAULT '' -- 名前"
 	}

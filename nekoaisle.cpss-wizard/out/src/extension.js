@@ -114,6 +114,7 @@ class CpssWizard extends nekoaisle_1.Extension {
             '9 一覧 表示ページ': {
                 mode: 'ListList',
                 name: 'ListList',
+                sql: true,
             },
             'A CCamRow 派生クラス': {
                 mode: 'Row',

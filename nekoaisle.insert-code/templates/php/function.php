@@ -4,6 +4,7 @@
  * 
  * @param  
  * @return 
+ * @author {{author}}
  * @throw  
  */
 function ${2:関数名}( )

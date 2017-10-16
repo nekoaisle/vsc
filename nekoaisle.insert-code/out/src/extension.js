@@ -94,12 +94,21 @@ class InsertCode extends nekoaisle_1.Extension {
         let ext = this.getCurrentExt(pinfo.info.ext);
         // 先頭の . を除去
         ext = ext.substr(1);
-        // この拡張子のメニューを読み込む
-        let menuFN = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
-        let menuItems = nekoaisle_1.Util.loadFileJson(menuFN);
+        let fn;
+        // 共通メニューを読み込む
+        fn = `${tempDir}/list.json`;
+        let menuItems = nekoaisle_1.Util.loadFileJson(fn);
         if (!menuItems) {
             return;
         }
+        // この拡張子のメニューを読み込む
+        fn = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
+        let items = nekoaisle_1.Util.loadFileJson(fn);
+        if (!items) {
+            return;
+        }
+        // 今日津メニューに追加
+        Object.assign(menuItems, items);
         // QuickPickOptions 用のメニューを作成
         let menu = [];
         for (let key in menuItems) {

@@ -315,6 +315,107 @@ __USAGE__;
 	}
 
 	/**
+	 * SQLファイルからテーブル情報を取得
+	 * 
+	 * @access public
+	 * @param  string $sqlFile SQLファイル名
+	 * @return テーブル情報配列
+	 * @author 木屋 善夫
+	 * @throw  
+	 */
+	public function loadTable($sqlFile)
+	{
+		$ret = [
+			'NAME' => '',
+			'SQL' => '',
+			'ROW' => [],
+		];
+
+		// SQL 読み込み
+		$sql = $this->loadTextFile($sqlFile);
+		
+		// テーブル名取得
+		if (preg_match('/CREATE\s+TABLE\s+([0-9A-Z_]+)/', $sql, $a) === 1) {
+			$ret['NAME'] = $a[1];
+		}
+
+		// SQL 文
+		if (preg_match('/(CREATE\s+TABLE\s[^;]+;)/', $sql, $a) === 1) {
+			// CREATE TABLE 全体
+			$ret['SQL'] = $a[1];
+
+			// フィールド定義の作成
+			if (strstr($a[1], "\r\n")) {
+				$aryCol = explode("\r\n", $a[1]);
+			} else {
+				$aryCol = explode("\n", $a[1]);
+			}
+
+			// (のみの行までスキップ
+			for ($i = 0; $i < count($aryCol); ++ $i) {
+				$s = trim($aryCol[$i]);
+				if ($s == '(') {
+					++ $i;
+					break;
+				}
+			}
+
+			//) のみの行まで処理
+			$search = array();
+			$sort   = array('' => '');
+			for ($i = 0; $i < count($aryCol); ++ $i) {
+				$s = trim($aryCol[$i]);
+				if ($s == ')')
+					break;
+
+				// , V_MAILMAG_ID    VARCHAR(  64, 4) NOT NULL DEFAULT '' -- メルマガID ACCOUNT.V_ID
+				$pt = 
+					  '/^'
+					. ',?\s*'									// , 
+					. '([^\s]+)\s+'								// [1] V_MAILMAG_ID
+					. '([^\s\(]+)\s*'							// [2] VARCHAR
+					. '(?:\(\s*'
+						. '([0-9]+)\s*'							// [3] 64
+						. '(?:,\s*'
+							. '([0-9]+)\s*'						// [4] 4
+						. ')?'
+						. '\)\s*'
+					. ')?'
+					. '(?:'
+						. '(NOT\s*NULL)'						// [5] NOT NULL
+						. '|'
+						. '(PRIMARY\s*KEY)'						// [6] 
+					. ')*\s*'
+					. '(?:'
+						. 'DEFAULT\s+'
+							. '(\'[^\']*\'|[0-9]+|NULL)'		// [7] ''
+					. ')?\s*'
+					. '-- '
+					. '(.*)'									// [8] メルマガID ACCOUNT.V_ID
+					. '$/'
+				;
+
+				if (preg_match($pt, $s, $a) !== 1) {
+					// 行定義ではない
+					continue;
+				}
+				$a['name'   ] = $a[1];		// 名前
+				$a['type'   ] = $a[2];		// 型
+				$a['size'   ] = (int)$a[3] + (int)$a[4] + ((int)$a[4] ? 1 : 0);	// サイズ
+				$a['default'] = (strlen($a[7]) > 0) ? $a[7] : "''";
+				$b = explode(' ', $a[8]);
+				$a['title'  ] = $b[0];
+
+				$ret['ROWS'][] = $a;
+			}
+		}
+
+		//
+		return $ret;
+	}
+	
+
+	/**
 	 * CamRow派生クラス用 SQL情報の処理
 	 * 
 	 * @param  array& $replace 置換情報配列
@@ -478,7 +579,7 @@ __USAGE__;
 	 * @param  array& $replace   置換情報配列
 	 * @param  string $sqlFile SQLファイル名
 	 */
-	function jobListSQL(&$template, &$replace, $sqlFile)
+	function jobListBaseSQL(&$template, &$replace, $sqlFile)
 	{
 		// テンプレートから列タイプごとのテンプレートを取得
 		$temple = [];
@@ -621,158 +722,186 @@ _EOL_;
 			$template = preg_replace($re, '', $template);
 		}
 
-		// SQL 読み込み
-		$sql = $this->loadTextFile($sqlFile);
+		// テーブル情報読み込み
+		$table = $this->loadTable($sqlFile);
 
 		// テーブル名
-		if (preg_match('/CREATE\s+TABLE\s+([0-9A-Z_]+)/', $sql, $a) === 1) {
-			$replace['@@table@@'] = $a[1];
-		}
+		$replace['@@table@@'] = $table['NAME'];
 
 		// SQL 文
-		if (preg_match('/(CREATE\s+TABLE\s[^;]+;)/', $sql, $a) === 1) {
-			$replace['@@sql@@'] = $a[1];
+		$replace['@@sql@@'] = $table['SQL'];
 
-			// フィールド定義の作成
-			if (strstr($a[1], "\r\n")) {
-				$aryCol = explode("\r\n", $a[1]);
+		// 行を処理
+		$search = array();
+		$sort   = array('' => '');
+		foreach ($table['ROW'] as $a) {
+			switch ($a['name']) {
+			case 'D_REGIST_DT':
+			case 'D_UPDATE_DT':
+			case 'V_NOTE':
+				continue 2;
+			}
+
+			// この名前のテンプレートがあればそのまま使用
+			if (!empty($temple[$a['name']])) {
+				// 検索用
+				$search[] = rtrim($temple[$a['name']]);
+				// ソート用
+				$sort[$a['name']] = $a['title'];
+				continue;
+			}
+
+			// 型を変換
+			switch ($a['type']) {
+			case 'BLOB':
+				$a['type'] = 'VARCHAR';
+				$a['size'] = 4095;
+				break;
+			}
+
+			// デフォルトが省略されているときは ''
+			if (!isset($a[11])) {
+				$a[11] = '';
+			}
+
+			// この列型のテンプレートを取得
+			if (substr($a['name'], 0, 2) == 'D_') {
+				// D_ ではじまるカラムは日付
+				$tmp = rtrim($temple['DATE']);
 			} else {
-				$aryCol = explode("\n", $a[1]);
+				// カラムの型ごとのテンプレ
+				$tmp = rtrim($temple[$a['type']]);
 			}
 
-			// (のみの行までスキップ
-			for ($i = 0; $i < count($aryCol); ++ $i) {
-				$s = trim($aryCol[$i]);
-				if ($s == '(') {
-					++ $i;
-					break;
-				}
+			// 置換
+			$rep = array(
+					'@@name@@'    => $a['name']
+				, '@@default@@' => $a['default']
+				, '@@title@@'   => $a['title']
+				, '@@maxlen@@'  => (string)($a['size'])
+			);
+			
+			$search[] = str_replace(array_keys($rep), array_values($rep), $tmp);
+
+			// ソート用
+			$sort[$a['name']] = $a['title'];
+		}
+
+		$replace['//@@row_form@@'] = implode(",\r\n", $search);
+
+		// ソート用
+		// 桁揃えのため最大の長さを取得
+		$len = 0;
+		foreach ($sort as $k => $v) {
+			$l = $this->getStringCols($k);
+			if ($len < $l) {
+				$len = $l;
 			}
+		}
+		$len += strlen($replace['@@table@@']) + 2 + 1;	// 2='' 1=.
 
-			//) のみの行まで処理
-			$search = array();
-			$sort   = array('' => '');
-			for ($i = 0; $i < count($aryCol); ++ $i) {
-				$s = trim($aryCol[$i]);
-				if ($s == ')')
-					break;
+		$sort2 = [];
+		foreach ($sort as $k => $v) {
+			if (empty($k)) {
+				$k = str_pad("''", $len, ' ');
+			} else {
+				$k = str_pad("'{$replace['@@table@@']}.{$k}'", $len, ' ');
+			}
+			$sort2[] = "\t\t\t{$k} => '{$v}'";
+		}
 
-				// , V_MAILMAG_ID    VARCHAR(  64, 4) NOT NULL DEFAULT '' -- メルマガID ACCOUNT.V_ID
-				$pt = 
-					  '/^'
-					. ',?\s*'									// , 
-					. '([^\s]+)\s+'								// [1] V_MAILMAG_ID
-					. '([^\s\(]+)\s*'							// [2] VARCHAR
-					. '(?:\(\s*'
-						. '([0-9]+)\s*'							// [3] 64
-						. '(?:,\s*'
-							. '([0-9]+)\s*'						// [4] 4
-						. ')?'
-						. '\)\s*'
-					. ')?'
-					. '(?:'
-						. '(NOT\s*NULL)'						// [5] NOT NULL
-						. '|'
-						. '(PRIMARY\s*KEY)'						// [6] 
-					. ')*\s*'
-					. '(?:'
-						. 'DEFAULT\s+'
-							. '(\'[^\']*\'|[0-9]+|NULL)'		// [7] ''
-					. ')?\s*'
-					. '-- '
-					. '(.*)'									// [8] メルマガID ACCOUNT.V_ID
-					. '$/'
-				;
+		$replace['@@sort@@'] = implode(",\r\n", $sort2);
+	}
 
-				if (preg_match($pt, $s, $a) !== 1) {
-					// 行定義ではない
-					continue;
-				}
-				$a['name'   ] = $a[1];		// 名前
-				$a['type'   ] = $a[2];		// 型
-				$a['size'   ] = (int)$a[3] + (int)$a[4] + ((int)$a[4] ? 1 : 0);	// サイズ
-				$a['default'] = (strlen($a[7]) > 0) ? $a[7] : "''";
-				$b = explode(' ', $a[8]);
-				$a['title'  ] = $b[0];
+	/**
+	 * ListListクラス用 SQL情報の処理
+	 * 
+	 * @access public
+	 * @param  string& $template テンプレート
+	 * @param  array& $replace   置換情報配列
+	 * @param  string $sqlFile SQLファイル名
+	 * @author 木屋 善夫
+	 */
+	public function jobListListSQL(&$template, &$replace, $sqlFile)
+	{
+		// テーブル情報読み込み
+		$table = $this->loadTable($sqlFile);
 
-	//			print_r($a);
-				switch ($a['name']) {
+		// テーブル名
+		$replace['@@table@@'] = $table['NAME'];
+
+		// SQL 文
+		$replace['@@sql@@'] = $table['SQL'];
+
+		// ヘッダー作成
+		$strs[] = <<<_EOL_
+			// ヘッダータイトル指定(省略可)
+			'HEADER' => [
+_EOL_;
+		foreach ($table['ROWS'] as $row) {
+			// SQL 読み込み
+			switch ($row['name']) {
+				case 'V_ID':
 				case 'D_REGIST_DT':
 				case 'D_UPDATE_DT':
 				case 'V_NOTE':
 					continue 2;
-				}
+			}
+				
+			$strs[] = "\t\t\t\t'{$row['name']}' => '{$row['title']}',";
+		}
+		$strs[] = "\t\t\t],";
 
-				// この名前のテンプレートがあればそのまま使用
-				if (!empty($temple[$a['name']])) {
-					// 検索用
-					$search[] = rtrim($temple[$a['name']]);
-					// ソート用
-					$sort[$a['name']] = $a['title'];
-					continue;
-				}
+		// 表示列を設定
+		$strs[] = <<<_EOL_
+			// 表示する列を指定
+			// 値が 'ADD' ならば自動生成
+			'COLUMN' => [
+				'V_ID'       => 'FIX',
+				'V_LINK'     => 'FIX',
+_EOL_;
+		foreach ($table['ROWS'] as $row) {
+			// SQL 読み込み
+			switch ($row['name']) {
+				case 'V_ID':
+				case 'D_REGIST_DT':
+				case 'D_UPDATE_DT':
+				case 'V_NOTE':
+					continue 2;
+			}
 
-				// 型を変換
-				switch ($a['type']) {
-				case 'BLOB':
-					$a['type'] = 'VARCHAR';
-					$a['size'] = 4095;
+			$strs[] = "\t\t\t\t'{$row['name']}' => 'ADD',";
+		}
+		$strs[] = "\t\t\t],";
+
+		// 列に設定する HtmlViewコマンド
+		$strs[] = <<<_EOL_
+			// 列に設定する HtmlViewコマンド
+			// 指定されていない列は "'@{$key} set"
+			'COMMAND'        => [
+				'V_LINK'     => '@V_LINK     set @ href',
+_EOL_;
+		foreach ($table['ROWS'] as $row) {
+			// SQL 読み込み
+			switch ($row['name']) {
+				case 'V_ID':
+				case 'D_REGIST_DT':
+				case 'D_UPDATE_DT':
+				case 'V_NOTE':
+					continue 2;
+			}
+
+			switch (substr($row['name'], 0, 1)) {
+				// 日付
+				case 'D': {
+					$strs[] = "\t\t\t\t'{$row['name']}' => '@{$row['name']} set %-',";
 					break;
 				}
-
-				// デフォルトが省略されているときは ''
-				if (!isset($a[11])) {
-					$a[11] = '';
-				}
-
-				// この列型のテンプレートを取得
-				if (substr($a['name'], 0, 2) == 'D_') {
-					// D_ ではじまるカラムは日付
-					$tmp = rtrim($temple['DATE']);
-				} else {
-					// カラムの型ごとのテンプレ
-					$tmp = rtrim($temple[$a['type']]);
-				}
-
-				// 置換
-				$rep = array(
-					  '@@name@@'    => $a['name']
-					, '@@default@@' => $a['default']
-					, '@@title@@'   => $a['title']
-					, '@@maxlen@@'  => (string)($a['size'])
-				);
-				
-				$search[] = str_replace(array_keys($rep), array_values($rep), $tmp);
-
-				// ソート用
-				$sort[$a['name']] = $a['title'];
 			}
-
-			$replace['//@@row_form@@'] = implode(",\r\n", $search);
-
-			// ソート用
-			// 桁揃えのため最大の長さを取得
-			$len = 0;
-			foreach ($sort as $k => $v) {
-				$l = $this->getStringCols($k);
-				if ($len < $l) {
-					$len = $l;
-				}
-			}
-			$len += strlen($replace['@@table@@']) + 2 + 1;	// 2='' 1=.
-
-			$sort2 = [];
-			foreach ($sort as $k => $v) {
-				if (empty($k)) {
-					$k = str_pad("''", $len, ' ');
-				} else {
-					$k = str_pad("'{$replace['@@table@@']}.{$k}'", $len, ' ');
-				}
-				$sort2[] = "\t\t\t{$k} => '{$v}'";
-			}
-
-			$replace['@@sort@@'] = implode(",\r\n", $sort2);
 		}
+		$strs[] = "\t\t\t],";
+
+		$replace['@@list_params@@'] = implode("\r\n", $strs);
 	}
 
 	/**
@@ -782,7 +911,7 @@ _EOL_;
 	 * @param  array& $replace   置換情報配列
 	 * @param  string $sqlFile SQLファイル名
 	 */
-	function jobEditSQL(&$template, &$replace, $sqlFile)
+	function jobEditBaseSQL(&$template, &$replace, $sqlFile)
 	{
 		// テンプレートから列タイプごとのテンプレートを取得
 		$temple = array();
@@ -884,121 +1013,60 @@ _EOL_;
 			$template = preg_replace($re, '', $template);
 		}
 
-		// SQL 読み込み
-		$sql = $this->loadTextFile($sqlFile);
-
+		// テーブル情報読み込み
+		$table = $this->loadTable($sqlFile);
+		
 		// テーブル名
-		if (preg_match('/CREATE\s+TABLE\s+([0-9A-Z_]+)/', $sql, $a) === 1) {
-			$replace['@@table@@'] = $a[1];
-		}
+		$replace['@@table@@'] = $table['NAME'];
 
 		// SQL 文
-		if (preg_match('/(CREATE\s+TABLE\s[^;]+;)/', $sql, $a) === 1) {
-			$replace['@@sql@@'] = $a[1];
+		$replace['@@sql@@'] = $table['SQL'];
 
-			// フィールド定義の作成
-			if (strstr($a[1], "\r\n")) {
-				$aryCol = explode("\r\n", $a[1]);
-			} else {
-				$aryCol = explode("\n", $a[1]);
+		// 行を処理
+		$search = array();
+		$sort   = array('' => '');
+		foreach ($table['ROW'] as $a) {
+			// SQL 読み込み
+			switch ($a['name']) {
+			case 'D_REGIST_DT':
+			case 'D_UPDATE_DT':
+			case 'V_NOTE':
+				continue 2;
 			}
 
-			// (のみの行までスキップ
-			for ($i = 0; $i < count($aryCol); ++ $i) {
-				$s = trim($aryCol[$i]);
-				if ($s == '(') {
-					++ $i;
-					break;
-				}
+			if (!empty($temple[$a['name']])) {
+				$src[] = rtrim($temple[$a['name']]);
+				continue;
 			}
 
-			//) のみの行まで処理
-			$src = array();
-			for ($i = 0; $i < count($aryCol); ++ $i) {
-				$s = trim($aryCol[$i]);
-				if ($s == ')')
-					break;
-
-				// , V_MAILMAG_ID    VARCHAR(  64, 4) NOT NULL DEFAULT '' -- メルマガID ACCOUNT.V_ID
-				$pt = 
-					  '/^'
-					. ',?\s*'									// , 
-					. '([^\s]+)\s+'								// [1] V_MAILMAG_ID
-					. '([^\s\(]+)\s*'							// [2] VARCHAR
-					. '(?:\(\s*'
-						. '([0-9]+)\s*'							// [3] 64
-						. '(?:,\s*'
-							. '([0-9]+)\s*'						// [4] 4
-						. ')?'
-						. '\)\s*'
-					. ')?'
-					. '(?:'
-						. '(NOT\s*NULL)'						// [5] NOT NULL
-						. '|'
-						. '(PRIMARY\s*KEY)'						// [6] 
-					. ')*\s*'
-					. '(?:'
-						. 'DEFAULT\s+'
-							. '(\'[^\']*\'|[0-9]+|NULL)'		// [7] ''
-					. ')?\s*'
-					. '-- '
-					. '(.*)'									// [8] メルマガID ACCOUNT.V_ID
-					. '$/'
-				;
-
-				if (preg_match($pt, $s, $a) !== 1) {
-					// 行定義ではない
-					continue;
-				}
-				$a['name'   ] = $a[1];		// 名前
-				$a['type'   ] = $a[2];		// 型
-				$a['size'   ] = (int)$a[3] + (int)$a[4] + ((int)$a[4] ? 1 : 0);	// サイズ
-				$a['default'] = $a[7];
-				$b = explode(' ', $a[8]);
-				$a['title'  ] = $b[0];
-
-	//			print_r($a);
-				switch ($a['name']) {
-				case 'D_REGIST_DT':
-				case 'D_UPDATE_DT':
-				case 'V_NOTE':
-					continue 2;
-				}
-
-				if (!empty($temple[$a['name']])) {
-					$src[] = rtrim($temple[$a['name']]);
-					continue;
-				}
-
-				// 型を変換
-				switch ($a['type']) {
-				case 'BLOB':
-					$a['type'] = 'VARCHAR';
-					$a['size'] = 4095;
-					break;
-				}
-
-				// デフォルトが省略されているときは ''
-				if (!isset($a[11])) {
-					$a[11] = '';
-				}
-
-				// この列型のテンプレートを取得
-				$tmp = rtrim($temple[$a['type']]);
-
-				// 置換
-				$rep = array(
-					  '@@name@@'    => $a['name']
-					, '@@default@@' => $a['default']
-					, '@@title@@'   => $a['title']
-					, '@@maxlen@@'  => (string)($a['size'])
-				);
-				
-				$src[] = str_replace(array_keys($rep), array_values($rep), $tmp);
+			// 型を変換
+			switch ($a['type']) {
+			case 'BLOB':
+				$a['type'] = 'VARCHAR';
+				$a['size'] = 4095;
+				break;
 			}
 
-			$replace['//@@row_form@@'] = implode("\r\n", $src);
+			// デフォルトが省略されているときは ''
+			if (!isset($a[11])) {
+				$a[11] = '';
+			}
+
+			// この列型のテンプレートを取得
+			$tmp = rtrim($temple[$a['type']]);
+
+			// 置換
+			$rep = array(
+					'@@name@@'    => $a['name']
+				, '@@default@@' => $a['default']
+				, '@@title@@'   => $a['title']
+				, '@@maxlen@@'  => (string)($a['size'])
+			);
+			
+			$src[] = str_replace(array_keys($rep), array_values($rep), $tmp);
 		}
+
+		$replace['//@@row_form@@'] = implode("\r\n", $src);
 	}
 
 	/**
@@ -1167,11 +1235,15 @@ _EOL_;
 				break;
 
 			case 'ListBase':
-				$this->jobListSQL($template, $replace, $sqlFile);
+				$this->jobListBaseSQL($template, $replace, $sqlFile);
 				break;
 
+			case 'ListList':
+				$this->jobListListSQL($template, $replace, $sqlFile);
+				break;
+				
 			case 'TransBase':
-				$this->jobEditSQL($template, $replace, $sqlFile);
+				$this->jobEditBaseSQL($template, $replace, $sqlFile);
 				break;
 			}
 		}

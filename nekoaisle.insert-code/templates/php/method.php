@@ -5,6 +5,7 @@
  * @access public
  * @param  
  * @return 
+ * @author {{author}}
  * @throw  
  */
 public function ${2:関数名}( )
