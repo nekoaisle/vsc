@@ -4,6 +4,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as chproc from 'child_process';
 import {Util, Extension, SelectFile, PathInfo} from './nekoaisle.lib/nekoaisle';
+import * as jschardet from 'jschardet';
+import * as iconv from 'iconv-lite';
 
 export function activate(context: vscode.ExtensionContext) {
 	let ext = new CpssWizard(context);
@@ -535,11 +537,21 @@ options.title}" "-a=${options.author}" "-out=${options.outFile}" "-tmpl=${tmpl}"
 				if (options.fileName.length != 0) {
 					// 出力ファイル名が指定されている
 					let fn = Util.normalizeHome(options.fileName);
-					console.log(`save: ${fn}`);
-					fs.writeFile(fn, stdout, (err: NodeJS.ErrnoException) => {
-						// エラーが発生
-						console.log(`error: ${err.message}`);
-					}) ;
+					// sjis に変換
+					var sjis = iconv.encode(stdout, "Shift_JIS" );
+					// 空のファイルを書き出す
+					fs.writeFileSync(fn, "");
+					// ファイルを「書き込み専用モード」で開く
+					var fd = fs.openSync(fn, "w");
+					// ファイルに書き込む
+					fs.write(fd, sjis, 0, sjis.length, function(err, written, buffer) {
+						if (err) {
+							// エラーが発生
+							console.log(`error: ${err.message}`);
+						} else {
+							console.log(`save: ${fn}`);
+						}
+					});
 				} else {
 					// 出力ファイルがないときは貼り付け
 					editor.edit(function (edit) {
