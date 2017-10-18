@@ -86,6 +86,7 @@ class CpssWizard extends nekoaisle_1.Extension {
                 mode: 'TransBase',
                 name: 'TransBase',
                 sql: true,
+                module: true,
             },
             '3 編集 初期化ページ': {
                 mode: 'TransInit',
@@ -107,6 +108,7 @@ class CpssWizard extends nekoaisle_1.Extension {
                 mode: 'ListBase',
                 name: 'ListBase',
                 sql: true,
+                module: true,
             },
             '8 一覧 初期化ページ': {
                 mode: 'ListInit',
@@ -121,6 +123,7 @@ class CpssWizard extends nekoaisle_1.Extension {
                 mode: 'Row',
                 name: 'Row',
                 sql: true,
+                module: true,
             },
             'B 一括 テーブル管理': {
                 mode: 'Batch',
@@ -163,6 +166,7 @@ class CpssWizard extends nekoaisle_1.Extension {
                     },
                 ],
                 sql: true,
+                module: true,
             },
         };
         this.defaultOptions = {
@@ -205,8 +209,8 @@ class CpssWizard extends nekoaisle_1.Extension {
             console.log(`mode = "${mode}"`);
             options.mode = info.mode;
             options.name = info.name;
-            if (options.mode == 'Batch') {
-                // 一括登録は InputBoxを表示してモジュール名求める
+            if (info.module) {
+                // モジュール名が必要なときはモジュール名求める
                 let ioption = {
                     prompt: "モジュール名を入力してください。",
                     placeHolder: '',

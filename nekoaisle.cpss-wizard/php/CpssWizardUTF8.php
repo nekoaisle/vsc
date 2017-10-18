@@ -1094,9 +1094,6 @@ _EOL_;
 //			exec("rm {$output}");
 		}
 
-		// モジュール名
-		$moduleName = $this->getOption('module', '');
-
 		// SQL ファイル名
 		$sqlFile = $this->getOption('sql');
 
@@ -1108,6 +1105,16 @@ _EOL_;
 		} else {
 			// スネークケース
 			$tableName = $this->splitSnake($sqlBase);
+		}
+
+		// モジュール名
+		$moduleName = $this->getOption('module', '');
+		if (empty($moduleName)) {
+			// モジュール名がない
+			if ($mode == 'Row') {
+				// DAO ならファイル名の先頭
+				$moduleName = strtoupper($splitName[0]);
+			}
 		}
 
 		// テンプレートを読み込む
@@ -1176,14 +1183,18 @@ _EOL_;
 		$replace['@@Group@@'] = $this->makeCamel(array_slice($splitName, 0, -1));
 
 		// DAO名
-		$a = $tableName;
-		if (!empty($moduleName) && ($moduleName == $a[0])) {
-			// 先頭がモジュール名と一致しないときは一旦先頭を除去
-			array_shift($a);
+		if ($mode == 'Row') {
+			$replace['@@Dao@@'] = $basename;
+		} else {
+			$a = $tableName;
+			if (!empty($moduleName) && ($moduleName == $a[0])) {
+				// 先頭がモジュール名と一致しないときは一旦先頭を除去
+				array_shift($a);
+			}
+			array_unshift($a, 'Row');
+			array_unshift($a, $moduleName);
+			$replace['@@Dao@@'] = $this->makeCamel($a);
 		}
-		array_unshift($a, 'Row');
-		array_unshift($a, $moduleName);
-		$replace['@@Dao@@'] = $this->makeCamel($a);
 
 		// @@lastpage@@
 		$a = explode('_', $basename); 
