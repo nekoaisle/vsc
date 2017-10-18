@@ -9,7 +9,7 @@ class CpssWizard
 	 */
 	function procOption($cmd)
 	{
-		$ret = array();
+		$ret = [];
 
 		foreach ($cmd as $s) {
 			if ($s[0] == '-') {
@@ -148,7 +148,7 @@ __USAGE__;
 		if (preg_match_all('/[A-Z][^A-Z]*/s', $str, $m) > 0) {
 			return $this->toLowwer($m[0]);
 		} else {
-			return array(strtolower($str));
+			return [strtolower($str)];
 		}
 	}
 
@@ -160,10 +160,14 @@ __USAGE__;
 	 */
 	function toLowwer($ary)
 	{
-		foreach ($ary as $k => $v) {
-			$ary[$k] = strtolower($v);
+		if (is_array($ary)) {
+			foreach ($ary as $k => $v) {
+				$ary[$k] = strtolower($v);
+			}
+			return $ary;
+		} else {
+			return strtolower($ary);
 		}
-		return $ary;
 	}
 
 	/**
@@ -172,12 +176,18 @@ __USAGE__;
 	 * @param  array $ary 分解した文字列が格納された配列
 	 * @return array 先頭文字のみ大文字にした文字列
 	 */
-	function toUcfirst($ary)
+	function toCamel($ary)
 	{
-		foreach ($ary as $k => $v) {
-			$ary[$k] = ucfirst($v);
+		if (is_array($ary)) {
+			foreach ($ary as $k => $v) {
+				$v = strtolower($v);
+				$ary[$k] = ucfirst($v);
+			}
+			return $ary;
+		} else {
+			$ary = strtolower($ary);
+			return ucfirst($ary);
 		}
-		return $ary;
 	}
 
 	/**
@@ -203,7 +213,7 @@ __USAGE__;
 	function makeCamel($ary)
 	{
 		// 先頭文字のみを大文字に変換
-		$ary = $this->toUcfirst($ary);
+		$ary = $this->toCamel($ary);
 
 		// 結合
 		return implode('', $ary);
@@ -226,7 +236,51 @@ __USAGE__;
 				++ $cols;
 			}
 		}
+
+//		echo "'{$str}' = ", strlen($str), " -> ", $cols,"\n";
+		
 		return $cols;
+	}
+
+	/**
+	 * 指定文字で埋める
+	 * 
+	 * @access public
+	 * @param  
+	 * @return 
+	 * @author 木屋 善夫
+	 * @throw  
+	 */
+	public function padString($str, $len, $pad = ' ', $type = STR_PAD_RIGHT)
+	{
+		// 埋める文字列の桁数を取得
+		$len = $len - $this->getStringCols($str);
+		if ($len <= 0) {
+			// 文字列の桁数が $len 以上なので何もしない
+			return $str;
+		}
+
+		// 
+		switch($type) {
+			case STR_PAD_RIGHT: {
+				$str .= str_repeat($pad, $len);
+				break;
+			}
+			case STR_PAD_LEFT: {
+				$str = str_repeat($pad, $len) . $str;
+				break;
+			}
+			case STR_PAD_BOTH: {
+				$l = (int)floor($len / 2);
+				$lf = str_repeat($pad, $l);
+				$rg = str_repeat($pad, $len - $l);
+				$str = $lf . $str . $rg;
+				break;
+			}
+		}
+
+		//
+		return $str;
 	}
 
 	/**
@@ -240,35 +294,34 @@ __USAGE__;
 	function loadTemplate($mode, $ext, $dir)
 	{
 		// 読み込むファイル候補
-		$files = array();
+		$files = [];
 
 		if (!empty($t = $this->getOption('tmpl'))) {
 			// テンプレートが指定されている
 			$files[] = $t;
 		} else {
 			// テンプレートが指定されていなかった
-			// テンプレートが指定されていなかった
-			$list = array(
+			$list = [
 				// 標準テンプレート
 				// ./template フォルダーを探しなければ同一フォルダーを探す
-				  'standard'       => array("{$dir}\\template\\template{$ext}", "{$dir}\\template{$ext}")
+				'standard'       => ["{$dir}\\template\\template{$ext}", "{$dir}\\template{$ext}"],
 				// トランザクション基本クラス
-				, 'TransBase'      => array("{$dir}\\template\\TransBase{$ext}")
+				'TransBase'      => ["{$dir}\\template\\TransBase{$ext}"],
 				// トランザクション初期化ページ
-				, 'TransInit'      => array("{$dir}\\template\\TransInit{$ext}")
+				'TransInit'      => ["{$dir}\\template\\TransInit{$ext}"],
 				// トランザクション編集ページ
-				, 'TransEdit'      => array("{$dir}\\template\\TransEdit{$ext}")
+				'TransEdit'      => ["{$dir}\\template\\TransEdit{$ext}"],
 				// トランザクション確認ページ
-				, 'TransConfirm'   => array("{$dir}\\template\\TransConfirm{$ext}")
+				'TransConfirm'   => ["{$dir}\\template\\TransConfirm{$ext}"],
 				// トランザクション完了ページ
-				, 'TransCompleted' => array("{$dir}\\template\\TransCompleted{$ext}")
+				'TransCompleted' => ["{$dir}\\template\\TransCompleted{$ext}"],
 				// 一覧初期化ページ
-				, 'ListInit'       => array("{$dir}\\template\\ListInit{$ext}")
+				'ListInit'       => ["{$dir}\\template\\ListInit{$ext}"],
 				// 一覧ページ
-				, 'ListList'       => array("{$dir}\\template\\ListList{$ext}")
+				'ListList'       => ["{$dir}\\template\\ListList{$ext}"],
 				// CCamRow 派生クラス
-				, 'Row'            => array("{$dir}\\template\\Row{$ext}")
-			);
+				'Row'            => ["{$dir}\\template\\Row{$ext}"],
+			];
 			if (empty($list[$mode])) {
 				$this->usage(1);
 			};
@@ -328,7 +381,7 @@ __USAGE__;
 		$ret = [
 			'NAME' => '',
 			'SQL' => '',
-			'ROW' => [],
+			'ROWS' => [],
 		];
 
 		// SQL 読み込み
@@ -361,8 +414,8 @@ __USAGE__;
 			}
 
 			//) のみの行まで処理
-			$search = array();
-			$sort   = array('' => '');
+			$search = [];
+			$sort   = ['' => ''];
 			for ($i = 0; $i < count($aryCol); ++ $i) {
 				$s = trim($aryCol[$i]);
 				if ($s == ')')
@@ -413,163 +466,103 @@ __USAGE__;
 		//
 		return $ret;
 	}
-	
 
 	/**
 	 * CamRow派生クラス用 SQL情報の処理
 	 * 
 	 * @param  array& $replace 置換情報配列
-	 * @param  string $sqlFile SQLファイル名
+	 * @param  array $table テーブル情報配列
 	 */
-	function jobRow(&$replace, $sqlFile)
+	function jobRow(&$replace, $table)
 	{
-		// SQL 読み込み
-		$sql = $this->loadTextFile($sqlFile);
+		// 行を処理
+		$src = [];
+		$maxLen = [];	// 最大列長
+		foreach ($table['ROWS'] as $a) {
+			switch ($a['name']) {
+				case 'D_REGIST_DT':
+				case 'D_UPDATE_DT':
+				case 'V_NOTE':
+					continue 2;
+			}
 
-		// テーブル名
-		if (preg_match('/CREATE\s+TABLE\s+([0-9A-Z_]+)/', $sql, $a) === 1) {
-			$replace['@@table@@'] = $a[1];
+			// 型を変換
+			switch ($a['type']) {
+			case 'NUMERIC':
+				if (empty($a[4])) {
+					// 小数部がないので整数
+					$a['type'] = 'INT';
+				} else {
+					// 小数部があるので浮動小数点
+					$a['type'] = 'DOUBLE';
+				}
+				break;
+			
+			case 'BLOB':
+				$a['type'] = 'VARCHAR';
+				$a['size'] = 4095;
+				break;
+			}
+
+			// 変数名を作成
+			$n = $this->makeVariableName($a['name'], $a['type']);
+
+			// デフォルトが省略されているときは NULL
+			if ($a['name'] == 'V_ID') {
+				$a['default'] = "''";
+			} else if (!isset($a['default']) || ($a['default'] === '')) {
+				$a[11] = 'NULL';
+			}
+
+			// 作成した列情報を保存
+			$src[] = $b = [
+				$a['name'],				// 'V_NAME'
+				$n,						// 'm_strName'
+				$a['type'],				// 'VARCHAR'
+				'TRUE',					// TRUE
+				$a['default'],			// ''
+				$a['title'],			// 'メールマガジン名'
+				(string)($a['size'])	// 64
+			];
+
+			// 桁揃えのため各単語の最大長を更新
+			foreach ($b as $k => $v) {
+				$l = $this->getStringCols($v);
+				if (empty($len[$k]) || ($len[$k] < $l)) {
+					$len[$k] = $l;
+				}
+			}
 		}
 
-		// SQL 文
-		if (preg_match('/(CREATE\s+TABLE\s[^;]+;)/', $sql, $a) === 1) {
-			$replace['@@sql@@'] = $a[1];
+		$col = [];
+		$var = [];
+		$dic = [];
+		foreach ($src as $a) {
+			// 列定義
+			$col[] = sprintf("[%s, %s, %s, %s, %s, %s, %s]"
+				, $this->padString("'{$a[0]}'", $len[0] + 2)
+				, $this->padString("'{$a[1]}'", $len[1] + 2)
+				, $this->padString("'{$a[2]}'", $len[2] + 2)
+				, $this->padString(   $a[3]   , $len[3])
+				, $this->padString(   $a[4]   , $len[4])
+				, $this->padString("'{$a[5]}'", $len[5] + 2)
+				, $this->padString(   $a[6]   , $len[6], ' ', STR_PAD_LEFT)
+			);
 
-			// フィールド定義の作成
-			if (strstr($a[1], "\r\n")) {
-				$aryCol = explode("\r\n", $a[1]);
-			} else {
-				$aryCol = explode("\n", $a[1]);
-			}
-
-			// (のみの行までスキップ
-			for ($i = 0; $i < count($aryCol); ++ $i) {
-				$s = trim($aryCol[$i]);
-				if ($s == '(') {
-					++ $i;
-					break;
-				}
-			}
-
-			//) のみの行まで処理
-			$src = array();
-			for ($i = 0; $i < count($aryCol); ++ $i) {
-				$s = trim($aryCol[$i]);
-				if ($s == ')')
-					break;
-
-				// , V_MAILMAG_ID    VARCHAR(  64, 4) NOT NULL DEFAULT '' -- メルマガID ACCOUNT.V_ID
-				$pt = 
-					  '/^'
-					. ',?\s*'									// , 
-					. '([^\s]+)\s+'								// V_MAILMAG_ID
-					. '([^\s\(]+)\s*'							// VARCHAR
-					. '(\(\s*'									// (
-					. '([0-9]+)\s*(,\s*([0-9]+)\s*)?'			// 64, 4
-					. '\)\s*)?'									//)
-					. '((NOT\s*NULL)|(PRIMARY\s*KEY))*\s*'		// NOT NULL, PRIMARY KEY
-					. '(DEFAULT\s+(\'[^\']*\'|[0-9]+|NULL))?\s*'	// DEFAULT 64
-					. '-- (.*)'
-					. '$/'
-				;
-	//			Array
-	//			(
-	//			    [0] => , V_MAILMAG_ID    VARCHAR( 64, 4) NOT NULL DEFAULT '' -- メルマガID ACCOUNT.V_ID
-	//			    [1] => V_MAILMAG_ID
-	//			    [2] => VARCHAR
-	//			    [3] => (  64, 4)
-	//			    [4] => 64
-	//			    [5] => , 4
-	//			    [6] => 4
-	//			    [7] => NOT NULL
-	//			    [8] => NOT NULL
-	//			    [9] =>
-	//			    [10] => DEFAULT ''
-	//			    [11] => ''
-	//			    [12] => メルマガID ACCOUNT.V_ID
-	//			)
-				if (preg_match($pt, $s, $a) === 1) {
-	//				print_r($a);
-					if ($a[1] == 'D_REGIST_DT')
-						continue;
-					if ($a[1] == 'D_UPDATE_DT')
-						continue;
-					if ($a[1] == 'V_NOTE')
-						continue;
-
-					// タイトルを作成
-					$b = explode(' ', $a[12]);
-					$t = $b[0];
-
-					// 型を変換
-					switch ($a[2]) {
-					case 'NUMERIC':
-						if (empty($a[6]))
-							$a[2] = 'INT';
-						else
-							$a[2] = 'DOUBLE';
-						break;
-					
-					case 'BLOB':
-						$a[2] = 'VARCHAR';
-						$a[4] = 4095;
-						break;
-					}
-
-					// 変数名を作成
-					$n = $this->makeVariableName($a[1], $a[2]);
-
-					// デフォルトが省略されているときは NULL
-					if ($a[1] == 'V_ID')
-						$a[11] = "''";
-					else if (!isset($a[11]) || ($a[11] === ''))
-						$a[11] = 'NULL';
-
-					// array('V_NAME', 'm_strName', 'VARCHAR', TRUE, '', 'メールマガジン名',  64)
-					$src[] = array($a[1], $n, $a[2], 'TRUE', $a[11], $t, (string)($a[4] + $a[6]));
-				}
-			}
-
-			// 桁揃えのため各単語の最大長を取得
-			$len = array();
-			foreach ($src as $a) {
-				foreach ($a as $k => $v) {
-					$l = $this->getStringCols($v);
-					if (empty($len[$k]) || ($len[$k] < $l))
-						$len[$k] = $l;
-				}
-			}
-
-			$col = array();
-			$var = array();
-			$dic = array();
-			foreach ($src as $a) {
-				// 列定義
-				$col[] = sprintf("[ %s, %s, %s, %s, %s, %s, %s ]"
-					, str_pad("'{$a[0]}'", $len[0] + 2)
-					, str_pad("'{$a[1]}'", $len[1] + 2)
-					, str_pad("'{$a[2]}'", $len[2] + 2)
-					, str_pad(   $a[3]   , $len[3])
-					, str_pad(   $a[4]   , $len[4])
-					, str_pad("'{$a[5]}'", $len[5] + 2)
-					, str_pad(   $a[6]   , $len[6], ' ', STR_PAD_LEFT)
-				);
-
-				// 変数定義
-				$v = str_pad($a[1], $len[1]);
-				$var[] = "\tpublic \$$v;\t// {$a[0]}\r\n";
-				
-				// 列名→変数名変換辞書
-				$dic[] = sprintf("%s => %s"
-					, str_pad("'{$a[0]}'", $len[0] + 2)
-					, str_pad("'{$a[1]}'", $len[1] + 2)
-				);
-			}
-
-			$replace['@@column@@'  ] = "\t\t  " . implode("\r\n\t\t, ", $col);
-			$replace['@@coldic@@'  ] = "\t\t  " . implode("\r\n\t\t, ", $dic);
-			$replace['@@variable@@'] = implode('', $var);
+			// 変数定義
+			$v = $this->padString($a[1], $len[1]);
+			$var[] = "\tpublic \$$v;\t// {$a[0]}\r\n";
+			
+			// 列名→変数名変換辞書
+			$dic[] = sprintf("%s => %s"
+				, $this->padString("'{$a[0]}'", $len[0] + 2)
+				, $this->padString("'{$a[1]}'", $len[1] + 2)
+			);
 		}
+
+		$replace['@@column@@'  ] = "\t\t  " . implode("\r\n\t\t, ", $col);
+		$replace['@@coldic@@'  ] = "\t\t  " . implode("\r\n\t\t, ", $dic);
+		$replace['@@variable@@'] = implode('', $var);
 	}
 
 	/**
@@ -577,9 +570,9 @@ __USAGE__;
 	 * 
 	 * @param  string& $template テンプレート
 	 * @param  array& $replace   置換情報配列
-	 * @param  string $sqlFile SQLファイル名
+	 * @param  array $table テーブル情報配列
 	 */
-	function jobListBaseSQL(&$template, &$replace, $sqlFile)
+	function jobListBaseSQL(&$template, &$replace, $table)
 	{
 		// テンプレートから列タイプごとのテンプレートを取得
 		$temple = [];
@@ -604,7 +597,7 @@ _EOL_;
 				'TITLE'   => '状態',
 				'MAXLEN'  =>   3,
 				'LESS'    => TRUE,
-				'OPTION'  => array(''=>''),
+				'OPTION'  => [''=>''],
 				'search'  => 'status',
 			],
 _EOL_;
@@ -722,19 +715,10 @@ _EOL_;
 			$template = preg_replace($re, '', $template);
 		}
 
-		// テーブル情報読み込み
-		$table = $this->loadTable($sqlFile);
-
-		// テーブル名
-		$replace['@@table@@'] = $table['NAME'];
-
-		// SQL 文
-		$replace['@@sql@@'] = $table['SQL'];
-
 		// 行を処理
-		$search = array();
-		$sort   = array('' => '');
-		foreach ($table['ROW'] as $a) {
+		$search = [];
+		$sort   = ['' => ''];
+		foreach ($table['ROWS'] as $a) {
 			switch ($a['name']) {
 			case 'D_REGIST_DT':
 			case 'D_UPDATE_DT':
@@ -774,12 +758,12 @@ _EOL_;
 			}
 
 			// 置換
-			$rep = array(
-					'@@name@@'    => $a['name']
-				, '@@default@@' => $a['default']
-				, '@@title@@'   => $a['title']
-				, '@@maxlen@@'  => (string)($a['size'])
-			);
+			$rep = [
+				'@@name@@'    => $a['name'],
+				'@@default@@' => $a['default'],
+				'@@title@@'   => $a['title'],
+				'@@maxlen@@'  => (string)($a['size']),
+			];
 			
 			$search[] = str_replace(array_keys($rep), array_values($rep), $tmp);
 
@@ -803,9 +787,9 @@ _EOL_;
 		$sort2 = [];
 		foreach ($sort as $k => $v) {
 			if (empty($k)) {
-				$k = str_pad("''", $len, ' ');
+				$k = $this->padString("''", $len, ' ');
 			} else {
-				$k = str_pad("'{$replace['@@table@@']}.{$k}'", $len, ' ');
+				$k = $this->padString("'{$replace['@@table@@']}.{$k}'", $len, ' ');
 			}
 			$sort2[] = "\t\t\t{$k} => '{$v}'";
 		}
@@ -819,20 +803,11 @@ _EOL_;
 	 * @access public
 	 * @param  string& $template テンプレート
 	 * @param  array& $replace   置換情報配列
-	 * @param  string $sqlFile SQLファイル名
+	 * @param  array $table テーブル情報配列
 	 * @author 木屋 善夫
 	 */
-	public function jobListListSQL(&$template, &$replace, $sqlFile)
+	public function jobListListSQL(&$template, &$replace, $table)
 	{
-		// テーブル情報読み込み
-		$table = $this->loadTable($sqlFile);
-
-		// テーブル名
-		$replace['@@table@@'] = $table['NAME'];
-
-		// SQL 文
-		$replace['@@sql@@'] = $table['SQL'];
-
 		// ヘッダー作成
 		$strs[] = <<<_EOL_
 			// ヘッダータイトル指定(省略可)
@@ -909,12 +884,12 @@ _EOL_;
 	 * 
 	 * @param  string& $template テンプレート
 	 * @param  array& $replace   置換情報配列
-	 * @param  string $sqlFile SQLファイル名
+	 * @param  array $table テーブル情報配列
 	 */
-	function jobEditBaseSQL(&$template, &$replace, $sqlFile)
+	function jobEditBaseSQL(&$template, &$replace, $table)
 	{
 		// テンプレートから列タイプごとのテンプレートを取得
-		$temple = array();
+		$temple = [];
 		$temple['V_ID'] = <<<_EOL_
 			'V_ID' => [ 
 				'CLASS'   => 'string',
@@ -933,7 +908,7 @@ _EOL_;
 				'DEFAULT' => 'VLD',
 				'TITLE'   => '状態',
 				'MAXLEN'  => 3,
-				'OPTION'  => array(''=>''),
+				'OPTION'  => [''=>''],
 			]
 _EOL_;
 	$temple['NUMERIC'] = <<<_EOL_
@@ -1013,18 +988,9 @@ _EOL_;
 			$template = preg_replace($re, '', $template);
 		}
 
-		// テーブル情報読み込み
-		$table = $this->loadTable($sqlFile);
-		
-		// テーブル名
-		$replace['@@table@@'] = $table['NAME'];
-
-		// SQL 文
-		$replace['@@sql@@'] = $table['SQL'];
-
 		// 行を処理
-		$search = array();
-		$sort   = array('' => '');
+		$search = [];
+		$sort   = ['' => ''];
 		foreach ($table['ROWS'] as $a) {
 			// SQL 読み込み
 			switch ($a['name']) {
@@ -1056,12 +1022,12 @@ _EOL_;
 			$tmp = rtrim($temple[$a['type']]);
 
 			// 置換
-			$rep = array(
+			$rep = [
 					'@@name@@'    => $a['name']
 				, '@@default@@' => $a['default']
 				, '@@title@@'   => $a['title']
 				, '@@maxlen@@'  => (string)($a['size'])
-			);
+			];
 			
 			$src[] = str_replace(array_keys($rep), array_values($rep), $tmp);
 		}
@@ -1073,7 +1039,7 @@ _EOL_;
 	 * オプション
 	 * @var array
 	 */
-	public $options = array();
+	public $options = [];
 
 	/**
 	 * 
@@ -1124,26 +1090,30 @@ _EOL_;
 		$output = $this->getOption('out');
 		if (empty($output)) {
 			$output = "php://stdout";
-		} else {
-			exec("del {$output}");
+		} else if (file_exists($output)) {
+//			exec("rm {$output}");
 		}
+
+		// モジュール名
+		$moduleName = $this->getOption('module', '');
 
 		// SQL ファイル名
 		$sqlFile = $this->getOption('sql');
 
 		// テーブル名を分解
-		if (strpos($sqlFile, '_') === FALSE) {
+		$sqlBase = basename(strtoupper($sqlFile), '.SQL');
+		if (strpos($sqlBase, '_') === FALSE) {
 			// スネークケースではないのでキャメルケースとして分解
-			$tableName = $this->splitCamel($sqlFile);
+			$tableName = $this->splitCamel($sqlBase);
 		} else {
 			// スネークケース
-			$tableName = $this->splitSnake($sqlFile);
+			$tableName = $this->splitSnake($sqlBase);
 		}
 
 		// テンプレートを読み込む
 		$template = $this->loadTemplate($mode, $ext, $dir);
 
-		$replace = array();
+		$replace = [];
 
 		// ファイル名を設定
 		$replace['@@filename@@'] = basename($filename);
@@ -1171,6 +1141,11 @@ _EOL_;
 		// Coryright の年を設定
 		$replace['@@copyright@@'] = date('Y');;
 
+		// モジュール名を設定
+		$replace['@@module@@'] = strtolower($moduleName);
+		$replace['@@Module@@'] = $this->toCamel($moduleName);
+		$replace['@@MODULE@@'] = strtoupper($moduleName);
+		
 		// Class 名を設定
 		// ファイル名にスペースを含むときはその後ろから(sql がこれに当たる)
 		$i = strpos($basename, ' ');
@@ -1191,15 +1166,24 @@ _EOL_;
 		$replace['@@Target@@'] = $this->makeCamel(array_slice($splitName, 0, count($splitName) - 1));
 		$replace['@@TARGET@@'] = strtoupper($replace['@@target@@']);
 
-		// テーブル名
+		// テーブル名(SQLファイル名から作った仮)
 		$replace['@@table@@'] = $this->makeSnake(array_slice($tableName, 0, count($tableName) - 1));
 		$replace['@@Table@@'] = $this->makeCamel(array_slice($tableName, 0, count($tableName) - 1));
 		$replace['@@TABLE@@'] = strtoupper($replace['@@table@@']);
 
-
 		// グループ名を設定
 		$replace['@@group@@'] = $this->makeSnake(array_slice($splitName, 0, -1));
 		$replace['@@Group@@'] = $this->makeCamel(array_slice($splitName, 0, -1));
+
+		// DAO名
+		$a = $tableName;
+		if (!empty($moduleName) && ($moduleName == $a[0])) {
+			// 先頭がモジュール名と一致しないときは一旦先頭を除去
+			array_shift($a);
+		}
+		array_unshift($a, 'Row');
+		array_unshift($a, $moduleName);
+		$replace['@@Dao@@'] = $this->makeCamel($a);
 
 		// @@lastpage@@
 		$a = explode('_', $basename); 
@@ -1229,21 +1213,34 @@ _EOL_;
 
 		// SQL(Row)処理
 		if (!empty($sqlFile)) {
+			// テーブル情報読み込み
+			$table = $this->loadTable($sqlFile);
+
+			// テーブル名
+			$tableName = $this->splitSnake($table['NAME']);
+			$replace['@@table@@'] = $this->makeSnake($tableName);
+			$replace['@@Table@@'] = $this->makeCamel($tableName);
+			$replace['@@TABLE@@'] = strtoupper($replace['@@table@@']);
+
+			// SQL 文
+			$replace['@@sql@@'] = $table['SQL'];
+
+			// タイプ別処理
 			switch ($mode) {
 			case 'Row':
-				$this->jobRow($replace, $sqlFile);
+				$this->jobRow($replace, $table);
 				break;
 
 			case 'ListBase':
-				$this->jobListBaseSQL($template, $replace, $sqlFile);
+				$this->jobListBaseSQL($template, $replace, $table);
 				break;
 
 			case 'ListList':
-				$this->jobListListSQL($template, $replace, $sqlFile);
+				$this->jobListListSQL($template, $replace, $table);
 				break;
 				
 			case 'TransBase':
-				$this->jobEditBaseSQL($template, $replace, $sqlFile);
+				$this->jobEditBaseSQL($template, $replace, $table);
 				break;
 			}
 		}

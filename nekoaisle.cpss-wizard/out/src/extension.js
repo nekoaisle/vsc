@@ -219,7 +219,7 @@ class CpssWizard extends nekoaisle_1.Extension {
                 return resolveSurelyPrimise('');
             }
         }).then((module) => {
-            options.module = module;
+            options.module = module.toLocaleUpperCase();
             // InputBoxを表示してタイトルを求める
             let ioption = {
                 prompt: "タイトルを入力してください。",
@@ -492,7 +492,7 @@ class CpssWizard extends nekoaisle_1.Extension {
             return false;
         }
         // コマンドラインを作成
-        let cmd = `${options.php} ${options.wizard} "-m=${options.mode}" "-f=${fileName}" "-t=${options.title}" "-a=${options.author}" "-out=${options.outFile}" "-tmpl=${tmpl}" "-sql=${options.sqlFile}"`;
+        let cmd = `${options.php} ${options.wizard} "-m=${options.mode}" "-f=${fileName}" "-t=${options.title}" "-a=${options.author}" "-out=${options.outFile}" "-tmpl=${tmpl}" "-sql=${options.sqlFile}" "-module=${options.module}"`;
         console.log(cmd);
         // 実行
         chproc.exec(cmd, (err, stdout, stderr) => {

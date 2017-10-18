@@ -1,1 +1,1 @@
-EchoDebug( {{clipboard}} );
+EchoDebug({{clipboard}});

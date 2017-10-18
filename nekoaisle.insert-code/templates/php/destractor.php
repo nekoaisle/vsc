@@ -2,10 +2,10 @@
 /**
  * 消滅
  */
-public function __destruct(  )
+public function __destruct()
 {
 	$1
 	// デフォルトインプリメンテーションの呼び出し
-	parent::__destruct( );
+	parent::__destruct();
 }
 /* nekoaisle.insert-code delete line */ ?>

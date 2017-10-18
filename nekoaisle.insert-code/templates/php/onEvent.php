@@ -7,10 +7,10 @@
  * @return boolean コマンドディスパッチを FAILED:続行, SUCCEEDED:終了
  * @author {{author}}
  */
-protected function on$1( \$value )
+protected function on$1(\$value)
 {
 	// ページ遷移
-	\$this->PageRedirect( '' );
+	\$this->PageRedirect('');
 	//
 	return SUCCEEDED;
 }

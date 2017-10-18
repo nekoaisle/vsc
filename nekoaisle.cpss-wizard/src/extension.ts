@@ -38,7 +38,7 @@ class Options {
 	public name?      : string = '';	// テンプレートファイルのベース名
 	public sqlFile?   : string = '';	// SQL ファイル名
 	public module?    : string = '';	// 一括時のモジュール名
-	public fileName?  : string = '';	// 出力ファイル名
+	public fileName?: string = '';	// 出力ファイル名
 
 	/**
 	 * 構築
@@ -241,7 +241,7 @@ class CpssWizard extends Extension {
 				return resolveSurelyPrimise('');
 			}
 		}).then((module: string) => {
-			options.module = module;
+			options.module = module.toLocaleUpperCase();
 
 			// InputBoxを表示してタイトルを求める
 			let ioption = {
@@ -527,7 +527,7 @@ class CpssWizard extends Extension {
 
 		// コマンドラインを作成
 		let cmd = `${options.php} ${options.wizard} "-m=${options.mode}" "-f=${fileName}" "-t=${
-options.title}" "-a=${options.author}" "-out=${options.outFile}" "-tmpl=${tmpl}" "-sql=${options.sqlFile}"`;
+options.title}" "-a=${options.author}" "-out=${options.outFile}" "-tmpl=${tmpl}" "-sql=${options.sqlFile}" "-module=${options.module}"`;
 		console.log( cmd );
 
 		// 実行

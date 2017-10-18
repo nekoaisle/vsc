@@ -38,9 +38,9 @@
 	"V_ACCOUNT_ID": {
 		"prefix": "V_ACCOUNT_ID",
 		"body": [
-			"V_ACCOUNT_ID    VARCHAR( 64) NOT NULL DEFAULT '' -- V_ACCOUNT.V_ID"
+			"V_ACCOUNT_ID    VARCHAR( 64) NOT NULL DEFAULT '' -- アカウントID ACCOUNT.VID"
 		],
-		"description": "V_ACCOUNT_ID    VARCHAR( 64) NOT NULL DEFAULT '' -- V_ACCOUNT.V_ID"
+		"description": "V_ACCOUNT_ID    VARCHAR( 64) NOT NULL DEFAULT '' -- アカウントID ACCOUNT.VID"
 	},
 	"C_STATUS": {
 		"prefix": "C_STATUS",
@@ -59,9 +59,9 @@
 	"V_NAME": {
 		"prefix": "V_NAME",
 		"body": [
-			"V_NAME          VARCHAR(255) NOT NULL DEFAULT '' -- 名前"
+			"V_NAME          VARCHAR(255) NOT NULL DEFAULT '' -- 名称"
 		],
-		"description": "V_NAME        VARCHAR(255) NOT NULL DEFAULT '' -- 名前"
+		"description": "V_NAME        VARCHAR(255) NOT NULL DEFAULT '' -- 名称"
 	},
 	"V_COMMENT": {
 		"prefix": "V_COMMENT",
@@ -69,5 +69,26 @@
 			"V_COMMENT       VARCHAR(255) NOT NULL DEFAULT '' -- コメント"
 		],
 		"description": "V_COMMENT       VARCHAR(255) NOT NULL DEFAULT '' -- コメント"
+	},
+	"V_IMAGE": {
+		"prefix": "V_IMAGE",
+		"body": [
+			"V_IMAGE         VARCHAR(255) NOT NULL DEFAULT '' -- 画像ID|URL"
+		],
+		"description": "V_IMAGE         VARCHAR(255) NOT NULL DEFAULT '' -- 画像ID|URL"
+	},
+	"V_LINK": {
+		"prefix": "V_LINK",
+		"body": [
+			"V_LINK          VARCHAR(255) NOT NULL DEFAULT '' -- リンク先"
+		],
+		"description": "V_LINK          VARCHAR(255) NOT NULL DEFAULT '' -- リンク先"
+	},
+	"V_DESC": {
+		"prefix": "V_DESC",
+		"body": [
+			"V_DESC          VARCHAR(255) NOT NULL DEFAULT '' -- 説明文"
+		],
+		"description": "V_DESC          VARCHAR(255) NOT NULL DEFAULT '' -- 説明文"
 	}
 }

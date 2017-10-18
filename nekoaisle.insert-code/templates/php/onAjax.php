@@ -8,14 +8,14 @@
  * @author {{author}}
  * @throw  
  */
-public function onGet$1( \$val )
+public function onGet$1(\$val)
 {
 	// AJAX なので HTML は出力しない
 	\$this->m_blUseHTML = FALSE;
 	// 戻り値用配列
 	\$data = [];
 	// json を出力
-	\$this->EchoJSON( \$data );
+	\$this->EchoJSON(\$data);
 	//
 	return SUCCEEDED;
 }
