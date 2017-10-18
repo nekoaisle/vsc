@@ -782,14 +782,14 @@ _EOL_;
 				$len = $l;
 			}
 		}
-		$len += strlen($replace['@@table@@']) + 2 + 1;	// 2='' 1=.
+		$len += strlen($replace['@@TABLE@@']) + 2 + 1;	// 2='' 1=.
 
 		$sort2 = [];
 		foreach ($sort as $k => $v) {
 			if (empty($k)) {
 				$k = $this->padString("''", $len, ' ');
 			} else {
-				$k = $this->padString("'{$replace['@@table@@']}.{$k}'", $len, ' ');
+				$k = $this->padString("'{$replace['@@TABLE@@']}.{$k}'", $len, ' ');
 			}
 			$sort2[] = "\t\t\t{$k} => '{$v}'";
 		}
