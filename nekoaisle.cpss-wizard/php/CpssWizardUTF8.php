@@ -833,7 +833,7 @@ _EOL_;
 			// 値が 'ADD' ならば自動生成
 			'COLUMN' => [
 				'V_ID' => 'FIX',
-				'V_LINK' => 'FIX',
+				'EDIT_LINK' => 'FIX',
 _EOL_;
 		foreach ($table['ROWS'] as $row) {
 			// SQL 読み込み
@@ -854,7 +854,7 @@ _EOL_;
 			// 列に設定する HtmlViewコマンド
 			// 指定されていない列は "'@{$key} set"
 			'COMMAND' => [
-				'V_LINK' => '@V_LINK set @ href',
+				'EDIT_LINK' => '@EDIT_LINK set @ href',
 _EOL_;
 		foreach ($table['ROWS'] as $row) {
 			// SQL 読み込み
