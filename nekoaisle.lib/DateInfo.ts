@@ -39,7 +39,7 @@ export class DateInfo {
 		}
 		
 		this.year  = Util.padNum(date.getFullYear(), 4);
-		this.month = Util.padNum(date.getMonth()   , 2);
+		this.month = Util.padNum(date.getMonth()+1 , 2);
 		this.date  = Util.padNum(date.getDate()    , 2);
 		this.hour  = Util.padNum(date.getHours()   , 2);
 		this.min   = Util.padNum(date.getMinutes() , 2);
