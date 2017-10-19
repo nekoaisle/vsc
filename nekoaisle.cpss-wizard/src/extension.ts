@@ -1,9 +1,10 @@
 'use strict';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import * as chproc from 'child_process';
-import {Util, Extension, SelectFile, PathInfo} from './nekoaisle.lib/nekoaisle';
+import { Util, Extension, SelectFile, PathInfo } from './nekoaisle.lib/nekoaisle';
 import * as jschardet from 'jschardet';
 import * as iconv from 'iconv-lite';
 
@@ -15,45 +16,54 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 }
 
+interface HtmlInfo {
+	dir: string;		// 格納ディレクトリ
+	charset: string;	// 文字コード
+}
+
 /**
  * オプションの定義
  */
 class Options {
 	// wizardファイル名
-	public wizard     : string;
+	public wizard: string;
 	// 標準テンプレート格納ディレクトリ
 	public templateDir: string;
 	// SQLファイル格納ディレクトリ
-	public sqlDir     : string;
+	public sqlDir: string;
 	// php格納ディレクトリ
-	public php        : string;
+	public php: string;
 	// 出力ファイル名
-	public outFile    : string;
+	public outFile: string;
 	// 著者名
-	public author     : string;
+	public author: string;
+	// 文字コード
+	public charset: string;
 
 	// モード
-	public mode?      : string = '';	// CpssWizerd.php に与えるモジュール名
-	public title?     : string = '';	// CpssWizerd.php に与えるタイトル
-	public name?      : string = '';	// テンプレートファイルのベース名
-	public sqlFile?   : string = '';	// SQL ファイル名
-	public module?    : string = '';	// 一括時のモジュール名
-	public fileName?: string = '';	// 出力ファイル名
+	public mode?: string = '';	// CpssWizerd.php に与えるモジュール名
+	public title?: string = '';	// CpssWizerd.php に与えるタイトル
+	public name?: string = '';	// テンプレートファイルのベース名
+	public sqlFile?: string = '';	// SQL ファイル名
+	public module?: string = '';	// 一括時のモジュール名
+	public fileName?: string = '';		// 出力ファイル名
+	public htmls?: HtmlInfo[] = [];		// html出力ディレクトリ名
 
 	/**
 	 * 構築
 	 * @param config 設定オブジェクト
 	 */
-	public constructor (config: vscode.WorkspaceConfiguration, defaults: Options) {
+	public constructor(config: vscode.WorkspaceConfiguration, defaults: Options) {
 		// ファイル名
-		this.wizard      = Util.normalizePath(config.get('wizard'     , defaults.wizard     ));
+		this.wizard = Util.normalizePath(config.get('wizard', defaults.wizard));
 		this.templateDir = Util.normalizePath(config.get('templateDir', defaults.templateDir));
-		this.sqlDir      = Util.normalizePath(config.get('sqlDir'     , defaults.sqlDir     ));
-		this.php         = Util.normalizePath(config.get('php'        , defaults.php        ));
-		this.outFile     = Util.normalizePath(config.get('outFile'    , defaults.outFile    ));
+		this.sqlDir = Util.normalizePath(config.get('sqlDir', defaults.sqlDir));
+		this.php = Util.normalizePath(config.get('php', defaults.php));
+		this.outFile = Util.normalizePath(config.get('outFile', defaults.outFile));
+		this.charset = config.get('charset', defaults.charset);
 
 		// 
-		this.author      = config.get('author', defaults.author);
+		this.author = config.get('author', defaults.author);
 	}
 };
 
@@ -142,6 +152,7 @@ class CpssWizard extends Extension {
 				{
 					mode: 'ListList',
 					name: 'ListList',
+					htmls: [{ dir: 'pc', charset: 'UTF-8' }],
 				},
 				{
 					mode: 'TransBase',
@@ -154,14 +165,12 @@ class CpssWizard extends Extension {
 				{
 					mode: 'TransEdit',
 					name: 'TransEdit',
+					htmls: [{ dir: 'pc', charset: 'UTF-8' }],
 				},
 				{
 					mode: 'TransConfirm',
 					name: 'TransConfirm',
-				},
-				{
-					mode: 'TransCompleted',
-					name: 'TransCompleted',
+					htmls: [{ dir: 'pc', charset: 'UTF-8' }],
 				},
 			],
 			sql: true,
@@ -170,12 +179,13 @@ class CpssWizard extends Extension {
 	};
 
 	protected defaultOptions: Options = {
-		wizard     : "",			// 拡張機能の保存フォルダーは動的に取得
+		wizard: "",					// 拡張機能の保存フォルダーは動的に取得
 		templateDir: "",			// 拡張機能の保存フォルダーは動的に取得
-		sqlDir     : '~/',
-		php        : '/usr/bin/php',
-		outFile    : "php://stdout",
-		author     : "木屋善夫",
+		sqlDir: '~/',
+		php: '/usr/bin/php',
+		outFile: "php://stdout",
+		author: "木屋善夫",
+		charset: 'Shift_JIS',
 	};
 
 	/**
@@ -201,9 +211,9 @@ class CpssWizard extends Extension {
 	 */
 	public entry() {
 		// オプションのデフォルト値で動的生成しなければならないものを設定
-		this.defaultOptions.wizard      = this.joinExtensionRoot("php/CpssWizardUTF8.php");
-		this.defaultOptions.templateDir = this.joinExtensionRoot("templates"             );
-		
+		this.defaultOptions.wizard = this.joinExtensionRoot("php/CpssWizardUTF8.php");
+		this.defaultOptions.templateDir = this.joinExtensionRoot("templates");
+
 		// 設定取得
 		let options: Options = new Options(this.config, this.defaultOptions);
 
@@ -219,11 +229,11 @@ class CpssWizard extends Extension {
 		};
 		vscode.window.showQuickPick(menu, opt).then((mode: string) => {
 			// モードが指定されなかったら終了
-			if ( !mode ) {
+			if (!mode) {
 				return rejectSurelyPrimise('');
 			}
 			info = this.modeInfos[mode];
-			if ( !info ) {
+			if (!info) {
 				return rejectSurelyPrimise('');
 			}
 
@@ -250,12 +260,12 @@ class CpssWizard extends Extension {
 			// InputBoxを表示してタイトルを求める
 			let ioption = {
 				prompt: "タイトルを入力してください。",
-				password:false,
-				value:"",
+				password: false,
+				value: "",
 			};
 			return vscode.window.showInputBox(ioption);
 		}).then((title: string) => {
-			if ( !title || (title.trim().length == 0) ) {
+			if (!title || (title.trim().length == 0)) {
 				// タイトルが指定されなかったときは何もしない
 				return rejectSurelyPrimise('');
 			}
@@ -264,7 +274,7 @@ class CpssWizard extends Extension {
 			options.title = title;
 
 			// SQLファイルを選択
-			if ( (info.sql) && fs.existsSync(options.sqlDir) ) {
+			if ((info.sql) && fs.existsSync(options.sqlDir)) {
 				let sel = new SelectFile();
 				return sel.selectFile(`${options.sqlDir}`, 'SQLファイルを選択してください。(不要な場合はESC)');
 			} else {
@@ -281,7 +291,7 @@ class CpssWizard extends Extension {
 				// 1回のみ
 				this.execWizard(options);
 			}
-		}); 
+		});
 	}
 
 	/**
@@ -336,6 +346,7 @@ class CpssWizard extends Extension {
 			// テンプレートファイルのベース名を設定
 			opt.mode = name['mode'];
 			opt.name = name['name'];
+			opt.htmls = name['htmls'];
 
 			// 出力ファイル名を作成
 			let parts: string[] = [];
@@ -367,7 +378,7 @@ class CpssWizard extends Extension {
 				case 'ListInit': {
 					// 'BIMMS_GROUP.sql' -> group_list.php
 					parts.push(sqls[0].toLocaleLowerCase());
-					for (let i = 1; i < sqls.length; ++ i) {
+					for (let i = 1; i < sqls.length; ++i) {
 						parts.push('_' + sqls[i].toLocaleLowerCase());
 					}
 					// '_list' を追加
@@ -380,7 +391,7 @@ class CpssWizard extends Extension {
 					// SQLの先頭部品を小文字で設定
 					parts.push(sqls[0].toLocaleLowerCase());
 					// SQLの残り部品を '_' + 小文字で追加
-					for (let i = 1; i < sqls.length; ++ i) {
+					for (let i = 1; i < sqls.length; ++i) {
 						parts.push('_' + sqls[i].toLocaleLowerCase());
 					}
 					// '_list1' を追加
@@ -403,7 +414,7 @@ class CpssWizard extends Extension {
 					// SQLの先頭部品を小文字で設定
 					parts.push(sqls[0].toLocaleLowerCase());
 					// SQLの残り部品を '_' + 小文字で追加
-					for (let i = 1; i < sqls.length; ++ i) {
+					for (let i = 1; i < sqls.length; ++i) {
 						parts.push('_' + sqls[i].toLocaleLowerCase());
 					}
 					// '_edit' を追加
@@ -416,7 +427,7 @@ class CpssWizard extends Extension {
 					// SQLの先頭部品を小文字で設定
 					parts.push(sqls[0].toLocaleLowerCase());
 					// SQLの残り部品を '_' + 小文字で追加
-					for (let i = 1; i < sqls.length; ++ i) {
+					for (let i = 1; i < sqls.length; ++i) {
 						parts.push('_' + sqls[i].toLocaleLowerCase());
 					}
 					// '_edit' を追加
@@ -429,7 +440,7 @@ class CpssWizard extends Extension {
 					// SQLの先頭部品を小文字で設定
 					parts.push(sqls[0].toLocaleLowerCase());
 					// SQLの残り部品を '_' + 小文字で追加
-					for (let i = 1; i < sqls.length; ++ i) {
+					for (let i = 1; i < sqls.length; ++i) {
 						parts.push('_' + sqls[i].toLocaleLowerCase());
 					}
 					// '_edit' を追加
@@ -442,7 +453,7 @@ class CpssWizard extends Extension {
 					// SQLの先頭部品を小文字で設定
 					parts.push(sqls[0].toLocaleLowerCase());
 					// SQLの残り部品を '_' + 小文字で追加
-					for (let i = 1; i < sqls.length; ++ i) {
+					for (let i = 1; i < sqls.length; ++i) {
 						parts.push('_' + sqls[i].toLocaleLowerCase());
 					}
 					// '_edit' を追加
@@ -471,6 +482,17 @@ class CpssWizard extends Extension {
 		// 実行
 		for (let opt of opts) {
 			this.execWizard(opt);
+
+			if (opt.htmls) {
+				// HTMLを処理
+				let opt2: Options = Util.cloneObject(opt);
+				let pinfo = new PathInfo(opt.fileName);
+				for (let info of opt2.htmls) {
+					opt2.fileName = pinfo.getFileName('.html', info.dir);
+					opt2.charset = info.charset;
+					this.execWizard(opt2);
+				}
+			}
 		}
 	}
 
@@ -492,10 +514,10 @@ class CpssWizard extends Extension {
 			// 現在編集中のファイル名を解析
 			fileName = editor.document.fileName;
 		}
-		let pinfo = path.parse( fileName );
-		if ( !pinfo.ext ) {
+		let pinfo = path.parse(fileName);
+		if (!pinfo.ext) {
 			// 拡張子がない
-			Util.putMess( `拡張子のないファイルには対応していません。'${fileName}'` );
+			Util.putMess(`拡張子のないファイルには対応していません。'${fileName}'`);
 			return false;
 		}
 
@@ -512,43 +534,56 @@ class CpssWizard extends Extension {
 			`${options.templateDir}/template${pinfo.ext}`,
 		];
 		let tmpl;
-		for ( var k in t ) {
-			if ( Util.isExistsFile( t[k] ) ) {
+		for (var k in t) {
+			if (Util.isExistsFile(t[k])) {
 				tmpl = t[k];
 				break;
 			}
 		}
-		console.log( "template = " + tmpl );
+		console.log("template = " + tmpl);
 
-		if ( !tmpl ) {
+		if (!tmpl) {
 			var s = "テンプレートファイルが見つかりませんでした。\n";
-			for ( var k in t ) {
+			for (var k in t) {
 				s += t[k] + "\n";
 			}
-			Util.putMess( s );
+			Util.putMess(s);
 			return false;
 		}
 
 		// コマンドラインを作成
 		let cmd = `${options.php} ${options.wizard} "-m=${options.mode}" "-f=${fileName}" "-t=${
-options.title}" "-a=${options.author}" "-out=${options.outFile}" "-tmpl=${tmpl}" "-sql=${options.sqlFile}" "-module=${options.module}"`;
-		console.log( cmd );
+			options.title}" "-a=${options.author}" "-out=${options.outFile}" "-tmpl=${tmpl}" "-sql=${options.sqlFile}" "-module=${options.module}"`;
+		console.log(cmd);
 
 		// 実行
-		chproc.exec( cmd, (err, stdout: string, stderr: string) => {
-			if ( err == null ) {
+		chproc.exec(cmd, (err, stdout: string, stderr: string) => {
+			if (err == null) {
 				// console.log(stdout);
 				if (options.fileName.length != 0) {
 					// 出力ファイル名が指定されている
 					let fn = Util.normalizeHome(options.fileName);
-					// sjis に変換
-					var sjis = iconv.encode(stdout, "Shift_JIS" );
+					let code;
+					switch (options.charset) {
+						case undefined:
+						case '':	
+						case 'UTF-8': {
+							// 変換しない
+							code = stdout;
+							break;
+						}
+						default: {
+							// UTF-8 以外なら変換
+							code = iconv.encode(stdout, options.charset);
+							break;
+						}
+					}
 					// 空のファイルを書き出す
 					fs.writeFileSync(fn, "");
 					// ファイルを「書き込み専用モード」で開く
 					var fd = fs.openSync(fn, "w");
 					// ファイルに書き込む
-					fs.write(fd, sjis, 0, sjis.length, function(err, written, buffer) {
+					fs.write(fd, code, 0, code.length, function (err, written, buffer) {
 						if (err) {
 							// エラーが発生
 							console.log(`error: ${err.message}`);

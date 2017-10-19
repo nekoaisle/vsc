@@ -22,7 +22,7 @@
 				"match": "\\b(select|from|where|group by|order by)\\b"
 			},{
 				"name": "comment.block.cpsslog",
-				"match": "/var/www/ragdoll/"
+				"match": "/var/www/ragdoll/.*?\\(\\d+\\)"
 			}
 		]
 		},

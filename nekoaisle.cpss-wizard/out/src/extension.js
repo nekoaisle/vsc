@@ -30,12 +30,14 @@ class Options {
         this.sqlFile = ''; // SQL ファイル名
         this.module = ''; // 一括時のモジュール名
         this.fileName = ''; // 出力ファイル名
+        this.htmls = []; // html出力ディレクトリ名
         // ファイル名
         this.wizard = nekoaisle_1.Util.normalizePath(config.get('wizard', defaults.wizard));
         this.templateDir = nekoaisle_1.Util.normalizePath(config.get('templateDir', defaults.templateDir));
         this.sqlDir = nekoaisle_1.Util.normalizePath(config.get('sqlDir', defaults.sqlDir));
         this.php = nekoaisle_1.Util.normalizePath(config.get('php', defaults.php));
         this.outFile = nekoaisle_1.Util.normalizePath(config.get('outFile', defaults.outFile));
+        this.charset = config.get('charset', defaults.charset);
         // 
         this.author = config.get('author', defaults.author);
     }
@@ -143,6 +145,7 @@ class CpssWizard extends nekoaisle_1.Extension {
                     {
                         mode: 'ListList',
                         name: 'ListList',
+                        htmls: [{ dir: 'pc', charset: 'UTF-8' }],
                     },
                     {
                         mode: 'TransBase',
@@ -155,14 +158,12 @@ class CpssWizard extends nekoaisle_1.Extension {
                     {
                         mode: 'TransEdit',
                         name: 'TransEdit',
+                        htmls: [{ dir: 'pc', charset: 'UTF-8' }],
                     },
                     {
                         mode: 'TransConfirm',
                         name: 'TransConfirm',
-                    },
-                    {
-                        mode: 'TransCompleted',
-                        name: 'TransCompleted',
+                        htmls: [{ dir: 'pc', charset: 'UTF-8' }],
                     },
                 ],
                 sql: true,
@@ -176,6 +177,7 @@ class CpssWizard extends nekoaisle_1.Extension {
             php: '/usr/bin/php',
             outFile: "php://stdout",
             author: "木屋善夫",
+            charset: 'Shift_JIS',
         };
     }
     /**
@@ -311,6 +313,7 @@ class CpssWizard extends nekoaisle_1.Extension {
             // テンプレートファイルのベース名を設定
             opt.mode = name['mode'];
             opt.name = name['name'];
+            opt.htmls = name['htmls'];
             // 出力ファイル名を作成
             let parts = [];
             switch (opt.mode) {
@@ -442,6 +445,16 @@ class CpssWizard extends nekoaisle_1.Extension {
         // 実行
         for (let opt of opts) {
             this.execWizard(opt);
+            if (opt.htmls) {
+                // HTMLを処理
+                let opt2 = nekoaisle_1.Util.cloneObject(opt);
+                let pinfo = new nekoaisle_1.PathInfo(opt.fileName);
+                for (let info of opt2.htmls) {
+                    opt2.fileName = pinfo.getFileName('.html', info.dir);
+                    opt2.charset = info.charset;
+                    this.execWizard(opt2);
+                }
+            }
         }
     }
     execWizard(options) {
@@ -505,14 +518,27 @@ class CpssWizard extends nekoaisle_1.Extension {
                 if (options.fileName.length != 0) {
                     // 出力ファイル名が指定されている
                     let fn = nekoaisle_1.Util.normalizeHome(options.fileName);
-                    // sjis に変換
-                    var sjis = iconv.encode(stdout, "Shift_JIS");
+                    let code;
+                    switch (options.charset) {
+                        case undefined:
+                        case '':
+                        case 'UTF-8': {
+                            // 変換しない
+                            code = stdout;
+                            break;
+                        }
+                        default: {
+                            // UTF-8 以外なら変換
+                            code = iconv.encode(stdout, options.charset);
+                            break;
+                        }
+                    }
                     // 空のファイルを書き出す
                     fs.writeFileSync(fn, "");
                     // ファイルを「書き込み専用モード」で開く
                     var fd = fs.openSync(fn, "w");
                     // ファイルに書き込む
-                    fs.write(fd, sjis, 0, sjis.length, function (err, written, buffer) {
+                    fs.write(fd, code, 0, code.length, function (err, written, buffer) {
                         if (err) {
                             // エラーが発生
                             console.log(`error: ${err.message}`);
