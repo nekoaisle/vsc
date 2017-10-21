@@ -1,7 +1,7 @@
 # toggle-char-case
 
 1. `toogleCharCase`: カーソル位置の文字もしくは選択範囲の文字の大文字小文字を反転します。
-2. `toogleCharCase`:  カーソル位置の単語もしくは選択範囲の文字列を「全て大文字」「全て小文字」「キャメルケース」に切り替えます。
+2. `toggleWordCase`:  カーソル位置の単語もしくは選択範囲の文字列を「全て大文字」「全て小文字」「キャメルケース」に切り替えます。
 
 ## 特徴
 
@@ -26,3 +26,7 @@
 |------------------------|------------|
 |nekoaisle.toggleCharCase|ctrl + ]    |
 |nekoaisle.toggleWordCase|ctrl + [    |
+
+### 変更履歴
+#### 2017-10-21
+1. `toggleWordCase` 全角に対応

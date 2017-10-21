@@ -105,15 +105,15 @@ class MyExtention extends nekoaisle_1.Extension {
                 // 全文字を先頭文字のケースの逆に設定
                 text = doc.getText(sel);
             }
-            if (/^[A-Z]+$/.test(text)) {
+            if (/^[A-ZＡ-Ｚ_][A-ZＡ-Ｚ0-9０-９_]*$/.test(text)) {
                 // すべて大文字なので小文字に
                 text = text.toLocaleLowerCase();
             }
-            else if (/^[a-z]+$/.test(text)) {
+            else if (/^[a-zａ-ｚ_][a-zａ-ｚ0-9０-９_]*$/.test(text)) {
                 // すべて小文字なのでキャメルケースへ
                 text = text.substr(0, 1).toLocaleUpperCase() + text.substr(1).toLocaleLowerCase();
             }
-            else if (/^[A-Z][a-z]+$/.test(text)) {
+            else if (/^[A-ZＡ-Ｚ][a-zａ-ｚ0-9０-９_]*$/.test(text)) {
                 // キャメルケースなので大文字へ
                 text = text.toLocaleUpperCase();
             }
