@@ -14,7 +14,7 @@ class OpenFile extends nekoaisle_1.Extension {
             config: 'openFile',
             commands: [
                 {
-                    command: `nekoaisle.openFile`,
+                    command: 'nekoaisle.openFile',
                     callback: () => {
                         this.exec();
                     }

@@ -726,8 +726,11 @@ class InsertCode extends nekoaisle_1.Extension {
         // エディターの autoIndent が true ならばインデントしない
         let config = vscode.workspace.getConfiguration('editor');
         let editorOption = config.get("autoIndent", true);
+        if (editorOption) {
+            return false;
+        }
         // 自身の設定を取得
-        return this.getConfig("autoIndent", !editorOption);
+        return this.getConfig("autoIndent", true);
     }
 }
 //# sourceMappingURL=extension.js.map

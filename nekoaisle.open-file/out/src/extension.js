@@ -4,6 +4,7 @@ const OpenFile = require("./OpenFile");
 const OpenRelated = require("./OpenRelated");
 const OpenNew = require("./OpenNew");
 const OpenTemp = require("./OpenTemp");
+const InsertFile = require("./InsertFile");
 /**
  * エクステンション起動
  * @param context
@@ -13,6 +14,7 @@ function activate(context) {
     let openRelated = new OpenRelated(context);
     let openNew = new OpenNew(context);
     let openTemp = new OpenTemp(context);
+    let insertFile = new InsertFile(context);
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated

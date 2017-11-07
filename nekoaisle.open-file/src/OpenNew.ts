@@ -16,7 +16,7 @@ class OpenNew extends Extension {
 			config: 'openNew',
 			commands: [
 				{
-					command: `nekoaisle.openNew`,
+					command: 'nekoaisle.openNew',
 					callback: () => {
 						this.exec()
 					}

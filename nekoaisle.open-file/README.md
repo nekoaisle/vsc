@@ -1,11 +1,12 @@
 ## 機能
 
-|コマンド             |機能                    |キー割り当て|
-|---------------------|------------------------|--------|
-|nekoaisle.openFile   |ファイルを選択して開く  |escape F|
-|nekoaisle.openRelated|関連ファイルを開く      |escape H|
-|nekoaisle.openNew    |ファイル名を指定して開く|escape N|
-|nekoaisle.openTemp   |一時ファイルを開く      |escape W|
+|コマンド             |機能                    |
+|---------------------|------------------------|
+|nekoaisle.openFile   |ファイルを選択して開く  |
+|nekoaisle.openRelated|関連ファイルを開く      |
+|nekoaisle.openNew    |ファイル名を指定して開く|
+|nekoaisle.openTemp   |一時ファイルを開く      |
+|nekoaisle.insertFile |カーソル位置にファイルを読み込む|
 
 ### ■ `ファイルを選択して開く`
 メニューからファイルを選択して開く
@@ -18,6 +19,10 @@
 
 ### ■ `一時ファイルを開く`
 拡張子をメニューから選択して一時ファイルを開く、ファイルが存在しないときは作成してから開く
+
+### ■ `カーソル位置にファイルを読み込む`
+選択したファイルをカーソル位置に読み込みます。  
+※ iconv-lite に文字コードを判定していますが、SHIFT_JIS を ISO-8859-2 などにご判定するので、UTF-8, ascii 以外はすべて SHIFT_JIS として処理します。
 
 ## 設定
 

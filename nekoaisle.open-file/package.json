@@ -14,7 +14,8 @@
         "onCommand:nekoaisle.openFile",
         "onCommand:nekoaisle.openRelated",
         "onCommand:nekoaisle.openNew",
-        "onCommand:nekoaisle.openTemp"
+        "onCommand:nekoaisle.openTemp",
+        "onCommand:nekoaisle.insertFile"
     ],
     "main": "./out/src/extension",
     "contributes": {
@@ -30,20 +31,26 @@
         },{
             "command": "nekoaisle.openTemp",
             "title": "Open temp file"
+        },{
+            "command": "nekoaisle.insertFile",
+            "title": "Insert file at cursor position"
         }],
-        "keybindings": [{
-            "command": "nekoaisle.openFile",
-            "key": "escape f"
-        },{
-            "command": "nekoaisle.openRelated",
-            "key": "escape h"
-        },{
-            "command": "nekoaisle.openNew",
-            "key": "escape n"
-        },{
-            "command": "nekoaisle.openTemp",
-            "key": "escape w"
-        }]
+        "configuration": {
+            "type": "object",
+            "title": "nekoaisle: Insert Code configuration",
+            "properties": {
+                "openTemp.dir": {
+                    "type": "string",
+                    "default": "~/temp",
+                    "description": "一時ファイルを格納するディレクトリ名"
+                },
+                "openTemp.base": {
+                    "type": "string",
+                    "default": "temp",
+                    "description": "一時ファイルのベース名"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",

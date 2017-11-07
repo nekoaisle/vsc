@@ -16,10 +16,10 @@
 				"match": "^\\[\\d{2}:\\d{2}:\\d{2}\\]"
 			},{
 				"name": "keyword.control.cpsslog",
-				"match": "\\b(SELECT|FROM|WHERE|GROUP BY|ORDER BY)\\b"
+				"match": "\\b(SELECT|FROM|WHERE|GROUP BY|ORDER BY|INSERT|INTO|VALUES|UPDATE)\\b"
 			},{
 				"name": "keyword.control.cpsslog",
-				"match": "\\b(select|from|where|group by|order by)\\b"
+				"match": "\\b(select|from|where|group by|order by|insert|into|values|update)\\b"
 			},{
 				"name": "comment.block.cpsslog",
 				"match": "/var/www/ragdoll/.*?\\(\\d+\\)"

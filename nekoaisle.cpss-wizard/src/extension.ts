@@ -152,7 +152,7 @@ class CpssWizard extends Extension {
 				{
 					mode: 'ListList',
 					name: 'ListList',
-					htmls: [{ dir: 'pc', charset: 'UTF-8' }],
+					// htmls: [{ dir: 'pc', charset: 'UTF-8' }],
 				},
 				{
 					mode: 'TransBase',
@@ -165,12 +165,12 @@ class CpssWizard extends Extension {
 				{
 					mode: 'TransEdit',
 					name: 'TransEdit',
-					htmls: [{ dir: 'pc', charset: 'UTF-8' }],
+					// htmls: [{ dir: 'pc', charset: 'UTF-8' }],
 				},
 				{
 					mode: 'TransConfirm',
 					name: 'TransConfirm',
-					htmls: [{ dir: 'pc', charset: 'UTF-8' }],
+					// htmls: [{ dir: 'pc', charset: 'UTF-8' }],
 				},
 			],
 			sql: true,

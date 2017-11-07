@@ -1553,6 +1553,21 @@
 	"ACCOUNT.C_REGIST_CLASS"   : {"prefix": "ACCOUNT.C_REGIST_CLASS"   , "body": ["ACCOUNT.C_REGIST_CLASS"   ], "description": "CHAR   ( 3) 登録方法区分"    },
 	"ACCOUNT.D_ENTRY_DT"       : {"prefix": "ACCOUNT.D_ENTRY_DT"       , "body": ["ACCOUNT.D_ENTRY_DT"       ], "description": "CHAR   (14) 入会年月日"      },
 	"ACCOUNT.D_WITHDRAW_DT"    : {"prefix": "ACCOUNT.D_WITHDRAW_DT"    , "body": ["ACCOUNT.D_WITHDRAW_DT"    ], "description": "CHAR   (14) 退会年月日"      },
-	"ACCOUNT.V_COMMENT"        : {"prefix": "ACCOUNT.V_COMMENT"        , "body": ["ACCOUNT.V_COMMENT"        ], "description": "VARCHAR(255) コメント"        }
+	"ACCOUNT.V_COMMENT"        : {"prefix": "ACCOUNT.V_COMMENT"        , "body": ["ACCOUNT.V_COMMENT"        ], "description": "VARCHAR(255) コメント"        },
+
+	"$sql = <<<_SQL_": {
+		"prefix": "sql",
+		"body": [
+			"\t\t$$tbl = static::$$tableName;",
+			"\t\t$$sql = <<<_SQL_",
+			"select ",
+			"from {$$tbl}",
+			"where ",
+			"_SQL_;",
+			"\t\t$$arg = [];",
+			"\t\t$$rows = aryQueryDB($$tbl, $$sql, $$arg);"
+ 		],
+		"description": "$sql = <<<_SQL_"
+	}
 }
 

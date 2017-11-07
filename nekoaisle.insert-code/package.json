@@ -27,10 +27,6 @@
             "command": "nekoaisle.insertCode",
             "key": "escape i",
             "when": "editorTextFocus && !editorReadonly"
-        }, {
-            "command": "nekoaisle.insertCode.pinfoBase",
-            "key": "escape l",
-            "when": "editorTextFocus && !editorReadonly"
         }],
         "configuration": {
             "type": "object",
@@ -45,6 +41,11 @@
                     "type": "string",
                     "default": "",
                     "description": "ファイルを作成する人の名前を指定してください。"
+                },
+                "insertCode.autoIndent": {
+                    "type": "boolean",
+                    "default": "",
+                    "description": "オートインデントのデフォル値"
                 }
             }
         }

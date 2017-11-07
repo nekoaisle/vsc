@@ -2,7 +2,8 @@
 	"method": {
 		"label": "1: メソッド",
 		"filename": "php/method.php",
-		"method": "snippet"
+		"method": "snippet",
+		"autoIndent": false
 	},
 	"var": {
 		"label": "2: メンバー変数",
