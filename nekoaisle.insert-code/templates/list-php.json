@@ -3,49 +3,55 @@
 		"label": "1: メソッド",
 		"filename": "php/method.php",
 		"method": "snippet",
-		"autoIndent": false
+		"autoIndent": true
 	},
 	"var": {
 		"label": "2: メンバー変数",
 		"filename": "php/var.php",
-		"method": "snippet"
+		"method": "snippet",
+		"autoIndent": true
 	},
 	"onEvent": {
 		"label": "3: イベントハンドラ",
 		"filename": "php/onEvent.php",
 		"method": "snippet",
-		"autoIndent": false
+		"autoIndent": true
 	},
 	"onAjax": {
 		"label": "4: onAjax",
 		"filename": "php/onAjax.php",
-		"method": "insert",
+		"method": "snippet",
 		"autoIndent": true
 	},
 	"function": {
 		"label": "5: function",
 		"filename": "php/function.php",
-		"method": "snippet"
+		"method": "snippet",
+		"autoIndent": true
 	},
 	"aryGetFormCommandMap": {
 		"label": "6: aryGetFormCommandMap",
 		"filename": "php/aryGetFormCommandMap.php",
-		"method": "snippet"
+		"method": "snippet",
+		"autoIndent": true
 	},
 	"fileheader": {
 		"label": "7: ファイルヘッダー",
 		"filename": "php/fileheader.php",
-		"method": "snippet"
+		"method": "snippet",
+		"autoIndent": true
 	},
 	"constructor": {
 		"label": "8: constructor",
 		"filename": "php/constructor.php",
-		"method": "snippet"
+		"method": "snippet",
+		"autoIndent": true
 	},
 	"destractor": {
 		"label": "9: destractor",
 		"filename": "php/destractor.php",
-		"method": "snippet"
+		"method": "snippet",
+		"autoIndent": true
 	},
 	"EchoDebug": {
 		"label": "E: EchoDebug(選択範囲)",

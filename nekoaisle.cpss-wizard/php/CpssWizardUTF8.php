@@ -558,14 +558,11 @@ __USAGE__;
 			$var[] = "\tpublic \$$v;\t// {$a[0]}\r\n";
 			
 			// 列名→変数名変換辞書
-			$dic[] = sprintf("%s => %s"
-				, $this->padString("'{$a[0]}'", $len[0] + 2)
-				, $this->padString("'{$a[1]}'", $len[1] + 2)
-			);
+			$dic[] = sprintf("%s => '%s'", $this->padString("'{$a[0]}'", $len[0]+2), $a[1]);
 		}
 
-		$replace['@@column@@'  ] = "\t\t  " . implode("\r\n\t\t, ", $col);
-		$replace['@@coldic@@'  ] = "\t\t  " . implode("\r\n\t\t, ", $dic);
+		$replace['@@column@@'  ] = "\t\t" . implode(",\r\n\t\t", $col);
+		$replace['@@coldic@@'  ] = "\t\t" . implode(",\r\n\t\t", $dic);
 		$replace['@@variable@@'] = implode('', $var);
 	}
 
@@ -904,7 +901,7 @@ _EOL_;
 				'ATTRIB'  => 'size="48"',
 			]
 _EOL_;
-	$temple['C_STATUS'] = <<<_EOL_
+		$temple['C_STATUS'] = <<<_EOL_
 			'C_STATUS' => [ 
 				'CLASS'   => 'string',
 				'TAG'     => 'select',
@@ -914,7 +911,19 @@ _EOL_;
 				'OPTION'  => [''=>''],
 			]
 _EOL_;
-	$temple['NUMERIC'] = <<<_EOL_
+		$temple['DATE'] = <<<_EOL_
+			'@@name@@' => [
+				'CLASS'   => 'date',
+				'TAG'     => 'input',
+				'TYPE'    => 'text',
+				'DEFAULT' => @@default@@,
+				'TITLE'   => '@@title@@',
+				'LESS'    => FALSE,
+				'ATTRIB'  => 'data-cpss="datetime"',
+				'format'  => 'Y-m-d H:i:s',
+			]
+_EOL_;
+		$temple['NUMERIC'] = <<<_EOL_
 			'@@name@@' => [
 				'CLASS'   => 'string',
 				'TAG'     => 'text',
@@ -925,20 +934,20 @@ _EOL_;
 				'MAXNUM'  => 9999999,
 			]
 _EOL_;
-	$temple['BLOB'] = <<<_EOL_
+		$temple['BLOB'] = <<<_EOL_
 			'@@name@@' => [
 				'CLASS'   => 'string',
 				'TAG'     => 'textarea',
 				'DEFAULT' => @@default@@,
 				'TITLE'   => '@@title@@',
 				'LESS'    => FALSE,
-				'MAXLEN'  => 4096,
+				'MAXLEN'  => 4095,
 				'ATTRIB'  => 'rows="5"',
 				'CTRL'    => "\t\r\n",
 				'HTML'    => TRUE,			// <>"' を許可
 			]
 _EOL_;
-	$temple['VARCHAR'] = <<<_EOL_
+		$temple['VARCHAR'] = <<<_EOL_
 			'@@name@@' => [
 				'CLASS'   => 'string',
 				'TAG'     => 'input',
@@ -948,7 +957,7 @@ _EOL_;
 				'LESS'    => FALSE,
 			]
 _EOL_;
-	$temple['CHAR'] = <<<_EOL_
+		$temple['CHAR'] = <<<_EOL_
 			'@@name@@' => [
 				'CLASS'   => 'string',
 				'TAG'     => 'input',
@@ -1008,28 +1017,26 @@ _EOL_;
 				continue;
 			}
 
-			// 型を変換
-			switch ($a['type']) {
-			case 'BLOB':
-				$a['type'] = 'VARCHAR';
-				$a['size'] = 4095;
-				break;
-			}
-
 			// デフォルトが省略されているときは ''
 			if (!isset($a[11])) {
 				$a[11] = '';
 			}
 
 			// この列型のテンプレートを取得
-			$tmp = rtrim($temple[$a['type']]);
+			if (substr($a['name'], 0, 2) == 'D_') {
+				// D_ ではじまるカラムは日付
+				$tmp = rtrim($temple['DATE']);
+			} else {
+				// カラムの型ごとのテンプレ
+				$tmp = rtrim($temple[$a['type']]);
+			}
 
 			// 置換
 			$rep = [
-					'@@name@@'    => $a['name']
-				, '@@default@@' => $a['default']
-				, '@@title@@'   => $a['title']
-				, '@@maxlen@@'  => (string)($a['size'])
+				'@@name@@'    => $a['name'],
+				'@@default@@' => $a['default'],
+				'@@title@@'   => $a['title'],
+				'@@maxlen@@'  => (string)($a['size']),
 			];
 			
 			$src[] = str_replace(array_keys($rep), array_values($rep), $tmp);

@@ -18,9 +18,5 @@
 	"pinfo.name": {
 		"label": "N: ファイル名",
 		"command": "pinfo.name"
-	},
-	"pinfo.ext": {
-		"label": "E: 拡張子",
-		"command": "pinfo.ext"
 	}
 }

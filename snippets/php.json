@@ -24,7 +24,120 @@
 		],
 		"description": "case '': {break}"
 	},
-	
+
+	"E_ERROR": {
+		"prefix": "E_ERROR",
+		"body": [
+			"E_ERROR"
+		],
+		"description": "重大な実行時エラー。これは、メモリ確保に関する問題のように復帰できないエラーを示します。スクリプトの実行は中断されます。"
+	},
+	"E_WARNING": {
+		"prefix": "E_WARNING",
+		"body": [
+			"E_WARNING"
+		],
+		"description": "実行時の警告 (致命的なエラーではない)。スクリプトの実行は中断されません。"
+	},
+	"E_PARSE": {
+		"prefix": "E_PARSE",
+		"body": [
+			"E_PARSE"
+		],
+		"description": "コンパイル時のパースエラー。パースエラーはパーサでのみ生成されます。"
+	},
+	"E_NOTICE": {
+		"prefix": "E_NOTICE",
+		"body": [
+			"E_NOTICE"
+		],
+		"description": "実行時の警告。エラーを発しうる状況に遭遇したことを示す。ただし通常のスクリプト実行の場合にもこの警告を発することがありうる。"
+	},
+	"E_CORE_ERROR": {
+		"prefix": "E_CORE_ERROR",
+		"body": [
+			"E_CORE_ERROR"
+		],
+		"description": "PHPの初期始動時点での致命的なエラー。E_ERRORに似ているがPHPのコアによって発行される点が違う。"
+	},
+	"E_CORE_WARNING": {
+		"prefix": "E_CORE_WARNING",
+		"body": [
+			"E_CORE_WARNING"
+		],
+		"description": "（致命的ではない）警告。PHPの初期始動時に発生する。E_WARNINGに似ているがPHPのコアによって発行される 点が違う。"
+	},
+	"E_COMPILE_ERROR": {
+		"prefix": "E_COMPILE_ERROR",
+		"body": [
+			"E_COMPILE_ERROR"
+		],
+		"description": "コンパイル時の致命的なエラー。E_ERRORに似ているがZendスクリプティングエンジンによって発行される点が違う。"
+	},
+	"E_COMPILE_WARNING": {
+		"prefix": "E_COMPILE_WARNING",
+		"body": [
+			"E_COMPILE_WARNING"
+		],
+		"description": "コンパイル時の警告（致命的ではない）。E_WARNINGに似ているがZendスクリプティングエンジンによって発行される点が違う。"
+	},
+	"E_USER_ERROR": {
+		"prefix": "E_USER_ERROR",
+		"body": [
+			"E_USER_ERROR"
+		],
+		"description": "ユーザーによって発行されるエラーメッセージ。E_ERRORに似ているがPHPコード上でtrigger_error()関数を 使用した場合に発行される点が違う。"
+	},
+	"E_USER_WARNING": {
+		"prefix": "E_USER_WARNING",
+		"body": [
+			"E_USER_WARNING"
+		],
+		"description": "ユーザーによって発行される警告メッセージ。E_WARNINGに似ているがPHPコード上でtrigger_error()関数を 使用した場合に発行される点が違う。"
+	},
+	"E_USER_NOTICE": {
+		"prefix": "E_USER_NOTICE",
+		"body": [
+			"E_USER_NOTICE"
+		],
+		"description": "ユーザーによって発行される注意メッセージ。E_NOTICEに似ているがPHPコード上でtrigger_error()関数を 使用した場合に発行される点が違う。"
+	},
+	"E_STRICT": {
+		"prefix": "E_STRICT",
+		"body": [
+			"E_STRICT"
+		],
+		"description": "コードの相互運用性や互換性を維持するために PHP がコードの変更を提案する。"
+	},
+	"E_RECOVERABLE_ERROR": {
+		"prefix": "E_RECOVERABLE_ERROR",
+		"body": [
+			"E_RECOVERABLE_ERROR"
+		],
+		"description": "キャッチできる致命的なエラー。危険なエラーが発生したが、エンジンが不安定な状態になるほどではないことを表す。ユーザー定義のハンドラでエラーがキャッチされなかった場合 (set_error_handler() も参照ください) は、 E_ERRORとして異常終了する。"
+	},
+	"E_DEPRECATED": {
+		"prefix": "E_DEPRECATED",
+		"body": [
+			"E_DEPRECATED"
+		],
+		"description": "実行時の注意。これを有効にすると、将来のバージョンで動作しなくなるコードについての警告を受け取ることができる。"
+	},
+	"E_USER_DEPRECATED": {
+		"prefix": "E_USER_DEPRECATED",
+		"body": [
+			"E_USER_DEPRECATED"
+		],
+		"description": "ユーザー定義の警告メッセージ。これはE_DEPRECATEDと同等だが、 PHP のコード上で関数 trigger_error() によって作成されるという点が異なる。"
+	},
+	"E_ALL": {
+		"prefix": "E_ALL",
+		"body": [
+			"E_ALL"
+		],
+		"description": "すべてのエラー"
+	},
+
 	"nekoaisle.insert-code delete line": {
 		"prefix": "nekoaisle.insert-code delete line",
 		"body": [
@@ -224,262 +337,227 @@
 		"description": "@param"
 	},
 
-	"getLinkInfo": {
-		"prefix": "getLinkInfo",
-		"body": [
-			"// ",
-			"$$ary['${1:COMMAND}'] = [",
-			"\t'Handler'    => 'on$1',",
-			"\t'Permission' => PERMISSION_${2|READ,MODIFY,DELETE|},",
-			"\t// 'RightCommand' => '',",
-			"\t// 'RightValue'   => NULL,",
-			"\t'LeftCommand' => '!@$1 delete',",
-			"\t'LeftValue'   => TRUE,",
-			"];"
-		],
-		"description": "BimmsPagePC::getLinkInfo() の要素を追加"
-	},
-
-	"CCamSQL": {
-		"prefix": "sql = new CCamSQL();",
-		"body": [
-			"$$sql = new CCamSQL();",
-			"$$sql->AddFrom('');",
-			"$$sql->AddField('', '');"
-		],
-		"description": "CCamSQL 使用時の雛形"
-	},
-
-	"$this->m_aryArgs": {
-		"prefix": "this->m_aryArgs",
-		"body": [
-			"$$this-->m_aryArgs$1"
-		],
-		"description": "$this-m_aryArgs$1"
-	},
-	
-
 	"$_SERVER['DOCUMENT_ROOT']": {
 		"prefix": "_SERVER['DOCUMENT_ROOT']",
 		"body": [
-			"$$_SERVER['DOCUMENT_ROOT']"
+			"\\$_SERVER['DOCUMENT_ROOT']"
 		],
 		"description": ""
 	},
 	"$_SERVER['GATEWAY_INTERFACE']": {
 		"prefix": "_SERVER['GATEWAY_INTERFACE']",
 		"body": [
-			"$$_SERVER['GATEWAY_INTERFACE']"
+			"\\$_SERVER['GATEWAY_INTERFACE']"
 		],
 		"description": ""
 	},
 	"$_SERVER['HTTPS']": {
 		"prefix": "_SERVER['HTTPS']",
 		"body": [
-			"$$_SERVER['HTTPS']"
+			"\\$_SERVER['HTTPS']"
 		],
 		"description": ""
 	},
 	"$_SERVER['HTTP_ACCEPT']": {
 		"prefix": "_SERVER['HTTP_ACCEPT']",
 		"body": [
-			"$$_SERVER['HTTP_ACCEPT']"
+			"\\$_SERVER['HTTP_ACCEPT']"
 		],
 		"description": ""
 	},
 	"$_SERVER['HTTP_ACCEPT_CHARSET']": {
 		"prefix": "_SERVER['HTTP_ACCEPT_CHARSET']",
 		"body": [
-			"$$_SERVER['HTTP_ACCEPT_CHARSET']"
+			"\\$_SERVER['HTTP_ACCEPT_CHARSET']"
 		],
 		"description": ""
 	},
 	"$_SERVER['HTTP_ACCEPT_ENCODING']": {
 		"prefix": "_SERVER['HTTP_ACCEPT_ENCODING']",
 		"body": [
-			"$$_SERVER['HTTP_ACCEPT_ENCODING']"
+			"\\$_SERVER['HTTP_ACCEPT_ENCODING']"
 		],
 		"description": ""
 	},
 	"$_SERVER['HTTP_ACCEPT_LANGUAGE']": {
 		"prefix": "_SERVER['HTTP_ACCEPT_LANGUAGE']",
 		"body": [
-			"$$_SERVER['HTTP_ACCEPT_LANGUAGE']"
+			"\\$_SERVER['HTTP_ACCEPT_LANGUAGE']"
 		],
 		"description": ""
 	},
 	"$_SERVER['HTTP_CONNECTION']": {
 		"prefix": "_SERVER['HTTP_CONNECTION']",
 		"body": [
-			"$$_SERVER['HTTP_CONNECTION']"
+			"\\$_SERVER['HTTP_CONNECTION']"
 		],
 		"description": ""
 	},
 	"$_SERVER['HTTP_HOST']": {
 		"prefix": "_SERVER['HTTP_HOST']",
 		"body": [
-			"$$_SERVER['HTTP_HOST']"
+			"\\$_SERVER['HTTP_HOST']"
 		],
 		"description": ""
 	},
 	"$_SERVER['HTTP_REFERER']": {
 		"prefix": "_SERVER['HTTP_REFERER']",
 		"body": [
-			"$$_SERVER['HTTP_REFERER']"
+			"\\$_SERVER['HTTP_REFERER']"
 		],
 		"description": ""
 	},
 	"$_SERVER['HTTP_USER_AGENT']": {
 		"prefix": "_SERVER['HTTP_USER_AGENT']",
 		"body": [
-			"$$_SERVER['HTTP_USER_AGENT']"
+			"\\$_SERVER['HTTP_USER_AGENT']"
 		],
 		"description": ""
 	},
 	"$_SERVER['PATH_TRANSLATED']": {
 		"prefix": "_SERVER['PATH_TRANSLATED']",
 		"body": [
-			"$$_SERVER['PATH_TRANSLATED']"
+			"\\$_SERVER['PATH_TRANSLATED']"
 		],
 		"description": ""
 	},
 	"$_SERVER['PHP_AUTH_DIGEST']": {
 		"prefix": "_SERVER['PHP_AUTH_DIGEST']",
 		"body": [
-			"$$_SERVER['PHP_AUTH_DIGEST']"
+			"\\$_SERVER['PHP_AUTH_DIGEST']"
 		],
 		"description": ""
 	},
 	"$_SERVER['PHP_AUTH_PW']": {
 		"prefix": "_SERVER['PHP_AUTH_PW']",
 		"body": [
-			"$$_SERVER['PHP_AUTH_PW']"
+			"\\$_SERVER['PHP_AUTH_PW']"
 		],
 		"description": ""
 	},
 	"$_SERVER['PHP_AUTH_USER']": {
 		"prefix": "_SERVER['PHP_AUTH_USER']",
 		"body": [
-			"$$_SERVER['PHP_AUTH_USER']"
+			"\\$_SERVER['PHP_AUTH_USER']"
 		],
 		"description": ""
 	},
 	"$_SERVER['PHP_SELF']": {
 		"prefix": "_SERVER['PHP_SELF']",
 		"body": [
-			"$$_SERVER['PHP_SELF']"
+			"\\$_SERVER['PHP_SELF']"
 		],
 		"description": ""
 	},
 	"$_SERVER['QUERY_STRING']": {
 		"prefix": "_SERVER['QUERY_STRING']",
 		"body": [
-			"$$_SERVER['QUERY_STRING']"
+			"\\$_SERVER['QUERY_STRING']"
 		],
 		"description": ""
 	},
 	"$_SERVER['REMOTE_ADDR']": {
 		"prefix": "_SERVER['REMOTE_ADDR']",
 		"body": [
-			"$$_SERVER['REMOTE_ADDR']"
+			"\\$_SERVER['REMOTE_ADDR']"
 		],
 		"description": ""
 	},
 	"$_SERVER['REMOTE_HOST']": {
 		"prefix": "_SERVER['REMOTE_HOST']",
 		"body": [
-			"$$_SERVER['REMOTE_HOST']"
+			"\\$_SERVER['REMOTE_HOST']"
 		],
 		"description": ""
 	},
 	"$_SERVER['REMOTE_PORT']": {
 		"prefix": "_SERVER['REMOTE_PORT']",
 		"body": [
-			"$$_SERVER['REMOTE_PORT']"
+			"\\$_SERVER['REMOTE_PORT']"
 		],
 		"description": ""
 	},
 	"$_SERVER['REQUEST_METHOD']": {
 		"prefix": "_SERVER['REQUEST_METHOD']",
 		"body": [
-			"$$_SERVER['REQUEST_METHOD']"
+			"\\$_SERVER['REQUEST_METHOD']"
 		],
 		"description": ""
 	},
 	"$_SERVER['REQUEST_TIME']": {
 		"prefix": "_SERVER['REQUEST_TIME']",
 		"body": [
-			"$$_SERVER['REQUEST_TIME']"
+			"\\$_SERVER['REQUEST_TIME']"
 		],
 		"description": ""
 	},
 	"$_SERVER['REQUEST_URI']": {
 		"prefix": "_SERVER['REQUEST_URI']",
 		"body": [
-			"$$_SERVER['REQUEST_URI']"
+			"\\$_SERVER['REQUEST_URI']"
 		],
 		"description": ""
 	},
 	"$_SERVER['SCRIPT_FILENAME']": {
 		"prefix": "_SERVER['SCRIPT_FILENAME']",
 		"body": [
-			"$$_SERVER['SCRIPT_FILENAME']"
+			"\\$_SERVER['SCRIPT_FILENAME']"
 		],
 		"description": ""
 	},
 	"$_SERVER['SCRIPT_NAME']": {
 		"prefix": "_SERVER['SCRIPT_NAME']",
 		"body": [
-			"$$_SERVER['SCRIPT_NAME']"
+			"\\$_SERVER['SCRIPT_NAME']"
 		],
 		"description": ""
 	},
 	"$_SERVER['SERVER_ADDR']": {
 		"prefix": "_SERVER['SERVER_ADDR']",
 		"body": [
-			"$$_SERVER['SERVER_ADDR']"
+			"\\$_SERVER['SERVER_ADDR']"
 		],
 		"description": ""
 	},
 	"$_SERVER['SERVER_ADMIN']": {
 		"prefix": "_SERVER['SERVER_ADMIN']",
 		"body": [
-			"$$_SERVER['SERVER_ADMIN']"
+			"\\$_SERVER['SERVER_ADMIN']"
 		],
 		"description": ""
 	},
 	"$_SERVER['SERVER_NAME']": {
 		"prefix": "_SERVER['SERVER_NAME']",
 		"body": [
-			"$$_SERVER['SERVER_NAME']"
+			"\\$_SERVER['SERVER_NAME']"
 		],
 		"description": ""
 	},
 	"$_SERVER['SERVER_PORT']": {
 		"prefix": "_SERVER['SERVER_PORT']",
 		"body": [
-			"$$_SERVER['SERVER_PORT']"
+			"\\$_SERVER['SERVER_PORT']"
 		],
 		"description": ""
 	},
 	"$_SERVER['SERVER_PROTOCOL']": {
 		"prefix": "_SERVER['SERVER_PROTOCOL']",
 		"body": [
-			"$$_SERVER['SERVER_PROTOCOL']"
+			"\\$_SERVER['SERVER_PROTOCOL']"
 		],
 		"description": ""
 	},
 	"$_SERVER['SERVER_SIGNATURE']": {
 		"prefix": "_SERVER['SERVER_SIGNATURE']",
 		"body": [
-			"$$_SERVER['SERVER_SIGNATURE']"
+			"\\$_SERVER['SERVER_SIGNATURE']"
 		],
 		"description": ""
 	},
 	"$_SERVER['SERVER_SOFTWARE']": {
 		"prefix": "_SERVER['SERVER_SOFTWARE']",
 		"body": [
-			"$$_SERVER['SERVER_SOFTWARE']"
+			"\\$_SERVER['SERVER_SOFTWARE']"
 		],
 		"description": ""
 	},
@@ -670,7 +748,7 @@
 	"isset($_REQUEST['SUBMIT']))": {
 		"prefix": "isset($_REQUEST['SUBMIT']))",
 		"body": [
-			"isset($$_REQUEST['SUBMIT']))"
+			"isset(\\$_REQUEST['SUBMIT']))"
 		],
 		"description": ""
 	},
@@ -684,294 +762,294 @@
 	"blSendMail($strTo, $strFrom, $strSubject, $strBody)": {
 		"prefix": "blSendMail($strTo, $strFrom, $strSubject, $strBody)",
 		"body": [
-			"blSendMail($$strTo, $$strFrom, $$strSubject, $$strBody)"
+			"blSendMail(\\$$strTo, \\$$strFrom, \\$$strSubject, \\$$strBody)"
 		],
 		"description": ""
 	},
 	"blSendMailEx($strTo, $strFrom, $strFromName, $strBcc, $strSubject, $strBody)": {
 		"prefix": "blSendMailEx($strTo, $strFrom, $strFromName, $strBcc, $strSubject, $strBody)",
 		"body": [
-			"blSendMailEx($$strTo, $$strFrom, $$strFromName, $$strBcc, $$strSubject, $$strBody)"
+			"blSendMailEx(\\$$strTo, \\$$strFrom, \\$$strFromName, \\$$strBcc, \\$$strSubject, \\$$strBody)"
 		],
 		"description": ""
 	},
 	"iModulus10($iValue , $iWait)": {
 		"prefix": "iModulus10($iValue , $iWait)",
 		"body": [
-			"iModulus10($$iValue , $$iWait)"
+			"iModulus10(\\$$iValue , \\$$iWait)"
 		],
 		"description": ""
 	},
 	"TrimSpace($str)": {
 		"prefix": "TrimSpace($str)",
 		"body": [
-			"TrimSpace($$str)"
+			"TrimSpace(\\$$str)"
 		],
 		"description": ""
 	},
 	"strCreateDateString($strSrc)": {
 		"prefix": "strCreateDateString($strSrc)",
 		"body": [
-			"strCreateDateString($$strSrc)"
+			"strCreateDateString(\\$$strSrc)"
 		],
 		"description": ""
 	},
 	"isHash(&$aryData)": {
 		"prefix": "isHash(&$aryData)",
 		"body": [
-			"isHash(&$$aryData)"
+			"isHash(&\\$$aryData)"
 		],
 		"description": ""
 	},
 	"rpad($str, $iLen)": {
 		"prefix": "rpad($str, $iLen)",
 		"body": [
-			"rpad($$str, $$iLen)"
+			"rpad(\\$$str, \\$$iLen)"
 		],
 		"description": ""
 	},
 	"lpad($str, $iLen)": {
 		"prefix": "lpad($str, $iLen)",
 		"body": [
-			"lpad($$str, $$iLen)"
+			"lpad(\\$$str, \\$$iLen)"
 		],
 		"description": ""
 	},
 	"strStrPadHTML($strSrc, $iLen, $strPad)": {
 		"prefix": "strStrPadHTML($strSrc, $iLen, $strPad)",
 		"body": [
-			"strStrPadHTML($$strSrc, $$iLen, $$strPad)"
+			"strStrPadHTML(\\$$strSrc, \\$$iLen, \\$$strPad)"
 		],
 		"description": ""
 	},
 	"strGetRequest($strName, $mixDefault = NULL)": {
 		"prefix": "strGetRequest($strName, $mixDefault = NULL)",
 		"body": [
-			"strGetRequest($$strName, $$mixDefault = NULL)"
+			"strGetRequest(\\$$strName, \\$$mixDefault = NULL)"
 		],
 		"description": ""
 	},
 	"iGetRequest($strName, $iDefault = NULL)": {
 		"prefix": "iGetRequest($strName, $iDefault = NULL)",
 		"body": [
-			"iGetRequest($$strName, $$iDefault = NULL)"
+			"iGetRequest(\\$$strName, \\$$iDefault = NULL)"
 		],
 		"description": ""
 	},
 	"iGetRequest2($strName, $iDefault = NULL)": {
 		"prefix": "iGetRequest2($strName, $iDefault = NULL)",
 		"body": [
-			"iGetRequest2($$strName, $$iDefault = NULL)"
+			"iGetRequest2(\\$$strName, \\$$iDefault = NULL)"
 		],
 		"description": ""
 	},
 	"strToUTF8($str)": {
 		"prefix": "strToUTF8($str)",
 		"body": [
-			"strToUTF8($$str)"
+			"strToUTF8(\\$$str)"
 		],
 		"description": ""
 	},
 	"aryEncodeUTF8($aryInp)": {
 		"prefix": "aryEncodeUTF8($aryInp)",
 		"body": [
-			"aryEncodeUTF8($$aryInp)"
+			"aryEncodeUTF8(\\$$aryInp)"
 		],
 		"description": ""
 	},
 	"mixEncodeUTF8($mixInp)": {
 		"prefix": "mixEncodeUTF8($mixInp)",
 		"body": [
-			"mixEncodeUTF8($$mixInp)"
+			"mixEncodeUTF8(\\$$mixInp)"
 		],
 		"description": ""
 	},
 	"strGetNow($strFromat = 'YmdHis')": {
 		"prefix": "strGetNow($strFromat = 'YmdHis')",
 		"body": [
-			"strGetNow($$strFromat = 'YmdHis')"
+			"strGetNow(\\$$strFromat = 'YmdHis')"
 		],
 		"description": ""
 	},
 	"iStrToTime($str, $iTime = NOW_UNIXTIME)": {
 		"prefix": "iStrToTime($str, $iTime = NOW_UNIXTIME)",
 		"body": [
-			"iStrToTime($$str, $$iTime = NOW_UNIXTIME)"
+			"iStrToTime(\\$$str, \\$$iTime = NOW_UNIXTIME)"
 		],
 		"description": ""
 	},
 	"strTimeToStr($strFormat, $iTime = NOW_UNIXTIME)": {
 		"prefix": "strTimeToStr($strFormat, $iTime = NOW_UNIXTIME)",
 		"body": [
-			"strTimeToStr($$strFormat, $$iTime = NOW_UNIXTIME)"
+			"strTimeToStr(\\$$strFormat, \\$$iTime = NOW_UNIXTIME)"
 		],
 		"description": ""
 	},
 	"strTimeOffset($strFormat, $strTime, $mixOffset)": {
 		"prefix": "strTimeOffset($strFormat, $strTime, $mixOffset)",
 		"body": [
-			"strTimeOffset($$strFormat, $$strTime, $$mixOffset)"
+			"strTimeOffset(\\$$strFormat, \\$$strTime, \\$$mixOffset)"
 		],
 		"description": ""
 	},
 	"strTimeConv($strFormat, $strFrom)": {
 		"prefix": "strTimeConv($strFormat, $strFrom)",
 		"body": [
-			"strTimeConv($$strFormat, $$strFrom)"
+			"strTimeConv(\\$$strFormat, \\$$strFrom)"
 		],
 		"description": ""
 	},
 	"strTimeConvExt($strFormat, $strFrom)": {
 		"prefix": "strTimeConvExt($strFormat, $strFrom)",
 		"body": [
-			"strTimeConvExt($$strFormat, $$strFrom)"
+			"strTimeConvExt(\\$$strFormat, \\$$strFrom)"
 		],
 		"description": ""
 	},
 	"strGetThisMonthFirst($str)": {
 		"prefix": "strGetThisMonthFirst($str)",
 		"body": [
-			"strGetThisMonthFirst($$str)"
+			"strGetThisMonthFirst(\\$$str)"
 		],
 		"description": ""
 	},
 	"strGetNextMonthFirst($str)": {
 		"prefix": "strGetNextMonthFirst($str)",
 		"body": [
-			"strGetNextMonthFirst($$str)"
+			"strGetNextMonthFirst(\\$$str)"
 		],
 		"description": ""
 	},
 	"strGetThisDayFirst($str)": {
 		"prefix": "strGetThisDayFirst($str)",
 		"body": [
-			"strGetThisDayFirst($$str)"
+			"strGetThisDayFirst(\\$$str)"
 		],
 		"description": ""
 	},
 	"strGetNextDayFirst($str)": {
 		"prefix": "strGetNextDayFirst($str)",
 		"body": [
-			"strGetNextDayFirst($$str)"
+			"strGetNextDayFirst(\\$$str)"
 		],
 		"description": ""
 	},
 	"mixGetValidArgs($mixArgs, $mixDefault)": {
 		"prefix": "mixGetValidArgs($mixArgs, $mixDefault)",
 		"body": [
-			"mixGetValidArgs($$mixArgs, $$mixDefault)"
+			"mixGetValidArgs(\\$$mixArgs, \\$$mixDefault)"
 		],
 		"description": ""
 	},
 	"blEvalBloolean($str)": {
 		"prefix": "blEvalBloolean($str)",
 		"body": [
-			"blEvalBloolean($$str)"
+			"blEvalBloolean(\\$$str)"
 		],
 		"description": ""
 	},
 	"strBoolToStr($bool)": {
 		"prefix": "strBoolToStr($bool)",
 		"body": [
-			"strBoolToStr($$bool)"
+			"strBoolToStr(\\$$bool)"
 		],
 		"description": ""
 	},
 	"aryConvertToArray($mix)": {
 		"prefix": "aryConvertToArray($mix)",
 		"body": [
-			"aryConvertToArray($$mix)"
+			"aryConvertToArray(\\$$mix)"
 		],
 		"description": ""
 	},
 	"strGetRow($strLine)": {
 		"prefix": "strGetRow($strLine)",
 		"body": [
-			"strGetRow($$strLine)"
+			"strGetRow(\\$$strLine)"
 		],
 		"description": ""
 	},
 	"aryLoadTSV($strFileName)": {
 		"prefix": "aryLoadTSV($strFileName)",
 		"body": [
-			"aryLoadTSV($$strFileName)"
+			"aryLoadTSV(\\$$strFileName)"
 		],
 		"description": ""
 	},
 	"strRTrim($str, $spc = ' 　')": {
 		"prefix": "strRTrim($str, $spc = ' 　')",
 		"body": [
-			"strRTrim($$str, $$spc = ' 　')"
+			"strRTrim(\\$$str, \\$$spc = ' 　')"
 		],
 		"description": ""
 	},
 	"DefaultDef($strKey, $strVal)": {
 		"prefix": "DefaultDef($strKey, $strVal)",
 		"body": [
-			"DefaultDef($$strKey, $$strVal)"
+			"DefaultDef(\\$$strKey, \\$$strVal)"
 		],
 		"description": ""
 	},
 	"LoadStringDef($strFileName)": {
 		"prefix": "LoadStringDef($strFileName)",
 		"body": [
-			"LoadStringDef($$strFileName)"
+			"LoadStringDef(\\$$strFileName)"
 		],
 		"description": ""
 	},
 	"LoadCustumMess($strBaseFile, $strSiteID)": {
 		"prefix": "LoadCustumMess($strBaseFile, $strSiteID)",
 		"body": [
-			"LoadCustumMess($$strBaseFile, $$strSiteID)"
+			"LoadCustumMess(\\$$strBaseFile, \\$$strSiteID)"
 		],
 		"description": ""
 	},
 	"aryExplode($strSep, $strVal)": {
 		"prefix": "aryExplode($strSep, $strVal)",
 		"body": [
-			"aryExplode($$strSep, $$strVal)"
+			"aryExplode(\\$$strSep, \\$$strVal)"
 		],
 		"description": ""
 	},
 	"mixGetArrayItem($condition, $key, $default = NULL)": {
 		"prefix": "mixGetArrayItem(",
 		"body": [
-			"mixGetArrayItem($${1:array}, '${2:key}, $${3:default})"
+			"mixGetArrayItem(\\$${1:array}, '${2:key}, \\$${3:default})"
 		],
 		"description": "mixGetArrayItem($condition, $key, $default = NULL)"
 	},
 	"blCheckClientIP($strCheckIP, $strIPList)": {
 		"prefix": "blCheckClientIP($strCheckIP, $strIPList)",
 		"body": [
-			"blCheckClientIP($$strCheckIP, $$strIPList)"
+			"blCheckClientIP(\\$$strCheckIP, \\$$strIPList)"
 		],
 		"description": ""
 	},
 	"strLoadCache($strFile, $iExpire)": {
 		"prefix": "strLoadCache($strFile, $iExpire)",
 		"body": [
-			"strLoadCache($$strFile, $$iExpire)"
+			"strLoadCache(\\$$strFile, \\$$iExpire)"
 		],
 		"description": ""
 	},
 	"SaveCache($strFile, $strValue)": {
 		"prefix": "SaveCache($strFile, $strValue)",
 		"body": [
-			"SaveCache($$strFile, $$strValue)"
+			"SaveCache(\\$$strFile, \\$$strValue)"
 		],
 		"description": ""
 	},
 	"mixCallAPI($strService, $strFunction, $aryParams)": {
 		"prefix": "mixCallAPI($strService, $strFunction, $aryParams)",
 		"body": [
-			"mixCallAPI($$strService, $$strFunction, $$aryParams)"
+			"mixCallAPI(\\$$strService, \\$$strFunction, \\$$aryParams)"
 		],
 		"description": ""
 	},
 	"isAPIError($aryRes)": {
 		"prefix": "isAPIError($aryRes)",
 		"body": [
-			"isAPIError($$aryRes)"
+			"isAPIError(\\$$aryRes)"
 		],
 		"description": ""
 	},
@@ -985,63 +1063,63 @@
 	"iPregMatch($strReg, $strVal, &$aryMatches = NULL)": {
 		"prefix": "iPregMatch($strReg, $strVal, &$aryMatches = NULL)",
 		"body": [
-			"iPregMatch($$strReg, $$strVal, &$$aryMatches = NULL)"
+			"iPregMatch(\\$$strReg, \\$$strVal, &\\$$aryMatches = NULL)"
 		],
 		"description": ""
 	},
 	"iPregMatchAll($strReg, $strVal, &$aryMatches = NULL)": {
 		"prefix": "iPregMatchAll($strReg, $strVal, &$aryMatches = NULL)",
 		"body": [
-			"iPregMatchAll($$strReg, $$strVal, &$$aryMatches = NULL)"
+			"iPregMatchAll(\\$$strReg, \\$$strVal, &\\$$aryMatches = NULL)"
 		],
 		"description": ""
 	},
 	"strPregReplace($strReg, $strRep, $strSrc)": {
 		"prefix": "strPregReplace($strReg, $strRep, $strSrc)",
 		"body": [
-			"strPregReplace($$strReg, $$strRep, $$strSrc)"
+			"strPregReplace(\\$$strReg, \\$$strRep, \\$$strSrc)"
 		],
 		"description": ""
 	},
 	"EchoHTML($str)": {
 		"prefix": "EchoHTML($str)",
 		"body": [
-			"EchoHTML($$str)"
+			"EchoHTML(\\$$str)"
 		],
 		"description": ""
 	},
 	"EchoTextarea($str)": {
 		"prefix": "EchoTextarea($str)",
 		"body": [
-			"EchoTextarea($$str)"
+			"EchoTextarea(\\$$str)"
 		],
 		"description": ""
 	},
 	"EchoForm($str)": {
 		"prefix": "EchoForm($str)",
 		"body": [
-			"EchoForm($$str)"
+			"EchoForm(\\$$str)"
 		],
 		"description": ""
 	},
 	"EchoNumber($i)": {
 		"prefix": "EchoNumber($i)",
 		"body": [
-			"EchoNumber($$i)"
+			"EchoNumber(\\$$i)"
 		],
 		"description": ""
 	},
 	"EchoURL($str)": {
 		"prefix": "EchoURL($str)",
 		"body": [
-			"EchoURL($$str)"
+			"EchoURL(\\$$str)"
 		],
 		"description": ""
 	},
 	"EchoAttrib($strKey, $strValue)": {
 		"prefix": "EchoAttrib($strKey, $strValue)",
 		"body": [
-			"EchoAttrib($$strKey, $$strValue)"
+			"EchoAttrib(\\$$strKey, \\$$strValue)"
 		],
 		"description": ""
 	},
@@ -1055,35 +1133,35 @@
 	"EchoFormDefault($strType, $mixVal, $mixSel)": {
 		"prefix": "EchoFormDefault($strType, $mixVal, $mixSel)",
 		"body": [
-			"EchoFormDefault($$strType, $$mixVal, $$mixSel)"
+			"EchoFormDefault(\\$$strType, \\$$mixVal, \\$$mixSel)"
 		],
 		"description": ""
 	},
 	"EchoHR($objPage, $iHeight, $strColor)": {
 		"prefix": "EchoHR($objPage, $iHeight, $strColor)",
 		"body": [
-			"EchoHR($$objPage, $$iHeight, $$strColor)"
+			"EchoHR(\\$$objPage, \\$$iHeight, \\$$strColor)"
 		],
 		"description": ""
 	},
 	"EchoDate($mixDate, $strFormat = 'Y/m/d H:i:s')": {
 		"prefix": "EchoDate($mixDate, $strFormat = 'Y/m/d H:i:s')",
 		"body": [
-			"EchoDate($$mixDate, $$strFormat = 'Y/m/d H:i:s')"
+			"EchoDate(\\$$mixDate, \\$$strFormat = 'Y/m/d H:i:s')"
 		],
 		"description": ""
 	},
 	"EchoDate2($strFormat, $iTime = NOW_UNIXTIME)": {
 		"prefix": "EchoDate2($strFormat, $iTime = NOW_UNIXTIME)",
 		"body": [
-			"EchoDate2($$strFormat, $$iTime = NOW_UNIXTIME)"
+			"EchoDate2(\\$$strFormat, \\$$iTime = NOW_UNIXTIME)"
 		],
 		"description": ""
 	},
 	"EchoCustumMess($str)": {
 		"prefix": "EchoCustumMess($str)",
 		"body": [
-			"EchoCustumMess($$str)"
+			"EchoCustumMess(\\$$str)"
 		],
 		"description": ""
 	},
@@ -1125,77 +1203,77 @@
 	"aryQueryDB($tbl, $sql, $arg);": {
 		"prefix": "aryQueryDB($tbl, $sql, $arg);",
 		"body": [
-			"aryQueryDB($$tbl, $$sql, $$arg);"
+			"aryQueryDB(\\$$tbl, \\$$sql, \\$$arg);"
 		],
 		"description": ""
 	},
 	"rowQueryDB($tbl, $sql, $arg);": {
 		"prefix": "rowQueryDB($tbl, $sql, $arg);",
 		"body": [
-			"rowQueryDB($$tbl, $$sql, $$arg);"
+			"rowQueryDB(\\$$tbl, \\$$sql, \\$$arg);"
 		],
 		"description": ""
 	},
 	"rsQueryDB($tbl, $sql, $arg);": {
 		"prefix": "rsQueryDB($tbl, $sql, $arg);",
 		"body": [
-			"rsQueryDB($$tbl, $$sql, $$arg);"
+			"rsQueryDB(\\$$tbl, \\$$sql, \\$$arg);"
 		],
 		"description": ""
 	},
 	"rsExecuteDB($tbl, $sql, $arg);": {
 		"prefix": "rsExecuteDB($tbl, $sql, $arg);",
 		"body": [
-			"rsExecuteDB($$tbl, $$sql, $$arg);"
+			"rsExecuteDB(\\$$tbl, \\$$sql, \\$$arg);"
 		],
 		"description": ""
 	},
 	"rowGetDB($tbl, $rs)": {
 		"prefix": "rowGetDB($tbl, $rs)",
 		"body": [
-			"rowGetDB($$tbl, $$rs)"
+			"rowGetDB(\\$$tbl, \\$$rs)"
 		],
 		"description": ""
 	},
 	"aryGetDB($tbl, $rs)": {
 		"prefix": "aryGetDB($tbl, $rs)",
 		"body": [
-			"aryGetDB($$tbl, $$rs)"
+			"aryGetDB(\\$$tbl, \\$$rs)"
 		],
 		"description": ""
 	},
 	"strGetSequence($tbl)": {
 		"prefix": "strGetSequence($tbl)",
 		"body": [
-			"strGetSequence($$tbl)"
+			"strGetSequence(\\$$tbl)"
 		],
 		"description": ""
 	},
 	"strNowFuncDB($tbl)": {
 		"prefix": "strNowFuncDB($tbl)",
 		"body": [
-			"strNowFuncDB($$tbl)"
+			"strNowFuncDB(\\$$tbl)"
 		],
 		"description": ""
 	},
 	"strCreateWhereIN($ary)": {
 		"prefix": "strCreateWhereIN($ary)",
 		"body": [
-			"strCreateWhereIN($$ary)"
+			"strCreateWhereIN(\\$$ary)"
 		],
 		"description": ""
 	},
 	"aryExplodeID($val, $sep = ',')": {
 		"prefix": "aryExplodeID($val, $sep = ',')",
 		"body": [
-			"aryExplodeID($$val, $$sep = ',')"
+			"aryExplodeID(\\$$val, \\$$sep = ',')"
 		],
 		"description": ""
 	},
 	"iLimitBetween($iVal, $iMin, $iMax, $iDefMin = NULL, $iDefMax = NULL)": {
 		"prefix": "iLimitBetween($iVal, $iMin, $iMax, $iDefMin = NULL, $iDefMax = NULL)",
 		"body": [
-			"iLimitBetween($$iVal, $$iMin, $$iMax, $$iDefMin = NULL, $$iDefMax = NULL)"
+			"iLimitBetween(\\$$iVal, \\$$iMin, \\$$iMax, \\$$iDefMin = NULL, \\$$iDefMax = NULL)"
 		],
 		"description": ""
 	},
@@ -1210,7 +1288,7 @@
 	"offsetSet($offset, $value)": {
 		"prefix": "offsetSet($offset, $value)",
 		"body": [
-			"offsetSet($$offset, $$value)"
+			"offsetSet(\\$$offset, \\$$value)"
 		],
 		"description": ""
 	},
@@ -1224,21 +1302,21 @@
 	"offsetUnset($offset)": {
 		"prefix": "offsetUnset($offset)",
 		"body": [
-			"offsetUnset($$offset)"
+			"offsetUnset(\\$$offset)"
 		],
 		"description": ""
 	},
 	"offsetGet($offset)": {
 		"prefix": "offsetGet($offset)",
 		"body": [
-			"offsetGet($$offset)"
+			"offsetGet(\\$$offset)"
 		],
 		"description": ""
 	},
 	"colNameToVarName($col)": {
 		"prefix": "colNameToVarName($col)",
 		"body": [
-			"colNameToVarName($$col)"
+			"colNameToVarName(\\$$col)"
 		],
 		"description": ""
 	},
@@ -1308,7 +1386,7 @@
 	"SetID($strID)": {
 		"prefix": "SetID($strID)",
 		"body": [
-			"SetID($$strID)"
+			"SetID(\\$$strID)"
 		],
 		"description": ""
 	},
@@ -1329,35 +1407,35 @@
 	"strSetID($strID = NULL)": {
 		"prefix": "strSetID($strID = NULL)",
 		"body": [
-			"strSetID($$strID = NULL)"
+			"strSetID(\\$$strID = NULL)"
 		],
 		"description": ""
 	},
 	"blLoadFromID($strID, $blLock = FALSE)": {
 		"prefix": "blLoadFromID($strID, $blLock = FALSE)",
 		"body": [
-			"blLoadFromID($$strID, $$blLock = FALSE)"
+			"blLoadFromID(\\$$strID, \\$$blLock = FALSE)"
 		],
 		"description": ""
 	},
 	"blLoadFromDB($strWhere, $aryArgs, $strOther = '')": {
 		"prefix": "blLoadFromDB($strWhere, $aryArgs, $strOther = '')",
 		"body": [
-			"blLoadFromDB($$strWhere, $$aryArgs, $$strOther = '')"
+			"blLoadFromDB(\\$$strWhere, \\$$aryArgs, \\$$strOther = '')"
 		],
 		"description": ""
 	},
 	"rowLoadFromDB($strWhere, $aryArgs, $strOther = '')": {
 		"prefix": "rowLoadFromDB($strWhere, $aryArgs, $strOther = '')",
 		"body": [
-			"rowLoadFromDB($$strWhere, $$aryArgs, $$strOther = '')"
+			"rowLoadFromDB(\\$$strWhere, \\$$aryArgs, \\$$strOther = '')"
 		],
 		"description": ""
 	},
 	"aryLoadFromDB($strWhere, $aryArgs, $strOther = '')": {
 		"prefix": "aryLoadFromDB($strWhere, $aryArgs, $strOther = '')",
 		"body": [
-			"aryLoadFromDB($$strWhere, $$aryArgs, $$strOther = '')"
+			"aryLoadFromDB(\\$$strWhere, \\$$aryArgs, \\$$strOther = '')"
 		],
 		"description": ""
 	},
@@ -1385,14 +1463,14 @@
 	"LoadFromArray($ary)": {
 		"prefix": "LoadFromArray($ary)",
 		"body": [
-			"LoadFromArray($$ary)"
+			"LoadFromArray(\\$$ary)"
 		],
 		"description": ""
 	},
 	"LoadFromArray2($ary)": {
 		"prefix": "LoadFromArray2($ary)",
 		"body": [
-			"LoadFromArray2($$ary)"
+			"LoadFromArray2(\\$$ary)"
 		],
 		"description": ""
 	},
@@ -1427,14 +1505,14 @@
 	"isExistFromID($strID)": {
 		"prefix": "isExistFromID($strID)",
 		"body": [
-			"isExistFromID($$strID)"
+			"isExistFromID(\\$$strID)"
 		],
 		"description": ""
 	},
 	"fpStrToTempfile($strData)": {
 		"prefix": "fpStrToTempfile($strData)",
 		"body": [
-			"fpStrToTempfile($$strData)"
+			"fpStrToTempfile(\\$$strData)"
 		],
 		"description": ""
 	},
@@ -1448,56 +1526,56 @@
 	"getFields($names = NULL)": {
 		"prefix": "getFields($names = NULL)",
 		"body": [
-			"getFields($$names = NULL)"
+			"getFields(\\$$names = NULL)"
 		],
 		"description": ""
 	},
 	"getFieldNames($sep = NULL)": {
 		"prefix": "getFieldNames($sep = NULL)",
 		"body": [
-			"getFieldNames($$sep = NULL)"
+			"getFieldNames(\\$$sep = NULL)"
 		],
 		"description": ""
 	},
 	"loadFromDB($where, $args, $other)": {
 		"prefix": "loadFromDB($where, $args, $other)",
 		"body": [
-			"loadFromDB($$where, $$args, $$other)"
+			"loadFromDB(\\$$where, \\$$args, \\$$other)"
 		],
 		"description": ""
 	},
 	"getColArray($rows, $col, $key = NULL)": {
 		"prefix": "getColArray($rows, $col, $key = NULL)",
 		"body": [
-			"getColArray($$rows, $$col, $$key = NULL)"
+			"getColArray(\\$$rows, '$col', '$key = NULL')"
 		],
-		"description": ""
+		"description": "CCamRow 行配列の指定列だけを取り出す"
 	},
 	"getDispOption($options, $val)": {
 		"prefix": "getDispOption($options, $val)",
 		"body": [
-			"getDispOption($$options, $$val)"
+			"getDispOption(\\$$options, \\$$val)"
 		],
-		"description": ""
+		"description": "CCamRow 選択肢から表示用文字列を取得"
 	},
 	"getDispStatus($val = NULL)": {
 		"prefix": "getDispStatus($val = NULL)",
 		"body": [
-			"getDispStatus($$val = NULL)"
+			"getDispStatus(\\$$val = NULL)"
 		],
 		"description": ""
 	},
 	"loadColumn($col, $id, $default = '')": {
 		"prefix": "loadColumn($col, $id, $default = '')",
 		"body": [
-			"loadColumn($$col, $$id, $$default = '')"
+			"loadColumn(\\$$col, \\$$id, \\$$default = '')"
 		],
 		"description": ""
 	},
 	"UsortCallbackColumnPriority($a, $b)": {
 		"prefix": "UsortCallbackColumnPriority($a, $b)",
 		"body": [
-			"UsortCallbackColumnPriority($$a, $$b)"
+			"UsortCallbackColumnPriority(\\$$a, \\$$b)"
 		],
 		"description": ""
 	},
@@ -1510,15 +1588,48 @@
 			"inner join $2 on $1. = $2.",
 			"where  = ?",
 			"_SQL_;",
-			"\t\t$$arg = [];",
-			"\t\t$$row = rowQueryDB($$tbl, $$sql, $$arg);",
-			"\t\tif (empty($$row)){",
-			"\t\t\t$$this->AddError('')",";",
+			"\t\t\\$$arg = [];",
+			"\t\t\\$$row = rowQueryDB(\\$$tbl, \\$$sql, \\$$arg);",
+			"\t\tif (empty(\\$$row)){",
+			"\t\t\t\\$$this->AddError('')",";",
 			"\t\t\treturn;",
 			"\t\t}",
 			""
 		],
 		"description": ""
+	},
+	"CCamSQL": {
+		"prefix": "sql",
+		"body": [
+			"\\$sql = new CCamSQL();",
+			"\\$sql->AddFrom('');",
+			"\\$sql->AddField('', '');"
+		],
+		"description": "CCamSQL 使用時の雛形"
+	},
+
+	"$this->m_aryArgs": {
+		"prefix": "this->m_aryArgs",
+		"body": [
+			"\\$this-->m_aryArgs$1"
+		],
+		"description": "\\$this-m_aryArgs$1"
+	},
+	
+	"getLinkInfo": {
+		"prefix": "getLinkInfo",
+		"body": [
+			"// ",
+			"\\$ary['${1:COMMAND}'] = [",
+			"\t'Handler'    => 'on$1',",
+			"\t'Permission' => PERMISSION_${2|READ,MODIFY,DELETE|},",
+			"\t// 'RightCommand' => '',",
+			"\t// 'RightValue'   => NULL,",
+			"\t'LeftCommand' => '!@$1 delete',",
+			"\t'LeftValue'   => TRUE,",
+			"];"
+		],
+		"description": "BimmsPagePC::getLinkInfo() の要素を追加"
 	},
 	"onEvent": {
 		"prefix": "onEvent",
@@ -1558,14 +1669,14 @@
 	"$sql = <<<_SQL_": {
 		"prefix": "sql",
 		"body": [
-			"\t\t$$tbl = static::$$tableName;",
-			"\t\t$$sql = <<<_SQL_",
+			"\t\t\\$$tbl = static::\\$$tableName;",
+			"\t\t\\$$sql = <<<_SQL_",
 			"select ",
-			"from {$$tbl}",
+			"from {\\$$tbl}",
 			"where ",
 			"_SQL_;",
-			"\t\t$$arg = [];",
-			"\t\t$$rows = aryQueryDB($$tbl, $$sql, $$arg);"
+			"\t\t\\$$arg = [];",
+			"\t\t\\$$rows = aryQueryDB(\\$$tbl, \\$$sql, \\$$arg);"
  		],
 		"description": "$sql = <<<_SQL_"
 	}
