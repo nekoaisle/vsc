@@ -78,22 +78,24 @@ __USAGE__;
 		switch ($b[0]) {
 			// 数値
 		case 'N':
-			if ($type == 'INT')
+			if ($type == 'INT') {
 				$n = 'm_i';
-			else
+			} else {
 				$n = 'm_f';
-			for ($j = 1; $j < count($b); ++ $j) {
-				$n .= $this->makeRowNameWord($b[$j]);
 			}
 			break;
 
 			// 日時
 		case 'D':
 			$n = 'm_str';
-			for ($j = 1; $j < count($b) -1 ; ++ $j) {
-				$n .= $this->makeRowNameWord($b[$j]);
+			$l = count($b)-1;
+			if ($b[$l] == 'DT') {
+				// 末尾が DT ならば DATE に変更
+				$b[$l] = 'DATE';
+			} else {
+				// DT でないので DATE を追加
+				$b[] = 'DATE';
 			}
-			$n .= 'Date';
 			break;
 
 			// 文字列
@@ -101,10 +103,12 @@ __USAGE__;
 		case 'C':
 		default:
 			$n = 'm_str';
-			for ($j = 1; $j < count($b); ++ $j) {
-				$n .= $this->makeRowNameWord($b[$j]);
-			}
 			break;
+		}
+
+		// 各単語をキャメルケースに変換してつなぐ
+		for ($j = 1; $j < count($b); ++ $j) {
+			$n .= $this->makeRowNameWord($b[$j]);
 		}
 
 		//

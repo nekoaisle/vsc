@@ -38,56 +38,56 @@
 	"V_ACCOUNT_ID": {
 		"prefix": "V_ACCOUNT_ID",
 		"body": [
-			"V_ACCOUNT_ID    VARCHAR( 64) NOT NULL DEFAULT '' -- アカウントID ACCOUNT.VID"
+			"V_ACCOUNT_ID      VARCHAR( 64) NOT NULL DEFAULT '' -- アカウントID ACCOUNT.VID"
 		],
 		"description": "V_ACCOUNT_ID    VARCHAR( 64) NOT NULL DEFAULT '' -- アカウントID ACCOUNT.VID"
 	},
 	"C_STATUS": {
 		"prefix": "C_STATUS",
 		"body": [
-			"C_STATUS        CHAR   (  3) NOT NULL DEFAULT '' -- 状態"
+			"C_STATUS          CHAR   (  3) NOT NULL DEFAULT '' -- 状態"
 		],
 		"description": "C_STATUS      CHAR   (  3) NOT NULL DEFAULT '' -- 状態"
 	},
 	"V_SITE_ID": {
 		"prefix": "V_SITE_ID",
 		"body": [
-			"V_SITE_ID       VARCHAR( 64) NOT NULL DEFAULT '' -- サイトID"
+			"V_SITE_ID         VARCHAR( 64) NOT NULL DEFAULT '' -- サイトID"
 		],
 		"description": "V_SITE_ID     VARCHAR( 64) NOT NULL DEFAULT '' -- サイトID"
 	},
 	"V_NAME": {
 		"prefix": "V_NAME",
 		"body": [
-			"V_NAME          VARCHAR(255) NOT NULL DEFAULT '' -- 名称"
+			"V_NAME            VARCHAR(255) NOT NULL DEFAULT '' -- 名称"
 		],
 		"description": "V_NAME        VARCHAR(255) NOT NULL DEFAULT '' -- 名称"
 	},
 	"V_COMMENT": {
 		"prefix": "V_COMMENT",
 		"body": [
-			"V_COMMENT       VARCHAR(255) NOT NULL DEFAULT '' -- コメント"
+			"V_COMMENT         VARCHAR(255) NOT NULL DEFAULT '' -- コメント"
 		],
 		"description": "V_COMMENT       VARCHAR(255) NOT NULL DEFAULT '' -- コメント"
 	},
 	"V_IMAGE": {
 		"prefix": "V_IMAGE",
 		"body": [
-			"V_IMAGE         VARCHAR(255) NOT NULL DEFAULT '' -- 画像ID|URL"
+			"V_IMAGE           VARCHAR(255) NOT NULL DEFAULT '' -- 画像ID|URL"
 		],
 		"description": "V_IMAGE         VARCHAR(255) NOT NULL DEFAULT '' -- 画像ID|URL"
 	},
 	"V_LINK": {
 		"prefix": "V_LINK",
 		"body": [
-			"V_LINK          VARCHAR(255) NOT NULL DEFAULT '' -- リンク先"
+			"V_LINK            VARCHAR(255) NOT NULL DEFAULT '' -- リンク先"
 		],
 		"description": "V_LINK          VARCHAR(255) NOT NULL DEFAULT '' -- リンク先"
 	},
 	"V_DESC": {
 		"prefix": "V_DESC",
 		"body": [
-			"V_DESC          VARCHAR(255) NOT NULL DEFAULT '' -- 説明文"
+			"V_DESC            VARCHAR(255) NOT NULL DEFAULT '' -- 説明文"
 		],
 		"description": "V_DESC          VARCHAR(255) NOT NULL DEFAULT '' -- 説明文"
 	}
