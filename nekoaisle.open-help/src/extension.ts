@@ -88,16 +88,20 @@ class MyExtension extends Extension {
 
         let addr: string;
         let query: object;
+        let lang: string;
         if (list[editor.document.languageId]) {
-            let item: ListItem = list[editor.document.languageId];
-            switch (item.method) {
-                case 'chrome': {
-                    Util.browsURL(item.path, item.options);
-                    break;
-                }
-                default: {
-                    break;
-                }
+            lang = editor.document.languageId;
+        } else {
+            lang = "default";
+        }
+        let item: ListItem = list[lang];
+        switch (item.method) {
+            case 'chrome': {
+                Util.browsURL(item.path, item.options);
+                break;
+            }
+            default: {
+                break;
             }
         }
     }

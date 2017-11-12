@@ -21,6 +21,6 @@ TypeScript のソースファイルごとまるまるアップしております
 |nekoaisole.open-file|ファイルを開く、メニュー選択｜関連ファイル｜新規ファイル|
 |nekoaisole.open-help|カーソル位置の単語をネットで検索|
 |nekoaisole.open-prebious-tab|前回開いていたタブを開く|
-|nekoaisole.open^thunar|現在のファイルが格納されているフォルダーを Thunar で開く|
+|nekoaisole.open-thunar|現在のファイルが格納されているフォルダーを Thunar で開く|
 |nekoaisole.select-word|カーソル位置の単語を選択する|
-|nekoaisole.toggle-char-case|選択範囲またはカーソル位置の単語の大文字/小文字を切り替える|
+|nekoaisole.toggle-char-case|選択範囲またはカーソル位置の単語の大文字/小文字/キャメルケースを切り替える|

@@ -29,5 +29,12 @@
 	"shellscript": {
 		"method": "chrome", 
 		"path": "http://shellscript.sunone.me/#index"
+	},
+	"default": {
+		"method": "chrome",
+		"path": "http://www.google.co.jp/search",
+		"options": {
+			"q": "{{word}}"
+		}
 	}
 }

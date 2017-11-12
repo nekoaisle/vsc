@@ -48,15 +48,23 @@ class OpenPreviousTab extends Extension {
 	 * エントリー
 	 */
 	public exec() {
-		if ( !this.fileNames[1] ) {
+		if (!this.fileNames[1]) {
 			return;
 		}
 
 		let fileName = this.fileNames[1];
-		for ( let doc of vscode.workspace.textDocuments ) {
-			let fn = doc.fileName;
-			if ( doc.fileName == fileName ) {
-				vscode.window.showTextDocument(doc);
+		// for (let doc of vscode.workspace.textDocuments) {
+		// 	let fn = doc.fileName;
+		// 	if (doc.fileName == fileName) {
+		// 		vscode.window.showTextDocument(doc);
+		// 		break;
+		// 	}
+		// }
+		for (let editor of vscode.window.visibleTextEditors) {
+			if (editor.document.fileName == fileName) {
+	            vscode.workspace.openTextDocument(fileName).then((doc: vscode.TextDocument) => {
+					return vscode.window.showTextDocument(doc);
+        		});
 				break;
 			}
 		}
