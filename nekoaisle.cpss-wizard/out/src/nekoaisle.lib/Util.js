@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const chproc = require("child_process");
 const os = require("os");

@@ -1107,8 +1107,12 @@ _EOL_;
 		// SQL ファイル名
 		$sqlFile = $this->getOption('sql');
 
-		// テーブル名を分解
+		// テーブル名を作成
 		$sqlBase = basename(strtoupper($sqlFile), '.SQL');
+		// 先頭の数字と_を除去
+		if (preg_match('/^[0-9_\s]*(.*)$/', $sqlBase, $m) === 1) {
+			$sqlBase = $m[1];
+		}
 		if (strpos($sqlBase, '_') === FALSE) {
 			// スネークケースではないのでキャメルケースとして分解
 			$tableName = $this->splitCamel($sqlBase);

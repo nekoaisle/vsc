@@ -405,7 +405,7 @@ export module Util {
 	 * @param uri 開く uri
 	 * @param query 追加の query
 	 */
-	export function browsURL(uri: string, query?: object) {
+	export function browsURL(uri: string, query?: Object) {
 		// uri をパース
 		let urlInfo = url.parse(uri, true);
 

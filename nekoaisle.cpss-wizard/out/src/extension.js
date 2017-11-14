@@ -1,5 +1,4 @@
 'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const fs = require("fs");
 const path = require("path");
@@ -145,7 +144,6 @@ class CpssWizard extends nekoaisle_1.Extension {
                     {
                         mode: 'ListList',
                         name: 'ListList',
-                        htmls: [{ dir: 'pc', charset: 'UTF-8' }],
                     },
                     {
                         mode: 'TransBase',
@@ -158,12 +156,10 @@ class CpssWizard extends nekoaisle_1.Extension {
                     {
                         mode: 'TransEdit',
                         name: 'TransEdit',
-                        htmls: [{ dir: 'pc', charset: 'UTF-8' }],
                     },
                     {
                         mode: 'TransConfirm',
                         name: 'TransConfirm',
-                        htmls: [{ dir: 'pc', charset: 'UTF-8' }],
                     },
                 ],
                 sql: true,
@@ -288,18 +284,9 @@ class CpssWizard extends nekoaisle_1.Extension {
                 sqls.shift();
             }
             else {
-                // 'CPSS', '00_ACCOUNT.sql'
-                // CpssRowAccount
-                // AccountListBase,php
-                // account_list,php
             }
         }
         else {
-            // モジュール名が指定されていない
-            // '01 GROUP_MEMBER.sql'
-            // RowGroupMember.php
-            // GroupMemberListBase.php
-            // group_memberlist.php
         }
         // 小文字に変換
         for (let key in sqls) {
