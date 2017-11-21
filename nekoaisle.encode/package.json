@@ -44,19 +44,6 @@
         "commands": [{
             "command": "nekoaisle.encode",
             "title": "Encode the selection URL or HTML."
-        }],
-        "keybindings": [{
-            "command": "nekoaisle.encode",
-            "key": "escape e",
-            "when": "editorTextFocus && !editorReadonly"
-        },{
-            "command": "nekoaisle.encloseInSingleQuotation",
-            "key": "ctrl+7",
-            "when": "editorTextFocus && !editorReadonly"
-        },{
-            "command": "nekoaisle.encloseInDoubleQuotation",
-            "key": "ctrl+2",
-            "when": "editorTextFocus && !editorReadonly"
         }]
     },
     "scripts": {
