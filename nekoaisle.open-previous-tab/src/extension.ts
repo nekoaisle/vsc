@@ -10,8 +10,13 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 }
 
+interface History {
+	fileName: string;
+	editor: vscode.TextEditor;
+}
+
 class OpenPreviousTab extends Extension {
-	private fileNames: string[] = [null, null];
+	private history: History[] = [];
     private disposable: vscode.Disposable;
 
 	/**
@@ -40,7 +45,10 @@ class OpenPreviousTab extends Extension {
 
 		// 現在のアクティブタブを記憶
 		if (vscode.window.activeTextEditor) {
-			this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
+			this.history[0] = {
+				fileName: vscode.window.activeTextEditor.document.fileName,
+				editor: vscode.window.activeTextEditor,
+			};
 		}
 	}
 
@@ -48,26 +56,29 @@ class OpenPreviousTab extends Extension {
 	 * エントリー
 	 */
 	public exec() {
-		if (!this.fileNames[1]) {
+		if (!this.history[1]) {
 			return;
 		}
 
-		let fileName = this.fileNames[1];
-		// for (let doc of vscode.workspace.textDocuments) {
-		// 	let fn = doc.fileName;
-		// 	if (doc.fileName == fileName) {
-		// 		vscode.window.showTextDocument(doc);
-		// 		break;
-		// 	}
-		// }
-		for (let editor of vscode.window.visibleTextEditors) {
-			if (editor.document.fileName == fileName) {
-	            vscode.workspace.openTextDocument(fileName).then((doc: vscode.TextDocument) => {
+		let history = this.history[1];
+		for (let doc of vscode.workspace.textDocuments) {
+			let fn = doc.fileName;
+			if (doc.fileName == history.fileName) {
+				// vscode.window.showTextDocument(doc);
+	            vscode.workspace.openTextDocument(history.fileName).then((doc: vscode.TextDocument) => {
 					return vscode.window.showTextDocument(doc);
         		});
 				break;
 			}
 		}
+		// for (let editor of vscode.window.visibleTextEditors) {
+		// 	if (editor.document.fileName == history.fileName) {
+	    //         vscode.workspace.openTextDocument(history.fileName).then((doc: vscode.TextDocument) => {
+		// 			return vscode.window.showTextDocument(doc);
+        // 		});
+		// 		break;
+		// 	}
+		// }
 	}
 
 	/**
@@ -75,9 +86,12 @@ class OpenPreviousTab extends Extension {
 	 */
 	protected onEvent(e: vscode.TextEditor) {
 		// 前回のアクティブタブを記憶
-		this.fileNames[1] = this.fileNames[0];
+		this.history[1] = this.history[0];
 		// 現在のアクティブタブを記憶
-		this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
+		this.history[0] = {
+			fileName: vscode.window.activeTextEditor.document.fileName,
+			editor: vscode.window.activeTextEditor,
+		};
 	}
 
 	public dispose() {

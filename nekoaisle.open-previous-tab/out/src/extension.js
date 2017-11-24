@@ -28,7 +28,7 @@ class OpenPreviousTab extends nekoaisle_1.Extension {
                 }
             ]
         });
-        this.fileNames = [null, null];
+        this.history = [];
         // イベントハンドラーを登録
         let subscriptions = [];
         vscode.window.onDidChangeActiveTextEditor(this.onEvent, this, subscriptions);
@@ -36,33 +36,50 @@ class OpenPreviousTab extends nekoaisle_1.Extension {
         this.disposable = vscode.Disposable.from(...subscriptions);
         // 現在のアクティブタブを記憶
         if (vscode.window.activeTextEditor) {
-            this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
+            this.history[0] = {
+                fileName: vscode.window.activeTextEditor.document.fileName,
+                editor: vscode.window.activeTextEditor,
+            };
         }
     }
     /**
      * エントリー
      */
     exec() {
-        if (!this.fileNames[1]) {
+        if (!this.history[1]) {
             return;
         }
-        let fileName = this.fileNames[1];
+        let history = this.history[1];
         for (let doc of vscode.workspace.textDocuments) {
             let fn = doc.fileName;
-            if (doc.fileName == fileName) {
-                vscode.window.showTextDocument(doc);
+            if (doc.fileName == history.fileName) {
+                // vscode.window.showTextDocument(doc);
+                vscode.workspace.openTextDocument(history.fileName).then((doc) => {
+                    return vscode.window.showTextDocument(doc);
+                });
                 break;
             }
         }
+        // for (let editor of vscode.window.visibleTextEditors) {
+        // 	if (editor.document.fileName == history.fileName) {
+        //         vscode.workspace.openTextDocument(history.fileName).then((doc: vscode.TextDocument) => {
+        // 			return vscode.window.showTextDocument(doc);
+        // 		});
+        // 		break;
+        // 	}
+        // }
     }
     /**
      * イベントハンドラ
      */
     onEvent(e) {
         // 前回のアクティブタブを記憶
-        this.fileNames[1] = this.fileNames[0];
+        this.history[1] = this.history[0];
         // 現在のアクティブタブを記憶
-        this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
+        this.history[0] = {
+            fileName: vscode.window.activeTextEditor.document.fileName,
+            editor: vscode.window.activeTextEditor,
+        };
     }
     dispose() {
         this.disposable.dispose();
