@@ -24,15 +24,6 @@
                 "command": "nekoaisle.toggleWordCase",
                 "title": "Toggle case by first letter"
             }
-        ],
-        "keybindings": [
-            {
-                "command": "nekoaisle.toggleCharCase",
-                "key": "ctrl+]"
-            },{
-                "command": "nekoaisle.toggleWordCase",
-                "key": "ctrl+["
-            }
         ]
     },
     "scripts": {

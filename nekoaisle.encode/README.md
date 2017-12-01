@@ -34,7 +34,7 @@
 ## コマンドおよびキーマップ
 |コマンド                                   |機能                  |キーマップ|
 |-------------------------------------------|----------------------|----------|
-|nekoaisle.encode                           |メニューを開く        |escape e  |
+|nekoaisle.encode                           |メニューを開く        |          |
 |nekoaisle.encodeHtml                       |HTML エンコード       |          |
 |nekoaisle.encodeUrl                        |URL エンコード        |          |
 |nekoaisle.encodeBase64                     |BASE64 エンコード     |          |
@@ -51,8 +51,8 @@
 |nekoaisle.decodeContentsOfSingleQuotation  |'' の中身をデコード   |          |
 |nekoaisle.decodeContentsOfDoubleQuotation  |"" の中身をデコード   |          |
 |nekoaisle.decodeContentsOfUnixtime         |UNIXTIMEを日時文字列に|          |
-|nekoaisle.encloseInSingleQuotation         |'' で括る/外す        |ctrl+2    |
-|nekoaisle.encloseInDoubleQuotation         |"" で括る/外す        |ctrl+7    |
+|nekoaisle.encloseInSingleQuotation         |'' で括る/外す        |          |
+|nekoaisle.encloseInDoubleQuotation         |"" で括る/外す        |          |
 |nekoaisle.encloseInGraveAccen              |`` で括る/外す        |          |
 |nekoaisle.encloseParenthesis               |() 括る/外す          |          |
 |nekoaisle.encloseSquareBracket             |[] 括る/外す          |          |

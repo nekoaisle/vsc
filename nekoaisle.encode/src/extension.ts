@@ -594,7 +594,7 @@ class MyExtention extends Extension {
 		// @@todo 本来この処理は syncReplace() にて行うべき
 		// @@todo 上記の現象を回避するため syncReplace と syncInsert は統合する必要がある 
 		let sels: vscode.Selection[] = editor.selections;
-		sels.sort((a: vscode.Selection, b: vscode.Selection): number => {
+		sels = sels.sort((a: vscode.Selection, b: vscode.Selection): number => {
 			// 整数部:行番号、小数部:桁番号/10000
 			// ※1行が10,000文字を超えると誤動作しますm(_ _)m
 			// そういうファイルでこの機能が必要になるとは思いませんが…
