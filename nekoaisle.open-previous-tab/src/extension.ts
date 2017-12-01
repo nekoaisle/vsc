@@ -60,7 +60,7 @@ class OpenPreviousTab extends Extension {
 			return;
 		}
 
-		let fileName = this.fileNames[1];
+		let fileName = this.history[1].fileName;
 		for (let doc of vscode.workspace.textDocuments) {
 			let fn = doc.fileName;
 			if (doc.fileName == fileName) {
@@ -85,19 +85,15 @@ class OpenPreviousTab extends Extension {
 		// 現在のアクティブファイル名を取得
 		let fileName = vscode.window.activeTextEditor.document.fileName;
 		// 同違っていたら記憶
-		if (this.fileNames[0] != fileName) {
+		if (this.history[0].fileName != fileName) {
 			// 前回のアクティブタブを記憶
-			this.fileNames[1] = this.fileNames[0];
+			this.history[1] = this.history[0];
 			// 現在のアクティブタブを記憶
-			this.fileNames[0] = fileName;
+			this.history[0] = {
+				fileName: vscode.window.activeTextEditor.document.fileName,
+				editor: vscode.window.activeTextEditor,
+			};
 		}
-		// 前回のアクティブタブを記憶
-		this.history[1] = this.history[0];
-		// 現在のアクティブタブを記憶
-		this.history[0] = {
-			fileName: vscode.window.activeTextEditor.document.fileName,
-			editor: vscode.window.activeTextEditor,
-		};
 	}
 
 	public dispose() {
