@@ -332,9 +332,16 @@
 	"@param": {
 		"prefix": "@param",
 		"body": [
-			"@param  ${1|string,array,int,boolean,float|}"
+			"@param  ${1|string ,array  ,int    ,boolean,float  |} \\$$2"
 		],
 		"description": "@param"
+	},
+	"@return": {
+		"prefix": "@return",
+		"body": [
+			"@return ${1|string ,array  ,int    ,boolean,float  |} $2"
+		],
+		"description": "@return"
 	},
 
 	"$_SERVER['DOCUMENT_ROOT']": {
@@ -1630,6 +1637,44 @@
 			"];"
 		],
 		"description": "BimmsPagePC::getLinkInfo() の要素を追加"
+	},
+	"getOption": {
+		"prefix": "getOption",
+		"body": [
+			"/**",
+			" * ${1:状態}選択肢取得",
+			" * ",
+			" * @access public",
+			" * @param  array \\$before 前に追加する選択肢",
+			" * @param  array \\$before 後に追加する選択肢",
+			" * @return array $1選択肢配列",
+			" */",
+			"static public function getOption${2:Status}(\\$before = NULL, \\$after = NULL)",
+			"{",
+			"\treturn static::mergeArray(\\$before, static::\\$option$2, \\$after);",
+			"}"
+		],
+		"description": "CCamRow::getOption...()"
+	},
+	"getDisp": {
+		"prefix": "getDisp",
+		"body": [
+			"/**",
+			" * ${1:状態}を人の読める文字列に変換",
+			" * ",
+			" * ※通常メソッドとしても static としても呼び出し可能",
+			" * ",
+			" * @access public",
+			" * @param string  \\$str $1",
+			" * @return string $1名文字列",
+			" */",
+			"public function getDisp${2:Status}(\\$str = NULL)",
+			"{",
+			"\t// $1名を返す",
+			"\treturn self::getDispOption(self::\\$option$2, \\$str, 'm_str$2');",
+			"}"
+		],
+		"description": "CCamRow::getDisp...()"
 	},
 	"onEvent": {
 		"prefix": "onEvent",

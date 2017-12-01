@@ -1012,18 +1012,16 @@ _EOL_;
 				continue 2;
 			}
 
-			if (!empty($temple[$a['name']])) {
-				$src[] = rtrim($temple[$a['name']]);
-				continue;
-			}
-
 			// デフォルトが省略されているときは ''
 			if (!isset($a[11])) {
 				$a[11] = '';
 			}
 
-			// この列型のテンプレートを取得
-			if (substr($a['name'], 0, 2) == 'D_') {
+			// この列のテンプレートを取得
+			if (!empty($temple[$a['name']])) {
+				// この列名専用テンプレートがある
+				$tmp = rtrim($temple[$a['name']]);
+			} else if (substr($a['name'], 0, 2) == 'D_') {
 				// D_ ではじまるカラムは日付
 				$tmp = rtrim($temple['DATE']);
 			} else {

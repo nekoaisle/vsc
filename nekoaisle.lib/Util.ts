@@ -175,7 +175,7 @@ export module Util {
 	 * @return string エンコードした文字列
 	 */
 	export function encodeHtml(s: string): string {
-		return s.replace(/[&'`"<>\s]/g, function (match) {
+		return s.replace(/[&\'`"<>\s]/g, function (match) {
 			return {
 				'&': '&amp;',
 				"'": '&#x27;',

@@ -22,8 +22,48 @@
         "keybindings": [{
             "command": "nekoaisle.cpssWizard",
             "key": "escape p"
-        }]
-
+        }],
+        "configuration": {
+            "type": "object",
+            "title": "nekoaisle: CPSS Wizerd configurations",
+            "properties": {
+                "cpssWizard.wizard": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Wizardファイル名"
+                },
+                "cpssWizard.templateDir": {
+                    "type": "string",
+                    "default": "",
+                    "description": "標準テンプレート格納ディレクトリ"
+                },
+                "cpssWizard.sqlDir": {
+                    "type": "string",
+                    "default": "~/",
+                    "description": "SQLファイル格納ディレクトリ"
+                },
+                "cpssWizard.php": {
+                    "type": "string",
+                    "default": "/usr/bin/php",
+                    "description": "php格納ディレクトリ"
+                },
+                "cpssWizard.outFile": {
+                    "type": "string",
+                    "default": "php://stdout",
+                    "description": "出力ファイル名"
+                },
+                "cpssWizard.author": {
+                    "type": "string",
+                    "default": "木屋善夫",
+                    "description": "著者名"
+                },
+                "cpssWizard.charset": {
+                    "type": "string",
+                    "default": "Shift_JIS",
+                    "description": "文字コード"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",

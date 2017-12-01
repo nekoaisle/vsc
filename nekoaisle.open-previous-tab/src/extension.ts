@@ -53,31 +53,36 @@ class OpenPreviousTab extends Extension {
 		}
 
 		let fileName = this.fileNames[1];
-		// for (let doc of vscode.workspace.textDocuments) {
-		// 	let fn = doc.fileName;
-		// 	if (doc.fileName == fileName) {
-		// 		vscode.window.showTextDocument(doc);
-		// 		break;
-		// 	}
-		// }
-		for (let editor of vscode.window.visibleTextEditors) {
-			if (editor.document.fileName == fileName) {
-	            vscode.workspace.openTextDocument(fileName).then((doc: vscode.TextDocument) => {
-					return vscode.window.showTextDocument(doc);
-        		});
+		for (let doc of vscode.workspace.textDocuments) {
+			let fn = doc.fileName;
+			if (doc.fileName == fileName) {
+				vscode.window.showTextDocument(doc);
 				break;
 			}
 		}
+		// for (let editor of vscode.window.visibleTextEditors) {
+		// 	if (editor.document.fileName == fileName) {
+	    //         vscode.workspace.openTextDocument(fileName).then((doc: vscode.TextDocument) => {
+		// 			return vscode.window.showTextDocument(doc);
+        // 		});
+		// 		break;
+		// 	}
+		// }
 	}
 
 	/**
 	 * イベントハンドラ
 	 */
 	protected onEvent(e: vscode.TextEditor) {
-		// 前回のアクティブタブを記憶
-		this.fileNames[1] = this.fileNames[0];
-		// 現在のアクティブタブを記憶
-		this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
+		// 現在のアクティブファイル名を取得
+		let fileName = vscode.window.activeTextEditor.document.fileName;
+		// 同違っていたら記憶
+		if (this.fileNames[0] != fileName) {
+			// 前回のアクティブタブを記憶
+			this.fileNames[1] = this.fileNames[0];
+			// 現在のアクティブタブを記憶
+			this.fileNames[0] = fileName;
+		}
 	}
 
 	public dispose() {

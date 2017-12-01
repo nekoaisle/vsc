@@ -54,15 +54,28 @@ class OpenPreviousTab extends nekoaisle_1.Extension {
                 break;
             }
         }
+        // for (let editor of vscode.window.visibleTextEditors) {
+        // 	if (editor.document.fileName == fileName) {
+        //         vscode.workspace.openTextDocument(fileName).then((doc: vscode.TextDocument) => {
+        // 			return vscode.window.showTextDocument(doc);
+        // 		});
+        // 		break;
+        // 	}
+        // }
     }
     /**
      * イベントハンドラ
      */
     onEvent(e) {
-        // 前回のアクティブタブを記憶
-        this.fileNames[1] = this.fileNames[0];
-        // 現在のアクティブタブを記憶
-        this.fileNames[0] = vscode.window.activeTextEditor.document.fileName;
+        // 現在のアクティブファイル名を取得
+        let fileName = vscode.window.activeTextEditor.document.fileName;
+        // 同違っていたら記憶
+        if (this.fileNames[0] != fileName) {
+            // 前回のアクティブタブを記憶
+            this.fileNames[1] = this.fileNames[0];
+            // 現在のアクティブタブを記憶
+            this.fileNames[0] = fileName;
+        }
     }
     dispose() {
         this.disposable.dispose();
