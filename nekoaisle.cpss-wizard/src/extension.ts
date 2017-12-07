@@ -55,8 +55,21 @@ class Options {
 	 */
 	public constructor(config: vscode.WorkspaceConfiguration, defaults: Options) {
 		// ファイル名
-		this.wizard = Util.normalizePath(config.get('wizard', defaults.wizard));
+		// package.json の contributes.configuration.properties.cpssWizard.wizard を設定したらユーザー定義がなくてもデフォルト値を使ってくれなくなった＞＜；
+		let wizard = config.get('wizard', defaults.wizard);
+		if (wizard == '') {
+			wizard = defaults.wizard;
+		}
+		this.wizard = Util.normalizePath(defaults.wizard);
+
+		// 一時ディレクトリ名
+		let templateDir = config.get('templateDir', defaults.templateDir);
+		if (templateDir == '') {
+			templateDir = defaults.templateDir;
+		}
 		this.templateDir = Util.normalizePath(config.get('templateDir', defaults.templateDir));
+
+		//
 		this.sqlDir = Util.normalizePath(config.get('sqlDir', defaults.sqlDir));
 		this.php = Util.normalizePath(config.get('php', defaults.php));
 		this.outFile = Util.normalizePath(config.get('outFile', defaults.outFile));

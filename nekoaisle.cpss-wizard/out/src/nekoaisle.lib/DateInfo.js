@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Util_1 = require("./Util");
 /**
  * 日時情報クラス

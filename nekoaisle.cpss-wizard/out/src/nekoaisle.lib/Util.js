@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const chproc = require("child_process");
 const os = require("os");
@@ -178,7 +179,7 @@ var Util;
      * @return string エンコードした文字列
      */
     function encodeHtml(s) {
-        return s.replace(/[&'`"<>\s]/g, function (match) {
+        return s.replace(/[&\'`"<>\s]/g, function (match) {
             return {
                 '&': '&amp;',
                 "'": '&#x27;',

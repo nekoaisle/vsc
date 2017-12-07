@@ -1,4 +1,5 @@
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const fs = require("fs");
 const path = require("path");
@@ -31,8 +32,19 @@ class Options {
         this.fileName = ''; // 出力ファイル名
         this.htmls = []; // html出力ディレクトリ名
         // ファイル名
-        this.wizard = nekoaisle_1.Util.normalizePath(config.get('wizard', defaults.wizard));
+        // package.json の contributes.configuration.properties.cpssWizard.wizard を設定したらユーザー定義がなくてもデフォルト値を使ってくれなくなった＞＜；
+        let wizard = config.get('wizard', defaults.wizard);
+        if (wizard == '') {
+            wizard = defaults.wizard;
+        }
+        this.wizard = nekoaisle_1.Util.normalizePath(defaults.wizard);
+        // 一時ディレクトリ名
+        let templateDir = config.get('templateDir', defaults.templateDir);
+        if (templateDir == '') {
+            templateDir = defaults.templateDir;
+        }
         this.templateDir = nekoaisle_1.Util.normalizePath(config.get('templateDir', defaults.templateDir));
+        //
         this.sqlDir = nekoaisle_1.Util.normalizePath(config.get('sqlDir', defaults.sqlDir));
         this.php = nekoaisle_1.Util.normalizePath(config.get('php', defaults.php));
         this.outFile = nekoaisle_1.Util.normalizePath(config.get('outFile', defaults.outFile));
@@ -284,9 +296,18 @@ class CpssWizard extends nekoaisle_1.Extension {
                 sqls.shift();
             }
             else {
+                // 'CPSS', '00_ACCOUNT.sql'
+                // CpssRowAccount
+                // AccountListBase,php
+                // account_list,php
             }
         }
         else {
+            // モジュール名が指定されていない
+            // '01 GROUP_MEMBER.sql'
+            // RowGroupMember.php
+            // GroupMemberListBase.php
+            // group_memberlist.php
         }
         // 小文字に変換
         for (let key in sqls) {
