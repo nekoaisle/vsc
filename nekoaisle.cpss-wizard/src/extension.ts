@@ -306,7 +306,7 @@ class CpssWizard extends Extension {
 			}
 		});
 	}
-
+	
 	/**
 	 * 一括処理
 	 * @param options Options オプション
@@ -482,7 +482,7 @@ class CpssWizard extends Extension {
 			opt.fileName = path.join(pinfo.dir, opt.fileName);
 			opts.push(opt);
 		}
-
+		
 		// 実行
 		let err: string[] = [];
 		for (let opt of opts) {
