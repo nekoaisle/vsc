@@ -38,12 +38,12 @@ class Options {
             wizard = defaults.wizard;
         }
         this.wizard = nekoaisle_1.Util.normalizePath(defaults.wizard);
-        // 一時ディレクトリ名
+        // テンプレート格納ディレクトリ名
         let templateDir = config.get('templateDir', defaults.templateDir);
         if (templateDir == '') {
             templateDir = defaults.templateDir;
         }
-        this.templateDir = nekoaisle_1.Util.normalizePath(config.get('templateDir', defaults.templateDir));
+        this.templateDir = nekoaisle_1.Util.normalizePath(templateDir);
         //
         this.sqlDir = nekoaisle_1.Util.normalizePath(config.get('sqlDir', defaults.sqlDir));
         this.php = nekoaisle_1.Util.normalizePath(config.get('php', defaults.php));

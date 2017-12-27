@@ -62,12 +62,12 @@ class Options {
 		}
 		this.wizard = Util.normalizePath(defaults.wizard);
 
-		// 一時ディレクトリ名
+		// テンプレート格納ディレクトリ名
 		let templateDir = config.get('templateDir', defaults.templateDir);
 		if (templateDir == '') {
 			templateDir = defaults.templateDir;
 		}
-		this.templateDir = Util.normalizePath(config.get('templateDir', defaults.templateDir));
+		this.templateDir = Util.normalizePath(templateDir);
 
 		//
 		this.sqlDir = Util.normalizePath(config.get('sqlDir', defaults.sqlDir));

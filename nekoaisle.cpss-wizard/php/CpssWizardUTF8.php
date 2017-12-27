@@ -392,12 +392,12 @@ __USAGE__;
 		$sql = $this->loadTextFile($sqlFile);
 		
 		// テーブル名取得
-		if (preg_match('/CREATE\s+TABLE\s+([0-9A-Z_]+)/', $sql, $a) === 1) {
+		if (preg_match('/CREATE\s+TABLE\s+([0-9A-Z_]+)/i', $sql, $a) === 1) {
 			$ret['NAME'] = $a[1];
 		}
 
 		// SQL 文
-		if (preg_match('/(CREATE\s+TABLE\s[^;]+;)/', $sql, $a) === 1) {
+		if (preg_match('/(CREATE\s+TABLE\s[^;]+;)/i', $sql, $a) === 1) {
 			// CREATE TABLE 全体
 			$ret['SQL'] = $a[1];
 
@@ -449,7 +449,7 @@ __USAGE__;
 					. ')?\s*'
 					. '-- '
 					. '(.*)'									// [8] メルマガID ACCOUNT.V_ID
-					. '$/'
+					. '$/i'
 				;
 
 				if (preg_match($pt, $s, $a) !== 1) {

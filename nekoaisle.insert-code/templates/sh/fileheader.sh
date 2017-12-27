@@ -20,16 +20,35 @@ function usage_exit() {
 		echo ${2}
 	fi
 
-	echo << _EOL_
+	cat << _EOL_
 usage: $ {{pinfo.base}} 
 _EOL_
 
 	exit $1;
 }
 
+# コマンドをエコーして実行
+# $DEBUG が TRUE のときは実行しない
+# 
+# @param $1 コマンド
+# @param $2〜$9 引数
+function _exec {
+	local cmd=$1
+	local res=0;
+	shift
+	echo -e "\e[33;1m\$ ${cmd}" "$@" "\e[m"
+
+	if [ ! "$DEBUG" ]; then
+		# $DEBUG が空なのでコマンドを実行
+		$cmd "$@"
+		res=$?
+	fi
+	return $res
+}
+
 # 引数が指定されなかったときはエラー
 if [ $# -eq 0 ]; then
-	help 0;
+	usage_exit 1;
 fi
 
 # グローバル変数

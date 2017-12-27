@@ -137,6 +137,13 @@
 		],
 		"description": "すべてのエラー"
 	},
+	"trigger_error": {
+		"prefix": "trigger_error",
+		"body": [
+			"trigger_error(\"${1:エラー文字列}\", ${2|E_USER_ERROR,E_USER_WARNING,E_USER_NOTICE|});"
+		],
+		"description": "bool trigger_error(string $error_msg [, int $error_type = E_USER_NOTICE])"
+	},
 
 	"nekoaisle.insert-code delete line": {
 		"prefix": "nekoaisle.insert-code delete line",
@@ -151,6 +158,13 @@
 			"foreach (\\$${1:valiable} as \\$key => \\$val) {",
 			"\t$2",
 			"}"
+		],
+		"description": "PHP タグ"
+	},
+	"blank array": {
+		"prefix": "['",
+		"body": [
+			"[''=>'"
 		],
 		"description": "PHP タグ"
 	},
@@ -767,11 +781,11 @@
 		"description": ""
 	},
 	"blSendMail($strTo, $strFrom, $strSubject, $strBody)": {
-		"prefix": "blSendMail($strTo, $strFrom, $strSubject, $strBody)",
+		"prefix": "blSendMail",
 		"body": [
-			"blSendMail(\\$$strTo, \\$$strFrom, \\$$strSubject, \\$$strBody)"
+			"blSendMail(\\$${1:to}, \\$${2:from}, \\$${3:subject}, \\$${4:body})"
 		],
-		"description": ""
+		"description": "blSendMail(string $to, string $from, string $subject, string $body)"
 	},
 	"blSendMailEx($strTo, $strFrom, $strFromName, $strBcc, $strSubject, $strBody)": {
 		"prefix": "blSendMailEx($strTo, $strFrom, $strFromName, $strBcc, $strSubject, $strBody)",
@@ -1714,14 +1728,14 @@
 	"$sql = <<<_SQL_": {
 		"prefix": "sql",
 		"body": [
-			"\t\t\\$$tbl = static::\\$$tableName;",
-			"\t\t\\$$sql = <<<_SQL_",
+			"\t\t\\$tbl = static::\\$tableName;",
+			"\t\t\\$sql = <<<_SQL_",
 			"select ",
-			"from {\\$$tbl}",
+			"from {\\$tbl}",
 			"where ",
 			"_SQL_;",
-			"\t\t\\$$arg = [];",
-			"\t\t\\$$rows = aryQueryDB(\\$$tbl, \\$$sql, \\$$arg);"
+			"\t\t\\$arg = [];",
+			"\t\t\\$rows = aryQueryDB(\\$tbl, \\$sql, \\$arg);"
  		],
 		"description": "$sql = <<<_SQL_"
 	}
