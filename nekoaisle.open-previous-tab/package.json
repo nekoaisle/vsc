@@ -21,12 +21,7 @@
                 "command": "nekoaisle.toggleTab",
                 "title": "Open previous tab"
             }
-        ],
-        "keybindings": [{
-            "command": "nekoaisle.toggleTab",
-            "key": "f10",
-            "when": "editorTextFocus"
-        }]
+        ]
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",

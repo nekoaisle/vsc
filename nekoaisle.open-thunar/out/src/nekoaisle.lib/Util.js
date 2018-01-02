@@ -5,14 +5,50 @@ const chproc = require("child_process");
 const os = require("os");
 const fs = require("fs");
 const path = require("path");
+const url = require("url");
+const PathInfo_1 = require("./PathInfo");
 var Util;
 (function (Util) {
+    // 言語タイプごとの拡張子一覧
+    //
+    // console.log('enum languages');
+    // vscode.languages.getLanguages().then((langs: string[]) => {
+    //     langs.forEach( element => {
+    //         console.log(`  ${element}`);
+    //     });
+    // });
+    Util.extensionByLanguages = {
+        'plaintext': '.txt',
+        'Log': '.log',
+        'bat': '.bat',
+        'c': '.c',
+        'cpp': '.cpp',
+        'css': '.css',
+        'html': '.html',
+        'ini': '.ini',
+        'java': '.java',
+        'javascript': '.js',
+        'json': '.json',
+        'perl': '.pl',
+        'php': '.php',
+        'shellscript': '.sh',
+        'sql': '.sql',
+        'typescript': '.ts',
+        'vb': '.vb',
+        'xml': '.xml',
+    };
+    function getExtensionPath(filename) {
+        return path.resolve(exports.extensionContext.extensionPath, filename);
+    }
+    Util.getExtensionPath = getExtensionPath;
     /**
      * メッセージを出力
      * @param str 出力するメッセージ
      */
     function putMess(str) {
-        vscode.window.showInformationMessage(str);
+        for (let s of str.split('\n')) {
+            vscode.window.showInformationMessage(s);
+        }
         return str;
     }
     Util.putMess = putMess;
@@ -25,6 +61,80 @@ var Util;
         return str;
     }
     Util.putLog = putLog;
+    /**
+     * 指定オブジェクトのクラス名を取得
+     *  String
+     *  Number
+     *  Boolean
+     *  Date
+     *  Error
+     *  Array
+     *  Function
+     *  RegExp
+     *  Object
+     * @param obj クラス名を知りたいオブジェクト
+     * @return string
+     */
+    function getClassName(obj) {
+        return Object.prototype.toString.call(obj).slice(8, -1);
+    }
+    Util.getClassName = getClassName;
+    /**
+     * オブジェクトを複製
+     * @param src 複製する対象
+     */
+    function cloneObject(src) {
+        let dst;
+        switch (typeof src) {
+            default: {
+                dst = src;
+                break;
+            }
+            case 'object':
+            case 'function': {
+                switch (getClassName(src)) {
+                    case 'Object': {
+                        //自作クラスはprototype継承される
+                        dst = Object.create(Object.getPrototypeOf(src));
+                        for (let key in src) {
+                            dst[key] = cloneObject(src[key]);
+                        }
+                        break;
+                    }
+                    case 'Array': {
+                        dst = Array();
+                        for (let key in src) {
+                            dst[key] = cloneObject(src[key]);
+                        }
+                        break;
+                    }
+                    case 'Function': {
+                        //ネイティブ関数オブジェクトはcloneできないのでnullを返す;
+                        try {
+                            var anonymous;
+                            eval('dst = ' + src.toString());
+                        }
+                        catch (e) {
+                            dst = null;
+                        }
+                        break;
+                    }
+                    case 'Date': {
+                        dst = new Date(src.valueOf());
+                        break;
+                    }
+                    case 'RegExp': {
+                        dst = new RegExp(src.valueOf());
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        //
+        return dst;
+    }
+    Util.cloneObject = cloneObject;
     // 指定文字でパディング
     function pad(str, pad, cols) {
         pad = pad.repeat(cols);
@@ -40,7 +150,6 @@ var Util;
      * @param c 調べる文字コード
      */
     function getCharType(c) {
-        const re1 = /^[a-zA-z0-9_\$@]$/;
         let s = String.fromCharCode(c);
         if ((c == 0x20) || (c == 9)) {
             // 空白
@@ -50,7 +159,7 @@ var Util;
             // 制御文字
             return 0;
         }
-        else if (re1.test(s)) {
+        else if (/^[a-zA-Z0-9_\$@]$/.test(s)) {
             // プログラムに使う文字
             return 2;
         }
@@ -65,12 +174,51 @@ var Util;
     }
     Util.getCharType = getCharType;
     /**
+     * HTMLエンコード
+     * @param s エンコードする文字列
+     * @return string エンコードした文字列
+     */
+    function encodeHtml(s) {
+        return s.replace(/[&\'`"<>\s]/g, function (match) {
+            return {
+                '&': '&amp;',
+                "'": '&#x27;',
+                '`': '&#x60;',
+                '"': '&quot;',
+                '<': '&lt;',
+                '>': '&gt;',
+                ' ': '&nbsp;',
+                '\r\n': '<br />\r\n',
+                '\r': '<br />\r',
+                '\n': '<br />\n',
+            }[match];
+        });
+    }
+    Util.encodeHtml = encodeHtml;
+    function decodeHtml(s) {
+        return s.replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#039;/g, '\'')
+            .replace(/&#044;/g, ',')
+            .replace(/&amp;/g, '&')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/<br(\s*\/)?>(\r\n)?/g, '\r\n');
+    }
+    Util.decodeHtml = decodeHtml;
+    /**
      * カーソル位置の単語の範囲を取得
      * @param editor 対象とするエディタ
      */
-    function getCursorWordRange(editor) {
-        // カーソル位置を取得
-        let pos = editor.selection.active;
+    function getCursorWordRange(editor, pos) {
+        if (!editor) {
+            // 省略されたら現在のエディタ
+            editor = vscode.window.activeTextEditor;
+        }
+        if (!pos) {
+            // 省略されたらカーソル位置を取得
+            pos = editor.selection.active;
+        }
         // カーソル行を取得
         let line = editor.document.lineAt(pos.line).text;
         let s = pos.character;
@@ -100,7 +248,7 @@ var Util;
     }
     Util.getCursorWord = getCursorWord;
     /**
-     * 指定文字の大文字・小文字を切り替える
+     * 指定文字列の先頭文字によって大文字・小文字を切り替える
      * @param c 対象となる文字
      * @return string 結果
      */
@@ -119,6 +267,7 @@ var Util;
     /**
      * 指定文字の大文字・小文字を切り替える
      * @param c 対象となる文字
+     * @param mode toggle=切り替え lower:小文字 upper:大文字
      * @return string 結果
      */
     function changeCharCase(c, mode) {
@@ -141,8 +290,42 @@ var Util;
     }
     Util.changeCharCase = changeCharCase;
     /**
-     * 指定した文字列が大文字化小文字か調べる
-     * 文字列の先頭から順に調べ最初に変挺できたケースを返す
+     * キャメルケースに変換
+     * スネークケースは _ で分解しそれぞれの単語の先頭を大文字に変換して結合
+     * それ以外は文字列の先頭文字を大文字それ以外を小文字にします
+     * @param str
+     * @return キャメルケースに変換した文字列
+     */
+    function toCamelCase(str) {
+        let ret = [];
+        for (let v of str.split('_')) {
+            ret.push(v.substr(0, 1).toLocaleUpperCase() + v.substr(1).toLocaleLowerCase());
+        }
+        return ret.join('');
+    }
+    Util.toCamelCase = toCamelCase;
+    /**
+     * スネークケースに変換
+     * @param any string | string[] 可変長引数
+     * @returns string スネークケース文字列
+     */
+    function toSnakeCase(...args) {
+        let ary /*: string[]*/ = [];
+        for (let val of args) {
+            if (getClassName(val) == 'Array') {
+                // 配列なら再起呼び出し
+                ary = ary.concat(toSnakeCase(val));
+            }
+            else {
+                ary.push(val);
+            }
+        }
+        return ary.join('_');
+    }
+    Util.toSnakeCase = toSnakeCase;
+    /**
+     * 指定した文字列が大文字か小文字か調べる
+     * 文字列の先頭から順に調べ最初に判定できたケースを返す
      * @param str 調べる文字列
      * @return 'upper' | 'lower | ''
      */
@@ -176,6 +359,10 @@ var Util;
      * @param editor 対象とするエディタ
      */
     function getSelectString(editor) {
+        if (!editor) {
+            // editor が省略されたので現在のエディタ
+            editor = vscode.window.activeTextEditor;
+        }
         let range = editor.selection;
         return editor.document.getText(range);
     }
@@ -210,29 +397,31 @@ var Util;
     }
     Util.execCmd = execCmd;
     /**
+     * クリップボードの内容を取得
+     */
+    function getClipboard() {
+        return execCmd('xclip -o -selection c');
+    }
+    Util.getClipboard = getClipboard;
+    /**
      * 指定uriをブラウザーで開く
      * @param uri 開く uri
      * @param query 追加の query
      */
     function browsURL(uri, query) {
+        // uri をパース
+        let urlInfo = url.parse(uri, true);
+        // query を追加
         if (query) {
-            // queryが指定されているので整形
-            let a = [];
-            for (let k in query) {
-                let v = encodeURIComponent(query[k]);
-                a.push(`${k}=${v}`);
+            if (typeof urlInfo.query !== "object") {
+                urlInfo.query = {};
             }
-            // uri にオプションの query を追加
-            if (uri.indexOf('?') < 0) {
-                // uri に query を含まないので ? で始める
-                uri += '?';
+            for (let key in query) {
+                urlInfo.query[key] = query[key];
             }
-            else {
-                // uri に query を含むので & で始める
-                uri += '&';
-            }
-            uri += a.join('&');
         }
+        // パースしたURIを文字列にする
+        uri = url.format(urlInfo);
         // Chromium を実行
         Util.execCmd(`chromium-browser '${uri}'`);
     }
@@ -280,6 +469,34 @@ var Util;
         return fs.readFileSync(fileName, "utf-8");
     }
     Util.loadFile = loadFile;
+    /**
+     * 文字列を json デコード
+     * @param str デコードする JSON
+     * @param except 例外を発生する
+     */
+    function decodeJson(str, except) {
+        let json;
+        try {
+            json = JSON.parse(str);
+        }
+        catch (err) {
+            if (except) {
+                throw err;
+            }
+            Util.putMess(`JSON.parse('${str}'): ${err}`);
+        }
+        return json;
+    }
+    Util.decodeJson = decodeJson;
+    /**
+     * JSONファイルを読み込む
+     * @param fileName ファイル名
+     */
+    function loadFileJson(fileName) {
+        let source = Util.loadFile(fileName);
+        return decodeJson(source);
+    }
+    Util.loadFileJson = loadFileJson;
     /**
      * 指定ファイルを開く
      * create に true を指定するとファイルが存在しないときは作成する
@@ -350,5 +567,58 @@ var Util;
     }
     Util.normalizePath = normalizePath;
     ;
+    /**
+     * 指定ドキュメントのファイル名の拡張子を取得
+     * @param doc ture を指定すると先頭の . を除去します
+     * @param lessDot ture を指定すると先頭の . を除去します
+     */
+    function getDocumentExt(doc, lessDot) {
+        // 現在編集中のファイル名情報を取得
+        let pinfo = new PathInfo_1.PathInfo(doc.fileName);
+        let ext;
+        if (pinfo.info.ext) {
+            // 拡張子があるのでそれを返す
+            ext = pinfo.info.ext;
+        }
+        else {
+            // 拡張子がないときはドキュメントの言語から拡張子を決める
+            ext = Util.extensionByLanguages[doc.languageId];
+        }
+        // 先頭の . を除去
+        if (lessDot) {
+            ext = ext.substr(1);
+        }
+        //
+        return ext;
+    }
+    Util.getDocumentExt = getDocumentExt;
+    /**
+     * 文字列を OverviewRulerLaneのプロパティに変換
+     * @param str OverviewRulerLane のプロパティ名
+     */
+    function strToOverviewRulerLane(str) {
+        switch (str) {
+            case 'Left': return vscode.OverviewRulerLane.Left;
+            case 'Center': return vscode.OverviewRulerLane.Center;
+            case 'Right': return vscode.OverviewRulerLane.Right;
+            case 'Full': return vscode.OverviewRulerLane.Full;
+            default: return null;
+        }
+    }
+    Util.strToOverviewRulerLane = strToOverviewRulerLane;
+    /**
+     * 文字列を DecorationRangeBehavior のプロパティに変換
+     * @param str DecorationRangeBehavior のプロパティ名
+     */
+    function strToDecorationRangeBehavior(str) {
+        switch (str) {
+            case 'OpenOpen': return vscode.DecorationRangeBehavior.OpenOpen;
+            case 'ClosedClosed': return vscode.DecorationRangeBehavior.ClosedClosed;
+            case 'OpenClosed': return vscode.DecorationRangeBehavior.OpenClosed;
+            case 'ClosedOpen': return vscode.DecorationRangeBehavior.ClosedOpen;
+            default: return vscode.DecorationRangeBehavior.ClosedClosed;
+        }
+    }
+    Util.strToDecorationRangeBehavior = strToDecorationRangeBehavior;
 })(Util = exports.Util || (exports.Util = {}));
 //# sourceMappingURL=Util.js.map

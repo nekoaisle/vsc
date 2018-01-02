@@ -63,7 +63,17 @@ var Util;
     Util.putLog = putLog;
     /**
      * 指定オブジェクトのクラス名を取得
+     *  String
+     *  Number
+     *  Boolean
+     *  Date
+     *  Error
+     *  Array
+     *  Function
+     *  RegExp
+     *  Object
      * @param obj クラス名を知りたいオブジェクト
+     * @return string
      */
     function getClassName(obj) {
         return Object.prototype.toString.call(obj).slice(8, -1);
@@ -169,7 +179,7 @@ var Util;
      * @return string エンコードした文字列
      */
     function encodeHtml(s) {
-        return s.replace(/[&'`"<>\s]/g, function (match) {
+        return s.replace(/[&\'`"<>\s]/g, function (match) {
             return {
                 '&': '&amp;',
                 "'": '&#x27;',
@@ -294,6 +304,25 @@ var Util;
         return ret.join('');
     }
     Util.toCamelCase = toCamelCase;
+    /**
+     * スネークケースに変換
+     * @param any string | string[] 可変長引数
+     * @returns string スネークケース文字列
+     */
+    function toSnakeCase(...args) {
+        let ary /*: string[]*/ = [];
+        for (let val of args) {
+            if (getClassName(val) == 'Array') {
+                // 配列なら再起呼び出し
+                ary = ary.concat(toSnakeCase(val));
+            }
+            else {
+                ary.push(val);
+            }
+        }
+        return ary.join('_');
+    }
+    Util.toSnakeCase = toSnakeCase;
     /**
      * 指定した文字列が大文字か小文字か調べる
      * 文字列の先頭から順に調べ最初に判定できたケースを返す

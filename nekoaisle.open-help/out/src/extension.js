@@ -72,16 +72,21 @@ class MyExtension extends nekoaisle_1.Extension {
         }
         let addr;
         let query;
+        let lang;
         if (list[editor.document.languageId]) {
-            let item = list[editor.document.languageId];
-            switch (item.method) {
-                case 'chrome': {
-                    nekoaisle_1.Util.browsURL(item.path, item.options);
-                    break;
-                }
-                default: {
-                    break;
-                }
+            lang = editor.document.languageId;
+        }
+        else {
+            lang = "default";
+        }
+        let item = list[lang];
+        switch (item.method) {
+            case 'chrome': {
+                nekoaisle_1.Util.browsURL(item.path, item.options);
+                break;
+            }
+            default: {
+                break;
             }
         }
     }

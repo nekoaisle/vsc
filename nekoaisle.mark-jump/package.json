@@ -31,20 +31,6 @@
                 "command": "nekoaisle.markjumpReturn",
                 "title": "Return to the last jump position"
             }
-        ],
-        "keybindings": [
-            {
-                "command": "nekoaisle.markjumpMark",
-                "key": "escape m"
-            },
-            {
-                "command": "nekoaisle.markjumpJump",
-                "key": "escape j"
-            },
-            {
-                "command": "nekoaisle.markjumpReturn",
-                "key": "escape r"
-            }
         ]
     },
     "scripts": {

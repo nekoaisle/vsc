@@ -11,18 +11,21 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:nekoaisle.selectWord"
+        "onCommand:nekoaisle.selectWord",
+        "onCommand:nekoaisle.addCursor",
+        "onCommand:nekoaisle.delCursor"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [{
             "command": "nekoaisle.selectWord",
             "title": "Select Word"
-        }],
-        "keybindings": [{
-            "command": "nekoaisle.selectWord",
-            "key": "shift+enter",
-            "when": "editorTextFocus && !editorReadonly"
+        },{
+            "command": "nekoaisle.addCursor",
+            "title": "Add cursor"
+        },{
+            "command": "nekoaisle.delCursor",
+            "title": "Add cursor"
         }]
     },
     "scripts": {

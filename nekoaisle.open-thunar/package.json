@@ -21,10 +21,6 @@
                 "title": "Open Thunar"
             }
         ],
-        "keybindings": [{
-            "command": "nekoaisle.openThunar",
-            "key": "escape x"
-        }],
         "configuration": {
             "type": "object",
             "title": "Open thunar",

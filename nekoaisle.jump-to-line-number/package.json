@@ -52,36 +52,6 @@
                 "command": "nekoaisle.jumpToLineNumber9",
                 "title": "Jump to line nuber"
             }
-        ],
-        "keybindings": [
-            {
-                "command": "nekoaisle.jumpToLineNumber1",
-                "key": "escape 1"
-            },{
-                "command": "nekoaisle.jumpToLineNumber2",
-                "key": "escape 2"
-            },{
-                "command": "nekoaisle.jumpToLineNumber3",
-                "key": "escape 3"
-            },{
-                "command": "nekoaisle.jumpToLineNumber4",
-                "key": "escape 4"
-            },{
-                "command": "nekoaisle.jumpToLineNumber5",
-                "key": "escape 5"
-            },{
-                "command": "nekoaisle.jumpToLineNumber6",
-                "key": "escape 6"
-            },{
-                "command": "nekoaisle.jumpToLineNumber7",
-                "key": "escape 7"
-            },{
-                "command": "nekoaisle.jumpToLineNumber8",
-                "key": "escape 8"
-            },{
-                "command": "nekoaisle.jumpToLineNumber9",
-                "key": "escape 9"
-            }
         ]
     },
     "scripts": {

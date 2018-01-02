@@ -20,11 +20,7 @@
                 "command": "nekoaisle.openHelp",
                 "title": "Open Help"
             }
-        ],
-        "keybindings": [{
-            "command": "nekoaisle.openHelp",
-            "key": "f1"
-        }]
+        ]
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
