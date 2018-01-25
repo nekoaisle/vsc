@@ -158,12 +158,11 @@ insertCode.autoIndent: true,
 ```
 
 ---
-## キー割り当て
+## 推奨キー割り当て
 ```JSON
-"keybindings": [
     {
+        "key": "escape i",
         "command": "nekoaisle.insertCode",
-        "key": "escape i"
-    }
-],
+        "when": "editorTextFocus && !editorReadonly"
+    },
 ```

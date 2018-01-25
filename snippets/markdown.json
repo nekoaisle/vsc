@@ -27,5 +27,23 @@
 			"sudo apt-get install "
 		],
 		"description": "apt-get install"
+	},
+	"bash": {
+		"prefix": "```bash",
+		"body": [
+			"```bash",
+			"$1",
+			"```"
+		],
+		"description": "bash"
+	},
+	"console": {
+		"prefix": "```console",
+		"body": [
+			"```console",
+			"$1",
+			"```"
+		],
+		"description": "console"
 	}
 }
