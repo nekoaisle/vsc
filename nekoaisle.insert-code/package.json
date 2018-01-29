@@ -23,11 +23,6 @@
             "command": "nekoaisle.insertCode.pinfoBase",
             "title": "nekoaisle: Insert base name"
         }],
-        "keybindings": [{
-            "command": "nekoaisle.insertCode",
-            "key": "escape i",
-            "when": "editorTextFocus && !editorReadonly"
-        }],
         "configuration": {
             "type": "object",
             "title": "nekoaisle: Insert Code configuration",
