@@ -70,4 +70,7 @@ class MyExtention extends Extension {
 			overview.show();
 		});
 	}
+
+	public test() {
+	}
 }
