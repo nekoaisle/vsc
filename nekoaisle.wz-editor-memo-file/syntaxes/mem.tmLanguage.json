@@ -2,69 +2,285 @@
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "MemoFile",
 	"patterns": [
-		{
-			"include": "#keywords"
-		},
-		{
-			"include": "#strings"
-		}
+		{"include": "#type2"}
 	],
 	"repository": {
-		"keywords": {
-			"patterns": [{
-				"name": "entry.title1.mem",
-				"match": "^\\.{1}[^\\.].*",
-				"comment": "title 1"
-			},{
-				"name": "entry.title2.mem",
-				"match": "^\\.{2}[^\\.].*",
-				"comment": "title 2"
-			},{
-				"name": "entry.title3.mem",
-				"match": "^\\.{3}[^\\.].*",
-				"comment": "title 3"
-			},{
-				"name": "entry.title4.mem",
-				"match": "^\\.{4}[^\\.].*",
-				"comment": "title 4"
-			},{
-				"name": "entry.title5.mem",
-				"match": "^\\.{5}[^\\.].*",
-				"comment": "title 5"
-			},{
-				"name": "keyword.root_prompt.mem",
-				"match": "^\\[[^@]+@[^\\]]+]#",
-				"comment": "command promt for root"
-			},{
-				"name": "keyword.user_prompt.mem",
-				"match": "^\\[[^@]+@[^\\]]+]$",
-				"comment": "command promt for user"
-			},{
-				"name": "keyword.ip_address.mem",
-				"match": "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+(:[0-9]+)?",
-				"comment": "ip address"
-			},{
-				"name": "keyword.modify_mark.mem",
-				"match": "^(#|;)@@(mod|del|add).*$",
-				"comment": "config file modified mark"
-			},{
-				"name": "keyword.comment_shell.mem",
-				"match": "^[\\s]*#.*$",
-				"comment": ""
-			},{
-				"name": "keyword.important.mem",
-				"match": "^※.*$",
-				"comment": "Important matter"
-			}
-		]},
-		"strings": {
-			"name": "string.quoted.double.mem",
-			"begin": "\"''''''''",
-			"end": "\"",
+
+		"type3": {
+			"patterns": [
+				{"include": "#a1"},
+				{"include": "#contents"}
+			]
+		},
+		"a1": {
+			"name": "entity.name.section.a1",
+			"match": "^(\\.{1}(?!\\.))(.*)$((?:.|\\n(?!\\.{1,1}(?!\\.)))*)",
+			"captures": {
+				"1": {"name": "keyword.syntax_name"},
+				"2": {"name": "entity.name.section.b1"}
+			},
+			"patterns": [
+				{"include": "#a2"},
+				{"include": "#contents"}
+			],
+			"comment": "title 1"
+		},
+		"a2": {
+			"name": "entity.name.section.a2",
+			"match": "^(\\.{2}(?!\\.))(.*)$((?:.|\\n(?!\\.{1,2}(?!\\.)))*)",
+			"captures": {
+				"1": {"name": "keyword.syntax_name"},
+				"2": {"name": "entity.name.section.b2"}
+			},
+			"patterns": [
+				{"include": "#a3"},
+				{"include": "#contents"}
+			],
+			"comment": "title 2"
+		},
+		"a3": {
+			"name": "entity.name.section.a3",
+			"match": "^(\\.{3}(?!\\.))(.*)$((?:.|\\n(?!\\.{1,3}(?!\\.)))*)",
+			"captures": {
+				"1": {"name": "keyword.syntax_name"},
+				"2": {"name": "entity.name.section.b3"}
+			},
+			"patterns": [
+				{"include": "#a4"},
+				{"include": "#contents"}
+			],
+			"comment": "title 3"
+		},
+		"a4": {
+			"name": "entity.name.section.a4",
+			"match": "^(\\.{4}(?!\\.))(.*)$((?:.|\\n(?!\\.{1,4}(?!\\.)))*)",
+			"captures": {
+				"1": {"name": "keyword.syntax_name"},
+				"2": {"name": "entity.name.section.b4"}
+			},
+			"patterns": [
+				{"include": "#a5"},
+				{"include": "#contents"}
+			],
+			"comment": "title 4"
+		},
+		"a5": {
+			"name": "entity.name.section.a5",
+			"match": "^(\\.{5}(?!\\.))(.*)$((?:.|\\n(?!\\.{1,5}(?!\\.)))*)",
+			"captures": {
+				"1": {"name": "keyword.syntax_name"},
+				"2": {"name": "entity.name.section.b5"}
+			},
+			"patterns": [
+				{"include": "#contents"}
+			],
+			"comment": "title 5"
+		},
+
+		"type2": {
+			"patterns": [
+				{"include": "#b1"},
+				{"include": "#contents"}
+			]
+		},
+		"b1": {
+			"name": "entity.name.section",
+			"begin": "^(\\.{1}(?!\\.))(.*)$",
+			"beginCaptures": {
+				"1": {"name": "keyword.syntax_name"},
+				"2": {"name": "entity.name.section.b1"}
+			},
+			"patterns": [
+				{"include": "$self"},
+				{"include": "#b2"},
+				{"include": "#contents"},
+				{"match": "(.|\\n(?!\\.{1,1}(?!\\.)))*"}
+			],
+			"end": "\\n(?=\\.{1,1}(?!\\.))",
+			"endCaptures": {
+				"1": {"name": "keyword.syntax_name"}
+			},
+			"comment": "title 1"
+		},
+		"b2": {
+			"name": "entity.name.section",
+			"begin": "^(\\.{2}(?!\\.))(.*)$",
+			"beginCaptures": {
+				"1": {"name": "keyword.syntax_name"},
+				"2": {"name": "entity.name.section.b2"}
+			},
+			"patterns": [
+				{"include": "$self"},
+				{"include": "#b3"},
+				{"include": "#contents"}
+			],
+			"end": "\\n(?=\\.{1,2}(?!\\.))",
+			"endCaptures": {
+				"1": {"name": "keyword.syntax_name"}
+			},
+			"comment": "block 2"
+
+		},
+		"b3": {
+			"name": "entity.name.section",
+			"begin": "^(\\.{3}(?!\\.))(.*)$",
+			"beginCaptures": {
+				"1": {"name": "keyword.syntax_name"},
+				"2": {"name": "entity.name.section.b3"}
+			},
+			"patterns": [
+				{"include": "$self"},
+				{"include": "#b4"},
+				{"include": "#contents"}
+			],
+			"end": "\\n(?=\\.{1,3}(?!\\.))",
+			"endCaptures": {
+				"1": {"name": "keyword.syntax_name"}
+			},
+			"comment": "block 3"
+		},
+		"b4": {
+			"name": "entity.name.section",
+			"begin": "^(\\.{4}(?!\\.))(.*)$",
+			"beginCaptures": {
+				"1": {"name": "keyword.syntax_name"},
+				"2": {"name": "entity.name.section.b4"}
+			},
+			"patterns": [
+				{"include": "$self"},
+				{"include": "#b5"},
+				{"include": "#contents"}
+			],
+			"end": "\\n(?=\\.{1,4}(?!\\.))",
+			"endCaptures": {
+				"1": {"name": "keyword.syntax_name"}
+			},
+			"comment": "block 4"
+		},
+		"b5": {
+			"name": "entity.name.section",
+			"begin": "^(\\.{5}(?!\\.))(.*)$",
+			"beginCaptures": {
+				"1": {"name": "keyword.syntax_name"},
+				"2": {"name": "entity.name.section.b5"}
+			},
+			"patterns": [
+				{"include": "$self"},
+				{"include": "#contents"}
+			],
+			"end": "\\n(?=\\.{1,5}(?!\\.))",
+			"endCaptures": {
+				"1": {"name": "keyword.syntax_name"}
+			},
+			"comment": "block 5"
+		},
+		"contents": {
+			"patterns": [
+				{"include": "#keywords"},
+				{"include": "#strings"}
+			]
+		},
+
+
+		"type1": {
+			"patterns": [
+				{"include": "#headers"},
+				{"include": "#keywords"},
+				{"include": "#strings"}
+			]
+		},
+		"headers": {
 			"patterns": [
 				{
-					"name": "constant.character.escape.mem",
-					"match": "\\\\."
+					"name": "entity.name.section",
+					"match": "^(\\.{1}(?!\\.))(.*)$",
+					"captures": {
+						"1": {"name": "keyword.syntax_name"},
+						"2": {"name": "entity.name.section.b1"}
+					},
+					"comment": "title1"
+				},{
+					"name": "entity.name.section",
+					"match": "^(\\.{2}(?!\\.))(.*)$",
+					"captures": {
+						"1": {"name": "keyword.syntax_name"},
+						"2": {"name": "entity.name.section.b2"}
+					},
+					"comment": "title2"
+				},{
+					"name": "entity.name.section",
+					"match": "^(\\.{3}(?!\\.))(.*)$",
+					"captures": {
+						"1": {"name": "keyword.syntax_name"},
+						"2": {"name": "entity.name.section.b3"}
+					},
+					"comment": "title3"
+				},{
+					"name": "entity.name.section",
+					"match": "^(\\.{4}(?!\\.))(.*)$",
+					"captures": {
+						"1": {"name": "keyword.syntax_name"},
+						"2": {"name": "entity.name.section.b4"}
+					},
+					"comment": "title4"
+				},{
+					"name": "entity.name.section",
+					"match": "^(\\.{5}(?!\\.))(.*)$",
+					"captures": {
+						"1": {"name": "keyword.syntax_name"},
+						"2": {"name": "entity.name.section.b5"}
+					},
+					"comment": "title5"
+				}
+			]
+		},
+
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.root_prompt.mem",
+					"match": "^\\[[^@]+@[^\\]]+]#",
+					"comment": "command promt for root"
+				},{
+					"name": "keyword.user_prompt.mem",
+					"match": "^\\[[^@]+@[^\\]]+]$",
+					"comment": "command promt for user"
+				},{
+					"name": "keyword.ip_address.mem",
+					"match": "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+(:[0-9]+)?",
+					"comment": "ip address"
+				},{
+					"name": "keyword.modify_mark.mem",
+					"match": "^(#|;)@@(mod|del|add).*$",
+					"comment": "config file modified mark"
+				},{
+					"name": "keyword.comment_shell.mem",
+					"match": "^[\\s]*#.*$",
+					"comment": ""
+				},{
+					"name": "keyword.important.mem",
+					"match": "^※",
+					"comment": "Important matter"
+				}
+			]
+		},
+		"strings": {
+			"patterns": [
+				{
+					"name": "string.quoted.double.mem",
+					"match": "\"(\\\"|[^\"])*?\""
+				},{
+					"name": "string.quoted.single.mem",
+					"match": "'(\\'|[^'])*?'"
+				}
+			]
+		},
+		"raw": {
+			"patterns": [
+				{
+					"name": "markup.raw",
+					"match": "(.|\n)",
+					"comment": "raw"
 				}
 			]
 		}
