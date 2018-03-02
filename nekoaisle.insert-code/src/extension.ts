@@ -375,6 +375,14 @@ class InsertCode extends Extension {
                 val = this.getConfig("author", "");
                 break;
             }
+            // 著作権者
+            case 'copyright': {
+                val = this.getConfig("copyright", "");
+                if (val == "") {
+                    val = this.getConfig("author", "");
+                }
+                break;
+            }
             // 選択範囲    
             case 'selection': {
                 val = Util.getSelectString(editor);

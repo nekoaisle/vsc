@@ -179,7 +179,7 @@ var Util;
      * @return string エンコードした文字列
      */
     function encodeHtml(s) {
-        return s.replace(/[&'`"<>\s]/g, function (match) {
+        return s.replace(/[&\'`"<>\s]/g, function (match) {
             return {
                 '&': '&amp;',
                 "'": '&#x27;',
@@ -583,6 +583,9 @@ var Util;
         else {
             // 拡張子がないときはドキュメントの言語から拡張子を決める
             ext = Util.extensionByLanguages[doc.languageId];
+            if (!ext) {
+                return "";
+            }
         }
         // 先頭の . を除去
         if (lessDot) {

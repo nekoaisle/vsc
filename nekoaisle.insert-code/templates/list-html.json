@@ -14,5 +14,9 @@
 	"code": {
 		"label": "4: ソースコード用スタイル",
 		"filename": "html/code.html"
+	},
+	"standard": {
+		"label": "5: 標準雛形",
+		"filename": "html/standard.html"
 	}
 }

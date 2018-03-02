@@ -32,7 +32,7 @@
 		"prefix": "```bash",
 		"body": [
 			"```bash",
-			"$1",
+			"\\$ $1",
 			"```"
 		],
 		"description": "bash"

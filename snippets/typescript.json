@@ -62,5 +62,54 @@
 			"}"
 			],
 		"description": "switch case"
-	}
+	},
+	"modal": {
+		"prefix": "let modal",
+		"body": [
+			"let modal = this.modalCtrl.create(${1:ページクラス});",
+			"// モーダルページが閉じたときの処理",
+			"modal.onDidDismiss((result: ${2:戻り値の型}) => {",
+			"\tif (result) {",
+			"\t\t",
+			"\t}",
+			"});",
+			"// モーダルを開く",
+			"modal.present();",
+		],
+		"description": "let modal = this.modalCtrl.create()"
+	},
+	"public onSubmit()": {
+		"prefix": "public onSubmit()",
+		"body": [
+			"/**",
+			"\t* [登録]ボタンを押した処理",
+			"\t*/",
+			"\tpublic onSubmit() {",
+			"\tif (!this.checkOnSubmit()) {",
+			"\t\t// エラーがある",
+			"\t\treturn;",
+			"\t}",
+			"",
+			"\tlet data = this.formGroup.value;",
+			"",
+			"\t// 戻り値を作成",
+			"",
+			"\t// モーダルを閉じる",
+			"\tthis.viewCtrl.dismiss(ret);",
+			"}",
+		],
+		"description": "public onSubmit()"
+	},
+	"public onCancel()": {
+		"prefix": "public onCancel()",
+		"body": [
+			"/**",
+			"\t* キャンセルボタンを押した",
+			"\t*/",
+			"public onCancel() {",
+			"\tthis.viewCtrl.dismiss();",
+			"}",
+		],
+		"description": "public onCancel()"
+	},
 }

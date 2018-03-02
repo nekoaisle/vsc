@@ -1,4 +1,5 @@
 <?php /* nekoaisle.insert-code delete line */
+/* nekoaisle.insert-code delete line */
 /**
  * コマンド処理マップを返す。
  * 
