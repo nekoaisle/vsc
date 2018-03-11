@@ -578,13 +578,16 @@ export module Util {
 	export function getDocumentExt(doc: vscode.TextDocument, lessDot?: boolean): string {
 		// 現在編集中のファイル名情報を取得
 		let pinfo = new PathInfo(doc.fileName);
-		let ext;
+		let ext : string;
 		if (pinfo.info.ext) {
 			// 拡張子があるのでそれを返す
 			ext = pinfo.info.ext;
 		} else {
 			// 拡張子がないときはドキュメントの言語から拡張子を決める
 			ext = extensionByLanguages[doc.languageId];
+			if (!ext) {
+				return "";
+			}
 		}
 
 		// 先頭の . を除去

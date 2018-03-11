@@ -325,6 +325,14 @@ class InsertCode extends nekoaisle_1.Extension {
                 val = this.getConfig("author", "");
                 break;
             }
+            // 著作権者
+            case 'copyright': {
+                val = this.getConfig("copyright", "");
+                if (val == "") {
+                    val = this.getConfig("author", "");
+                }
+                break;
+            }
             // 選択範囲    
             case 'selection': {
                 val = nekoaisle_1.Util.getSelectString(editor);

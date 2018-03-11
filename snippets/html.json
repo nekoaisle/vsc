@@ -54,5 +54,54 @@
 			"data-cpss-${1|id,merge,delete,strip,form,show|}=\"${2}\""
 		],
 		"description": "data-cpss-"
+	},
+
+	"<ion-header>": {
+		"prefix": "<ion-header>",
+		"body": [
+			"<ion-header>",
+			"  <ion-navbar>",
+			"    <button ion-button menuToggle>",
+			"      <ion-icon name=\"menu\"></ion-icon>",
+			"    </button>",
+			"    <ion-title>$1</ion-title>",
+			"  </ion-navbar>",
+			"</ion-header>",
+		],
+		"description": "<ion-header>"
+	},
+	"<ion-header> modal": {
+		"prefix": "<ion-header>",
+		"body": [
+			"<ion-header>",
+			"  <ion-toolbar>",
+			"    <ion-title>${1:タイトル}</ion-title>",
+			"",
+			"    <ion-buttons start showWhen=\"android\">",
+			"      <button ion-button (click)=\"onSubmit()\" [disabled]=\"!formGroup.valid\">",
+			"        <ion-icon name=\"checkmark\"></ion-icon>",
+			"      </button>",
+			"",
+			"      <button ion-button (click)=\"onCancel()\">",
+			"        <ion-icon name=\"close\" showWhen=\"android\"></ion-icon>",
+			"      </button>",
+			"    </ion-buttons>",
+			"",
+			"    <ion-buttons end showWhen=\"ios\">",
+			"      <button ion-button (click)=\"onSubmit()\" [disabled]=\"!formGroup.valid\">",
+			"        <span ion-text color=\"primary\">決定</span>",
+			"      </button>",
+			"    </ion-buttons>",
+			"",
+			"    <ion-buttons start showWhen=\"ios\">",
+			"      <button ion-button (click)=\"onCancel()\">",
+			"        <span ion-text color=\"primary\">キャンセル</span>",
+			"      </button>",
+			"    </ion-buttons>",
+			"",
+			"  </ion-toolbar>",
+			"</ion-header>",
+		],
+		"description": "<ion-header> modal"
 	}
 }

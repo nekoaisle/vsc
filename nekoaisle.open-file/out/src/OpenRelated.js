@@ -28,29 +28,40 @@ class OpenRelated extends nekoaisle_1.Extension {
         let candidates = [];
         switch (pinfo.info.ext) {
             // PHP 独自処理
-            case '.php':
+            case '.php': {
                 this.php(pinfo);
                 return;
+            }
             // HTML 独自処理
-            case '.html':
+            case '.html': {
                 this.html(pinfo);
                 return;
+            }
             // PHTML
-            case '.phtml':
+            case '.phtml': {
                 // 同一ディレクトリの .php
                 candidates.push(pinfo.getFileName('.php'));
                 break;
+            }
             // C++
-            case '.cpp':
+            case '.cpp': {
                 // 同一ディレクトリの .h
                 candidates.push(pinfo.getFileName('.h'));
                 break;
+            }
             // C or C++
-            case '.h':
+            case '.h': {
                 // 同一ディレクトリの .cpp | .c
                 candidates.push(pinfo.getFileName('.cpp'));
                 candidates.push(pinfo.getFileName('.c'));
                 break;
+            }
+            // typescript
+            case '.ts': {
+                // 同一ディレクトリの .html
+                candidates.push(pinfo.getFileName('.html'));
+                break;
+            }
         }
         if (candidates.length > 0) {
             // 候補を順に探して存在するものを開く
@@ -104,7 +115,12 @@ class OpenRelated extends nekoaisle_1.Extension {
      */
     html(pinfo) {
         let fn;
-        // 同一ディレクトリの .phtml
+        // 同一ディレクトリの .ts
+        fn = pinfo.getFileName('.ts');
+        if (nekoaisle_1.Util.openFile(fn)) {
+            return;
+        }
+        // 同一ディレクトリの .php
         fn = pinfo.getFileName('.php');
         if (nekoaisle_1.Util.openFile(fn)) {
             return;
