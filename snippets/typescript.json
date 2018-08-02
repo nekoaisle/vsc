@@ -1,24 +1,27 @@
 {
 	"if": {
-		"prefix": "if () {",
+		"prefix": "if ",
 		"body": [
-			"if () {",
+			"if ($1) {",
+			"$2",
 			"}"
 		],
 		"description": ""
 	},
 	"else if": {
-		"prefix": "} else if () {",
+		"prefix": "} else if ",
 		"body": [
-			"} else if () {",
+			"} else if ($1) {",
+			"$2",
 			"}"
 		],
 		"description": ""
 	},
 	"else": {
-		"prefix": "} else {",
+		"prefix": "} else ",
 		"body": [
 			"} else {",
+			"$2",
 			"}"
 		],
 		"description": ""
@@ -33,7 +36,7 @@
 		"description": "nekoaisle"
 	},
 	"for of": {
-		"prefix": "for (let val of array) {",
+		"prefix": "for ",
 		"body": [
 			"for (let val of ${1:配列}) {",
 			"}"
@@ -112,4 +115,62 @@
 		],
 		"description": "public onCancel()"
 	},
+	"alert mess": {
+		"prefix": "alert",
+		"body": [
+			"let prompt = this.alertCtrl.create({",
+			"\ttitle: '$1',",
+			"\tmessage: '$2',",
+			"\tbuttons: ['OK'],",
+			"});",
+			"prompt.present();",
+		],
+		"description": "メッセージ用 alert"
+	},
+	"toast": {
+		"prefix": "toast",
+		"body": [
+			"let toast = this.toastCtrl.create({",
+			"\tmessage: '',",
+			"\tduration: 3000,",
+			"\tposition: '${1|top,middle,bottom|}'",
+			"});",
+			"",
+			"toast.onDidDismiss(() => {",
+			"\tconsole.log('Dismissed toast');",
+			"});",
+			"",
+			"toast.present();"
+		],
+		"description": "toast"
+	},
+	"promise new": {
+		"prefix": "Promise",
+		"body": [
+			"Promise<$1>((resolve: (value?: $1) => void, reject: (reason?: any) => void) => {",
+			"\t$2",
+			"});",
+		],
+		"description": "new Promise"
+	},
+	"promise then": {
+		"prefix": "then",
+		"body": [
+			"then((value: $1) => {",
+			"\tresolve();",
+			"}).catch((reason: any) => {",
+			"\treject();",
+			"});",
+		],
+		"description": "promise then"
+	},
+	"promise catch": {
+		"prefix": "catch",
+		"body": [
+			"catch((reason: any) => {",
+			"\treject(reason);",
+			"});",
+		],
+		"description": "promise catch"
+	}
 }

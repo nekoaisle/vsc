@@ -32,7 +32,7 @@
 		"prefix": "```bash",
 		"body": [
 			"```bash",
-			"\\$ $1",
+			"$1",
 			"```"
 		],
 		"description": "bash"
@@ -45,5 +45,23 @@
 			"```"
 		],
 		"description": "console"
+	},
+	"typescript": {
+		"prefix": "```typescript",
+		"body": [
+			"```typescript",
+			"$1",
+			"```"
+		],
+		"description": "typescript"
+	},
+	"markdown": {
+		"prefix": "```markdown",
+		"body": [
+			"```markdown",
+			"$1",
+			"```"
+		],
+		"description": "markdown"
 	}
 }

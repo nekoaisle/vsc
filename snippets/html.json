@@ -103,5 +103,17 @@
 			"</ion-header>",
 		],
 		"description": "<ion-header> modal"
-	}
+	},
+	"<ion-grid>": {
+		"prefix": "<ion-grid>",
+		"body": [
+			"<ion-grid>",
+			"\t<ion-row>",
+			"\t\t<ion-col>$1</ion-col>",
+			"\t</ion-row>",
+			"</ion-grid>",
+		],
+		"description": "<ion-grid>"
+	},
 }
+

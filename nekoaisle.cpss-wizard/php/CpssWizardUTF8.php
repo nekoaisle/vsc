@@ -456,8 +456,8 @@ __USAGE__;
 					// 行定義ではない
 					continue;
 				}
-				$a['name'   ] = $a[1];		// 名前
-				$a['type'   ] = $a[2];		// 型
+				$a['name'   ] = $a[1];					// 名前
+				$a['type'   ] = strtoupper($a[2]);		// 型
 				$a['size'   ] = (int)$a[3] + (int)$a[4] + ((int)$a[4] ? 1 : 0);	// サイズ
 				$a['default'] = (strlen($a[7]) > 0) ? $a[7] : "''";
 				$b = explode(' ', $a[8]);

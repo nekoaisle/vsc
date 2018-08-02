@@ -54,6 +54,18 @@ class MyExtention extends Extension {
 				
 				// 以下エンコード
 				{
+					// 大文字
+					command: 'nekoaisle.toUpperCase',
+					callback: () => {
+						this.encodeJob('UpperCase', vscode.window.activeTextEditor);
+					}
+				}, {
+					// 小文字
+					command: 'nekoaisle.toLowerCase',
+					callback: () => {
+						this.encodeJob('LowerCase', vscode.window.activeTextEditor);
+					}
+				}, {
 					// HTML エンコード
 					command: 'nekoaisle.encodeHtml',
 					callback: () => {
@@ -225,6 +237,9 @@ class MyExtention extends Extension {
 	 */
 	public menu() {
 		let menu: vscode.QuickPickItem[] = [
+			{ label: 'toUpperCase', description: '大文字に変換' },
+			{ label: 'toLowerCase', description: '小文字に変換' },
+
 			{ label: 'HTML', description: '特殊文字を HTML エンティティに変換する' },
 			{ label: 'URL', description: '文字列を URL エンコードする' },
 			{ label: 'BASE64', description: 'MIME base64 方式でデータをエンコードする' },
@@ -367,6 +382,10 @@ class MyExtention extends Extension {
 	protected encode(str: string, type: string, editor: vscode.TextEditor): string {
 		// 変換
 		switch (type) {
+			// toUpperCase
+			case 'toUpperCase': str = str.toLocaleUpperCase(); break;
+			// toLoweCase
+			case 'toLoweCase': str = str.toLocaleLowerCase(); break;
 			// HTML encode
 			case 'HTML': str = Util.encodeHtml(str); break;
 			// URL encode
