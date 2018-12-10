@@ -1,16 +1,16 @@
 /**
- * @@title@@
+ * ___title___
  *
- * filename:  @@filename@@
+ * filename:  ___filename___
  * 
  * @version   0.1.1
- * @copyright Copyright (C) @@copyright@@ @@author@@ All rights reserved.
- * @date	  @@date@@
- * @author	@@author@@
+ * @copyright Copyright (C) ___copyright___ ___author___ All rights reserved.
+ * @date	  ___date___
+ * @author	___author___
  */
 (function($) {
 	//プラグイン定義
-	$.fn.@@class@@ = function(options){
+	$.fn.___class___ = function(options){
 		 
 		//引数を設定する
 		var defaults = {

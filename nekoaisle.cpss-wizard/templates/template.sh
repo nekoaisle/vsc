@@ -1,13 +1,13 @@
 #!/bin/bash
 # 
-# @@title@@
+# ___title___
 #
-# filename:  @@filename@@
+# filename:  ___filename___
 # 
 # @version   0.1.1
-# @copyright Copyright (C) @@copyright@@ @@author@@ All rights reserved.
-# @date	  @@date@@
-# @author	@@author@@
+# @copyright Copyright (C) ___copyright___ ___author___ All rights reserved.
+# @date	  ___date___
+# @author	___author___
 # 
 
 # 使用法を表示
@@ -20,7 +20,7 @@ function help() {
 		echo ${2}
 	fi
 
-	echo 'usage: $ @@filename@@ '
+	echo 'usage: $ ___filename___ '
 
 	exit $1;
 }

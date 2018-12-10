@@ -1,14 +1,13 @@
 <?php
 /**
- * @@title@@
+ * ___title___
  * 
- * filename:  @@filename@@
+ * filename:  ___filename___
  * 
  * @package   
  * @version   1.0.0
- * @copyright Copyright (C) @@copyright@@ CREANSMAERD CO.,LTD.  All rights reserved.
- * @date      @@date@@
- * @author    @@author@@
+ * @copyright Copyright (C) ___copyright___ CREANSMAERD CO.,LTD.  All rights reserved.
+ * @date      ___date___
+ * @author    ___author___
  */
 
-?>

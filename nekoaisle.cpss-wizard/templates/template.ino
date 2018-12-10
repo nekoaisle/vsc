@@ -1,13 +1,13 @@
 /**
- * @@title@@
+ * ___title___
  * 
- * filename:  @@filename@@
+ * filename:  ___filename___
  * 
  * @package   
  * @version   1.0.0
- * @copyright Copyright (C) @@copyright@@ CREANSMAERD CO.,LTD.  All rights reserved.
- * @date      @@date@@
- * @author    @@author@@
+ * @copyright Copyright (C) ___copyright___ CREANSMAERD CO.,LTD.  All rights reserved.
+ * @date      ___date___
+ * @author    ___author___
  */
 #define _DEBUG_
 #include <KyaApp.h>
@@ -17,7 +17,7 @@
 /**
  * メインクラス定義
  */
-class @@class@@ : public KyaApp
+class ___class___ : public KyaApp
 {
 public:
 	/**
@@ -31,7 +31,7 @@ public:
 	/**
 	 * 構築
 	 */
-	@@class@@( ) {
+	___class___( ) {
 		// デフォルトインプリメンテーションの呼び出し
 	}
 

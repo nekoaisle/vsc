@@ -561,9 +561,9 @@ __USAGE__;
 			$dic[] = sprintf("%s => '%s'", $this->padString("'{$a[0]}'", $len[0]+2), $a[1]);
 		}
 
-		$replace['@@column@@'  ] = "\t\t" . implode(",\r\n\t\t", $col);
-		$replace['@@coldic@@'  ] = "\t\t" . implode(",\r\n\t\t", $dic);
-		$replace['@@variable@@'] = implode('', $var);
+		$replace['___column___'  ] = "\t\t" . implode(",\r\n\t\t", $col);
+		$replace['___coldic___'  ] = "\t\t" . implode(",\r\n\t\t", $dic);
+		$replace['___variable___'] = implode('', $var);
 	}
 
 	/**
@@ -603,12 +603,12 @@ _EOL_;
 			],
 _EOL_;
 		$temple['NUMERIC'] = <<<_EOL_
-			'@@name@@' => [
+			'___name___' => [
 				'CLASS'   => 'number',
 				'TAG'     => 'input',
 				'TYPE'    => 'text',
-				'DEFAULT' => @@default@@,
-				'TITLE'   => '@@title@@',
+				'DEFAULT' => ___default___,
+				'TITLE'   => '___title___',
 				'LESS'    => FALSE,
 				'MINNUM'  => 0,
 				'MAXNUM'  => 9999999,
@@ -616,11 +616,11 @@ _EOL_;
 			],
 _EOL_;
 		$temple['BLOB'] = <<<_EOL_
-			'@@name@@' => [
+			'___name___' => [
 				'CLASS'   => 'string',
 				'TAG'     => 'textarea',
-				'DEFAULT' => @@default@@,
-				'TITLE'   => '@@title@@',
+				'DEFAULT' => ___default___,
+				'TITLE'   => '___title___',
 				'LESS'    => FALSE,
 				'MAXLEN'  => 4096,
 				'ATTRIB'  => 'rows="5"',
@@ -630,22 +630,22 @@ _EOL_;
 			],
 _EOL_;
 		$temple['VARCHAR'] = <<<_EOL_
-			'@@name@@' => [
+			'___name___' => [
 				'CLASS'   => 'string',
 				'TAG'     => 'input',
 				'TYPE'    => 'text',
-				'DEFAULT' => @@default@@,
-				'TITLE'   => '@@title@@',
+				'DEFAULT' => ___default___,
+				'TITLE'   => '___title___',
 				'LESS'    => FALSE,
 				'search'  => 'like',
 			],
 _EOL_;
 		$temple['CHAR'] = <<<_EOL_
-			'@@name@@' => [
+			'___name___' => [
 				'CLASS'   => 'string',
 				'TAG'     => 'select',
-				'DEFAULT' => @@default@@,
-				'TITLE'   => '@@title@@',
+				'DEFAULT' => ___default___,
+				'TITLE'   => '___title___',
 				'MAXLEN'  =>   3,
 				'LESS'    => TRUE,
 				'OPTION'  => [''=>''],
@@ -653,26 +653,26 @@ _EOL_;
 			],
 _EOL_;
 		$temple['DATE'] = <<<_EOL_
-			'@@name@@' => [
+			'___name___' => [
 				'CLASS'   => 'date',
 				'TAG'     => 'input',
 				'TYPE'    => 'text',
 				'DEFAULT' => '',
-				'TITLE'   => '@@title@@(最小)',
+				'TITLE'   => '___title___(最小)',
 				'DTFMT'   => 'YmdHis',
 				'DSPFMT'  => 'Y/m/d H:i:s',
 				'LESS'    => TRUE,
 				'ATTRIB'  => 'data-cpss="datetime"',
-				'search'  => 'between @@name@@_END',
+				'search'  => 'between ___name____END',
 				'head'    => '開始日時',
 				'style'   => 'width:12em;',
 			],
-			'@@name@@' => [
+			'___name___' => [
 				'CLASS'   => 'date',
 				'TAG'     => 'input',
 				'TYPE'    => 'text',
 				'DEFAULT' => '',
-				'TITLE'   => '@@title@@(最大)',
+				'TITLE'   => '___title___(最大)',
 				'DTFMT'   => 'YmdHis',
 				'DSPFMT'  => 'Y/m/d H:i:s',
 				'LESS'    => TRUE,
@@ -686,12 +686,12 @@ _EOL_;
 
 	/*     記述例
 	//@@row_form_temple NUMERIC {
-				'@@name@@'      => [ 
+				'___name___'      => [ 
 					'CLASS'   => 'string',
 					'TAG'     => 'input',
 					'TYPE'    => 'text',
 					'DEFAULT' => 848635851342 ,
-					'TITLE'   => '@@title@@',
+					'TITLE'   => '___title___',
 					'MAXLEN'  => 19,
 					'ACCEPT'  => '0-9',
 				],
@@ -760,10 +760,10 @@ _EOL_;
 
 			// 置換
 			$rep = [
-				'@@name@@'    => $a['name'],
-				'@@default@@' => $a['default'],
-				'@@title@@'   => $a['title'],
-				'@@maxlen@@'  => (string)($a['size']),
+				'___name___'    => $a['name'],
+				'___default___' => $a['default'],
+				'___title___'   => $a['title'],
+				'___maxlen___'  => (string)($a['size']),
 			];
 			
 			$search[] = str_replace(array_keys($rep), array_values($rep), $tmp);
@@ -772,7 +772,7 @@ _EOL_;
 			$sort[$a['name']] = $a['title'];
 		}
 
-		$replace['//@@row_form@@'] = implode(",\r\n", $search);
+		$replace['//___row_form___'] = implode(",\r\n", $search);
 
 		// ソート用
 		// 桁揃えのため最大の長さを取得
@@ -783,19 +783,19 @@ _EOL_;
 				$len = $l;
 			}
 		}
-		$len += strlen($replace['@@TABLE@@']) + 2 + 1;	// 2='' 1=.
+		$len += strlen($replace['___TABLE___']) + 2 + 1;	// 2='' 1=.
 
 		$sort2 = [];
 		foreach ($sort as $k => $v) {
 			if (empty($k)) {
 				$k = $this->padString("''", $len, ' ');
 			} else {
-				$k = $this->padString("'{$replace['@@TABLE@@']}.{$k}'", $len, ' ');
+				$k = $this->padString("'{$replace['___TABLE___']}.{$k}'", $len, ' ');
 			}
 			$sort2[] = "\t\t\t{$k} => '{$v}'";
 		}
 
-		$replace['@@sort@@'] = implode(",\r\n", $sort2);
+		$replace['___sort___'] = implode(",\r\n", $sort2);
 	}
 
 	/**
@@ -876,7 +876,7 @@ _EOL_;
 		}
 		$strs[] = "\t\t\t],";
 
-		$replace['@@list_params@@'] = implode("\r\n", $strs);
+		$replace['___list_params___'] = implode("\r\n", $strs);
 	}
 
 	/**
@@ -912,34 +912,34 @@ _EOL_;
 			]
 _EOL_;
 		$temple['DATE'] = <<<_EOL_
-			'@@name@@' => [
+			'___name___' => [
 				'CLASS'   => 'date',
 				'TAG'     => 'input',
 				'TYPE'    => 'text',
-				'DEFAULT' => @@default@@,
-				'TITLE'   => '@@title@@',
+				'DEFAULT' => ___default___,
+				'TITLE'   => '___title___',
 				'LESS'    => FALSE,
 				'ATTRIB'  => 'data-cpss="datetime"',
 				'format'  => 'Y-m-d H:i:s',
 			]
 _EOL_;
 		$temple['NUMERIC'] = <<<_EOL_
-			'@@name@@' => [
+			'___name___' => [
 				'CLASS'   => 'string',
 				'TAG'     => 'text',
-				'DEFAULT' => @@default@@,
-				'TITLE'   => '@@title@@',
+				'DEFAULT' => ___default___,
+				'TITLE'   => '___title___',
 				'LESS'    => FALSE,
 				'MINNUM'  => 0,
 				'MAXNUM'  => 9999999,
 			]
 _EOL_;
 		$temple['BLOB'] = <<<_EOL_
-			'@@name@@' => [
+			'___name___' => [
 				'CLASS'   => 'string',
 				'TAG'     => 'textarea',
-				'DEFAULT' => @@default@@,
-				'TITLE'   => '@@title@@',
+				'DEFAULT' => ___default___,
+				'TITLE'   => '___title___',
 				'LESS'    => FALSE,
 				'MAXLEN'  => 4095,
 				'ATTRIB'  => 'rows="5"',
@@ -948,34 +948,34 @@ _EOL_;
 			]
 _EOL_;
 		$temple['VARCHAR'] = <<<_EOL_
-			'@@name@@' => [
+			'___name___' => [
 				'CLASS'   => 'string',
 				'TAG'     => 'input',
 				'TYPE'    => 'text',
-				'DEFAULT' => @@default@@,
-				'TITLE'   => '@@title@@',
+				'DEFAULT' => ___default___,
+				'TITLE'   => '___title___',
 				'LESS'    => FALSE,
 			]
 _EOL_;
 		$temple['CHAR'] = <<<_EOL_
-			'@@name@@' => [
+			'___name___' => [
 				'CLASS'   => 'string',
 				'TAG'     => 'input',
 				'TYPE'    => 'text',
-				'DEFAULT' => @@default@@,
-				'TITLE'   => '@@title@@',
+				'DEFAULT' => ___default___,
+				'TITLE'   => '___title___',
 				'LESS'    => FALSE,
 			]
 _EOL_;
 
 	/*     記述例
 	//@@row_form_temple NUMERIC {
-				'@@name@@'      => [ 
+				'___name___'      => [ 
 					  'CLASS'   => 'string'
 					, 'TAG'     => 'input'
 					, 'TYPE'    => 'text'
 					, 'DEFAULT' => 848635851342 
-					, 'TITLE'   => '@@title@@'              
+					, 'TITLE'   => '___title___'              
 					, 'MAXLEN'  => 19
 					, 'ACCEPT'  => '0-9'
 				],
@@ -1031,16 +1031,16 @@ _EOL_;
 
 			// 置換
 			$rep = [
-				'@@name@@'    => $a['name'],
-				'@@default@@' => $a['default'],
-				'@@title@@'   => $a['title'],
-				'@@maxlen@@'  => (string)($a['size']),
+				'___name___'    => $a['name'],
+				'___default___' => $a['default'],
+				'___title___'   => $a['title'],
+				'___maxlen___'  => (string)($a['size']),
 			];
 			
 			$src[] = str_replace(array_keys($rep), array_values($rep), $tmp);
 		}
 
-		$replace['//@@row_form@@'] = implode("\r\n", $src);
+		$replace['//___row_form___'] = implode("\r\n", $src);
 	}
 
 	/**
@@ -1135,68 +1135,68 @@ _EOL_;
 		$replace = [];
 
 		// ファイル名を設定
-		$replace['@@filename@@'] = basename($filename);
+		$replace['___filename___'] = basename($filename);
 
 		// ベース名を設定(拡張子を除く)
-		$replace['@@basename@@'] = $basename;
-		$replace['@@Basename@@'] = $this->makeCamel($splitName);
+		$replace['___basename___'] = $basename;
+		$replace['___Basename___'] = $this->makeCamel($splitName);
 
 		// 拡張子(.を含まない)
-		$replace['@@ext@@'] = substr($ext, 1);;
+		$replace['___ext___'] = substr($ext, 1);;
 
 		// タイトルを設定
 		if (!empty($title)) {
-			$replace['@@title@@'] = $title;
+			$replace['___title___'] = $title;
 		}
 
 		// 作成者を設定
 		if (!empty($author)) {
-			$replace['@@author@@'] = $author;
+			$replace['___author___'] = $author;
 		}
 
 		// 作成日を設定
-		$replace['@@date@@'] = date('Y-m-d');;
+		$replace['___date___'] = date('Y-m-d');;
 
 		// Coryright の年を設定
-		$replace['@@copyright@@'] = date('Y');;
+		$replace['___copyright___'] = date('Y');;
 
 		// モジュール名を設定
-		$replace['@@module@@'] = strtolower($moduleName);
-		$replace['@@Module@@'] = $this->toCamel($moduleName);
-		$replace['@@MODULE@@'] = strtoupper($moduleName);
+		$replace['___module___'] = strtolower($moduleName);
+		$replace['___Module___'] = $this->toCamel($moduleName);
+		$replace['___MODULE___'] = strtoupper($moduleName);
 		
 		// Class 名を設定
 		// ファイル名にスペースを含むときはその後ろから(sql がこれに当たる)
 		$i = strpos($basename, ' ');
 		if ($i !== FALSE) {
-			$replace['@@class@@'] = substr($basename, $i + 1);
+			$replace['___class___'] = substr($basename, $i + 1);
 		} else {
-			$replace['@@class@@'] = $basename;
+			$replace['___class___'] = $basename;
 		}
 
-		// @@snake@@ はスネークケース名
+		// ___snake___ はスネークケース名
 		// ※末尾の単語が Base の場合は除去される
-		$replace['@@snake@@'] = $this->makeSnake($splitName);
+		$replace['___snake___'] = $this->makeSnake($splitName);
 
 		// ターゲット名を取得
 		// member_edit.php -> member
 		// MemberEditBase -> member
-		$replace['@@target@@'] = $this->makeSnake(array_slice($splitName, 0, count($splitName) - 1));
-		$replace['@@Target@@'] = $this->makeCamel(array_slice($splitName, 0, count($splitName) - 1));
-		$replace['@@TARGET@@'] = strtoupper($replace['@@target@@']);
+		$replace['___target___'] = $this->makeSnake(array_slice($splitName, 0, count($splitName) - 1));
+		$replace['___Target___'] = $this->makeCamel(array_slice($splitName, 0, count($splitName) - 1));
+		$replace['___TARGET@@'] = strtoupper($replace['@@target___']);
 
 		// テーブル名(SQLファイル名から作った仮)
-		$replace['@@table@@'] = $this->makeSnake(array_slice($tableName, 0, count($tableName) - 1));
-		$replace['@@Table@@'] = $this->makeCamel(array_slice($tableName, 0, count($tableName) - 1));
-		$replace['@@TABLE@@'] = strtoupper($replace['@@table@@']);
+		$replace['___table___'] = $this->makeSnake(array_slice($tableName, 0, count($tableName) - 1));
+		$replace['___Table___'] = $this->makeCamel(array_slice($tableName, 0, count($tableName) - 1));
+		$replace['___TABLE@@'] = strtoupper($replace['@@table___']);
 
 		// グループ名を設定
-		$replace['@@group@@'] = $this->makeSnake(array_slice($splitName, 0, -1));
-		$replace['@@Group@@'] = $this->makeCamel(array_slice($splitName, 0, -1));
+		$replace['___group___'] = $this->makeSnake(array_slice($splitName, 0, -1));
+		$replace['___Group___'] = $this->makeCamel(array_slice($splitName, 0, -1));
 
 		// DAO名
 		if ($mode == 'Row') {
-			$replace['@@Dao@@'] = $basename;
+			$replace['___Dao___'] = $basename;
 		} else {
 			$a = $tableName;
 			if (!empty($moduleName) && ($moduleName == $a[0])) {
@@ -1205,10 +1205,10 @@ _EOL_;
 			}
 			array_unshift($a, 'Row');
 			array_unshift($a, $moduleName);
-			$replace['@@Dao@@'] = $this->makeCamel($a);
+			$replace['___Dao___'] = $this->makeCamel($a);
 		}
 
-		// @@lastpage@@
+		// ___lastpage___
 		$a = explode('_', $basename); 
 		$n = count($a) - 1;
 		$iNum = 0;		// 現在のページ番号
@@ -1223,16 +1223,16 @@ _EOL_;
 			else
 				$b = implode('_', $a) . ($iNum -1);
 
-			$replace['@@lastpage@@'] = $b . $ext;
-			$replace['@@last@@'    ] = $b;
+			$replace['___lastpage___'] = $b . $ext;
+			$replace['___last___'    ] = $b;
 		}
 
-		// @@nextpage@@
-		$replace['@@nextpage@@'] = implode('_', $a) . ($iNum + 1) . $ext;
-		$replace['@@next@@'] = implode('_', $a) . ($iNum + 1);
+		// ___nextpage___
+		$replace['___nextpage___'] = implode('_', $a) . ($iNum + 1) . $ext;
+		$replace['___next___'] = implode('_', $a) . ($iNum + 1);
 
 		// ベースクラスを設定
-		$replace['@@parent@@'] = $this->makeCamel($a) . 'Base';
+		$replace['___parent___'] = $this->makeCamel($a) . 'Base';
 
 		// SQL(Row)処理
 		if (!empty($sqlFile)) {
@@ -1241,12 +1241,12 @@ _EOL_;
 
 			// テーブル名
 			$tableName = $this->splitSnake($table['NAME']);
-			$replace['@@table@@'] = $this->makeSnake($tableName);
-			$replace['@@Table@@'] = $this->makeCamel($tableName);
-			$replace['@@TABLE@@'] = strtoupper($replace['@@table@@']);
+			$replace['___table___'] = $this->makeSnake($tableName);
+			$replace['___Table___'] = $this->makeCamel($tableName);
+			$replace['___TABLE@@'] = strtoupper($replace['@@table___']);
 
 			// SQL 文
-			$replace['@@sql@@'] = $table['SQL'];
+			$replace['___sql___'] = $table['SQL'];
 
 			// タイプ別処理
 			switch ($mode) {

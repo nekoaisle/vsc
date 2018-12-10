@@ -1,13 +1,13 @@
 /**
- * @@title@@
+ * ___title___
  * 
- * filename:  @@filename@@
+ * filename:  ___filename___
  * 
  * @package   
  * @version   1.0.0
- * @copyright Copyright (C) @@copyright@@ Yoshio Kiya All rights reserved.
- * @date      @@date@@
- * @author    @@author@@
+ * @copyright Copyright (C) ___copyright___ Yoshio Kiya All rights reserved.
+ * @date      ___date___
+ * @author    ___author___
  */
 'use strict';
 import * as vscode from 'vscode';
@@ -28,7 +28,7 @@ export function deactivate() {
 }
 
 /**
- * @@title@@
+ * ___title___
  */
 class MyExtention extends Extension {
 	/**
@@ -36,7 +36,7 @@ class MyExtention extends Extension {
 	 */
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
-			name: '@@title@@',
+			name: '___title___',
 			config: '',		// 通常はコマンドのサフィックス
 			commands: [
 				{
