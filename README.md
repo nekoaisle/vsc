@@ -7,13 +7,18 @@ TypeScript のソースファイルごとまるまるアップしております
 
 各拡張機能の詳細はそれぞれのディレクトリ内の `README.md` をご覧ください。
 
-いまのところ branch `0815` が最新版です。master はめったに更新しません。参考ソースとしては `0815` が有用な情報が多いかと思います。
+本来は拡張機能ごとに node_modules を持つのですが、そうするとファイルが莫大な数になってしまうのでシンボリックリンクとしております。
+
+また、自作の共通ライブラリーもシンボリックリンクとなっています。
 
 |フォルダー名|機能|
 |--|--|
+|nekoaisle.cpss-decorator|私が作成たPHPフレームワーク用のデコレータですので一般の方には関係ありません|
+|nekoaisle.cpss-log-highlight|私が作成たPHPフレームワーク用のログハイライトですので一般の方には関係ありません|
 |nekoaisole.cpss-wizer|私が作成たPHPフレームワーク用のウィザードですので一般の方には関係ありません|
 |nekoaisole.disp-char-code|ステータスバーのカーソル位置の文字コードを表示します|
 |nekoaisole.encode|選択範囲またはカーソル位置の単語をエンコードします(HTML, BASE64, URL, preg, etc)|
+|nekoaisle.highlight-tsv|TSVファイル用の強調表示です|
 |nekoaisole.insert-code|スニペットをより強力にします|
 |nekoaisole.jump-to-line-number|行番号を入力してジャンプします|
 |nekoaisole.lib|全拡張機能で使用している共通ライブラリです|
@@ -23,4 +28,6 @@ TypeScript のソースファイルごとまるまるアップしております
 |nekoaisole.open-prebious-tab|前回開いていたタブを開く|
 |nekoaisole.open-thunar|現在のファイルが格納されているフォルダーを Thunar で開く|
 |nekoaisole.select-word|カーソル位置の単語を選択する|
+|nekoaisle.sjis-grep|Shift-JISファイルをgrepします（未完成）|
 |nekoaisole.toggle-char-case|選択範囲またはカーソル位置の単語の大文字/小文字/キャメルケースを切り替える|
+|nekoaisle.wz-editor-memo-file|昔懐かしい WZ-Editor の .mem ファイル用文法ファイルです|
