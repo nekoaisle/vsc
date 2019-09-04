@@ -36,18 +36,18 @@ class OpenThunar extends Extension {
 	 */
 	public exec() {
         // settings.json からファイラーの名前を取得
-        let filer = this.getConfig('nekoaisle.filer', 'thunar');
+        let filer = this.getConfig('nekoaisle.filer', 'nautilus'/*'thunar'*/);
 
         //ドキュメントを取得
         let editor = vscode.window.activeTextEditor;
 
         // ファイル名を取得
         let fileName = editor.document.fileName;
-        let pinfo = path.parse(fileName);
-
+//        let pinfo = path.parse(fileName);
         // コマンドラインを作成
-        let cmd = `${filer} ${pinfo.dir}`;
-        console.log( cmd );
+//        let cmd = `${filer} -s ${pinfo.dir}`;
+        let cmd = `${filer} -s ${fileName}`;
+        console.log(cmd);
 
         // 非同期実行
         chproc.exec( cmd, (err, stdout: string, stderr: string) => {

@@ -104,7 +104,8 @@ export module Util {
 					}
 					case 'Array': {
 						dst = Array();
-						for (let key in src) {
+						let key: any;
+						for (key in src) {
 							dst[key] = cloneObject(src[key]);
 						}
 						break;
@@ -423,7 +424,8 @@ export module Util {
 		uri = url.format(urlInfo);
 
 		// Chromium を実行
-		Util.execCmd(`chromium-browser '${uri}'`);
+		// Util.execCmd(`chromium-browser '${uri}'`);
+		vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(uri));
 	}
 
 	/**

@@ -4,22 +4,27 @@
 		"body": [
 			"#!/bin/bash",
 			"# $1",
-			"# Copyrights 2017 Creansmaerd.Co.,Ltd."
+			"# Copyrights 2019 Creansmaerd.Co.,Ltd."
 		],
 		"description": "ヘッダーを挿入する"
 	},
-	"if": {
+	"if 単項": {
 		"prefix": "if",
 		"body": [
-			"if [ ${1:条件} ];then",
-			"\t",
-			"elif [  ]; then",
-			"\t",
-			"else",
+			"if [[ ${1|-z,-n,-d,-f,-s,-e,-r,-w,-x|} \\$${2:変数1} ]];then",
 			"\t",
 			"fi"
 		],
-		"description": "if 文"
+		"description": "単項のif文"
+	},
+	"if ２項": {
+		"prefix": "if",
+		"body": [
+			"if [[ \\${${1:変数1}} ${2|=,!=,-nt,-ot,-eq,-ne,-lt,-le,-gt,-ge|} \\${${3:変数2}} ]];then",
+			"\t",
+			"fi"
+		],
+		"description": "２項のif文"
 	},
 	"case": {
 		"prefix": "case",
@@ -50,5 +55,31 @@
 			"done"
 		],
 		"description": "for 文"
+	},
+	"function": {
+		"prefix": "function",
+		"body": [
+			"#==========================================================",
+			"# ${1:タイトル}",
+			"# @param \\$1 ",
+			"# @return ",
+			"#==========================================================",
+			"function ${2:関数名}() {",
+			"}",
+		],
+		"description": "関数宣言"
+	},
+	"rem": {
+		"prefix": "#===",
+		"body": "#=========================================================="
+	},
+	"Here document": {
+		"prefix": "<<",
+		"body": [
+			"<< EOS",
+			"$1",
+			"EOS",
+		],
+		"description": "ヒアドキュメント"
 	}
 }

@@ -17,19 +17,19 @@ export function deactivate() {
 }
 
 interface ListItem {
-    method?: string,
-    path?: string,
-    options?: object,
-    link?: string,
+    method?: string;
+    path?: string;
+    options?: object;
+    link?: string;
 }
 
 /**
  * エクステンション本体
  */
 class MyExtension extends Extension {
-	/**
-	 * 構築
-	 */
+    /**
+     * 構築
+     */
     constructor(context: vscode.ExtensionContext) {
         super(context, {
             name: 'カーソル位置の単語でマニュアルなどを開く',
@@ -38,16 +38,16 @@ class MyExtension extends Extension {
                 {
                     command: 'nekoaisle.openHelp',	// コマンド
                     callback: () => {
-                        this.exec()
+                      this.exec();
                     }
                 }
             ]
         });
     }
 
-	/**
-	 * エントリー
-	 */
+    /**
+     * エントリー
+     */
     public exec() {
         //
         let editor = vscode.window.activeTextEditor;
@@ -62,7 +62,7 @@ class MyExtension extends Extension {
         listFN = this.getConfig("list-file", listFN);
 
         // 設定ファイルの読み込み
-		let source: string = Util.loadFile(listFN);
+        let source: string = Util.loadFile(listFN);
 
         // 読み込んだファイル中の {{word}} をカーソル位置の単語に置換
         source = source.replace(/{{word}}/g, word);
@@ -73,27 +73,35 @@ class MyExtension extends Extension {
         // 設定ファイルの読み込み
         // 継承を解決
         for (let key in list) {
-            if (list['inherit']) {
+            let item: ListItem = list[key];
+            if (item['inherit']) {
                 // このアイテムは継承が指定されている
-                let link = list['inherit'];
-                // このオブジェクトで定義されていない要素は継承元から取得
-                for (let key in link) {
-                    if (typeof list[key] == "undefined") {
-                        // このオブジェクトでは指定されていない
-                        list[key] = link[key];
+                let inherit = list[item['inherit']];
+                if (inherit) {
+                    // このオブジェクトで定義されていない要素は継承元から取得
+                    for (let k in inherit) {
+                        if (typeof item[k] === "undefined") {
+                            // このオブジェクトでは指定されていない
+                            item[k] = inherit[k];
+                        }
                     }
                 }
             }
         }
 
-        let addr: string;
-        let query: object;
+        // どのセクションを使用するか決める
         let lang: string;
         if (list[editor.document.languageId]) {
+            // この言語用のセクションがあった
             lang = editor.document.languageId;
-        } else {
+        } else if (list['default']) {
+            // なかったのでデフォルトを使用
             lang = "default";
+        } else {
+            // default 設定がない
+            Util.putMess('このファイルタイプ用の設定がありません。');
         }
+
         let item: ListItem = list[lang];
         switch (item.method) {
             case 'chrome': {

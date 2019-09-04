@@ -561,9 +561,9 @@ __USAGE__;
 			$dic[] = sprintf("%s => '%s'", $this->padString("'{$a[0]}'", $len[0]+2), $a[1]);
 		}
 
-		$replace['___column___'  ] = "\t\t" . implode(",\r\n\t\t", $col);
-		$replace['___coldic___'  ] = "\t\t" . implode(",\r\n\t\t", $dic);
-		$replace['___variable___'] = implode('', $var);
+		$replace['//___column___'  ] = "\t\t" . implode(",\r\n\t\t", $col);
+		$replace['//___coldic___'  ] = "\t\t" . implode(",\r\n\t\t", $dic);
+		$replace['//___variable___'] = implode('', $var);
 	}
 
 	/**
@@ -772,7 +772,7 @@ _EOL_;
 			$sort[$a['name']] = $a['title'];
 		}
 
-		$replace['//___row_form___'] = implode(",\r\n", $search);
+		$replace['//___row_form___'] = implode("\r\n", $search);
 
 		// ソート用
 		// 桁揃えのため最大の長さを取得
@@ -899,7 +899,7 @@ _EOL_;
 				'LESS'    => TRUE,
 				'MAXLEN'  => 64,
 				'ATTRIB'  => 'size="48"',
-			]
+			],
 _EOL_;
 		$temple['C_STATUS'] = <<<_EOL_
 			'C_STATUS' => [ 
@@ -909,7 +909,7 @@ _EOL_;
 				'TITLE'   => '状態',
 				'MAXLEN'  => 3,
 				'OPTION'  => [''=>''],
-			]
+			],
 _EOL_;
 		$temple['DATE'] = <<<_EOL_
 			'___name___' => [
@@ -921,7 +921,7 @@ _EOL_;
 				'LESS'    => FALSE,
 				'ATTRIB'  => 'data-cpss="datetime"',
 				'format'  => 'Y-m-d H:i:s',
-			]
+			],
 _EOL_;
 		$temple['NUMERIC'] = <<<_EOL_
 			'___name___' => [
@@ -932,7 +932,7 @@ _EOL_;
 				'LESS'    => FALSE,
 				'MINNUM'  => 0,
 				'MAXNUM'  => 9999999,
-			]
+			],
 _EOL_;
 		$temple['BLOB'] = <<<_EOL_
 			'___name___' => [
@@ -945,7 +945,7 @@ _EOL_;
 				'ATTRIB'  => 'rows="5"',
 				'CTRL'    => "\t\r\n",
 				'HTML'    => TRUE,			// <>"' を許可
-			]
+			],
 _EOL_;
 		$temple['VARCHAR'] = <<<_EOL_
 			'___name___' => [
@@ -955,7 +955,7 @@ _EOL_;
 				'DEFAULT' => ___default___,
 				'TITLE'   => '___title___',
 				'LESS'    => FALSE,
-			]
+			],
 _EOL_;
 		$temple['CHAR'] = <<<_EOL_
 			'___name___' => [
@@ -965,7 +965,7 @@ _EOL_;
 				'DEFAULT' => ___default___,
 				'TITLE'   => '___title___',
 				'LESS'    => FALSE,
-			]
+			],
 _EOL_;
 
 	/*     記述例
@@ -1183,12 +1183,12 @@ _EOL_;
 		// MemberEditBase -> member
 		$replace['___target___'] = $this->makeSnake(array_slice($splitName, 0, count($splitName) - 1));
 		$replace['___Target___'] = $this->makeCamel(array_slice($splitName, 0, count($splitName) - 1));
-		$replace['___TARGET@@'] = strtoupper($replace['@@target___']);
+		$replace['___TARGET___'] = strtoupper($replace['___target___']);
 
 		// テーブル名(SQLファイル名から作った仮)
 		$replace['___table___'] = $this->makeSnake(array_slice($tableName, 0, count($tableName) - 1));
 		$replace['___Table___'] = $this->makeCamel(array_slice($tableName, 0, count($tableName) - 1));
-		$replace['___TABLE@@'] = strtoupper($replace['@@table___']);
+		$replace['___TABLE___'] = strtoupper($replace['___table___']);
 
 		// グループ名を設定
 		$replace['___group___'] = $this->makeSnake(array_slice($splitName, 0, -1));
@@ -1243,7 +1243,7 @@ _EOL_;
 			$tableName = $this->splitSnake($table['NAME']);
 			$replace['___table___'] = $this->makeSnake($tableName);
 			$replace['___Table___'] = $this->makeCamel($tableName);
-			$replace['___TABLE@@'] = strtoupper($replace['@@table___']);
+			$replace['___TABLE___'] = strtoupper($replace['___table___']);
 
 			// SQL 文
 			$replace['___sql___'] = $table['SQL'];

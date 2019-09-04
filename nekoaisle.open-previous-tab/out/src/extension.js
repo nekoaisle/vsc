@@ -70,17 +70,19 @@ class OpenPreviousTab extends nekoaisle_1.Extension {
      * イベントハンドラ
      */
     onEvent(e) {
-        // 現在のアクティブファイル名を取得
-        let fileName = vscode.window.activeTextEditor.document.fileName;
-        // 同違っていたら記憶
-        if (this.history[0].fileName != fileName) {
-            // 前回のアクティブタブを記憶
-            this.history[1] = this.history[0];
-            // 現在のアクティブタブを記憶
-            this.history[0] = {
-                fileName: vscode.window.activeTextEditor.document.fileName,
-                editor: vscode.window.activeTextEditor,
-            };
+        if (vscode.window.activeTextEditor) {
+            // 現在のアクティブファイル名を取得
+            let fileName = vscode.window.activeTextEditor.document.fileName;
+            // 同違っていたら記憶
+            if (this.history[0].fileName != fileName) {
+                // 前回のアクティブタブを記憶
+                this.history[1] = this.history[0];
+                // 現在のアクティブタブを記憶
+                this.history[0] = {
+                    fileName: vscode.window.activeTextEditor.document.fileName,
+                    editor: vscode.window.activeTextEditor,
+                };
+            }
         }
     }
     dispose() {

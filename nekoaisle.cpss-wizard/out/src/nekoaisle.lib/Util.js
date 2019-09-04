@@ -583,6 +583,9 @@ var Util;
         else {
             // 拡張子がないときはドキュメントの言語から拡張子を決める
             ext = Util.extensionByLanguages[doc.languageId];
+            if (!ext) {
+                return "";
+            }
         }
         // 先頭の . を除去
         if (lessDot) {

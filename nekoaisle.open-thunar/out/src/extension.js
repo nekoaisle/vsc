@@ -1,7 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const path = require("path");
 const chproc = require("child_process");
 const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
 function activate(context) {
@@ -35,14 +34,15 @@ class OpenThunar extends nekoaisle_1.Extension {
      */
     exec() {
         // settings.json からファイラーの名前を取得
-        let filer = this.getConfig('nekoaisle.filer', 'thunar');
+        let filer = this.getConfig('nekoaisle.filer', 'nautilus' /*'thunar'*/);
         //ドキュメントを取得
         let editor = vscode.window.activeTextEditor;
         // ファイル名を取得
         let fileName = editor.document.fileName;
-        let pinfo = path.parse(fileName);
+        //        let pinfo = path.parse(fileName);
         // コマンドラインを作成
-        let cmd = `${filer} ${pinfo.dir}`;
+        //        let cmd = `${filer} -s ${pinfo.dir}`;
+        let cmd = `${filer} -s ${fileName}`;
         console.log(cmd);
         // 非同期実行
         chproc.exec(cmd, (err, stdout, stderr) => {

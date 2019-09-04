@@ -46,6 +46,19 @@ function _exec {
 	return $res
 }
 
+# オプション取得
+while getopts ufh OPT; do
+	case $OPT in
+		# ヘルプ表示
+		h)  usage_exit 0
+			;;
+		# 不正なオプション
+		*) usage_exit 0
+			;;
+	esac
+done
+shift $((OPTIND - 1))
+
 # 引数が指定されなかったときはエラー
 if [ $# -eq 0 ]; then
 	usage_exit 1;

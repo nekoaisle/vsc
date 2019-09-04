@@ -219,6 +219,11 @@ class CpssWizard extends nekoaisle_1.Extension {
             console.log(`mode = "${mode}"`);
             options.mode = info.mode;
             options.name = info.name;
+            // SQLが必要なときはディレクトリーが存在するか先に確認
+            if ((info.sql) && !fs.existsSync(options.sqlDir)) {
+                nekoaisle_1.Util.putMess(`'${options.sqlDir}' が見つかりません。cpssWizard.sqlDir で指定できます。`);
+                return resolveSurelyPrimise('');
+            }
             if (info.module) {
                 // モジュール名が必要なときはモジュール名求める
                 let ioption = {

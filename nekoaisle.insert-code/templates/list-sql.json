@@ -1,7 +1,8 @@
 {
 	"fileheader": {
 		"label": "1: ファイルヘッダー",
-		"filename": "sql/fileheader.sql"
+		"filename": "sql/fileheader.sql",
+		"method": "snippet"
 	},
 	"alter table": {
 		"label": "2: alter table",

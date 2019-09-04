@@ -27,24 +27,24 @@
 		"description": ""
 	},
 	"for in": {
-		"prefix": "for (let key in array) {",
+		"prefix": "for",
 		"body": [
 			"for (let key in ${1:配列}) {",
 			"\tlet val = ${1:配列}[key];",
 			"}"
 		],
-		"description": "nekoaisle"
+		"description": "for (let key in array) {}"
 	},
 	"for of": {
-		"prefix": "for ",
+		"prefix": "for",
 		"body": [
 			"for (let val of ${1:配列}) {",
 			"}"
 		],
-		"description": "nekoaisle"
+		"description": "for (let val of array)"
 	},
 	"switch": {
-		"prefix": "switch() {",
+		"prefix": "switch",
 		"body": [
 			"switch (${1:var}) {",
 			"\tcase '': {",
@@ -55,10 +55,10 @@
 			"\t}",
 			"}"
 			],
-		"description": "switch"
+		"description": "switch (val) { }"
 	},
 	"case": {
-		"prefix": "case '': {",
+		"prefix": "case",
 		"body": [
 			"case '$1': {",
 			"\tbreak;",
@@ -144,6 +144,17 @@
 		],
 		"description": "toast"
 	},
+	"Promise": {
+		"prefix": "Promise",
+		"body": [
+			"Promise<${1:any}> {",
+			"  return new Promise<${1:戻り値}>((resolve: (value?: $1) => void, reject: (reason?: any) => void) => {",
+			"    $2",
+			"  });",
+			"}"
+		],
+		"description": "Promise<${1:any}> { retun new ..."
+	},
 	"promise new": {
 		"prefix": "Promise",
 		"body": [
@@ -151,7 +162,7 @@
 			"\t$2",
 			"});",
 		],
-		"description": "new Promise"
+		"description": "new Promise<$1>((resolve..."
 	},
 	"promise then": {
 		"prefix": "then",
@@ -168,9 +179,94 @@
 		"prefix": "catch",
 		"body": [
 			"catch((reason: any) => {",
+			"\t// 例外発生",
 			"\treject(reason);",
 			"});",
 		],
-		"description": "promise catch"
-	}
+		"description": "catch((reason: any) => {})"
+	},
+	"catch": {
+		"prefix": "catch",
+		"body": [
+			"catch (e) {",
+			"\t// 例外発生",
+			"\t${1|;,console.error(e);|}",
+			"}",
+		],
+		"description": "catch (e) {}"
+	},
+	"showLoading": {
+		"prefix": "showLoading",
+		"body": [
+			"  private loadingCtrl: LoadingController,",
+			"private loading: Loading;",
+			"",
+			"/**",
+			" * 遅延ローディングを表示",
+			" */",
+			"private showLoading() {",
+			"  this.loading = this.loadingCtrl.create({",
+			"    content: \"お待ちください。\",",
+			"    dismissOnPageChange: true,",
+			"  });",
+			"  this.loading.present();",
+			"}",
+			"/**",
+			" * 遅延ローディングを消去",
+			" */",
+			"private hideLoading() {",
+			"  if (this.loading) {",
+			"    this.loading.dismiss();",
+			"    this.loading = null;",
+			"  }",
+			"}",
+		],
+		"description": "showLoading(), hideLoading()",
+	},
+	"showError": {
+		"prefix": "showError",
+		"body": [
+			"  private alertCtrl: AlertController,",
+			"",
+			"/**",
+			" * エラーダイアログ",
+			" */",
+			"private showError(text) {",
+			"  this.hideLoading();",
+			"  const alert = this.alertCtrl.create({",
+			"    title: \"エラー\",",
+			"    subTitle: text,",
+			"    buttons: [\"OK\"]",
+			"  });",
+			"  alert.present();",
+			"}",
+		],
+		"description": "showAllert()",
+	},
+	"showToast": {
+		"prefix": "showError",
+		"body": [
+			"  private toastCtrl: ToastController,",
+			"/**",
+			" * トーストの表示",
+			" * @param text 表示する文字列",
+			" */",
+			"private showToast(text: string) {",
+			"  this.hideLoading();",
+			"  // トースト作成",
+			"  let toast = this.toastCtrl.create({",
+			"    message: test,",
+			"    duration: 3000,",
+			"    position: \"${1|top,middle,bottom|}\",",
+			"  });",
+			"  // 終了時の処理設定",
+			"  toast.onDidDismiss(() => {",
+			"    console.log('Dismissed toast');",
+			"  });",
+			"  // 表示開始",
+			"  toast.present();",
+			"}",
+		],
+		"description": "showToast()",
+	},
 }
