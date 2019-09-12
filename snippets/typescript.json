@@ -269,4 +269,20 @@
 		],
 		"description": "showToast()",
 	},
+	"function": {
+		"prefix": "function",
+		"body": [
+			"/**",
+			" * ${1:タイトル}",
+			" * @param ",
+			" * @return ",
+			" */",
+			"function ${2:関数名}(): ${3:戻値の型} {",
+			"$4",
+			"\treturn;",
+			"}",
+		],
+		"description": "関数定義"
+	}
+	
 }

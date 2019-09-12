@@ -30,10 +30,10 @@ export class PathInfo {
 	 * @param dir 相対ディレクトリ名
 	 */
 	public getDirName(dir?: string): string {
-		if ( !dir ) {
+		if (!dir) {
 			// 省略されたので現在のディレクトリを返す
 			dir = this.info.dir;
-		} else if ( dir.substr(0, 1) != '/' ) {
+		} else if (dir.substr(0, 1) != '/') {
 			// /で始まらないときは相対ディレクトリなので現在のディレクトリ結合
 			dir = path.join(this.info.dir, dir);
 			// 絶対パスに変換
@@ -49,7 +49,7 @@ export class PathInfo {
 	 * @param dir 相対ディレクトリ名
 	 */
 	public getFileName(ext?: string, dir?: string) {
-		if ( !ext ) {
+		if (!ext) {
 			ext = this.info.ext;
 		}
 
@@ -62,14 +62,14 @@ export class PathInfo {
 	 * ファイルが存在するか調べる
 	 * @param path 調べるファイルの名前
 	 */
-	public isExistsFile( param?: PathInfoArgs ): boolean {
+	public isExistsFile(param?: PathInfoArgs): boolean {
 		// ファイル名を作成
 		let path = this.getFileName(param.ext, param.dir);
 
 		// 空文字列チェック
-		if ( path.length <= 0 ) {
+		if (path.length <= 0) {
 			// ファイル名が指定されなかったときは「存在しない」を返す
-			if ( param.error ) {
+			if (param.error) {
 				param.error(path);
 			}
 			return false;
@@ -77,14 +77,14 @@ export class PathInfo {
 			try {
 				fs.accessSync(path);
 				// 正常終了した
-				if ( param.exists ) {
+				if (param.exists) {
 					param.exists(path);
 				}
 				return true;
-			} catch ( e ) {
+			} catch (e) {
 				// エラーが発生したのでreject
 				console.log(`catch ${e}`);
-				if ( param.not ) {
+				if (param.not) {
 					param.not(path);
 				}
 				return false;

@@ -472,6 +472,35 @@ var Util;
     }
     Util.loadFile = loadFile;
     /**
+     * テキストファイルの保存
+     * @param fileName 保存するファイル名
+     * @param data 保存する内容
+     */
+    function saveFile(fileName, data) {
+        console.log(`saveFile = "${fileName}"`);
+        return fs.writeFileSync(fileName, data);
+    }
+    Util.saveFile = saveFile;
+    /**
+     * JSONファイルを読み込む
+     * @param fileName ファイル名
+     */
+    function loadFileJson(fileName) {
+        let source = Util.loadFile(fileName);
+        return decodeJson(source);
+    }
+    Util.loadFileJson = loadFileJson;
+    /**
+     * JSONに変換して保存
+     * @param fileName ファイル名
+     * @param data 書き込むおデータ
+     */
+    function saveFileJson(fileName, data) {
+        let json = encodeJson(data);
+        Util.saveFile(fileName, json);
+    }
+    Util.saveFileJson = saveFileJson;
+    /**
      * 文字列を json デコード
      * @param str デコードする JSON
      * @param except 例外を発生する
@@ -491,14 +520,24 @@ var Util;
     }
     Util.decodeJson = decodeJson;
     /**
-     * JSONファイルを読み込む
-     * @param fileName ファイル名
+     * オブジェクトを json に変換
+     * @param obj エンコードするオブジェクト
+     * @param except 例外を発生する
      */
-    function loadFileJson(fileName) {
-        let source = Util.loadFile(fileName);
-        return decodeJson(source);
+    function encodeJson(obj, except) {
+        let json;
+        try {
+            json = JSON.stringify(obj);
+        }
+        catch (err) {
+            if (except) {
+                throw err;
+            }
+            Util.putMess(`JSON.parse('${obj}'): ${err}`);
+        }
+        return json;
     }
-    Util.loadFileJson = loadFileJson;
+    Util.encodeJson = encodeJson;
     /**
      * 指定ファイルを開く
      * create に true を指定するとファイルが存在しないときは作成する

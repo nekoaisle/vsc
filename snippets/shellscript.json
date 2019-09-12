@@ -81,5 +81,45 @@
 			"EOS",
 		],
 		"description": "ヒアドキュメント"
+	},
+	"echo Black": {
+		"prefix": "echo Black",
+		"body": "echo -e \"\\e[30;1m${1:文字列}\\e[m\"",
+		"description": "echo Black"
+	},
+	"echo Red": {
+		"prefix": "echo Red",
+		"body": "echo -e \"\\e[31;1m${1:文字列}\\e[m\"",
+		"description": "echo Red"
+	},
+	"echo Green": {
+		"prefix": "echo Green",
+		"body": "echo -e \"\\e[32;1m${1:文字列}\\e[m\"",
+		"description": "echo Green"
+	},
+	"echo Yello": {
+		"prefix": "echo Yellow",
+		"body": "echo -e \"\\e[33;1m${1:文字列}\\e[m\"",
+		"description": "echo Yellow"
+	},
+	"echo Blue": {
+		"prefix": "echo Blue",
+		"body": "echo -e \"\\e[34;1m${1:文字列}\\e[m\"",
+		"description": "echo Blue"
+	},
+	"echo Magenta": {
+		"prefix": "echo Magenta",
+		"body": "echo -e \"\\e[35;1m${1:文字列}\\e[m\"",
+		"description": "echo Magenta"
+	},
+	"echo Cyan": {
+		"prefix": "echo Cyan",
+		"body": "echo -e \"\\e[36;1m${1:文字列}\\e[m\"",
+		"description": "echo Cyan"
+	},
+	"echo White": {
+		"prefix": "echo White",
+		"body": "echo -e \"\\e[37;1m${1:文字列}\\e[m\"",
+		"description": "echo White"
 	}
 }

@@ -3,29 +3,29 @@ import * as path from 'path';
 import {Util} from './Util';
 
 export interface ExtensionCallback {
-	(...args: any[]): any
-};
+	(...args: any[]): any;
+}
 
 export interface ExtensionCommand {
-	command: string,	// コマンド
-	callback: ExtensionCallback		// 実行する関数
+	command: string;	// コマンド
+	callback: ExtensionCallback;		// 実行する関数
 }
 
 export interface ExtensionOptions {
-	name: string,
-	config?: string,
-	commands?: ExtensionCommand[]
+	name: string;
+	config?: string;
+	commands?: ExtensionCommand[];
 }
 
 export interface EditInsert {
-	pos: vscode.Position,
-	str: string,
-};
+	pos: vscode.Position;
+	str: string;
+}
 
 export interface EditReplace {
-	range: vscode.Range,
-	str: string,
-};
+	range: vscode.Range;
+	str: string;
+}
 
 /**
  * 拡張機能基本クラス
@@ -100,25 +100,36 @@ export class Extension {
 		return path.join(this.extensionRoot, filename);
 	}
 
+		/**
+	 * setting.jsonからファイル名を取得
+	 * @param key setting.json のキー
+	 * @param def 設定がないときの名前
+	 * @return ファイル名
+	 */
+	public getFilenameAccordingConfig(key: string, def: string): string {
+		// デフォルトのリストファイル名
+		let fn = this.joinExtensionRoot(def);
+
+		// settings.json より履歴ファイル名を取得
+		fn = this.getConfig(key, fn);
+
+		// 先頭の ~ を置換
+		fn = Util.normalizePath(fn);
+
+		//
+		return fn;
+	}
+
 	/**
-     * テンプレート格納ディレクトリ名を取得
+	 * テンプレート格納ディレクトリ名を取得
+	 * ※互換性の為残します 
 	 * @param dirName ディレクトリ名
 	 * @param settingsKey settings.json のサブキー
      * @return string テンプレート格納ディレクトリ名
 	 */
 	protected getConfigDir(dirName: string, settingsKey: string): string {
-        // デフォルトのテンポラリディレクトリ名
-        let res = this.joinExtensionRoot(dirName);
-
-        // settings.json よりテンプレートディレクトリを取得
-        res = this.getConfig(settingsKey, res);
-
-        // 先頭の ~ を置換
-        res = Util.normalizePath(res);
-
-        //
-        return res;
-    }
+		return this.getFilenameAccordingConfig(settingsKey, dirName);
+	}
 
 	/**
 	 * 複数挿入
@@ -140,7 +151,7 @@ export class Extension {
 					}
 				}
 			});
-		}
+		};
 
 		e(ary[i].pos, ary[i].str);
 	}
@@ -165,7 +176,7 @@ export class Extension {
 					}
 				}
 			});
-		}
+		};
 
 		e(ary[i].range, ary[i].str);
 	}

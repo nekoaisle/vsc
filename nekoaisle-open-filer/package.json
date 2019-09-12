@@ -1,0 +1,49 @@
+{
+    "name": "open-filer",
+    "displayName": "Open filer",
+    "description": "現在のファイルが格納されているディレクトリをファイラーで開く",
+    "version": "0.0.2",
+    "publisher": "nekoaisle",
+    "engines": {
+        "vscode": "^1.37.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:nekoaisle.openFiler"
+    ],
+    "main": "./out/src/extension",
+    "contributes": {
+        "commands": [
+            {
+                "command": "nekoaisle.openFiler",
+                "title": "Open Filer"
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Open Filer",
+            "properties": {
+                "nekoaisle.filer": {
+                    "type": "string",
+                    "default": "nautilus",
+                    "description": "ファイラーのファイル名及びコマンドラインオプションを指定してください。"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.0.3",
+        "vscode": "^1.0.0",
+        "mocha": "^2.3.3",
+        "@types/node": "^6.0.40",
+        "@types/mocha": "^2.2.32"
+    }
+}

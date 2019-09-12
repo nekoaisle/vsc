@@ -20,11 +20,7 @@
                 "command": "nekoaisle.grepSjis",
                 "title": "sjis grep"
             }
-        ],
-        "keybindings": [{
-            "command": "nekoaisle.grepSjis",
-            "key": "escape g"
-        }]
+        ]
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",

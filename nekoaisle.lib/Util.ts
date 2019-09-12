@@ -419,13 +419,15 @@ export module Util {
 				urlInfo.query[key] = query[key];
 			}
 		}
-
 		// パースしたURIを文字列にする
 		uri = url.format(urlInfo);
 
 		// Chromium を実行
 		// Util.execCmd(`chromium-browser '${uri}'`);
-		vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(uri));
+		// コマンド実行
+		// vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(uri));
+		// 外部で開く
+		vscode.env.openExternal(vscode.Uri.parse(uri));
 	}
 
 	/**
@@ -471,6 +473,35 @@ export module Util {
 	}
 
 	/**
+	 * テキストファイルの保存
+	 * @param fileName 保存するファイル名
+	 * @param data 保存する内容
+	 */
+	export function saveFile(fileName: string, data: any) {
+		console.log(`saveFile = "${fileName}"`);
+		return fs.writeFileSync(fileName, data);
+	}
+
+	/**
+	 * JSONファイルを読み込む
+	 * @param fileName ファイル名
+	 */
+	export function loadFileJson(fileName: string): any {
+		let source: string = Util.loadFile(fileName);
+		return decodeJson(source);
+	}
+
+	/**
+	 * JSONに変換して保存
+	 * @param fileName ファイル名
+	 * @param data 書き込むおデータ
+	 */
+	export function saveFileJson(fileName: string, data: any) {
+		let json: any = encodeJson(data);
+		Util.saveFile(fileName, json);
+	}
+
+	/**
 	 * 文字列を json デコード
 	 * @param str デコードする JSON
 	 * @param except 例外を発生する
@@ -489,12 +520,21 @@ export module Util {
 	}
 
 	/**
-	 * JSONファイルを読み込む
-	 * @param fileName ファイル名
+	 * オブジェクトを json に変換
+	 * @param obj エンコードするオブジェクト
+	 * @param except 例外を発生する
 	 */
-	export function loadFileJson(fileName: string): any {
-		let source: string = Util.loadFile(fileName);
-		return decodeJson(source);
+	export function encodeJson(obj: any, except?: boolean): any {
+		let json;
+		try {
+			json = JSON.stringify(obj);
+		} catch (err) {
+			if (except) {
+				throw err;
+			}
+			Util.putMess(`JSON.parse('${obj}'): ${err}`);
+		}
+		return json;
 	}
 
 	/**
