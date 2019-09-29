@@ -16,9 +16,10 @@ interface ListItem {
 	label: string;          // メニューラベル
 	detail?: string;        // 詳細
 	description?: string;   // 説明
-	command: string;       	// コマンド指定
+	command?: string;       	// コマンド指定
 	args?: { [key: string]: string }[];        // インラインテンプレート
-	fileType?: string|string[];			// ファイルタイプ指定
+	languageID?: string | string[];			// ファイルタイプ指定
+	hide?: boolean;					// メニューに表示しない
 }
 
 class CommandMenu extends Extension {
@@ -44,7 +45,7 @@ class CommandMenu extends Extension {
 		{
 			label: "[: 対応するタグにジャンプ" ,
 			command: "editor.emmet.action.matchTag",
-			fileType: "html",
+			languageID: "html",
 
 		},
 		{
@@ -54,42 +55,6 @@ class CommandMenu extends Extension {
 		{
 			label: "]: 対応するカッコへジャンプ",
 			command: "editor.action.jumpToBracket"
-		},
-		{
-			label: "1: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber1"
-		},
-		{
-			label: "2: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber2"
-		},
-		{
-			label: "3: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber3"
-		},
-		{
-			label: "4: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber4"
-		},
-		{
-			label: "5: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber5"
-		},
-		{
-			label: "6: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber6"
-		},
-		{
-			label: "7: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber7"
-		},
-		{
-			label: "8: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber8"
-		},
-		{
-			label: "9: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber9"
 		},
 		{
 			label: "C: ターミナルにカーソルを移動",
@@ -147,6 +112,54 @@ class CommandMenu extends Extension {
 			label: "X: ファイラーを開く",
 			command: "nekoaisle.openFiler"
 		},
+		{
+			label: "1〜9: 行ジャンプ",
+		},
+		{
+			label: "1: 行ジャンプ",
+			command: "nekoaisle.jumpToLineNumber1",
+			hide: true,
+		},
+		{
+			label: "2: 行ジャンプ",
+			command: "nekoaisle.jumpToLineNumber2",
+			hide: true,
+		},
+		{
+			label: "3: 行ジャンプ",
+			command: "nekoaisle.jumpToLineNumber3",
+			hide: true,
+		},
+		{
+			label: "4: 行ジャンプ",
+			command: "nekoaisle.jumpToLineNumber4",
+			hide: true,
+		},
+		{
+			label: "5: 行ジャンプ",
+			command: "nekoaisle.jumpToLineNumber5",
+			hide: true,
+		},
+		{
+			label: "6: 行ジャンプ",
+			command: "nekoaisle.jumpToLineNumber6",
+			hide: true,
+		},
+		{
+			label: "7: 行ジャンプ",
+			command: "nekoaisle.jumpToLineNumber7",
+			hide: true,
+		},
+		{
+			label: "8: 行ジャンプ",
+			command: "nekoaisle.jumpToLineNumber8",
+			hide: true,
+		},
+		{
+			label: "9: 行ジャンプ",
+			command: "nekoaisle.jumpToLineNumber9",
+			hide: true,
+		},
 	];
 
 	/**
@@ -164,12 +177,36 @@ class CommandMenu extends Extension {
 
 		// メニューを作成
 		let menu: vscode.QuickPickItem[] = [];
+		let langID = editor.document.languageId;
 		for (let item of menuInfo) {
+			if (item.hide) {
+				// 非表示は無視
+				continue;
+			}
+			if (item.languageID) {
+				if (typeof item.languageID === 'string') {
+					if (langID !== item.languageID) {
+						// 言語が違うのでメニューから除外
+						continue;
+					}
+				} else {
+					let equ = false;
+					for (let l of item.languageID) {
+						if (l === langID) {
+							equ = true;
+							break;
+						}
+					}
+					if (!equ) {
+						// 一致する言語がなかったのでメニューから除外
+						continue;
+					}
+				}
+			}
 			menu.push({
 				label: item.label,
 				description: item.description,
 				detail: item.detail,
-				
 			});
 		}
 
@@ -211,11 +248,18 @@ class CommandMenu extends Extension {
 
 			let sel: ListItem | null = null;
 			for (let item of menuInfo) {
+				if (!item.command) {
+					// コマンドなしは無視
+					continue;
+				}
 				if (item.label.substr(0, len) === label) {
 					sel = item;
 				}
 			}
 			if (!sel) {
+				return false;
+			}
+			if (!sel.command) {
 				return false;
 			}
 
