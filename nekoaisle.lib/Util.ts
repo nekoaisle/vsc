@@ -16,7 +16,7 @@ export module Util {
     //         console.log(`  ${element}`);
     //     });
     // });
-    export var extensionByLanguages = {
+	export var extensionByLanguages: { [key: string]: string; } = {
         'plaintext':   '.txt',
         'Log':         '.log',
         'bat':         '.bat',
@@ -177,7 +177,7 @@ export module Util {
 	 */
 	export function encodeHtml(s: string): string {
 		return s.replace(/[&\'`"<>\s]/g, function (match) {
-			return {
+			const dic: { [key: string]: string; } = {
 				'&': '&amp;',
 				"'": '&#x27;',
 				'`': '&#x60;',
@@ -188,7 +188,8 @@ export module Util {
 				'\r\n': '<br />\r\n',
 				'\r': '<br />\r',
 				'\n': '<br />\n',
-			}[match];
+			};
+			return dic[match];
 		});
 	}
 
@@ -210,7 +211,7 @@ export module Util {
 	export function getCursorWordRange(editor?: vscode.TextEditor, pos?: vscode.Position): vscode.Range {
 		if (!editor) {
 			// 省略されたら現在のエディタ
-			editor = vscode.window.activeTextEditor;
+			editor = <vscode.TextEditor>vscode.window.activeTextEditor;
 		}
 
 		if (!pos) {
@@ -310,7 +311,7 @@ export module Util {
 	 * @returns string スネークケース文字列
 	 */
 	export function toSnakeCase(...args: (string | string[])[]): string {
-		let ary/*: string[]*/ = [];
+		let ary: (string | string[])[] = [];
 		for (let val of args) {
 			if (getClassName(val) == 'Array') {
 				// 配列なら再起呼び出し
@@ -358,7 +359,7 @@ export module Util {
 	export function getSelectString(editor?: vscode.TextEditor): string {
 		if (!editor) {
 			// editor が省略されたので現在のエディタ
-			editor = vscode.window.activeTextEditor;
+			editor = <vscode.TextEditor>vscode.window.activeTextEditor;
 		}
 
 		let range = editor.selection;
@@ -406,7 +407,7 @@ export module Util {
 	 * @param uri 開く uri
 	 * @param query 追加の query
 	 */
-	export function browsURL(uri: string, query?: Object) {
+	export function browsURL(uri: string, query?: { [key: string]: string; ) {
 		// uri をパース
 		let urlInfo = url.parse(uri, true);
 
@@ -463,7 +464,7 @@ export module Util {
 	 * @param fileName 読み込むファイル名
 	 * @return string 読み込んだファイルの内容
 	 */
-	export function loadFile(fileName: string): string {
+	export function loadFile(fileName: string): string | null {
 		console.log(`loadFile = "${fileName}"`);
 		if (!isExistsFile(fileName)) {
 			putMess(`${fileName} が見つかりませんでした。`);
@@ -487,7 +488,10 @@ export module Util {
 	 * @param fileName ファイル名
 	 */
 	export function loadFileJson(fileName: string): any {
-		let source: string = Util.loadFile(fileName);
+		let source: string | null = Util.loadFile(fileName);
+		if (!source) {
+			return null;
+		}
 		return decodeJson(source);
 	}
 
@@ -645,7 +649,7 @@ export module Util {
      * 文字列を OverviewRulerLaneのプロパティに変換
      * @param str OverviewRulerLane のプロパティ名
      */
-    export function strToOverviewRulerLane(str: string): vscode.OverviewRulerLane {
+    export function strToOverviewRulerLane(str: string): vscode.OverviewRulerLane | null {
         switch (str) {
             case 'Left': return vscode.OverviewRulerLane.Left;
             case 'Center': return vscode.OverviewRulerLane.Center;

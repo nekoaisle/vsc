@@ -31,7 +31,7 @@ export interface EditReplace {
  * 拡張機能基本クラス
  */
 export class Extension {
-    protected config: vscode.WorkspaceConfiguration;
+	protected config: vscode.WorkspaceConfiguration;
 	protected extensionRoot: string;
 
 	/**
