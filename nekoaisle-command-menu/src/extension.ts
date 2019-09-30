@@ -13,13 +13,13 @@ export function deactivate() {
 }
 
 interface ListItem {
-	label: string;          // メニューラベル
-	detail?: string;        // 詳細
-	description?: string;   // 説明
-	command?: string;       	// コマンド指定
-	args?: { [key: string]: string }[];        // インラインテンプレート
-	languageID?: string | string[];			// ファイルタイプ指定
-	hide?: boolean;					// メニューに表示しない
+	label: string;										// メニューラベル
+	detail?: string;									// 詳細
+	description?: string;							// 説明
+	command?: string;									// コマンド指定
+	args?: { [key: string]: any };	// インラインテンプレート
+	languageID?: string | string[];		// ファイルタイプ指定
+	hide?: boolean;										// メニューに表示しない
 }
 
 class CommandMenu extends Extension {
@@ -215,24 +215,6 @@ class CommandMenu extends Extension {
 			matchOnDetail: false,
 			matchOnDescription: false
 		};
-		// vscode.window.showQuickPick(menu, options).then((pick: vscode.QuickPickItem | undefined) => {
-		// 	if (!pick) {
-		// 		// 未選択
-		// 		return;
-		// 	}
-
-		// 	let sel: ListItem | null = null;
-		// 	for (let item of menuInfo) {
-		// 		if (item.label === pick.label) {
-		// 			sel = item;
-		// 		}
-		// 	}
-		// 	if (!sel) {
-		// 		return;
-		// 	}
-
-		// 	vscode.commands.executeCommand(sel.command, sel.args);
-		// });
 
 		const quickPick = vscode.window.createQuickPick();
 		quickPick.items = menu;
@@ -240,6 +222,11 @@ class CommandMenu extends Extension {
 		quickPick.matchOnDetail = false;
 		quickPick.matchOnDescription = false;
 
+		/**
+		 * コマンドを実行する
+		 * @param label 入力された文字列
+		 * @return true 実行した
+		 */
 		let exec = (label: string): boolean => {
 			let len = label.length;
 			if (!len) {
@@ -267,7 +254,9 @@ class CommandMenu extends Extension {
 			return true;
 		};
 
-		/** */
+		/**
+		 * 入力文字列が変更された処理
+		 */
 		quickPick.onDidChangeValue((e: string) => {
 			if (exec(e.toUpperCase())) {
 				quickPick.hide();

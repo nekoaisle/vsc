@@ -62,7 +62,7 @@ export class PathInfo {
 	 * ファイルが存在するか調べる
 	 * @param path 調べるファイルの名前
 	 */
-	public isExistsFile(param?: PathInfoArgs): boolean {
+	public isExistsFile(param: PathInfoArgs): boolean {
 		// ファイル名を作成
 		let path = this.getFileName(param.ext, param.dir);
 

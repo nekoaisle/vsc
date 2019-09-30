@@ -31,7 +31,7 @@ export interface EditReplace {
  * 拡張機能基本クラス
  */
 export class Extension {
-	protected config: vscode.WorkspaceConfiguration;
+	protected config: vscode.WorkspaceConfiguration | null = null;
 	protected extensionRoot: string;
 
 	/**
@@ -46,12 +46,12 @@ export class Extension {
 		this.extensionRoot = context.extensionPath;
 
 		// 設定の読み込み
-		if ( options.config ) {
+		if (options.config) {
 			this.config = vscode.workspace.getConfiguration(options.config);
 		}
 
 		// コマンドがあれば登録
-		if ( options.commands ) {
+		if (options.commands) {
 			this.registerCommands(context, options.commands);
 		}
 	}
@@ -63,9 +63,11 @@ export class Extension {
 	 * @return string 設定
 	 */
 	public getConfig<TYPE>(key: string, def: TYPE): TYPE {
-		let ret = this.config.get(key, def);
-		if (ret) {
-			return ret;
+		if (this.config) {
+			let ret = this.config.get(key, def);
+			if (ret) {
+				return ret;
+			}
 		}
 		return def;
 	}

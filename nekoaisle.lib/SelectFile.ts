@@ -55,8 +55,8 @@ export class SelectFile {
 
 			};
 			vscode.window.showQuickPick(files, popt)
-			.then((sel: string) => {
-				if ( !sel ) {
+			.then((sel: string | undefined) => {
+				if (!sel) {
 					// ファイルが指定されなかったときは完了(then()を実行)
 					resolve('');
 				} else {
