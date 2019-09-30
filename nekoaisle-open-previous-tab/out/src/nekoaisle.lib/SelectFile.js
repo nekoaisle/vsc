@@ -18,6 +18,7 @@ class SelectFile {
             let files;
             try {
                 files = fs.readdirSync(dirName)
+                    // ディレクトリ名の末尾に / を付ける
                     .map((name) => {
                     let statas = fs.statSync(path.join(dirName, name));
                     if (statas.isDirectory()) {
@@ -25,6 +26,7 @@ class SelectFile {
                     }
                     return name;
                 })
+                    // 並べ替える
                     .sort((a, b) => {
                     // ディレクトリーか調べる
                     let da = a.substr(-1) === '/';

@@ -19,7 +19,7 @@ export function deactivate() {
 interface ListItem {
     method?: string;
     path?: string;
-    options?: object;
+    options?: { [key: string]: any};
     link?: string;
 }
 

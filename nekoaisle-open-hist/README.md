@@ -1,65 +1,30 @@
-# nekoaisle-open-hist README
+# nekoaisle-open-hist
 
-This is the README for your extension "nekoaisle-open-hist". After writing up a brief description, we recommend including the following sections.
+## 機能
 
-## Features
+ファイルが閉じられる際にファイル名と現在のカーソル位置を記憶します。
+nekoaisle.openHist コマンドが実行されると上記で記憶したファイルの一覧を表示し選択したファイルを開きます。
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+* nekoaisle.openHist 過去に編集したことのあるファイルの一覧を表示、選択したファイルを開く。
+* nekoaisle.openHistCompensateDate 編集履歴中ですでに存在しないファイル名を除去します。
 
-For example if there is an image subfolder under your extension project workspace:
+## 設定
 
-\!\[feature X\]\(images/feature-x.png\)
+|設定名|機能|デフォルト値|
+|-|-|-|
+|nekoaisle-openHist.sort|ソート方法|modtime|
+|nekoaisle-openHist.sortDir|ソート方向|desc|
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+ソート方法
+|値|ソート方法|
+|-|-|
+|modtime| 最終更新日時|
+|filename| ファイル名|
+|pathname| パス名|
 
-## Requirements
+ソート方向
+|値|ソート方向|
+|-|-|
+|asc| 小さい順|
+|desc| 大きい順|
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**

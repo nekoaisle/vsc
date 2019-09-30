@@ -1,6 +1,7 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const fs = require("fs");
 const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
 /**
  * エクステンション活性化
@@ -25,14 +26,15 @@ class MyExtension extends nekoaisle_1.Extension {
      */
     constructor(context) {
         super(context, {
-            name: 'ここに編集したことのあるファイルを開く',
+            name: '編集したことのあるファイルを開く',
             config: 'nekoaisle-openHist',
             commands: [
                 {
                     command: 'nekoaisle.openHist',
-                    callback: () => {
-                        this.exec();
-                    }
+                    callback: () => { this.exec(); }
+                }, {
+                    command: 'nekoaisle.openHistCompensateDate',
+                    callback: () => { this.compensateDate(); }
                 }
             ]
         });
@@ -122,6 +124,8 @@ class MyExtension extends nekoaisle_1.Extension {
         }
         // 現在の行番号を設定
         item.lineNo = this.lineNos[pinfo.path];
+        // 現在時刻を設定
+        item.lastDate = new nekoaisle_1.DateInfo().ymdhis;
         // 履歴を保存
         this.saveHistFile(list);
     }
@@ -135,32 +139,86 @@ class MyExtension extends nekoaisle_1.Extension {
             return;
         }
         // 履歴ファイルの読み込み
-        let list = this.loadHistFile();
+        let dic = this.loadHistFile();
+        let list = [];
+        for (let key in dic) {
+            list.push(dic[key]);
+        }
+        // ソート
+        let sortType = this.getConfig('sort', 'modtime');
+        let sortDir = (this.getConfig('sortDir', 'desc') === 'asc') ? 1 : -1;
+        // modtime: 最終更新日時
+        // filename: ファイル名
+        // pathname: パス名
+        switch (sortType) {
+            // 最終更新日時
+            case 'modtime': {
+                list.sort(function (a, b) {
+                    let ret;
+                    if (a.lastDate < b.lastDate) {
+                        ret = -1;
+                    }
+                    else if (a.lastDate > b.lastDate) {
+                        ret = 1;
+                    }
+                    else {
+                        ret = 0;
+                    }
+                    return ret * sortDir;
+                });
+                break;
+            }
+            // ファイル名
+            case 'filename': {
+                // 大文字小文字を区別せずファイル名でソート
+                // ファイル名が同じならディレクトリー名でソート
+                list.sort(function (a, b) {
+                    let ret;
+                    let a1 = (`${a.baseName} ${a.dirName}`).toUpperCase();
+                    let b1 = (`${b.baseName} ${b.dirName}`).toUpperCase();
+                    if (a1 < b1) {
+                        ret = -1;
+                    }
+                    else if (a1 > b1) {
+                        ret = 1;
+                    }
+                    else {
+                        ret = 0;
+                    }
+                    return ret * sortDir;
+                });
+                break;
+            }
+            // パス名
+            case 'pathname': {
+                // 大文字小文字を区別せずパス名でソート
+                list.sort(function (a, b) {
+                    let ret;
+                    let a1 = (`${a.dirName}/${a.baseName}`).toUpperCase();
+                    let b1 = (`${b.dirName}/${b.baseName}`).toUpperCase();
+                    if (a1 < b1) {
+                        ret = -1;
+                    }
+                    else if (a1 > b1) {
+                        ret = 1;
+                    }
+                    else {
+                        ret = 0;
+                    }
+                    return ret * sortDir;
+                });
+                break;
+            }
+        }
         // メニューを作成
         let menu = [];
-        for (let key in list) {
-            let item = list[key];
+        for (let item of list) {
             menu.push({
                 label: item.baseName,
                 // detail: key,
                 description: item.dirName
             });
         }
-        // 大文字小文字を区別せずファイル名でソート
-        // ファイル名が同じならディレクトリー名でソート
-        menu.sort(function (a, b) {
-            let a1 = (a.label + a.description).toUpperCase();
-            let b1 = (b.label + b.description).toUpperCase();
-            if (a1 < b1) {
-                return -1;
-            }
-            else if (a1 > b1) {
-                return 1;
-            }
-            else {
-                return 0;
-            }
-        });
         // メニュー選択
         let options = {
             placeHolder: '選択してください。',
@@ -176,12 +234,68 @@ class MyExtension extends nekoaisle_1.Extension {
             let file = `${sel.description}/${sel.label}`;
             // ファイルを開く
             vscode.workspace.openTextDocument(file).then((doc) => {
+                // ファイルが開いた
                 vscode.window.showTextDocument(doc).then((editor) => {
-                    let pos = new vscode.Position(list[file].lineNo, 0);
+                    // 表示された
+                    let pos = new vscode.Position(dic[file].lineNo, 0);
                     editor.selection = new vscode.Selection(pos, pos);
                 });
             });
         });
+    }
+    /**
+     * 日付を補完する
+     */
+    compensateDate() {
+        let hists = this.loadHistFile();
+        let makes = {};
+        let mods = 0; // 変更数
+        let dels = 0; // 削除
+        for (let key in hists) {
+            let hist = hists[key];
+            // ファイル名を復元
+            let fileName = `${hist.dirName}/${hist.baseName}`;
+            // ファイル情報を取得
+            if (fs.existsSync(fileName)) {
+                // 存在する
+                if (!hist.lastDate) {
+                    // 最終更新日時が記録されていない
+                    // ファイル情報を取得
+                    let stat = fs.statSync(fileName);
+                    // 最終更新日時取得
+                    let mtime = new nekoaisle_1.DateInfo(stat.mtime);
+                    // 設定
+                    hist.lastDate = mtime.format('%Y/%M/%D %H:%I:%S');
+                    // 保存
+                    makes[fileName] = hist;
+                    // 更新数をカウントアップ
+                    ++mods;
+                }
+            }
+            else {
+                // ファイルが存在しない
+                ++dels;
+            }
+        }
+        let messs = [];
+        if (mods) {
+            let cnt = nekoaisle_1.Util.formatNumber(mods);
+            messs.push(`${cnt}個のファイルの最終更新日を設定しました。`);
+        }
+        if (dels) {
+            let cnt = nekoaisle_1.Util.formatNumber(dels);
+            messs.push(`${cnt}個のファイルが見つかりませんでした。`);
+        }
+        let mess;
+        if (messs.length > 0) {
+            // 変更されているので保存
+            this.saveHistFile(makes);
+            mess = messs.join("\n");
+        }
+        else {
+            mess = '最終更新日時の設定されていないファイルはありませんでした。';
+        }
+        nekoaisle_1.Util.putMess(mess);
     }
 }
 //# sourceMappingURL=extension.js.map

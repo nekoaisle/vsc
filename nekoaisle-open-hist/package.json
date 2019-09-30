@@ -11,6 +11,7 @@
 	],
 	"activationEvents": [
 		"onCommand:nekoaisle.openHist",
+		"onCommand:nekoaisle.openHistCompensateDate",
 		"*"
 	],
 	"main": "./out/extension.js",
@@ -18,7 +19,10 @@
 		"commands": [
 			{
 				"command": "nekoaisle.openHist",
-				"title": "Open file from history"
+				"title": "nekoaisle.openHist 編集したことのあるファイルを開く"
+			},{
+				"command": "nekoaisle.openHistCompensateDate",
+				"title": "nekoaisle.openHistCompensateDate ファイル編集履歴の修正"
 			}
 		]
 	},
@@ -36,8 +40,11 @@
 		"@types/vscode": "^1.37.0",
 		"glob": "^7.1.4",
 		"mocha": "^6.1.4",
-		"typescript": "^3.3.1",
 		"tslint": "^5.12.1",
+		"typescript": "^3.6.3",
 		"vscode-test": "^1.0.2"
+	},
+	"dependencies": {
+		"tsutils": "^3.17.1"
 	}
 }

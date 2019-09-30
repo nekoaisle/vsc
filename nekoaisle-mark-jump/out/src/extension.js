@@ -54,9 +54,7 @@ class MyExtension extends nekoaisle_1.Extension {
                 // カーソル位置を記憶
                 {
                     command: 'nekoaisle.markjumpMark',
-                    callback: () => {
-                        this.markCursor();
-                    }
+                    callback: () => { this.markCursor(); }
                 },
                 // 記憶した位置にジャンプ
                 {
@@ -72,6 +70,7 @@ class MyExtension extends nekoaisle_1.Extension {
         });
         // ファイル名ごとのマークした位置
         this.data = {};
+        this.attachedDecorations = [];
         // イベントハンドラーを登録
         let subscriptions = [];
         vscode.window.onDidChangeTextEditorSelection(this.onChangeSelection, this, subscriptions);
@@ -119,10 +118,22 @@ class MyExtension extends nekoaisle_1.Extension {
     }
     // カーソル位置を記憶
     markCursor() {
+        let editor = vscode.window.activeTextEditor;
         // このファイルのデータを取得
         let data = this.getData();
         // 現在位置を記憶
         data.mark = this.getCsrPos();
+        // 前回設定した装飾をクリア
+        for (let deco of this.attachedDecorations) {
+            deco.dispose();
+        }
+        this.attachedDecorations = [];
+        // レンジを作成
+        let ranges = [new vscode.Range(data.mark, data.mark)];
+        // 装飾を設定
+        let deco = nekoaisle_1.Util.setRuler(ranges, 'blue', 'Left');
+        // 今回設定した装飾を記憶
+        this.attachedDecorations.push(deco);
     }
     // カーソル位置にジャンプ
     jumpMark() {

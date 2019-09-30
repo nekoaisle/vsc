@@ -14,6 +14,7 @@ class Extension {
      */
     constructor(context, options) {
         //		console.log(`${options.name} が起動しました。`);
+        this.config = null;
         // この拡張機能が格納されているディレクトリ名
         this.extensionRoot = context.extensionPath;
         // 設定の読み込み
@@ -32,9 +33,11 @@ class Extension {
      * @return string 設定
      */
     getConfig(key, def) {
-        let ret = this.config.get(key, def);
-        if (ret) {
-            return ret;
+        if (this.config) {
+            let ret = this.config.get(key, def);
+            if (ret) {
+                return ret;
+            }
         }
         return def;
     }
