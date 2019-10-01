@@ -19,22 +19,28 @@
     ],
     "main": "./out/src/extension",
     "contributes": {
-        "commands": [{
-            "command": "nekoaisle.openFile",
-            "title": "Open existing file"
-        },{
-            "command": "nekoaisle.openRelated",
-            "title": "Open related file"
-        },{
-            "command": "nekoaisle.openNew",
-            "title": "Open new file"
-        },{
-            "command": "nekoaisle.openTemp",
-            "title": "Open temp file"
-        },{
-            "command": "nekoaisle.insertFile",
-            "title": "Insert file at cursor position"
-        }],
+        "commands": [
+            {
+                "command": "nekoaisle.openFile",
+                "title": "Open existing file"
+            },
+            {
+                "command": "nekoaisle.openRelated",
+                "title": "Open related file"
+            },
+            {
+                "command": "nekoaisle.openNew",
+                "title": "Open new file"
+            },
+            {
+                "command": "nekoaisle.openTemp",
+                "title": "Open temp file"
+            },
+            {
+                "command": "nekoaisle.insertFile",
+                "title": "Insert file at cursor position"
+            }
+        ],
         "configuration": {
             "type": "object",
             "title": "nekoaisle: Insert Code configuration",
@@ -59,10 +65,14 @@
         "test": "node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
-        "typescript": "^2.0.3",
-        "vscode": "^1.0.0",
-        "mocha": "^2.3.3",
+        "@types/mocha": "^2.2.32",
         "@types/node": "^6.0.40",
-        "@types/mocha": "^2.2.32"
+        "mocha": "^6.2.1",
+        "typescript": "^2.0.3",
+        "vscode": "^1.1.36"
+    },
+    "dependencies": {
+        "iconv-lite": "^0.5.0",
+        "jschardet": "^2.1.0"
     }
 }

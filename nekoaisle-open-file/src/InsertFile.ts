@@ -77,7 +77,7 @@ class InsertFile extends Extension {
 					}
 				});
 			}
-        });
+		});
 	}
 }
 
