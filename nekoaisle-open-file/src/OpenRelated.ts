@@ -9,7 +9,7 @@ class OpenRelated extends Extension {
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
 			name: '現在のファイルと対になるファイルを開く',
-			config: 'openRelated',
+			config: 'nekoaisle-openRelated',
 			commands: [
 				{
 					command: 'nekoaisle.openRelated',

@@ -13,7 +13,7 @@ class OpenNew extends Extension {
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
 			name: 'ファイル名を指定して新規ファイルを開く',
-			config: 'openNew',
+			config: 'nekoaisle-openNew',
 			commands: [
 				{
 					command: 'nekoaisle.openNew',

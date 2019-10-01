@@ -12,7 +12,7 @@ class OpenFile extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: 'テンポラリーファイルを開く',
-            config: 'openTemp',
+            config: 'nekoaisle-openTemp',
             commands: [
                 {
                     command: `nekoaisle.openTemp`,

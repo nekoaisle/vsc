@@ -1,0 +1,157 @@
+[
+  {
+    "label": "/",
+    "description": "ドキュメントをフォーマット",
+    "command": "editor.action.formatDocument"
+  },
+  {
+    "label": "[",
+    "description": "対応するタグにジャンプ" ,
+    "command": "editor.emmet.action.matchTag",
+    "languageID": "html"
+
+  },
+  {
+    "label": "\\",
+    "description": "文字コードを変更",
+    "command": "workbench.action.editor.changeEncoding"
+  },
+  {
+    "label": "]",
+    "description": "対応するカッコへジャンプ",
+    "command": "editor.action.jumpToBracket"
+  },
+  {
+    "label": "C",
+    "description": "ターミナルにカーソルを移動",
+    "command": "workbench.action.terminal.focus"
+  },
+  {
+    "label": "E",
+    "description": "変換メニューを開く",
+    "command": "nekoaisle.encode"
+  },
+  {
+    "label": "F",
+    "description": "ファイルを開く",
+    "command": "nekoaisle.openFile"
+  },
+  {
+    "label": "H",
+    "description": "関連ファイルを開く",
+    "command": "nekoaisle.openRelated"
+  },
+  {
+    "label": "I",
+    "description": "定型文を挿入",
+    "command": "nekoaisle.insertCode"
+  },
+  {
+    "label": "K",
+    "description": "過去に開いことのあるファイルを開く",
+    "command": "nekoaisle.openHist"
+  },
+  {
+    "label": "L",
+    "description": "ファイルを挿入",
+    "command": "nekoaisle.insertFile"
+  },
+  {
+    "label": "O",
+    "description": "ファイル選択ダイアログ",
+    "command": "workbench.action.files.openFile"
+  },
+  {
+    "label": "P",
+    "description": "CPSS ウィザード",
+    "command": "nekoaisle.cpssWizard"
+  },
+  {
+    "label": "Q",
+    "description": "現在のエディタを閉じる",
+    "command": "workbench.action.closeActiveEditor"
+  },
+  {
+    "label": "R",
+    "description": "直前のカーソル位置にジャンプ",
+    "command": "nekoaisle.markjumpReturn"
+  },
+  {
+    "label": "S",
+    "description": "行ソート",
+    "command": "editor.action.sortLinesAscending"
+  },
+  {
+    "label": "T",
+    "description": "タグジャンプ",
+    "command": "nekoaisle.openTag"
+  },
+  {
+    "label": "W",
+    "description": "一時ファイルを開く",
+    "command": "nekoaisle.openTemp"
+  },
+  {
+    "label": "X",
+    "description": "ファイラーを開く",
+    "command": "nekoaisle.openFiler"
+  },
+  {
+    "label": "1〜9",
+    "description": "行ジャンプ"
+  },
+  {
+    "label": "1",
+    "description": "行ジャンプ",
+    "command": "nekoaisle.jumpToLineNumber1",
+    "hide": true
+  },
+  {
+    "label": "2",
+    "description": "行ジャンプ",
+    "command": "nekoaisle.jumpToLineNumber2",
+    "hide": true
+  },
+  {
+    "label": "3",
+    "description": "行ジャンプ",
+    "command": "nekoaisle.jumpToLineNumber3",
+    "hide": true
+  },
+  {
+    "label": "4",
+    "description": "行ジャンプ",
+    "command": "nekoaisle.jumpToLineNumber4",
+    "hide": true
+  },
+  {
+    "label": "5",
+    "description": "行ジャンプ",
+    "command": "nekoaisle.jumpToLineNumber5",
+    "hide": true
+  },
+  {
+    "label": "6",
+    "description": "行ジャンプ",
+    "command": "nekoaisle.jumpToLineNumber6",
+    "hide": true
+  },
+  {
+    "label": "7",
+    "description": "行ジャンプ",
+    "command": "nekoaisle.jumpToLineNumber7",
+    "hide": true
+  },
+  {
+    "label": "8",
+    "description": "行ジャンプ",
+    "command": "nekoaisle.jumpToLineNumber8",
+    "hide": true
+  },
+  {
+    "label": "9",
+    "description": "行ジャンプ",
+    "command": "nekoaisle.jumpToLineNumber9",
+    "hide": true
+  }
+]

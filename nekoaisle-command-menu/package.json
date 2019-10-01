@@ -17,9 +17,20 @@
 		"commands": [
 			{
 				"command": "nekoaisle.commandMenu",
-				"title": "Command Menu"
+				"title": "nekoaisle.commandMenu メニューからコマンドを選んで実行"
 			}
-		]
+		],
+		"configuration": {
+			"type": "object",
+			"title": "neko: コマンドメニュー設定",
+			"properties": {
+				"nekoaisle-commandMenu.menu": {
+					"type": "array",
+					"default": null,
+					"description": "メニューアイテム配列"
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -35,7 +46,6 @@
 		"@types/vscode": "^1.38.0",
 		"glob": "^7.1.4",
 		"mocha": "^6.1.4",
-		"tslint": "^5.20.0",
 		"typescript": "^3.3.1",
 		"vscode-test": "^1.2.0"
 	}

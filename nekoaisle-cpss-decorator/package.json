@@ -17,11 +17,11 @@
     "contributes": {
         "commands": [{
             "command": "nekoaisle.cpssDecoratorRefresh",
-            "title": "nekoaisle: CPSS Decorator: Refresh loaded design and highlight."
+            "title": "nekoaisle.cpssDecoratorRefresh デザインのリロード"
         }],
         "configuration": {
             "type": "object",
-            "title": "Insert Code configuration",
+            "title": "CPSS用HTMLデコレータ",
             "properties": {
                 "cpssDecorator.dataDir": {
                     "type": "string",

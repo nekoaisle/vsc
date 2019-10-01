@@ -37,131 +37,6 @@ class CommandMenu extends Extension {
 		});
 	}
 
-	static defaults: ListItem[] = [
-		{
-			label: "/: ドキュメントをフォーマット",
-			command: "editor.action.formatDocument"
-		},
-		{
-			label: "[: 対応するタグにジャンプ" ,
-			command: "editor.emmet.action.matchTag",
-			languageID: "html",
-
-		},
-		{
-			label: "\\: 文字コードを変更",
-			command: "workbench.action.editor.changeEncoding"
-		},
-		{
-			label: "]: 対応するカッコへジャンプ",
-			command: "editor.action.jumpToBracket"
-		},
-		{
-			label: "C: ターミナルにカーソルを移動",
-			command: "workbench.action.terminal.focus"
-		},
-		{
-			label: "E: 変換メニューを開く",
-			command: "nekoaisle.encode"
-		},
-		{
-			label: "F: ファイルを開く",
-			command: "workbench.action.files.openFile"
-		},
-		{
-			label: "H: 関連ファイルを開く",
-			command: "nekoaisle.openRelated"
-		},
-		{
-			label: "I: 定型文を挿入",
-			command: "nekoaisle.insertCode"
-		},
-		{
-			label: "K: 過去に開いことのあるファイルを開く",
-			command: "nekoaisle.openHist"
-		},
-		{
-			label: "L: ファイルを挿入",
-			command: "nekoaisle.insertFile"
-		},
-		{
-			label: "P: CPSS ウィザード",
-			command: "nekoaisle.cpssWizard"
-		},
-		{
-			label: "Q: 現在のエディタを閉じる",
-			command: "workbench.action.closeActiveEditor"
-		},
-		{
-			label: "R: 直前のカーソル位置にジャンプ",
-			command: "nekoaisle.markjumpReturn"
-		},
-		{
-			label: "S: 行ソート",
-			command: "editor.action.sortLinesAscending"
-		},
-		{
-			label: "T: タスクを実行",
-			command: "workbench.action.tasks.runTask"
-		},
-		{
-			label: "W: 一時ファイルを開く",
-			command: "nekoaisle.openTemp"
-		},
-		{
-			label: "X: ファイラーを開く",
-			command: "nekoaisle.openFiler"
-		},
-		{
-			label: "1〜9: 行ジャンプ",
-		},
-		{
-			label: "1: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber1",
-			hide: true,
-		},
-		{
-			label: "2: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber2",
-			hide: true,
-		},
-		{
-			label: "3: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber3",
-			hide: true,
-		},
-		{
-			label: "4: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber4",
-			hide: true,
-		},
-		{
-			label: "5: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber5",
-			hide: true,
-		},
-		{
-			label: "6: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber6",
-			hide: true,
-		},
-		{
-			label: "7: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber7",
-			hide: true,
-		},
-		{
-			label: "8: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber8",
-			hide: true,
-		},
-		{
-			label: "9: 行ジャンプ",
-			command: "nekoaisle.jumpToLineNumber9",
-			hide: true,
-		},
-	];
-
 	/**
 	 * エントリー
 	 */
@@ -172,8 +47,11 @@ class CommandMenu extends Extension {
 		}
 		let editor = <vscode.TextEditor>vscode.window.activeTextEditor;
 
+		// デフォルトの読み込み
+		let fn = this.joinExtensionRoot("data/defaults.json");
+		let defaults = Util.loadFileJson(fn);
 		// コマンドの読み込み
-		let menuInfo: ListItem[] = this.getConfig('menu', CommandMenu.defaults);
+		let menuInfo: ListItem[] = this.getConfig('menu', defaults);
 
 		// メニューを作成
 		let menu: vscode.QuickPickItem[] = [];
@@ -184,6 +62,7 @@ class CommandMenu extends Extension {
 				continue;
 			}
 			if (item.languageID) {
+				// 言語が限定されている
 				if (typeof item.languageID === 'string') {
 					if (langID !== item.languageID) {
 						// 言語が違うのでメニューから除外
@@ -203,6 +82,7 @@ class CommandMenu extends Extension {
 					}
 				}
 			}
+			// メニューに設定
 			menu.push({
 				label: item.label,
 				description: item.description,
@@ -224,32 +104,43 @@ class CommandMenu extends Extension {
 
 		/**
 		 * コマンドを実行する
+		 * ２箇所で使うのでサブルーチン化
 		 * @param label 入力された文字列
 		 * @return true 実行した
 		 */
 		let exec = (label: string): boolean => {
+			// 入力された文字の長さを取得
 			let len = label.length;
 			if (!len) {
 				return false;
 			}
 
-			let sel: ListItem | null = null;
+			// 文字列が一致するものをピックアップ
+			let sels: ListItem[] = [];
 			for (let item of menuInfo) {
 				if (!item.command) {
 					// コマンドなしは無視
 					continue;
 				}
+				// 各メニューの先頭を比較
 				if (item.label.substr(0, len) === label) {
-					sel = item;
+					// 一致した
+					sels.push(item);
 				}
 			}
-			if (!sel) {
-				return false;
-			}
-			if (!sel.command) {
+
+			if (sels.length !== 1) {
+				// 一致しないか複数一致した
 				return false;
 			}
 
+			let sel = sels[0];
+			if (!sel.command) {
+				// コマンドがない
+				return false;
+			}
+			
+			// 存在したので実行
 			vscode.commands.executeCommand(sel.command, sel.args);
 			return true;
 		};
@@ -258,7 +149,9 @@ class CommandMenu extends Extension {
 		 * 入力文字列が変更された処理
 		 */
 		quickPick.onDidChangeValue((e: string) => {
-			if (exec(e.toUpperCase())) {
+			e = this.zenToHan(e);
+			e = e.toUpperCase();
+			if (exec(e)) {
 				quickPick.hide();
 			}
 		});
@@ -284,6 +177,38 @@ class CommandMenu extends Extension {
 
 		// 開く
 		quickPick.show();
+	}
+
+	public zenToHan(zen: string): string {
+		// 変換辞書
+		const zenHanDic: {[key: string]: string} = {
+			"０": "0", "１": "1", "２": "2", "３": "3", "４": "4",
+			"５": "5", "６": "6", "７": "7", "８": "8", "９": "9",
+			"ａ": "a", "ｂ": "b", "ｃ": "c", "ｄ": "d", "ｅ": "e", "ｆ": "f",
+			"ｇ": "g", "ｈ": "h", "ｉ": "i", "ｊ": "j", "ｋ": "k", "ｌ": "l",
+			"ｍ": "m", "ｎ": "n", "ｏ": "o", "ｐ": "p", "ｑ": "q", "ｒ": "r",
+			"ｓ": "s", "ｔ": "t", "ｕ": "u", "ｖ": "v", "ｗ": "w", "ｘ": "x",
+			"ｙ": "y", "ｚ": "z",
+			"ー": "-", "＾": "^", "￥": "\\", "＠": "@", "「": "[", "；": ";",
+			"：": ":", "」": "]", "、": ",", "。": ".", "・": "/", "＿": "_",
+			"！": "!", "”": "\"", "＃": "#", "＄": "$", "％": "%", "＆": "&", 
+			"’": "'", "（": "(", "）": ")", "＝": "=", "〜": "~", "｜": "|",
+			"｀": "`", "｛": "{", "＋": "+", "＊": "*", "｝": "}", "＜": "<",
+			"＞": ">", "？": "?",
+			"あ": "a", "い": "i", "う": "u", "え": "e", "お": "o",
+		}
+
+		let han = '';
+		for (let i = 0; i < zen.length; ++i) {
+			let c = zen.charAt(i);
+			if (zenHanDic[c]) {
+				han += zenHanDic[c];
+			} else {
+				// 辞書にないのでそのまま
+				han += c;
+			}
+		}
+		return han;
 	}
 
 }

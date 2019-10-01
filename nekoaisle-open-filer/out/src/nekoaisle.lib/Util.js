@@ -6,6 +6,7 @@ const os = require("os");
 const fs = require("fs");
 const path = require("path");
 const url = require("url");
+// import { Extension } from './Extension';
 const PathInfo_1 = require("./PathInfo");
 var Util;
 (function (Util) {
@@ -147,12 +148,21 @@ var Util;
     }
     Util.padNum = padNum;
     /**
+     * 数値を , 区切り文字列に変換
+     * @param val 数値
+     */
+    function formatNumber(val) {
+        let nf = Intl.NumberFormat();
+        return nf.format(val);
+    }
+    Util.formatNumber = formatNumber;
+    /**
      * 指定文字コードの文字種を取得
      * @param c 調べる文字コード
      */
     function getCharType(c) {
         let s = String.fromCharCode(c);
-        if ((c == 0x20) || (c == 9)) {
+        if ((c === 0x20) || (c === 9)) {
             // 空白
             return 1;
         }
@@ -181,7 +191,7 @@ var Util;
      */
     function encodeHtml(s) {
         return s.replace(/[&\'`"<>\s]/g, function (match) {
-            return {
+            const dic = {
                 '&': '&amp;',
                 "'": '&#x27;',
                 '`': '&#x60;',
@@ -192,12 +202,14 @@ var Util;
                 '\r\n': '<br />\r\n',
                 '\r': '<br />\r',
                 '\n': '<br />\n',
-            }[match];
+            };
+            return dic[match];
         });
     }
     Util.encodeHtml = encodeHtml;
     function decodeHtml(s) {
-        return s.replace(/&lt;/g, '<')
+        return s
+            .replace(/&lt;/g, '<')
             .replace(/&gt;/g, '>')
             .replace(/&quot;/g, '"')
             .replace(/&#039;/g, '\'')
@@ -224,12 +236,12 @@ var Util;
         let line = editor.document.lineAt(pos.line).text;
         let s = pos.character;
         let t = Util.getCharType(line.charCodeAt(s)); // カーソル位置の文字タイプ
-        while ((s > 0) && (t == Util.getCharType(line.charCodeAt(s - 1)))) {
+        while ((s > 0) && (t === Util.getCharType(line.charCodeAt(s - 1)))) {
             --s;
         }
         // 単語の終わりを探す
         let e = s;
-        while ((e < line.length) && (t == Util.getCharType(line.charCodeAt(e)))) {
+        while ((e < line.length) && (t === Util.getCharType(line.charCodeAt(e)))) {
             ++e;
         }
         let start = new vscode.Position(pos.line, s);
@@ -273,11 +285,11 @@ var Util;
      */
     function changeCharCase(c, mode) {
         let cas = getCharCase(c);
-        if (cas != '') {
+        if (cas !== '') {
             // 変換対象文字
-            if ((mode == 'togge') || (mode != cas)) {
+            if ((mode === 'togge') || (mode !== cas)) {
                 // トグルは必ず、それ以外は現在と違う時変換
-                if (cas == 'lower') {
+                if (cas === 'lower') {
                     // 小文字なので大文字に変換
                     c = c.toLocaleUpperCase();
                 }
@@ -311,9 +323,9 @@ var Util;
      * @returns string スネークケース文字列
      */
     function toSnakeCase(...args) {
-        let ary /*: string[]*/ = [];
+        let ary = [];
         for (let val of args) {
-            if (getClassName(val) == 'Array') {
+            if (getClassName(val) === 'Array') {
                 // 配列なら再起呼び出し
                 ary = ary.concat(toSnakeCase(val));
             }
@@ -490,6 +502,9 @@ var Util;
      */
     function loadFileJson(fileName) {
         let source = Util.loadFile(fileName);
+        if (!source) {
+            return null;
+        }
         return decodeJson(source);
     }
     Util.loadFileJson = loadFileJson;
@@ -551,7 +566,7 @@ var Util;
         // すでに開いていればそれをアクティブに
         for (let doc of vscode.workspace.textDocuments) {
             let fn = doc.fileName;
-            if (doc.fileName == fileName) {
+            if (doc.fileName === fileName) {
                 vscode.window.showTextDocument(doc);
                 return true;
             }
@@ -579,7 +594,7 @@ var Util;
      */
     function normalizeHome(name) {
         // ディレクトリ名が ~ で始まるときは環境変数 $HOME に置き換える
-        if (name.substr(0, 1) == '~') {
+        if (name.substr(0, 1) === '~') {
             name = path.join(getHomeDir(), name.substr(1));
         }
         return name;
@@ -610,7 +625,6 @@ var Util;
         return name;
     }
     Util.normalizePath = normalizePath;
-    ;
     /**
      * 指定ドキュメントのファイル名の拡張子を取得
      * @param doc ture を指定すると先頭の . を除去します
@@ -649,7 +663,7 @@ var Util;
             case 'Center': return vscode.OverviewRulerLane.Center;
             case 'Right': return vscode.OverviewRulerLane.Right;
             case 'Full': return vscode.OverviewRulerLane.Full;
-            default: return null;
+            default: return undefined;
         }
     }
     Util.strToOverviewRulerLane = strToOverviewRulerLane;
@@ -667,5 +681,30 @@ var Util;
         }
     }
     Util.strToDecorationRangeBehavior = strToDecorationRangeBehavior;
+    /**
+     * ルーラーを設定
+     * @param ranges ルーラーを設定する範囲
+     * @param color 色を示す文字列
+     * @param lane レーンを示す文字列 Left|Center|Right|Full
+     * @param editor 設定するエディター
+     * @return 今回設定した装飾タイプ
+     */
+    function setRuler(ranges, color, lane, editor) {
+        // 装飾を作成
+        let deco = vscode.window.createTextEditorDecorationType({
+            overviewRulerColor: color,
+            overviewRulerLane: strToOverviewRulerLane(lane),
+        });
+        // 装飾を設定
+        if (!editor) {
+            editor = vscode.window.activeTextEditor;
+        }
+        if (editor) {
+            editor.setDecorations(deco, ranges);
+        }
+        // 今回設定した装飾タイプを返す
+        return deco;
+    }
+    Util.setRuler = setRuler;
 })(Util = exports.Util || (exports.Util = {}));
 //# sourceMappingURL=Util.js.map

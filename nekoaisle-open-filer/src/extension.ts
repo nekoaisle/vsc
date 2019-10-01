@@ -19,7 +19,7 @@ class OpenFiler extends Extension {
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
 			name: 'Open Filer',
-			config: 'openFiler',		// 通常はコマンドのサフィックス
+			config: 'nekoaisle-openFiler',		// 通常はコマンドのサフィックス
 			commands: [
 				{
 					command: 'nekoaisle.openFiler',	// コマンド
@@ -36,7 +36,7 @@ class OpenFiler extends Extension {
 	 */
 	public exec() {
 		// settings.json からファイラーの名前を取得
-		let filer = this.getConfig('nekoaisle.filer', 'nautilus -s');
+		let filer = this.getConfig('filer', 'nautilus -s');
 
 		//ドキュメントを取得
 		let editor = vscode.window.activeTextEditor;

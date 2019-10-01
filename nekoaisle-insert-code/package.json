@@ -17,30 +17,35 @@
     "main": "./out/src/extension",
     "contributes": {
         "commands": [{
-            "command": "nekoaisle.insertCode",
-            "title": "nekoaisle: Insert Code"
+            "command": "nekoaisle-insertCode",
+            "title": "nekoaisle-insertCode テンプレートを選んでコードを挿入"
         }, {
-            "command": "nekoaisle.insertCode.pinfoBase",
-            "title": "nekoaisle: Insert base name"
+            "command": "nekoaisle-insertCode.pinfoBase",
+            "title": "nekoaisle-insertCode.pinfoBase 現在編集中のファイルのベース名をカーソル位置に挿入"
         }],
         "configuration": {
             "type": "object",
-            "title": "nekoaisle: Insert Code configuration",
+            "title": "neko: Insert Code configuration",
             "properties": {
-                "insertCode.tempDir": {
+                "nekoaisle-insertCode.tempDir": {
                     "type": "string",
                     "default": "",
                     "description": "テンプレートファイルが格納されているディレクトリを指定してください。"
                 },
-                "insertCode.author": {
+                "nekoaisle-insertCode.author": {
                     "type": "string",
                     "default": "",
                     "description": "ファイルを作成する人の名前を指定してください。"
                 },
-                "insertCode.autoIndent": {
+                "nekoaisle-insertCode.copyright": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Copyrigths表記を指定してください。"
+                },
+                "nekoaisle-insertCode.autoIndent": {
                     "type": "boolean",
                     "default": "",
-                    "description": "オートインデントのデフォル値"
+                    "description": "オートインデントのデフォル値を指定してください。"
                 }
             }
         }

@@ -17,7 +17,7 @@ class InsertCode extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: 'Insert Code',
-            config: 'insertCode',
+            config: 'nekoaisle-insertCode',
             commands: [{
                     command: 'nekoaisle.insertCode',
                     callback: () => { this.entry(); }
@@ -55,14 +55,14 @@ class InsertCode extends nekoaisle_1.Extension {
             'xml': '.xml',
         };
         /* 静的文字列
-            keybindings.json に下記を書いたのと同等
-            ,
-            {
-                "key": "ctrl+enter",
-                "command": "type",
-                "args": { "text": "<br />" },
-                "when": "editorTextFocus && !editorReadonly && editorLangId == 'html'"
-            }
+          keybindings.json に下記を書いたのと同等
+          ,
+          {
+            "key": "ctrl+enter",
+            "command": "type",
+            "args": { "text": "<br />" },
+            "when": "editorTextFocus && !editorReadonly && editorLangId == 'html'"
+          }
         */
         this.mStatic = {
             br: "<br />",

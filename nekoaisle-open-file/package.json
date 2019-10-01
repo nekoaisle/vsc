@@ -1,78 +1,100 @@
 {
-    "name": "open-file",
-    "displayName": "Open File",
-    "description": "新規・既存・関連・一時ファイルを開く",
-    "version": "0.0.1",
-    "publisher": "nekoaisle",
-    "engines": {
-        "vscode": "^1.14.0"
-    },
-    "categories": [
-        "Other"
+  "name": "open-file",
+  "displayName": "Open File",
+  "description": "新規・既存・関連・一時ファイルを開く",
+  "version": "0.0.1",
+  "publisher": "nekoaisle",
+  "engines": {
+    "vscode": "^1.14.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:nekoaisle.openFile",
+    "onCommand:nekoaisle.openRelated",
+    "onCommand:nekoaisle.openNew",
+    "onCommand:nekoaisle.openTemp",
+    "onCommand:nekoaisle.insertFile",
+    "onCommand:nekoaisle.openHist",
+    "onCommand:nekoaisle.openHistCompensateDate",
+    "onCommand:nekoaisle.openTag",
+    "onCommand:nekoaisle.findOpen"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "nekoaisle.openFile",
+        "title": "nekoaisle.openFile 既存ファイルを開きます。"
+      },{
+        "command": "nekoaisle.openRelated 関連ファイルを開きます。",
+        "title": "nekoaisle.openRelated "
+      },{
+        "command": "nekoaisle.openNew",
+        "title": "nekoaisle.openNew ファイルを新規作成して開きます。"
+      },{
+        "command": "nekoaisle.openTemp",
+        "title": "nekoaisle.openTemp 一時ファイルを開きます。"
+      },{
+        "command": "nekoaisle.insertFile",
+        "title": "nekoaisle.insertFile カーソル位置にファイルを挿入します。"
+      },{
+        "command": "nekoaisle.openHist",
+        "title": "nekoaisle.openHist 過去に編集したことのあるファイルを選択し開きます。"
+      },{
+        "command": "nekoaisle.openHistCompensateDate",
+        "title": "nekoaisle.openHistCompensateDate 編集履歴からすでに存在しないファイルを除去します。"
+      },{
+        "command": "nekoaisle.openTag",
+        "title": "nekoaisle.openTag タグジャンプ"
+      },{
+        "command": "nekoaisle.findOpen",
+        "title": "nekoaisle.findOpen 検索して開く"
+      }
     ],
-    "activationEvents": [
-        "onCommand:nekoaisle.openFile",
-        "onCommand:nekoaisle.openRelated",
-        "onCommand:nekoaisle.openNew",
-        "onCommand:nekoaisle.openTemp",
-        "onCommand:nekoaisle.insertFile"
-    ],
-    "main": "./out/src/extension",
-    "contributes": {
-        "commands": [
-            {
-                "command": "nekoaisle.openFile",
-                "title": "Open existing file"
-            },
-            {
-                "command": "nekoaisle.openRelated",
-                "title": "Open related file"
-            },
-            {
-                "command": "nekoaisle.openNew",
-                "title": "Open new file"
-            },
-            {
-                "command": "nekoaisle.openTemp",
-                "title": "Open temp file"
-            },
-            {
-                "command": "nekoaisle.insertFile",
-                "title": "Insert file at cursor position"
-            }
-        ],
-        "configuration": {
-            "type": "object",
-            "title": "nekoaisle: Insert Code configuration",
-            "properties": {
-                "openTemp.dir": {
-                    "type": "string",
-                    "default": "~/temp",
-                    "description": "一時ファイルを格納するディレクトリ名"
-                },
-                "openTemp.base": {
-                    "type": "string",
-                    "default": "temp",
-                    "description": "一時ファイルのベース名"
-                }
-            }
+    "configuration": {
+      "type": "object",
+      "title": "neko: ファイルオープン関連設定",
+      "properties": {
+        "nekoaisle-openTemp.dir": {
+          "type": "string",
+          "default": "~/temp",
+          "description": "一時ファイルを格納するディレクトリ名"
+        },
+        "nekoaisle-openTemp.base": {
+          "type": "string",
+          "default": "temp",
+          "description": "一時ファイルのベース名"
+        },
+        "nekoaisle-openHist.sort": {
+          "type": "string",
+          "default": "modtime",
+          "description": "ソート項目"
+        },
+        "nekoaisle-openHist.sortDir": {
+          "type": "array",
+          "default": [],
+          "description": "ソート方向"
         }
-    },
-    "scripts": {
-        "vscode:prepublish": "tsc -p ./",
-        "compile": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "node ./node_modules/vscode/bin/test"
-    },
-    "devDependencies": {
-        "@types/mocha": "^2.2.32",
-        "@types/node": "^6.0.40",
-        "mocha": "^6.2.1",
-        "typescript": "^2.0.3",
-        "vscode": "^1.1.36"
-    },
-    "dependencies": {
-        "iconv-lite": "^0.5.0",
-        "jschardet": "^2.1.0"
+      }
     }
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.32",
+    "@types/node": "^6.0.40",
+    "mocha": "^6.2.1",
+    "typescript": "^2.0.3",
+    "vscode": "^1.1.36"
+  },
+  "dependencies": {
+    "iconv-lite": "^0.5.0",
+    "jschardet": "^2.1.0"
+  }
 }

@@ -4,7 +4,7 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as url from 'url';
-import { Extension } from './Extension';
+// import { Extension } from './Extension';
 import { PathInfo } from './PathInfo';
 
 export module Util {
@@ -551,18 +551,136 @@ export module Util {
     return json;
   }
 
+  export interface SpritTagJumpNameResult {
+    filename: string;
+    lineNo?: number;
+  }
+  /**
+   * タグジャンプ文字列をファイル名と行番号に分解
+   * ex. 
+   * cpss/ope/abcd.php(123)
+   * cpss/ope/abcd.php (123)
+   * cpss/ope/abcd.php:123
+   * cpss/ope/abcd.php: 123
+   * 
+   * @param name タグジャンプ文字列
+   * @return タグジャンプ情報
+   */
+  export function spritTagJumpName(name: string): SpritTagJumpNameResult {
+    let result: SpritTagJumpNameResult = {
+      filename: '',
+    }
+    // ファイル名と行番号を分離
+    let res = [
+      /^(.*)\s*\(([0-9]+)\)$/,  // 末尾が "(123)" or " (123)"
+      /^(.*):\s*([0-9]+)$/,     // 末尾が ":123" or ": 123"
+    ];
+    let reg = null;
+    for (let re of res) {
+      reg = re.exec(name);
+      if (reg) {
+        // 一致した
+        break;
+      }
+    }
+    let line: number;
+    if (reg) {
+      // 行番号が指定された
+      result.filename = reg[1];
+      result.lineNo = parseInt(reg[2]);
+    } else {
+      result.filename = name;
+    }
+    
+    return result;
+  }
+
+  /**
+   * タグジャンプ
+   * @param value タグジャンプ文字列
+   * @param pinfo 相対パス情報
+   */
+  export function tagJump(value: string, cwd?: string) {
+    // ファイル名と行番号に分割
+    let tagJump = Util.spritTagJumpName(value);
+
+    // ファイル名を正規化
+    // 絶対パスならそのまま
+    // ~から始まるときは $HOME に置換
+    // 相対ディレクトリのときはこのファイルのディレクトリからの相対
+    tagJump.filename = Util.normalizePath(tagJump.filename, cwd);
+
+    // ファイルを開く
+    openFile(tagJump.filename, true, tagJump.lineNo);
+  }
+
+
+  export interface SetCursorOption {
+    x?: number;
+    y?: number;
+    pos?: vscode.Position,
+    range?: vscode.Range,
+  }
+
+  /**
+   * 指定エディターのカーソル位置を変更
+   * @param args カーソル位置情報
+   * @param editor エディター
+   */
+  export function setCursorPos(args: SetCursorOption, editor?: vscode.TextEditor) {
+    // エディターが省略されたらアクティブエディタ
+    if (!editor) {
+      editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+    }
+
+    // 現在のカーソル位置
+    let option = Util.cloneObject(args);
+
+    let range = option.range;
+    if (range === undefined) {
+      // レンジは指定されていない
+      let pos = option.pos;
+      if (pos === undefined) {
+        // x が省略されたら0
+        let x: number = (option.x !== undefined) ? option.x : 0;
+        // yが省略された現在行
+        let y: number = (option.y !== undefined) ? option.y : editor.selection.start.line;
+        // 位置を作成
+        pos = new vscode.Position(y, x);
+      }
+      // 範囲を作成
+      range = new vscode.Range(pos, pos);
+    }
+
+    editor.selection = new vscode.Selection(range.start, range.end);
+    editor.revealRange(range);
+  }
   /**
    * 指定ファイルを開く
    * create に true を指定するとファイルが存在しないときは作成する
    * @param fileName ファイル名
    * @param create true:新規作成する
+   * @param lineNo 開いた後にジャンプする行番号(1〜)
    */
-  export function openFile(fileName: string, create?: boolean): boolean {
+  export function openFile(fileName: string, create?: boolean, lineNo?: number): boolean {
+    if (lineNo) {
+      // カーソル位置は0〜
+      --lineNo;
+    }
+
     // すでに開いていればそれをアクティブに
     for (let doc of vscode.workspace.textDocuments) {
       let fn = doc.fileName;
       if (doc.fileName === fileName) {
-        vscode.window.showTextDocument(doc);
+        vscode.window.showTextDocument(doc).then((editor: vscode.TextEditor) => {
+          // 開いた
+          if (typeof lineNo === "number") {
+            setCursorPos({ y: lineNo }, editor);
+          }
+        });
         return true;
       }
     }
@@ -579,7 +697,12 @@ export module Util {
 
     // 新たに開く
     vscode.workspace.openTextDocument(fileName).then((doc: vscode.TextDocument) => {
-      return vscode.window.showTextDocument(doc);
+      vscode.window.showTextDocument(doc).then((editor: vscode.TextEditor) => {
+        // 開いた
+        if (typeof lineNo === "number") {
+          setCursorPos({ y: lineNo }, editor);
+        }
+      });
     });
 
     // 上記は非同期処理なのでファイルが開く前に true が返る
@@ -659,13 +782,13 @@ export module Util {
    * 文字列を OverviewRulerLaneのプロパティに変換
    * @param str OverviewRulerLane のプロパティ名
    */
-  export function strToOverviewRulerLane(str: string): vscode.OverviewRulerLane | null {
+  export function strToOverviewRulerLane(str: string): vscode.OverviewRulerLane | undefined {
       switch (str) {
           case 'Left': return vscode.OverviewRulerLane.Left;
           case 'Center': return vscode.OverviewRulerLane.Center;
           case 'Right': return vscode.OverviewRulerLane.Right;
           case 'Full': return vscode.OverviewRulerLane.Full;
-          default: return null;    
+          default: return undefined;
       }
   }
 
@@ -702,7 +825,9 @@ export module Util {
     if (!editor) {
       editor = vscode.window.activeTextEditor;
     }
-    editor.setDecorations(deco, ranges);
+    if (editor) {
+      editor.setDecorations(deco, ranges);
+    }
 
     // 今回設定した装飾タイプを返す
     return deco;

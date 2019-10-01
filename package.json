@@ -1,0 +1,52 @@
+{
+	"name": "nekoaisle-command-menu",
+	"displayName": "nekoaisle-command-menu",
+	"description": "Select a command from the menu and execute it",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.38.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:nekoaisle.commandMenu"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "nekoaisle.commandMenu",
+				"title": "nekoaisle.commandMenu メニューからコマンドを選んで実行"
+			}
+		],
+		"configuration": {
+			"type": "object",
+			"title": "nekoaisle: コマンドメニュー設定",
+			"properties": {
+				"nekoaisle-commandMenu.menu": {
+					"type": "array",
+					"default": [],
+					"description": "メニューアイテム配列"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.1.1",
+		"@types/mocha": "^5.2.6",
+		"@types/node": "^10.12.21",
+		"@types/vscode": "^1.38.0",
+		"glob": "^7.1.4",
+		"mocha": "^6.1.4",
+		"typescript": "^3.3.1",
+		"vscode-test": "^1.2.0"
+	}
+}

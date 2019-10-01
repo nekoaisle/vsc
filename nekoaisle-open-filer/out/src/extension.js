@@ -18,7 +18,7 @@ class OpenFiler extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: 'Open Filer',
-            config: 'openFiler',
+            config: 'nekoaisle-openFiler',
             commands: [
                 {
                     command: 'nekoaisle.openFiler',
@@ -34,7 +34,7 @@ class OpenFiler extends nekoaisle_1.Extension {
      */
     exec() {
         // settings.json からファイラーの名前を取得
-        let filer = this.getConfig('nekoaisle.filer', 'nautilus -s');
+        let filer = this.getConfig('filer', 'nautilus -s');
         //ドキュメントを取得
         let editor = vscode.window.activeTextEditor;
         // ファイル名を取得

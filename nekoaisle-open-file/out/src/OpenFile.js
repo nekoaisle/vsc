@@ -11,13 +11,11 @@ class OpenFile extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: 'メニューからファイルを選択して開く',
-            config: 'openFile',
+            config: 'nekoaisle-openFile',
             commands: [
                 {
                     command: 'nekoaisle.openFile',
-                    callback: () => {
-                        this.exec();
-                    }
+                    callback: () => { this.exec(); }
                 }
             ]
         });

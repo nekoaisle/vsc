@@ -5,6 +5,9 @@ import {Util} from './Util';
 
 /**
  * ファイル選択
+ * @param dirName ディレクトリー名
+ * @param title タイトル
+ * @return プロミス
  */
 export class SelectFile {
 	/**
@@ -20,7 +23,7 @@ export class SelectFile {
 				// ディレクトリ名の末尾に / を付ける
 				.map((name: string): string => {
 					let statas = fs.statSync(path.join(dirName, name));
-					if ( statas.isDirectory() ) {
+					if (statas.isDirectory()) {
 						name += '/';
 					}
 					return name;
@@ -30,7 +33,7 @@ export class SelectFile {
 					// ディレクトリーか調べる
 					let da: boolean = a.substr(-1) === '/';
 					let db: boolean = b.substr(-1) === '/';
-					if ( da != db ) {
+					if (da != db) {
 						// どちらかかがディレクトリ
 						return da ? -1 : 1;
 					} else {
@@ -40,7 +43,7 @@ export class SelectFile {
 						return (a < b) ? -1: (a > b) ? 1 : 0;
 					}
 				});
-				if ( dirName != '/' ) {
+				if (dirName != '/') {
 					// ルートディレクトリでなければ先頭に ../ を追加
 					files.unshift('../');
 				}

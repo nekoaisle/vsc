@@ -14,7 +14,7 @@ class InsertFile extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: 'メニューからファイルを選択してカーソル位置に読み込む',
-            config: 'insertFile',
+            config: 'nekoaisle-insertFile',
             commands: [
                 {
                     command: 'nekoaisle.insertFile',

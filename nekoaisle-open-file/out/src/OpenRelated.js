@@ -8,7 +8,7 @@ class OpenRelated extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: '現在のファイルと対になるファイルを開く',
-            config: 'openRelated',
+            config: 'nekoaisle-openRelated',
             commands: [
                 {
                     command: 'nekoaisle.openRelated',
