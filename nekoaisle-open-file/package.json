@@ -27,28 +27,36 @@
       {
         "command": "nekoaisle.openFile",
         "title": "nekoaisle.openFile 既存ファイルを開きます。"
-      },{
+      },
+      {
         "command": "nekoaisle.openRelated 関連ファイルを開きます。",
         "title": "nekoaisle.openRelated "
-      },{
+      },
+      {
         "command": "nekoaisle.openNew",
         "title": "nekoaisle.openNew ファイルを新規作成して開きます。"
-      },{
+      },
+      {
         "command": "nekoaisle.openTemp",
         "title": "nekoaisle.openTemp 一時ファイルを開きます。"
-      },{
+      },
+      {
         "command": "nekoaisle.insertFile",
         "title": "nekoaisle.insertFile カーソル位置にファイルを挿入します。"
-      },{
+      },
+      {
         "command": "nekoaisle.openHist",
         "title": "nekoaisle.openHist 過去に編集したことのあるファイルを選択し開きます。"
-      },{
+      },
+      {
         "command": "nekoaisle.openHistCompensateDate",
         "title": "nekoaisle.openHistCompensateDate 編集履歴からすでに存在しないファイルを除去します。"
-      },{
+      },
+      {
         "command": "nekoaisle.openTag",
         "title": "nekoaisle.openTag タグジャンプ"
-      },{
+      },
+      {
         "command": "nekoaisle.findOpen",
         "title": "nekoaisle.findOpen 検索して開く"
       }

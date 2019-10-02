@@ -11,16 +11,25 @@
         "Languages"
     ],
     "contributes": {
-        "languages": [{
-            "id": "mem",
-            "aliases": ["MemoFile", "mem"],
-            "extensions": [".mem"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "mem",
-            "scopeName": "text.mem",
-            "path": "./syntaxes/mem.tmLanguage.json"
-        }]
+        "languages": [
+            {
+                "id": "mem",
+                "aliases": [
+                    "MemoFile",
+                    "mem"
+                ],
+                "extensions": [
+                    ".mem"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "mem",
+                "scopeName": "text.mem",
+                "path": "./syntaxes/mem.tmLanguage.json"
+            }
+        ]
     }
 }

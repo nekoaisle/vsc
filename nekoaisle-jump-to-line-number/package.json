@@ -27,28 +27,36 @@
             {
                 "command": "nekoaisle.jumpToLineNumber1",
                 "title": "Jump to line nuber"
-            },{
+            },
+            {
                 "command": "nekoaisle.jumpToLineNumber2",
                 "title": "Jump to line nuber"
-            },{
+            },
+            {
                 "command": "nekoaisle.jumpToLineNumber3",
                 "title": "Jump to line nuber"
-            },{
+            },
+            {
                 "command": "nekoaisle.jumpToLineNumber4",
                 "title": "Jump to line nuber"
-            },{
+            },
+            {
                 "command": "nekoaisle.jumpToLineNumber5",
                 "title": "Jump to line nuber"
-            },{
+            },
+            {
                 "command": "nekoaisle.jumpToLineNumber6",
                 "title": "Jump to line nuber"
-            },{
+            },
+            {
                 "command": "nekoaisle.jumpToLineNumber7",
                 "title": "Jump to line nuber"
-            },{
+            },
+            {
                 "command": "nekoaisle.jumpToLineNumber8",
                 "title": "Jump to line nuber"
-            },{
+            },
+            {
                 "command": "nekoaisle.jumpToLineNumber9",
                 "title": "Jump to line nuber"
             }
@@ -61,10 +69,10 @@
         "test": "node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
-        "typescript": "^2.0.3",
-        "vscode": "^1.0.0",
-        "mocha": "^2.3.3",
+        "@types/mocha": "^2.2.32",
         "@types/node": "^6.0.40",
-        "@types/mocha": "^2.2.32"
+        "mocha": "^6.2.1",
+        "typescript": "^2.0.3",
+        "vscode": "^1.1.36"
     }
 }

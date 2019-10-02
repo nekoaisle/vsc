@@ -136,12 +136,12 @@ class DateInfo {
                         break;
                     }
                     // ２桁の日
-                    case 'M': {
+                    case 'D': {
                         c = Util_1.Util.padNum(this.value.getDate(), 2);
                         break;
                     }
                     // ０パディングなしの日
-                    case 'M': {
+                    case 'd': {
                         c = "" + (this.value.getDate());
                         break;
                     }

@@ -3,9 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const path = require("path");
 const Util_1 = require("./Util");
-;
-;
-;
 /**
  * 拡張機能基本クラス
  */
@@ -17,6 +14,7 @@ class Extension {
      */
     constructor(context, options) {
         //		console.log(`${options.name} が起動しました。`);
+        this.config = null;
         // この拡張機能が格納されているディレクトリ名
         this.extensionRoot = context.extensionPath;
         // 設定の読み込み
@@ -35,9 +33,11 @@ class Extension {
      * @return string 設定
      */
     getConfig(key, def) {
-        let ret = this.config.get(key, def);
-        if (ret) {
-            return ret;
+        if (this.config) {
+            let ret = this.config.get(key, def);
+            if (ret) {
+                return ret;
+            }
         }
         return def;
     }
@@ -69,20 +69,30 @@ class Extension {
         return path.join(this.extensionRoot, filename);
     }
     /**
+ * setting.jsonからファイル名を取得
+ * @param key setting.json のキー
+ * @param def 設定がないときの名前
+ * @return ファイル名
+ */
+    getFilenameAccordingConfig(key, def) {
+        // デフォルトのリストファイル名
+        let fn = this.joinExtensionRoot(def);
+        // settings.json より履歴ファイル名を取得
+        fn = this.getConfig(key, fn);
+        // 先頭の ~ を置換
+        fn = Util_1.Util.normalizePath(fn);
+        //
+        return fn;
+    }
+    /**
      * テンプレート格納ディレクトリ名を取得
+     * ※互換性の為残します
      * @param dirName ディレクトリ名
      * @param settingsKey settings.json のサブキー
      * @return string テンプレート格納ディレクトリ名
      */
     getConfigDir(dirName, settingsKey) {
-        // デフォルトのテンポラリディレクトリ名
-        let res = this.joinExtensionRoot(dirName);
-        // settings.json よりテンプレートディレクトリを取得
-        res = this.getConfig(settingsKey, res);
-        // 先頭の ~ を置換
-        res = Util_1.Util.normalizePath(res);
-        //
-        return res;
+        return this.getFilenameAccordingConfig(settingsKey, dirName);
     }
     /**
      * 複数挿入

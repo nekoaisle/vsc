@@ -16,13 +16,16 @@
     ],
     "main": "./out/src/extension",
     "contributes": {
-        "commands": [{
-            "command": "nekoaisle-insertCode",
-            "title": "nekoaisle-insertCode テンプレートを選んでコードを挿入"
-        }, {
-            "command": "nekoaisle-insertCode.pinfoBase",
-            "title": "nekoaisle-insertCode.pinfoBase 現在編集中のファイルのベース名をカーソル位置に挿入"
-        }],
+        "commands": [
+            {
+                "command": "nekoaisle-insertCode",
+                "title": "nekoaisle-insertCode テンプレートを選んでコードを挿入"
+            },
+            {
+                "command": "nekoaisle-insertCode.pinfoBase",
+                "title": "nekoaisle-insertCode.pinfoBase 現在編集中のファイルのベース名をカーソル位置に挿入"
+            }
+        ],
         "configuration": {
             "type": "object",
             "title": "neko: Insert Code configuration",
@@ -57,10 +60,10 @@
         "test": "node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
-        "typescript": "^2.0.3",
-        "vscode": "^1.0.0",
-        "mocha": "^2.3.3",
+        "@types/mocha": "^2.2.32",
         "@types/node": "^6.0.40",
-        "@types/mocha": "^2.2.32"
+        "mocha": "^6.2.1",
+        "typescript": "^2.0.3",
+        "vscode": "^1.1.36"
     }
 }

@@ -10,10 +10,11 @@ class PathInfo {
     /**
      * 構築
      * @param fileName ファイル名
+     * @param cwd カレントディレクトリ
      */
-    constructor(fileName) {
+    constructor(fileName, cwd) {
         // 〜で始まるときは環境変数 $HOME に置き換える
-        fileName = Util_1.Util.normalizePath(fileName);
+        fileName = Util_1.Util.normalizePath(fileName, cwd);
         // 記憶
         this.path = fileName;
         // ファイル名を分解

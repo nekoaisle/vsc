@@ -11,16 +11,25 @@
         "Languages"
     ],
     "contributes": {
-        "languages": [{
-            "id": "tsv",
-            "aliases": ["Tab Separated Value", "tsv"],
-            "extensions": [".tsv"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "tsv",
-            "scopeName": "text.tsv",
-            "path": "./syntaxes/tsv.tmLanguage.json"
-        }]
+        "languages": [
+            {
+                "id": "tsv",
+                "aliases": [
+                    "Tab Separated Value",
+                    "tsv"
+                ],
+                "extensions": [
+                    ".tsv"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "tsv",
+                "scopeName": "text.tsv",
+                "path": "./syntaxes/tsv.tmLanguage.json"
+            }
+        ]
     }
 }

@@ -29,7 +29,6 @@ function _exec {
 	return $res
 }
 
-
 function mod_link {
   pushd "$1"
 
@@ -39,31 +38,55 @@ function mod_link {
   # _exec ln -s ../package-lock.json package-lock.json
   # _exec ln -s ../package.json package.json
 
-  _exec unlink package.json
-  _exec mv package.json.bak package.json
+	# if [[ -L package.json ]]; then
+	# 	_exec unlink package.json
+	# 	_exec mv package.json.bak package.json
+	# fi
 
+	# if [[ -L package-lock.json ]]; then
+	# 	_exec unlink package-lock.json
+	# 	_exec mv package-lock.json.bak package-lock.json
+	# fi
+
+	# if [[ -L node_modules ]]; then
+	# 	_exec unlink node_modules
+	# fi
+
+	# if [[ -d node_modules ]]; then
+	# 	_exec npm audit fix
+	# fi
+
+	if [[ ! -e .git ]]; then
+		_exec git init
+		_exec git remote add origin "https://github.com/nekoaisle/$1.git"
+		_exec git add --all 
+		_exec git commit -a -m "最初のコミット"
+		_exec git fetch
+		_exec git push origin master
+	fi
 
   popd
   return
 }
 
-mod_link nekoaisle-command-menu
-mod_link nekoaisle-jump-to-line-number
-mod_link nekoaisle-cpss-wizard
-mod_link nekoaisle-open-help.old
-mod_link nekoaisle-open-previous-tab
-mod_link nekoaisle-insert-code
-mod_link nekoaisle.sjis-grep
-mod_link nekoaisle.wz-editor-memo-file
-mod_link nekoaisle-open-help
-mod_link nekoaisle-cpss-log-highlight
-mod_link nekoaisle-open-filer
-mod_link nekoaisle-disp-char-code
-mod_link nekoaisle-select-word
-mod_link nekoaisle-highlight-tsv
-mod_link nekoaisle-open-file
-mod_link nekoaisle-cpss-decorator
-mod_link nekoaisle-open-hist.del
-mod_link nekoaisle-toggle-char-case
-mod_link nekoaisle-mark-jump
+# mod_link nekoaisle-command-menu
+# mod_link nekoaisle-cpss-decorator
+# mod_link nekoaisle-cpss-log-highlight
 
+# mod_link nekoaisle-cpss-wizard
+# mod_link nekoaisle-disp-char-code
+# mod_link nekoaisle-encode
+# mod_link nekoaisle-highlight-tsv
+# mod_link nekoaisle-insert-code
+# mod_link nekoaisle-jump-to-line-number
+# mod_link nekoaisle-mark-jump
+# mod_link nekoaisle-open-file
+# mod_link nekoaisle-open-filer
+# mod_link nekoaisle-open-help
+# mod_link nekoaisle-open-previous-tab
+# mod_link nekoaisle-select-word
+# mod_link nekoaisle-toggle-char-case
+# mod_link nekoaisle.sjis-grep
+# mod_link nekoaisle.wz-editor-memo-file
+
+mod_link nekoaisle.lib

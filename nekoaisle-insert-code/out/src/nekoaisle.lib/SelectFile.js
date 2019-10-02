@@ -6,6 +6,9 @@ const path = require("path");
 const Util_1 = require("./Util");
 /**
  * ファイル選択
+ * @param dirName ディレクトリー名
+ * @param title タイトル
+ * @return プロミス
  */
 class SelectFile {
     /**

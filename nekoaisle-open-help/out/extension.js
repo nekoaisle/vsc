@@ -26,13 +26,11 @@ class MyExtension extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: 'カーソル位置の単語でマニュアルなどを開く',
-            config: 'openHelp',
+            config: 'nekoaisle-openHelp',
             commands: [
                 {
                     command: 'nekoaisle.openHelp',
-                    callback: () => {
-                        this.exec();
-                    }
+                    callback: () => { this.exec(); }
                 }
             ]
         });
@@ -46,15 +44,10 @@ class MyExtension extends nekoaisle_1.Extension {
         // カーソル位置の単語を取得
         let word = nekoaisle_1.Util.getCursorWord(editor);
         // デフォルトのリストファイル名
-        let listFN = this.joinExtensionRoot("openHelp.json");
+        let deffn = this.joinExtensionRoot("data/openHelp.json");
+        let defaults = nekoaisle_1.Util.loadFileJson(deffn);
         // settings.json よりテンプレートディレクトリを取得
-        listFN = this.getConfig("list-file", listFN);
-        // 設定ファイルの読み込み
-        let source = nekoaisle_1.Util.loadFile(listFN);
-        // 読み込んだファイル中の {{word}} をカーソル位置の単語に置換
-        source = source.replace(/{{word}}/g, word);
-        // json に変換
-        let list = nekoaisle_1.Util.decodeJson(source);
+        let list = this.getConfig("exts", defaults);
         // 設定ファイルの読み込み
         // 継承を解決
         for (let key in list) {
@@ -90,6 +83,9 @@ class MyExtension extends nekoaisle_1.Extension {
         let item = list[lang];
         switch (item.method) {
             case 'chrome': {
+                for (let key in item.options) {
+                    item.options[key] = item.options[key].replace("{{word}}", word);
+                }
                 nekoaisle_1.Util.browsURL(item.path, item.options);
                 break;
             }
