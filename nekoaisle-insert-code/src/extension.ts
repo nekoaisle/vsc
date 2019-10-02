@@ -471,6 +471,48 @@ class InsertCode extends Extension {
         }
         break;
       }
+      // このファイルのディレクトリ一覧
+      case 'ls': {
+        let dir = path.dirname(editor.document.fileName);
+        let files = fs.readdirSync(dir);
+        let list: { [key: string]: number } = {};
+        for (let file of files) {
+          let name: string;
+          switch (cmd2) {
+            // フルパス
+            case 'p': {
+              list[`${dir}/${file}`] = 1;
+              break;
+            }
+            // ディレクトリー
+            case 'd': {
+              list[path.dirname(file)] = 1;
+              break;
+            }
+            // 名前のみ
+            case 'b': {
+              let pinfo = new PathInfo(file);
+              list[pinfo.info.name] = 1;
+              break;
+            }
+            // ファイル名
+            default:
+            case 'f': {
+              list[path.basename(file)] = 1;
+              break;
+            }
+            // 拡張子
+            case 'e': {
+              list[path.extname(file)] = 1;
+              break;
+            }
+          }
+        }
+        for (let key in list) {
+          val += `${key}\n`;
+        }
+        break;
+      }
     }
 
     //

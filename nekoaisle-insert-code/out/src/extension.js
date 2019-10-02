@@ -1,6 +1,8 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const fs = require("fs");
+const path = require("path");
 const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
 function activate(context) {
     let ext = new InsertCode(context);
@@ -423,6 +425,48 @@ class InsertCode extends nekoaisle_1.Extension {
                         }
                         break;
                     }
+                }
+                break;
+            }
+            // このファイルのディレクトリ一覧
+            case 'ls': {
+                let dir = path.dirname(editor.document.fileName);
+                let files = fs.readdirSync(dir);
+                let list = {};
+                for (let file of files) {
+                    let name;
+                    switch (cmd2) {
+                        // フルパス
+                        case 'p': {
+                            list[`${dir}/${file}`] = 1;
+                            break;
+                        }
+                        // ディレクトリー
+                        case 'd': {
+                            list[path.dirname(file)] = 1;
+                            break;
+                        }
+                        // 名前のみ
+                        case 'b': {
+                            let pinfo = new nekoaisle_1.PathInfo(file);
+                            list[pinfo.info.name] = 1;
+                            break;
+                        }
+                        // ファイル名
+                        default:
+                        case 'f': {
+                            list[path.basename(file)] = 1;
+                            break;
+                        }
+                        // 拡張子
+                        case 'e': {
+                            list[path.extname(file)] = 1;
+                            break;
+                        }
+                    }
+                }
+                for (let key in list) {
+                    val += `${key}\n`;
                 }
                 break;
             }
