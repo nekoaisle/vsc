@@ -475,12 +475,15 @@ var Util;
     /**
      * テキストファイルの読み込み
      * @param fileName 読み込むファイル名
+     * @param silent   ファイルが存在しないときにメッセージを出さない
      * @return string 読み込んだファイルの内容
      */
-    function loadFile(fileName) {
+    function loadFile(fileName, silent = false) {
         console.log(`loadFile = "${fileName}"`);
         if (!isExistsFile(fileName)) {
-            putMess(`${fileName} が見つかりませんでした。`);
+            if (!silent) {
+                putMess(`${fileName} が見つかりませんでした。`);
+            }
             return null;
         }
         return fs.readFileSync(fileName, "utf-8");
@@ -499,9 +502,11 @@ var Util;
     /**
      * JSONファイルを読み込む
      * @param fileName ファイル名
+     * @param silent   ファイルが存在しないときにメッセージを出さない
+     * @return オブジェクト
      */
-    function loadFileJson(fileName) {
-        let source = Util.loadFile(fileName);
+    function loadFileJson(fileName, silent = false) {
+        let source = Util.loadFile(fileName, silent);
         if (!source) {
             return null;
         }

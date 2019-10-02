@@ -24,6 +24,9 @@ class InsertCode extends nekoaisle_1.Extension {
                 }, {
                     command: 'nekoaisle.insertCode.pinfoBase',
                     callback: () => { this.doCommandInsert('pinfo.base'); }
+                }, {
+                    command: 'nekoaisle.insertCode.cmd',
+                    callback: (arg) => { this.doCommandInsert(arg); }
                 }]
         });
         // 言語タイプごとの拡張子一覧
@@ -103,12 +106,11 @@ class InsertCode extends nekoaisle_1.Extension {
         }
         // この拡張子のメニューを読み込む
         fn = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
-        let items = nekoaisle_1.Util.loadFileJson(fn);
-        if (!items) {
-            return;
+        let items = nekoaisle_1.Util.loadFileJson(fn, true);
+        if (items) {
+            // 共通メニューに追加
+            Object.assign(menuItems, items);
         }
-        // 今日津メニューに追加
-        Object.assign(menuItems, items);
         // QuickPickOptions 用のメニューを作成
         let menu = [];
         for (let key in menuItems) {

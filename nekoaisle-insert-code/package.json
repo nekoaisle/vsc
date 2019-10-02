@@ -12,18 +12,23 @@
     ],
     "activationEvents": [
         "onCommand:nekoaisle.insertCode",
-        "onCommand:nekoaisle.insertCode.pinfoBase"
+        "onCommand:nekoaisle.insertCode.pinfoBase",
+        "onCommand:nekoaisle.insertCode.cmd"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
             {
-                "command": "nekoaisle-insertCode",
-                "title": "nekoaisle-insertCode テンプレートを選んでコードを挿入"
+                "command": "nekoaisle.insertCode",
+                "title": "nekoaisle.insertCode テンプレートを選んでコードを挿入"
             },
             {
-                "command": "nekoaisle-insertCode.pinfoBase",
-                "title": "nekoaisle-insertCode.pinfoBase 現在編集中のファイルのベース名をカーソル位置に挿入"
+                "command": "nekoaisle.insertCode.pinfoBase",
+                "title": "nekoaisle.insertCode.pinfoBase 現在編集中のファイルのベース名をカーソル位置に挿入"
+            },
+            {
+                "command": "nekoaisle.insertCode.cmd",
+                "title": "nekoaisle.insertCode.cmd 現在のカーソル位置に引数で指定したコマンドの戻値を挿入します。"
             }
         ],
         "configuration": {

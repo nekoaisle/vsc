@@ -472,12 +472,15 @@ export module Util {
   /**
    * テキストファイルの読み込み
    * @param fileName 読み込むファイル名
+   * @param silent   ファイルが存在しないときにメッセージを出さない
    * @return string 読み込んだファイルの内容
    */
-  export function loadFile(fileName: string): string | null {
+  export function loadFile(fileName: string, silent: boolean = false): string | null {
     console.log(`loadFile = "${fileName}"`);
     if (!isExistsFile(fileName)) {
-      putMess(`${fileName} が見つかりませんでした。`);
+      if (!silent) {
+        putMess(`${fileName} が見つかりませんでした。`);
+      }
       return null;
     }
     return fs.readFileSync(fileName, "utf-8");
@@ -496,9 +499,11 @@ export module Util {
   /**
    * JSONファイルを読み込む
    * @param fileName ファイル名
+   * @param silent   ファイルが存在しないときにメッセージを出さない
+   * @return オブジェクト
    */
-  export function loadFileJson(fileName: string): any {
-    let source: string | null = Util.loadFile(fileName);
+  export function loadFileJson(fileName: string, silent: boolean = false): any {
+    let source: string | null = Util.loadFile(fileName, silent);
     if (!source) {
       return null;
     }

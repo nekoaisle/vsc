@@ -199,6 +199,7 @@ class OpenHist extends nekoaisle_1.Extension {
         let menu = [];
         for (let item of list) {
             menu.push({
+                // label: `$(_cpp) ${item.baseName}`,
                 label: item.baseName,
                 // detail: key,
                 description: item.dirName

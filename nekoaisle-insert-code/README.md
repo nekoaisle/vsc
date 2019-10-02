@@ -6,9 +6,39 @@
 ---
 ## 使い方
 
-任意のディレクトリに拡張子ごとのメニュー及びテンプレートを格納します。
+1. キー割り当てファイル(keybindings.json)に、"command": "nekoaisle.insertCode.cmd", "args": "コマンド" を記載してカーソル位置に挿入します。
+2. 任意のディレクトリに拡張子ごとのメニュー及びテンプレートを格納し、一覧の中から挿入したい項目を選択します。
 
 ---
+## コマンド
+|  コマンド  |       機能        |              設定              |
+| ---------- | ----------------- | ------------------------------ |
+| author     | 著者              | nekoaisle-insertCode.author    |
+| copyright  | 著者権所有者      | nekoaisle-insertCode.copyright |
+| selection  | 選択範囲          |                                |
+| clipboard  | クリップボード    |                                |
+| now.year   | 年                |                                |
+| now.month  | 月                |                                |
+| now.date   | 日                |                                |
+| now.hour   | 時                |                                |
+| now.min    | 分                |                                |
+| now.sec    | 秒                |                                |
+| now.ymdhis | 年-月-日 時:分:秒 |                                |
+| now.ymd    | 年-月-日          |                                |
+| now.his    | 時:分:秒          |                                |
+| pinfo.path | フルパス名        |                                |
+| pinfo.dir  | ディレクトリ名    |                                |
+| pinfo.base | ファイル名+拡張子 |                                |
+| pinfo.name | ファイル名        |                                |
+| pinfo.ext  | 拡張子            |                                |
+| class.base | CPSS Baseクラス名 |                                |
+| class.cpp  | C++クラス名       |                                |
+| class.sql  | SQL テーブル名    |                                |
+
+---
+### 共通のメニュー
+すべてのファイルに適用する共通メニュのファイル名は「list.json」です。
+
 ### 拡張子ごとのメニュー
 拡張子ごとに違うメニューを表示します。メニューのファイル名は「list-`拡張子`.json」です。
 
@@ -50,29 +80,6 @@ filename, command, inline はいずれか1つを指定します。複数指定�
 #### コマンド
 指定されたコマンドを実行します。
 
-|  コマンド  |       機能        |        |
-| ---------- | ----------------- | ------ |
-| author     | 著者              |        |
-| copyright  | 著者権所有者      | author |
-| selection  | 選択範囲          |        |
-| clipboard  | クリップボード    |        |
-| now.year   | 年                |        |
-| now.month  | 月                |        |
-| now.date   | 日                |        |
-| now.hour   | 時                |        |
-| now.min    | 分                |        |
-| now.sec    | 秒                |        |
-| now.ymdhis | 年-月-日 時:分:秒 |        |
-| now.ymd    | 年-月-日          |        |
-| now.his    | 時:分:秒          |        |
-| pinfo.path | フルパス名        |        |
-| pinfo.dir  | ディレクトリ名    |        |
-| pinfo.base | ファイル名+拡張子 |        |
-| pinfo.name | ファイル名        |        |
-| pinfo.ext  | 拡張子            |        |
-| class.base | CPSS Baseクラス名 |        |
-| class.cpp  | C++クラス名       |        |
-| class.sql  | SQL テーブル名    |        |
 
 #### インラインテンプレート
 ここに記述されている文字列をテンプレートとして挿入します。
@@ -146,18 +153,18 @@ echo print_r({{clipbord}}, true), "\n";
 ---
 ## 設定
 
-* `insertCode.author: string` 著者名
-* `insertCode.copyright: string` 著作権所有者
-* `insertCode.tempDir: string` メニュー及びテンプレート格納ディレクトリ
-* `insertCode.autoIndent: boolean` trueを指定するとオートインデントします。
+* `nekoaisle-insertCode.author: string` 著者名
+* `nekoaisle-insertCode.copyright: string` 著作権所有者
+* `nekoaisle-insertCode.tempDir: string` メニュー及びテンプレート格納ディレクトリ
+* `nekoaisle-insertCode.autoIndent: boolean` trueを指定するとオートインデントします。
 
 For example:
 
 ```json
-insertCode.author: "木屋善夫", 
-insertCode.copyright: "Creansmaerd.CO.,LTD.", 
-insertCode.tempDir: "~/Documents/vsc/insertCode", 
-insertCode.autoIndent: true, 
+nekoaisle-insertCode.author: "木屋善夫", 
+nekoaisle-insertCode.copyright: "Creansmaerd.CO.,LTD.", 
+nekoaisle-insertCode.tempDir: "~/Documents/vsc/insertCode", 
+nekoaisle-insertCode.autoIndent: true, 
 ```
 
 ---

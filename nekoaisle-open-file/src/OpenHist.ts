@@ -241,6 +241,7 @@ class OpenHist extends Extension {
     let menu: vscode.QuickPickItem[] = [];
     for (let item of list) {
       menu.push({
+        // label: `$(_cpp) ${item.baseName}`,
         label: item.baseName,
         // detail: key,
         description: item.dirName

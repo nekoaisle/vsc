@@ -97,6 +97,9 @@ class InsertCode extends Extension {
       }, {
         command: 'nekoaisle.insertCode.pinfoBase',
         callback: () => { this.doCommandInsert('pinfo.base'); }
+      }, {
+        command: 'nekoaisle.insertCode.cmd',
+        callback: (arg: string) => { this.doCommandInsert(arg); }
       }]
     });
   }
@@ -144,13 +147,11 @@ class InsertCode extends Extension {
 
     // この拡張子のメニューを読み込む
     fn = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
-    let items: ListItem[] = Util.loadFileJson(fn);
-    if (!items) {
-      return;
+    let items: ListItem[] = Util.loadFileJson(fn, true);
+    if (items) {
+      // 共通メニューに追加
+      Object.assign(menuItems, items);
     }
-
-    // 今日津メニューに追加
-    Object.assign(menuItems, items);
 
     // QuickPickOptions 用のメニューを作成
     let menu: vscode.QuickPickItem[] = [];
