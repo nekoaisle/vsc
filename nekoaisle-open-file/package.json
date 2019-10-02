@@ -29,8 +29,8 @@
         "title": "nekoaisle.openFile 既存ファイルを開きます。"
       },
       {
-        "command": "nekoaisle.openRelated 関連ファイルを開きます。",
-        "title": "nekoaisle.openRelated "
+        "command": "nekoaisle.openRelated",
+        "title": "nekoaisle.openRelated  関連ファイルを開きます。"
       },
       {
         "command": "nekoaisle.openNew",

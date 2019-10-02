@@ -35,6 +35,8 @@ class FindOpen extends nekoaisle_1.Extension {
             if (file.length <= 0) {
                 return;
             }
+            // ファイル名を補正
+            file = nekoaisle_1.Util.normalizePath(file, vscode.workspace.rootPath);
             // ファイルを検索
             let files = this.findFile(file);
             if (files.length <= 0) {
@@ -46,7 +48,7 @@ class FindOpen extends nekoaisle_1.Extension {
                 let pinfo = new nekoaisle_1.PathInfo(file);
                 menu.push({
                     label: pinfo.info.base,
-                    detail: pinfo.path,
+                    description: pinfo.path,
                 });
             }
             // メニュー選択

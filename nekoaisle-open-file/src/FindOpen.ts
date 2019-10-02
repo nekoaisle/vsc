@@ -40,6 +40,9 @@ class FindOpen extends Extension {
         return;
       }
 
+      // ファイル名を補正
+      file = Util.normalizePath(file, vscode.workspace.rootPath);
+
       // ファイルを検索
       let files = this.findFile(file);
       if (files.length <= 0) {
@@ -52,7 +55,7 @@ class FindOpen extends Extension {
         let pinfo = new PathInfo(file);
         menu.push({
           label: pinfo.info.base,
-          detail: pinfo.path,
+          description: pinfo.path,
         });
       }
 

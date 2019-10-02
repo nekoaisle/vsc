@@ -12,9 +12,7 @@ class OpenRelated extends nekoaisle_1.Extension {
             commands: [
                 {
                     command: 'nekoaisle.openRelated',
-                    callback: () => {
-                        this.exec();
-                    }
+                    callback: () => { this.exec(); }
                 }
             ]
         });
