@@ -36,7 +36,7 @@
 	{"key": "ctrl+r","command": "-workbench.action.openRecent"},
 	{"key": "ctrl+t","command": "-workbench.action.showAllSymbols"},
 	{"key": "ctrl+t","command": "nekoaisle.openTag"},
-	{"key": "ctrl+b","command": "nekoaisle.insertCode.cmd", "args": "ls.e", "when": "editorTextFocus && !editorReadonly"},
+	{"key": "ctrl+b","command": "nekoaisle.insertCode.cmd", "args": "ls.f", "when": "editorTextFocus && !editorReadonly"},
 
 	{"key": "ctrl+shift+enter","command": "type", "args": { "text": "<br />" }, "when": "editorTextFocus && !editorReadonly && editorLangId == 'html'"},
 	{"key": "ctrl+shift+space","command": "type", "args": { "text": "&nbsp;" }, "when": "editorTextFocus && !editorReadonly && editorLangId == 'html'"},
