@@ -87,6 +87,11 @@
     "command": "nekoaisle.openTag"
   },
   {
+    "label": "V",
+    "description": "検索してファイルを開く",
+    "command": "nekoaisle.findOpen"
+  },
+  {
     "label": "W",
     "description": "一時ファイルを開く",
     "command": "nekoaisle.openTemp"

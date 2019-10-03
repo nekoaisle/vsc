@@ -24,15 +24,14 @@ class FindOpen extends nekoaisle_1.Extension {
      * エントリー
      */
     exec() {
-        // アクティブなエディター取得
-        // let editor = vscode.window.activeTextEditor;
-        let cwd = vscode.workspace.rootPath;
+        // 基準ディレクトリを決める
+        let cwd = nekoaisle_1.Util.getWorkFolder();
         // ファイル名を入力
         vscode.window.showInputBox({
             placeHolder: '検索するファイル名を入力してください。',
-            prompt: `絶対パスまたは${cwd}からの相対で指定してください。`
+            prompt: `絶対パスまたは ${cwd} からの相対で指定してください。`
         }).then((file) => {
-            if (file.length <= 0) {
+            if (!file || (file.length <= 0)) {
                 return;
             }
             // ファイル名を補正

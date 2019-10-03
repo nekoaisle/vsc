@@ -27,16 +27,15 @@ class FindOpen extends Extension {
    * エントリー
    */
   public exec() {
-    // アクティブなエディター取得
-    // let editor = vscode.window.activeTextEditor;
-    let cwd = vscode.workspace.rootPath;
+    // 基準ディレクトリを決める
+    let cwd = Util.getWorkFolder();
 
     // ファイル名を入力
     vscode.window.showInputBox({
       placeHolder: '検索するファイル名を入力してください。',
-      prompt: `絶対パスまたは${cwd}からの相対で指定してください。`
+      prompt: `絶対パスまたは ${cwd} からの相対で指定してください。`
     }).then((file: string) => {
-      if (file.length <= 0) {
+      if (!file || (file.length <= 0)) {
         return;
       }
 

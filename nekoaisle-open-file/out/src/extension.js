@@ -13,14 +13,14 @@ const FindOpen = require("./FindOpen");
  * @param context
  */
 function activate(context) {
-    let openFile = new OpenFile(context);
-    let openRelated = new OpenRelated(context);
-    let openNew = new OpenNew(context);
-    let openTemp = new OpenTemp(context);
-    let insertFile = new InsertFile(context);
-    let openHist = new OpenHist(context);
-    let openTag = new OpenTag(context);
-    let findOpen = new FindOpen(context);
+    new OpenFile(context);
+    new OpenRelated(context);
+    new OpenNew(context);
+    new OpenTemp(context);
+    new InsertFile(context);
+    new OpenHist(context);
+    new OpenTag(context);
+    new FindOpen(context);
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated

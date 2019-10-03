@@ -402,6 +402,24 @@ var Util;
     }
     Util.getHomeDir = getHomeDir;
     /**
+     * 現在のワークフォルダーを取得
+     */
+    function getWorkFolder() {
+        let dir;
+        let folders = vscode.workspace.workspaceFolders;
+        if (folders.length > 0) {
+            // ワークスペースフォルダーを取得
+            // 複数フォルダーあっても先頭のみ
+            let uri = folders[0].uri;
+            dir = uri.path;
+        }
+        else {
+            dir = process.cwd();
+        }
+        return dir;
+    }
+    Util.getWorkFolder = getWorkFolder;
+    /**
      * shell コマンドを実行
      * @param cmd
      */

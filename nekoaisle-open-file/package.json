@@ -1,7 +1,7 @@
 {
   "name": "open-file",
-  "displayName": "Open File",
-  "description": "新規・既存・関連・一時ファイルを開く",
+  "displayName": "Open File Assortment",
+  "description": "ファイルを開く関連詰め合わせ",
   "version": "0.0.1",
   "publisher": "nekoaisle",
   "engines": {
