@@ -3,13 +3,13 @@
 # @params string $2 エラーメッセージ(省略可)
 # @return シェルスクリプトを終了するので戻りません
 function usage_mess() {
-	if [ "$2" ] ; then
-		echo ${2}
-	fi
+  if [ "$2" ] ; then
+    echo ${2}
+  fi
 
-	echo << _EOS_
+  echo << _EOS_
 usage: $ {{pinfo.base}}
 _EOS_
 
-	exit $1;
+  exit $1;
 }

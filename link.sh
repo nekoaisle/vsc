@@ -29,64 +29,86 @@ function _exec {
 	return $res
 }
 
-function mod_link {
-  pushd "$1"
+if [ -n "${TERM}" ]; then
+	SCREEN_WIDTH=$(tput cols);
+else
+	SCREEN_WIDTH=60;
+fi
+_hr(){
+	local c=${1--}	# 省略時は -
 
-  # _exec mv package-lock.json package-lock.json.bak
-  # _exec mv package.json package.json.bak
+	# 1. 長さ SCREEN_WIDTH の文字列を作成
+	local s=''
+	for ((i = 0; i < ${SCREEN_WIDTH}; i++));do
+		s="$s$c"
+	done
+	echo $s
 
-  # _exec ln -s ../package-lock.json package-lock.json
-  # _exec ln -s ../package.json package.json
+	# 2. 必要以上の長さになるまで倍々
+	# while ((${#c} < SCREEN_WIDTH)); do
+	# 	c+="$c"
+	# done
+	# echo "${c:0:${SCREEN_WIDTH}}"
 
-	# if [[ -L package.json ]]; then
-	# 	_exec unlink package.json
-	# 	_exec mv package.json.bak package.json
-	# fi
+	# 3. printf を使って作成し tr で置換
+	# printf "%*s" ${SCREEN_WIDTH} | tr ' ' $c
 
-	# if [[ -L package-lock.json ]]; then
-	# 	_exec unlink package-lock.json
-	# 	_exec mv package-lock.json.bak package-lock.json
-	# fi
+	# 4. printf を使って作成し置換
+	# local s;
+	# printf -v s "%*s" ${SCREEN_WIDTH}
+	# echo "${s// /${c}}"
+}
 
-	# if [[ -L node_modules ]]; then
-	# 	_exec unlink node_modules
-	# fi
+function job {
+	_hr =
+	echo -e "\e[30;46;1m${1}\e[m"
+  pushd "$1">/dev/null
 
+	# 脆弱性解消
 	# if [[ -d node_modules ]]; then
 	# 	_exec npm audit fix
 	# fi
 
-	if [[ ! -e .git ]]; then
-		_exec git init
-		_exec git remote add origin "https://github.com/nekoaisle/$1.git"
-		_exec git add --all 
-		_exec git commit -a -m "最初のコミット"
-		_exec git fetch
-		_exec git push origin master
-	fi
+	# github に追加
+	# if [[ ! -e .git ]]; then
+	# 	_exec git init
+	# 	_exec git remote add origin "https://github.com/nekoaisle/$1.git"
+	# 	_exec git add --all 
+	# 	_exec git commit -a -m "最初のコミット"
+	# 	_exec git fetch
+	# 	_exec git push origin master
+	# fi
 
-  popd
-  return
+	# .git 削除
+	_exec rm -rf .git
+
+  popd >/dev/null
+  echo
+	return
 }
 
-# mod_link nekoaisle-command-menu
-# mod_link nekoaisle-cpss-decorator
-# mod_link nekoaisle-cpss-log-highlight
+dirs=($(find ./ -maxdepth 1 -type d -name "nekoaisle-*"))
+for dir in "${dirs[@]}"; do
+	job "$dir"
+done
 
-# mod_link nekoaisle-cpss-wizard
-# mod_link nekoaisle-disp-char-code
-# mod_link nekoaisle-encode
-# mod_link nekoaisle-highlight-tsv
-# mod_link nekoaisle-insert-code
-# mod_link nekoaisle-jump-to-line-number
-# mod_link nekoaisle-mark-jump
-# mod_link nekoaisle-open-file
-# mod_link nekoaisle-open-filer
-# mod_link nekoaisle-open-help
-# mod_link nekoaisle-open-previous-tab
-# mod_link nekoaisle-select-word
-# mod_link nekoaisle-toggle-char-case
-# mod_link nekoaisle.sjis-grep
-# mod_link nekoaisle.wz-editor-memo-file
+# job nekoaisle-command-menu
+# job nekoaisle-cpss-decorator
+# job nekoaisle-cpss-log-highlight
+# job nekoaisle-cpss-wizard
+# job nekoaisle-disp-char-code
+# job nekoaisle-encode
+# job nekoaisle-highlight-tsv
+# job nekoaisle-insert-code
+# job nekoaisle-jump-to-line-number
+# job nekoaisle-mark-jump
+# job nekoaisle-open-file
+# job nekoaisle-open-filer
+# job nekoaisle-open-help
+# job nekoaisle-open-previous-tab
+# job nekoaisle-select-word
+# job nekoaisle-toggle-char-case
+# job nekoaisle.sjis-grep
+# job nekoaisle.wz-editor-memo-file
 
-mod_link nekoaisle.lib
+# mod_link nekoaisle.lib

@@ -16,15 +16,15 @@
 # @params string エラーメッセージ(省略可)
 # @return シェルスクリプトを終了するので戻りません
 function usage_exit() {
-	if [ "$2" ] ; then
-		echo ${2}
-	fi
+  if [ "$2" ] ; then
+    echo ${2}
+  fi
 
-	cat << _EOL_
+  cat << _EOL_
 usage: $ {{pinfo.base}} 
 _EOL_
 
-	exit $1;
+  exit $1;
 }
 
 # コマンドをエコーして実行
@@ -33,35 +33,35 @@ _EOL_
 # @param $1 コマンド
 # @param $2〜$9 引数
 function _exec {
-	local cmd=$1
-	local res=0;
-	shift
-	echo -e "\e[33;1m\$ ${cmd}" "$@" "\e[m"
+  local cmd=$1
+  local res=0;
+  shift
+  echo -e "\e[33;1m\$ ${cmd}" "$@" "\e[m"
 
-	if [ ! "$DEBUG" ]; then
-		# $DEBUG が空なのでコマンドを実行
-		$cmd "$@"
-		res=$?
-	fi
-	return $res
+  if [ ! "$DEBUG" ]; then
+    # $DEBUG が空なのでコマンドを実行
+    $cmd "$@"
+    res=$?
+  fi
+  return $res
 }
 
 # オプション取得
 while getopts ufh OPT; do
-	case $OPT in
-		# ヘルプ表示
-		h)  usage_exit 0
-			;;
-		# 不正なオプション
-		*) usage_exit 0
-			;;
-	esac
+  case $OPT in
+    # ヘルプ表示
+    h)  usage_exit 0
+      ;;
+    # 不正なオプション
+    *) usage_exit 0
+      ;;
+  esac
 done
 shift $((OPTIND - 1))
 
 # 引数が指定されなかったときはエラー
 if [ $# -eq 0 ]; then
-	usage_exit 1;
+  usage_exit 1;
 fi
 
 # グローバル変数
