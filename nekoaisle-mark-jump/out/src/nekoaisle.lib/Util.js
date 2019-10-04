@@ -402,6 +402,24 @@ var Util;
     }
     Util.getHomeDir = getHomeDir;
     /**
+     * 現在のワークフォルダーを取得
+     */
+    function getWorkFolder() {
+        // let dir: string;
+        // let folders = vscode.workspace.workspaceFolders;
+        // if (folders.length > 0) {
+        //   // ワークスペースフォルダーを取得
+        //   // 複数フォルダーあっても先頭のみ
+        //   let uri = folders[0].uri;
+        //   dir = uri.path;
+        // } else {
+        //   dir = process.cwd();
+        // }
+        // return dir;
+        return vscode.workspace.rootPath;
+    }
+    Util.getWorkFolder = getWorkFolder;
+    /**
      * shell コマンドを実行
      * @param cmd
      */
@@ -438,9 +456,9 @@ var Util;
         // Chromium を実行
         // Util.execCmd(`chromium-browser '${uri}'`);
         // コマンド実行
-        // vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(uri));
+        vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(uri));
         // 外部で開く
-        vscode.env.openExternal(vscode.Uri.parse(uri));
+        // vscode.env.openExternal(vscode.Uri.parse(uri));
     }
     Util.browsURL = browsURL;
     /**
@@ -475,12 +493,15 @@ var Util;
     /**
      * テキストファイルの読み込み
      * @param fileName 読み込むファイル名
+     * @param silent   ファイルが存在しないときにメッセージを出さない
      * @return string 読み込んだファイルの内容
      */
-    function loadFile(fileName) {
+    function loadFile(fileName, silent = false) {
         console.log(`loadFile = "${fileName}"`);
         if (!isExistsFile(fileName)) {
-            putMess(`${fileName} が見つかりませんでした。`);
+            if (!silent) {
+                putMess(`${fileName} が見つかりませんでした。`);
+            }
             return null;
         }
         return fs.readFileSync(fileName, "utf-8");
@@ -499,9 +520,11 @@ var Util;
     /**
      * JSONファイルを読み込む
      * @param fileName ファイル名
+     * @param silent   ファイルが存在しないときにメッセージを出さない
+     * @return オブジェクト
      */
-    function loadFileJson(fileName) {
-        let source = Util.loadFile(fileName);
+    function loadFileJson(fileName, silent = false) {
+        let source = Util.loadFile(fileName, silent);
         if (!source) {
             return null;
         }

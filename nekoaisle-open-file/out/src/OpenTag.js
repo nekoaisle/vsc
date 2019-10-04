@@ -37,7 +37,7 @@ class OpenTag extends nekoaisle_1.Extension {
         else {
             // ファイル名を入力
             vscode.window.showInputBox({
-                placeHolder: '開くファイル名を入力してください。',
+                placeHolder: 'タグジャンプを入力してください。',
                 prompt: `絶対パスまたは${cwd}からの相対で指定してください。`
             }).then((file) => {
                 if (file.length > 0) {

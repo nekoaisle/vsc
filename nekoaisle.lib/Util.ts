@@ -401,19 +401,21 @@ export module Util {
    * 現在のワークフォルダーを取得
    */
   export function getWorkFolder() {
-    let dir: string;
-    let folders = vscode.workspace.workspaceFolders;
-    if (folders.length > 0) {
-      // ワークスペースフォルダーを取得
-      // 複数フォルダーあっても先頭のみ
-      let uri = folders[0].uri;
-      dir = uri.path;
-    } else {
-      dir = process.cwd();
-    }
+    // let dir: string;
+    // let folders = vscode.workspace.workspaceFolders;
+    // if (folders.length > 0) {
+    //   // ワークスペースフォルダーを取得
+    //   // 複数フォルダーあっても先頭のみ
+    //   let uri = folders[0].uri;
+    //   dir = uri.path;
+    // } else {
+    //   dir = process.cwd();
+    // }
 
-    return dir;
-}
+    // return dir;
+
+    return vscode.workspace.rootPath;
+  }
 
   /**
    * shell コマンドを実行
@@ -454,9 +456,9 @@ export module Util {
     // Chromium を実行
     // Util.execCmd(`chromium-browser '${uri}'`);
     // コマンド実行
-    // vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(uri));
+    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(uri));
     // 外部で開く
-    vscode.env.openExternal(vscode.Uri.parse(uri));
+    // vscode.env.openExternal(vscode.Uri.parse(uri));
   }
 
   /**

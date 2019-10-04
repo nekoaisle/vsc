@@ -4,19 +4,139 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "typescript",
-			"tsconfig": "nekoaisle.open-previous-tab/tsconfig.json",
-			"option": "watch",
-			"problemMatcher": [
-				"$tsc-watch"
-			]
-		},
-		{
-			"type": "typescript",
-			"tsconfig": "nekoaisle.cpss-wizard/tsconfig.json",
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-command-menu/",
 			"problemMatcher": [
 				"$tsc"
-			]
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-toggle-char-case/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-select-word/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-open-previous-tab/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-open-help/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-open-filer/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-open-file/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-mark-jump/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-jump-to-line-number/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-insert-code/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-encode/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-disp-char-code/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-cpss-wizard/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-cpss-decorator/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"type": "npm",
+			"script": "compile",
+			"path": "nekoaisle-command-menu/",
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
 		}
 	]
 }
