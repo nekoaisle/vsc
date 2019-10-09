@@ -1,7 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import {Util} from './Util';
-import {PathInfoArgs} from './PathInfoArgs';
 
 /**
  * パス情報クラス
@@ -61,35 +60,17 @@ export class PathInfo {
 
 	/**
 	 * ファイルが存在するか調べる
-	 * @param path 調べるファイルの名前
+	 * @return true:存在する
 	 */
-	public isExistsFile(param: PathInfoArgs): boolean {
-		// ファイル名を作成
-		let path = this.getFileName(param.ext, param.dir);
+	public isExistsFile(): boolean {
+		return Util.isExistsFile(this.path);
+	}
 
-		// 空文字列チェック
-		if (path.length <= 0) {
-			// ファイル名が指定されなかったときは「存在しない」を返す
-			if (param.error) {
-				param.error(path);
-			}
-			return false;
-		} else {
-			try {
-				fs.accessSync(path);
-				// 正常終了した
-				if (param.exists) {
-					param.exists(path);
-				}
-				return true;
-			} catch (e) {
-				// エラーが発生したのでreject
-				console.log(`catch ${e}`);
-				if (param.not) {
-					param.not(path);
-				}
-				return false;
-			}
-		}
+	/**
+	 * ディレクトリが存在するか調べる
+	 * @return true:存在する
+	 */
+	public isExistsDir(): boolean {
+		return Util.isExistsFile(this.path);
 	}
 };

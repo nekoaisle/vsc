@@ -77,3 +77,7 @@ InputBox に入力したファイルをワークスペース内で検索し一�
 * "nekoaisle-openTemp.dir": "~/temp"  
 * "nekoaisle-openTemp.base": "temp"  
 
+## その他
+
+tasks.json の activationEvents に "*" を指定しています。  
+これは openHist がファイルを閉じる際に履歴を残しているので常に動作させる必要があるからです。

@@ -34,11 +34,22 @@ class OpenHist extends nekoaisle_1.Extension {
         this.disposable = vscode.Disposable.from(...subscriptions);
     }
     /**
+     * デフォルトの履歴ファイル名を取得
+     */
+    get defaultHistFile() {
+        return nekoaisle_1.Util.normalizePath('~/Documents/openHist.json');
+    }
+    /**
      * 履歴ファイルのファイル名取得
      * @return ファイル名
      */
     getHistFilename() {
-        return this.getFilenameAccordingConfig('hist-file', 'openHist.json');
+        // settings.json より履歴ファイル名を取得
+        let fn = this.getConfig('hist-file', this.defaultHistFile);
+        // 先頭の ~ を置換
+        fn = nekoaisle_1.Util.normalizePath(fn);
+        //
+        return fn;
     }
     /**
      * 履歴ファイルの読み込み
@@ -57,6 +68,7 @@ class OpenHist extends nekoaisle_1.Extension {
         let fn = this.getHistFilename();
         // 履歴ファイルの書き込み
         nekoaisle_1.Util.saveFileJson(fn, data);
+        nekoaisle_1.Util.putMess(`編集履歴を ${fn} に保存しました。`);
     }
     /**
      * カーソル位置が変わった(ファイルごとのカーソル位置を記憶するため)

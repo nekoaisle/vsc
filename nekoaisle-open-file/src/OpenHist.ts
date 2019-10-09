@@ -35,6 +35,13 @@ class OpenHist extends Extension {
   protected disposable: vscode.Disposable;
 
   /**
+   * デフォルトの履歴ファイル名を取得
+   */
+  protected get defaultHistFile(): string {
+    return Util.normalizePath('~/Documents/openHist.json');
+  }
+
+  /**
    * 構築
    */
   constructor(context: vscode.ExtensionContext) {
@@ -70,7 +77,14 @@ class OpenHist extends Extension {
    * @return ファイル名
    */
   protected getHistFilename(): string {
-    return this.getFilenameAccordingConfig('hist-file', 'openHist.json');
+    // settings.json より履歴ファイル名を取得
+    let fn = this.getConfig('hist-file', this.defaultHistFile);
+
+    // 先頭の ~ を置換
+    fn = Util.normalizePath(fn);
+
+    //
+    return fn;
   }
 
   /**
@@ -91,6 +105,7 @@ class OpenHist extends Extension {
     let fn = this.getHistFilename();
     // 履歴ファイルの書き込み
     Util.saveFileJson(fn, data);
+    Util.putMess(`編集履歴を ${fn} に保存しました。`);
   }
 
   protected lineNos: { [key: string]: number } = {};

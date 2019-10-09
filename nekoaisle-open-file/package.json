@@ -19,7 +19,8 @@
     "onCommand:nekoaisle.openHist",
     "onCommand:nekoaisle.openHistCompensateDate",
     "onCommand:nekoaisle.openTag",
-    "onCommand:nekoaisle.findOpen"
+    "onCommand:nekoaisle.findOpen",
+    "*"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -74,6 +75,11 @@
           "type": "string",
           "default": "temp",
           "description": "一時ファイルのベース名"
+        },
+        "nekoaisle-openHist.hist-file": {
+          "type": "string",
+          "default": "",
+          "description": "履歴ファイル名"
         },
         "nekoaisle-openHist.sort": {
           "type": "string",

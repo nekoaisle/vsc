@@ -50,6 +50,8 @@
 	{"key": "ctrl+shift+]"    ,"command": "nekoaisle.toggleWordCase", "when": "editorTextFocus"},
 	{"key": "ctrl+shift+6"    ,"command": "type", "args": { "text": "&amp;" }, "when": "editorTextFocus && !editorReadonly && editorLangId == 'html'"},
 	{"key": "ctrl+shift+l"    ,"command": "editor.action.selectHighlights", "when": "editorFocus"},
+	{"key": "ctrl+shift+up"   ,"command": "-editor.action.insertCursorAbove", "when": "editorTextFocus" },
+	{"key": "ctrl+shift+down" ,"command": "-editor.action.insertCursorBelow", "when": "editorTextFocus" },
 
 	// 以下はエクスプローラ
 	{"key": "shift+delete","command": "-deleteFile","when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsRoot && !explorerResourceMoveableToTrash && !explorerResourceReadonly && !inputFocus"},
@@ -61,7 +63,7 @@
 	// 以下自動挿入（最初の1つは挿入時に壊される…）
 	{"key": "shift+enter"     ,"command": "nekoaisle.selectWord", "when": "editorTextFocus"},
 	{
-		"key": "ctrl+alt+up",
+		"key": "ctrl+shift+up",
 		"command": "workbench.files.action.collapseExplorerFolders"
 	},
 ]

@@ -3,40 +3,28 @@
 		"label": "1: ファイルヘッダー",
 		"filename": "sh/fileheader.sh"
 	},
-	"function": {
-		"label": "2: 関数",
-		"filename": "sh/function.sh"
+	"error_mess": {
+		"label": "2: function error_mess エラーメッセージ",
+		"filename": "sh/error_mess.sh"
 	},
-	"if": {
-		"label": "3: if",
-		"filename": "sh/if.sh"
+	"_exec": {
+		"label": "3: function _exec echoして実行",
+		"filename": "sh/_exec.sh"
 	},
-	"case": {
-		"label": "4: case",
-		"filename": "sh/case.sh"
+	"usage_exit": {
+		"label": "4: function usage_exit 使用法を表示して終了",
+		"filename": "sh/usage_exit.sh"
 	},
-	"while": {
-		"label": "5: while",
-		"filename": "sh/while.sh"
+	"getopt": {
+		"label": "5: getopt",
+		"filename": "sh/getopt.sh"
 	},
-	"for": {
-		"label": "6: for",
-		"filename": "sh/for.sh"
+	"color_code": {
+		"label": "6: カラーコード",
+		"filename": "sh/color_code.sh"
 	},
 	"yellow": {
 		"label": "7: yellow",
 		"filename": "sh/yellow.sh"
-	},
-	"error_mess": {
-		"label": "8: error_mess",
-		"filename": "sh/error_mess.sh"
-	},
-	"getopt": {
-		"label": "9: getopt",
-		"filename": "sh/getopt.sh"
-	},
-	"color_code": {
-		"label": "C: カラーコード",
-		"filename": "sh/color_code.sh"
 	}
 }

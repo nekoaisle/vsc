@@ -478,15 +478,8 @@ export module Util {
       // ファイル名が指定されなかったときは「存在しない」を返す
       return false;
     }
-    try {
-      fs.accessSync(path);
-    } catch (e) {
-      // エラーが発生したので「存在しない」を返す
-      //		console.log(`catch ${e}`);
-      return false;
-    }
-    // 正常終了したので「存在する」を返す
-    return true;
+
+    return fs.existsSync(path);
   }
 
   /**
