@@ -1,8 +1,6 @@
 'use strict';
 import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as path from 'path';
-import { Util, Extension, PathInfo, DateInfo } from './nekoaisle.lib/nekoaisle';
+import { Util, Extension } from './nekoaisle.lib/nekoaisle';
 
 export function activate(context: vscode.ExtensionContext) {
     let ext = new CommandMenu(context);
