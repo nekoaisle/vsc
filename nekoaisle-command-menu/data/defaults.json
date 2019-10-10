@@ -33,13 +33,13 @@
   },
   {
     "label": "F",
-    "description": "ファイルを開く",
-    "command": "nekoaisle.openFile"
+    "description": "検索してファイルを開く",
+    "command": "nekoaisle.findOpen"
   },
   {
     "label": "H",
-    "description": "関連ファイルを開く",
-    "command": "nekoaisle.openRelated"
+    "description": "過去に開いことのあるファイルを開く",
+    "command": "nekoaisle.openHist"
   },
   {
     "label": "I",
@@ -48,8 +48,8 @@
   },
   {
     "label": "K",
-    "description": "過去に開いことのあるファイルを開く",
-    "command": "nekoaisle.openHist"
+    "description": "関連ファイルを開く",
+    "command": "nekoaisle.openRelated"
   },
   {
     "label": "L",
@@ -60,6 +60,11 @@
     "label": "O",
     "description": "ファイル選択ダイアログ",
     "command": "workbench.action.files.openFile"
+  },
+  {
+    "label": "O",
+    "description": "ファイルを開く",
+    "command": "nekoaisle.openFile"
   },
   {
     "label": "P",
@@ -85,11 +90,6 @@
     "label": "T",
     "description": "タグジャンプ",
     "command": "nekoaisle.openTag"
-  },
-  {
-    "label": "V",
-    "description": "検索してファイルを開く",
-    "command": "nekoaisle.findOpen"
   },
   {
     "label": "W",
