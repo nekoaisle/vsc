@@ -26,7 +26,7 @@ class CommandMenu extends Extension {
 	 */
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
-			name: 'コマンドを一覧から選んで実行',
+			name: 'nekoaisle-command-menu',
 			config: 'neko-commandMenu',
 			commands: [{
 				command: 'neko.commandMenu',
