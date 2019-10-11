@@ -25,20 +25,17 @@ class MyExtention extends nekoaisle_1.Extension {
      */
     constructor(context) {
         // 登録するコマンド配列を作成
-        let commands = [];
-        // 拡張機能を登録
-        for (let i = 1; i <= 9; ++i) {
-            commands.push({
-                command: `nekoaisle.jumpToLineNumber${i}`,
-                callback: () => {
-                    this.jumpAfterInput(`${i}`);
-                }
-            });
-        }
         super(context, {
             name: '行番号ジャンプ',
             config: 'jumpToLineNumber',
-            commands: commands
+            commands: [
+                {
+                    command: `nekoaisle.jumpToLineNumber`,
+                    callback: (options) => {
+                        this.jumpAfterInput(options);
+                    }
+                }
+            ]
         });
     }
     /**
@@ -64,12 +61,12 @@ class MyExtention extends nekoaisle_1.Extension {
      * 行番号指定ジャンプ
      * @param top 行版の先頭の数字
      */
-    jumpAfterInput(top) {
+    jumpAfterInput(options) {
         // InputBoxを表示して行番号を求める
         var option = {
             prompt: "ジャンプする行番号を入力してください。",
             password: false,
-            value: top,
+            value: options.default,
             valueSelection: [1, 1]
         };
         vscode.window.showInputBox(option).then(this.jump);

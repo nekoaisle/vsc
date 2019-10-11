@@ -53,8 +53,8 @@
   },
   {
     "label": "C",
-    "description": "ターミナルにカーソルを移動",
-    "command": "workbench.action.terminal.focus"
+    "description": "計算結果をカーソル位置に挿入",
+    "command": "nekoaisle.calc"
   },
   {
     "label": "E",
@@ -63,13 +63,13 @@
   },
   {
     "label": "F",
-    "description": "ファイルを開く",
-    "command": "workbench.action.files.openFile"
+    "description": "検索してファイルを開く",
+    "command": "nekoaisle.findOpen"
   },
   {
     "label": "H",
-    "description": "関連ファイルを開く",
-    "command": "nekoaisle.openRelated"
+    "description": "過去に開いことのあるファイルを開く",
+    "command": "nekoaisle.openHist"
   },
   {
     "label": "I",
@@ -78,13 +78,23 @@
   },
   {
     "label": "K",
-    "description": "過去に開いことのあるファイルを開く",
-    "command": "nekoaisle.openHist"
+    "description": "関連ファイルを開く",
+    "command": "nekoaisle.openRelated"
   },
   {
     "label": "L",
     "description": "ファイルを挿入",
     "command": "nekoaisle.insertFile"
+  },
+  {
+    "label": "O",
+    "description": "ファイル選択ダイアログ",
+    "command": "workbench.action.files.openFile"
+  },
+  {
+    "label": "O",
+    "description": "ファイルを開く",
+    "command": "nekoaisle.openFile"
   },
   {
     "label": "P",
@@ -128,55 +138,65 @@
   {
     "label": "1",
     "description": "行ジャンプ",
-    "command": "nekoaisle.jumpToLineNumber1",
+    "command": "nekoaisle.jumpToLineNumber",
+    "args" : { "default": "1" },
     "hide": true
   },
   {
     "label": "2",
     "description": "行ジャンプ",
-    "command": "nekoaisle.jumpToLineNumber2",
+    "command": "nekoaisle.jumpToLineNumber",
+    "args" : { "default": "2" },
     "hide": true
   },
   {
     "label": "3",
     "description": "行ジャンプ",
-    "command": "nekoaisle.jumpToLineNumber3",
+    "command": "nekoaisle.jumpToLineNumber",
+    "args" : { "default": "3" },
     "hide": true
   },
   {
     "label": "4",
     "description": "行ジャンプ",
-    "command": "nekoaisle.jumpToLineNumber4",
+    "command": "nekoaisle.jumpToLineNumber",
+    "args" : { "default": "4" },
     "hide": true
   },
   {
     "label": "5",
     "description": "行ジャンプ",
-    "command": "nekoaisle.jumpToLineNumber5",
+    "command": "nekoaisle.jumpToLineNumber",
+    "args" : { "default": "5" },
     "hide": true
   },
   {
     "label": "6",
     "description": "行ジャンプ",
-    "command": "nekoaisle.jumpToLineNumber6",
+    "command": "nekoaisle.jumpToLineNumber",
+    "args" : { "default": "6" },
     "hide": true
   },
   {
     "label": "7",
     "description": "行ジャンプ",
-    "command": "nekoaisle.jumpToLineNumber7",
+    "command": "nekoaisle.jumpToLineNumber",
+    "args" : { "default": "7" },
     "hide": true
   },
   {
     "label": "8",
     "description": "行ジャンプ",
-    "command": "nekoaisle.jumpToLineNumber8",
+    "command": "nekoaisle.jumpToLineNumber",
+    "args" : { "default": "8" },
     "hide": true
   },
   {
     "label": "9",
     "description": "行ジャンプ",
-    "command": "nekoaisle.jumpToLineNumber9",
+    "command": "nekoaisle.jumpToLineNumber",
+    "args" : { "default": "9" },
     "hide": true
   }
-]```
+]
+```

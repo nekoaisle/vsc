@@ -27,9 +27,9 @@ class CommandMenu extends Extension {
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
 			name: 'nekoaisle-command-menu',
-			config: 'neko-commandMenu',
+			config: 'nekoaisle-commandMenu',
 			commands: [{
-				command: 'neko.commandMenu',
+				command: 'nekoaisle.commandMenu',
 				callback: () => { this.entry(); }
 			}]
 		});

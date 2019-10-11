@@ -17,9 +17,9 @@ class CommandMenu extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: 'nekoaisle-command-menu',
-            config: 'neko-commandMenu',
+            config: 'nekoaisle-commandMenu',
             commands: [{
-                    command: 'neko.commandMenu',
+                    command: 'nekoaisle.commandMenu',
                     callback: () => { this.entry(); }
                 }]
         });
