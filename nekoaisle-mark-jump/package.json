@@ -21,15 +21,15 @@
         "commands": [
             {
                 "command": "nekoaisle.markjumpMark",
-                "title": "Mark the cursor position"
+                "title": "nekoaisle.markjumpMark Mark the cursor position"
             },
             {
                 "command": "nekoaisle.markjumpJump",
-                "title": "Jump to mark position"
+                "title": "nekoaisle.markjumpJump Jump to mark position"
             },
             {
                 "command": "nekoaisle.markjumpReturn",
-                "title": "Return to the last jump position"
+                "title": "nekoaisle.markjumpReturn Return to the last jump position"
             }
         ]
     },

@@ -196,7 +196,7 @@ class CpssWizard extends nekoaisle_1.Extension {
         this.defaultOptions.wizard = this.joinExtensionRoot("php/CpssWizardUTF8.php");
         this.defaultOptions.templateDir = this.joinExtensionRoot("templates");
         // 設定取得
-        let options = new Options(this.config, this.defaultOptions);
+        let options = new Options(this.getConfiguration(), this.defaultOptions);
         // 一覧からモードを選択
         // 情報配列からメニューを作成
         let menu = [];

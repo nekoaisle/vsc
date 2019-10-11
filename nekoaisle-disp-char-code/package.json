@@ -19,7 +19,7 @@
         "commands": [
             {
                 "command": "nekoaisle.dispCharCode",
-                "title": "Disp Char Code"
+                "title": "nekoaisle.dispCharCode カーソル位置の文字コードをステータバーに表示"
             }
         ]
     },

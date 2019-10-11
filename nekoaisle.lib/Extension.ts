@@ -54,6 +54,10 @@ export class Extension {
 		}
 	}
 
+	public getConfiguration(): vscode.WorkspaceConfiguration {
+		return vscode.workspace.getConfiguration(this.options.config);
+	}
+
 	/**
 	 * settings.json からこの拡張機能用の設定を取得
 	 * @param key 設定名
@@ -61,7 +65,7 @@ export class Extension {
 	 * @return string 設定
 	 */
 	public getConfig<TYPE>(key: string, def: TYPE): TYPE {
-		let config = vscode.workspace.getConfiguration(this.options.config);
+		let config = this.getConfiguration();
 		let ret = config.get(key, def);
 		if (ret) {
 			return ret;

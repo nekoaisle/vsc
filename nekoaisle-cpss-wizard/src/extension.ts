@@ -228,7 +228,7 @@ class CpssWizard extends Extension {
 		this.defaultOptions.templateDir = this.joinExtensionRoot("templates");
 
 		// 設定取得
-		let options: Options = new Options(this.config, this.defaultOptions);
+		let options: Options = new Options(this.getConfiguration(), this.defaultOptions);
 
 		// 一覧からモードを選択
 		// 情報配列からメニューを作成

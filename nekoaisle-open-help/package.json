@@ -17,7 +17,7 @@
 		"commands": [
 			{
 				"command": "nekoaisle.openHelp",
-				"title": "Open Help"
+				"title": "nekoaisle.openHelp カーソル位置の単語でマニュアルなどを開く"
 			}
 		]
 	},

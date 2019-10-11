@@ -1,33 +1,33 @@
 {
-	"name": "nekoaisle-command-menu",
-	"displayName": "nekoaisle-command-menu",
-	"description": "Select a command from the menu and execute it",
+	"name": "nekoaisle-calc",
+	"displayName": "nekoaisle-calc",
+	"description": "コマンドライン電卓",
 	"version": "0.0.1",
 	"engines": {
-		"vscode": "^1.38.0"
+		"vscode": "^1.39.0"
 	},
 	"categories": [
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:nekoaisle.commandMenu"
+		"onCommand:nekoaisle.calc"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "nekoaisle.commandMenu",
-				"title": "nekoaisle.commandMenu メニューからコマンドを選んで実行"
+				"command": "nekoaisle.calc",
+				"title": "nekoaisle.calc コマンドライン電卓"
 			}
 		],
 		"configuration": {
 			"type": "object",
-			"title": "neko: コマンドメニュー設定",
+			"title": "neko: 電卓",
 			"properties": {
-				"nekoaisle-commandMenu.menu": {
-					"type": "array",
-					"default": null,
-					"description": "メニューアイテム配列"
+				"nekoaisle-calc.format": {
+					"type": "string",
+					"default": "%f",
+					"description": "書式指定文字列"
 				}
 			}
 		}
@@ -43,10 +43,15 @@
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.6",
 		"@types/node": "^10.12.21",
-		"@types/vscode": "^1.38.0",
+		"@types/vscode": "^1.39.0",
 		"glob": "^7.1.4",
 		"mocha": "^6.1.4",
 		"typescript": "^3.3.1",
-		"vscode-test": "^1.2.0"
+		"tslint": "^5.12.1",
+		"vscode-test": "^1.0.2"
+	},
+	"dependencies": {
+		"@types/sprintf-js": "^1.1.2",
+		"sprintf-js": "^1.1.2"
 	}
 }

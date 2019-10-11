@@ -18,7 +18,7 @@
         "commands": [
             {
                 "command": "nekoaisle.grepSjis",
-                "title": "sjis grep"
+                "title": "nekoaisle.grepSjis sjis grep"
             }
         ]
     },

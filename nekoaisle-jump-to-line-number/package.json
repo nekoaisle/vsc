@@ -26,39 +26,39 @@
         "commands": [
             {
                 "command": "nekoaisle.jumpToLineNumber1",
-                "title": "Jump to line nuber"
+                "title": "nekoaisle.jumpToLineNumber1 Jump to line nuber"
             },
             {
                 "command": "nekoaisle.jumpToLineNumber2",
-                "title": "Jump to line nuber"
+                "title": "nekoaisle.jumpToLineNumber2 Jump to line nuber"
             },
             {
                 "command": "nekoaisle.jumpToLineNumber3",
-                "title": "Jump to line nuber"
+                "title": "nekoaisle.jumpToLineNumber3 Jump to line nuber"
             },
             {
                 "command": "nekoaisle.jumpToLineNumber4",
-                "title": "Jump to line nuber"
+                "title": "nekoaisle.jumpToLineNumber4 Jump to line nuber"
             },
             {
                 "command": "nekoaisle.jumpToLineNumber5",
-                "title": "Jump to line nuber"
+                "title": "nekoaisle.jumpToLineNumber5 Jump to line nuber"
             },
             {
                 "command": "nekoaisle.jumpToLineNumber6",
-                "title": "Jump to line nuber"
+                "title": "nekoaisle.jumpToLineNumber6 Jump to line nuber"
             },
             {
                 "command": "nekoaisle.jumpToLineNumber7",
-                "title": "Jump to line nuber"
+                "title": "nekoaisle.jumpToLineNumber7 Jump to line nuber"
             },
             {
                 "command": "nekoaisle.jumpToLineNumber8",
-                "title": "Jump to line nuber"
+                "title": "nekoaisle.jumpToLineNumber8 Jump to line nuber"
             },
             {
                 "command": "nekoaisle.jumpToLineNumber9",
-                "title": "Jump to line nuber"
+                "title": "nekoaisle.jumpToLineNumber9 Jump to line nuber"
             }
         ]
     },

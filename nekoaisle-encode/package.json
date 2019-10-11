@@ -44,111 +44,111 @@
         "commands": [
             {
                 "command": "nekoaisle.encode",
-                "title": "Encode the selection URL or HTML."
+                "title": "nekoaisle.encode 一覧から選択してエンコード"
             },
             {
                 "command": "nekoaisle.encodeHtml",
-                "title": "HTML エンコード"
+                "title": "nekoaisle.encodeHtml HTML エンコード"
             },
             {
                 "command": "nekoaisle.encodeUrl",
-                "title": "Url エンコード"
+                "title": "nekoaisle.encodeUrl Url エンコード"
             },
             {
                 "command": "nekoaisle.encodeBase64",
-                "title": "Base64 エンコード"
+                "title": "nekoaisle.encodeBase64 Base64 エンコード"
             },
             {
                 "command": "nekoaisle.encodeCString",
-                "title": "C-String エンコード"
+                "title": "nekoaisle.encodeCString C-String エンコード"
             },
             {
                 "command": "nekoaisle.encodePreg",
-                "title": "Preg エンコード"
+                "title": "nekoaisle.encodePreg Preg エンコード"
             },
             {
                 "command": "nekoaisle.encodeContentsOfSingleQuotation",
-                "title": "' を \\' に変換"
+                "title": "nekoaisle.encodeContentsOfSingleQuotation ' を \\' に変換"
             },
             {
                 "command": "nekoaisle.encodeContentsOfDoubleQuotation",
-                "title": "\" を \\\" に変換"
+                "title": "nekoaisle.encodeContentsOfDoubleQuotation \" を \\\" に変換"
             },
             {
                 "command": "nekoaisle.encodeContentsOfUnixtime",
-                "title": "日時文字列をUNIXTIMEに変換"
+                "title": "nekoaisle.encodeContentsOfUnixtime 日時文字列をUNIXTIMEに変換"
             },
             {
                 "command": "nekoaisle.decodeHtml",
-                "title": "HTML デコード"
+                "title": "nekoaisle.decodeHtml HTML デコード"
             },
             {
                 "command": "nekoaisle.decodeUrl",
-                "title": "Url デコード"
+                "title": "nekoaisle.decodeUrl Url デコード"
             },
             {
                 "command": "nekoaisle.decodeBase64",
-                "title": "Base64 デコード"
+                "title": "nekoaisle.decodeBase64 Base64 デコード"
             },
             {
                 "command": "nekoaisle.decodeCString",
-                "title": "C-String デコード"
+                "title": "nekoaisle.decodeCString C-String デコード"
             },
             {
                 "command": "nekoaisle.decodePreg",
-                "title": "Preg デコード"
+                "title": "nekoaisle.decodePreg Preg デコード"
             },
             {
                 "command": "nekoaisle.decodeContentsOfSingleQuotation",
-                "title": "\\' を ' に変換"
+                "title": "nekoaisle.decodeContentsOfSingleQuotation \\' を ' に変換"
             },
             {
                 "command": "nekoaisle.decodeContentsOfDoubleQuotation",
-                "title": "\\\" を \" に変換"
+                "title": "nekoaisle.decodeContentsOfDoubleQuotation \\\" を \" に変換"
             },
             {
                 "command": "nekoaisle.decodeContentsOfUnixtime",
-                "title": "UNIXTIME を日時文字列に変換"
+                "title": "nekoaisle.decodeContentsOfUnixtime UNIXTIME を日時文字列に変換"
             },
             {
                 "command": "nekoaisle.encloseInSingleQuotation",
-                "title": "' で単語または選択範囲を括る/外す"
+                "title": "nekoaisle.encloseInSingleQuotation ' で単語または選択範囲を括る/外す"
             },
             {
                 "command": "nekoaisle.encloseInDoubleQuotation",
-                "title": "\" で単語または選択範囲を括る/外す"
+                "title": "nekoaisle.encloseInDoubleQuotation \" で単語または選択範囲を括る/外す"
             },
             {
                 "command": "nekoaisle.encloseInGraveAccent",
-                "title": "` で単語または選択範囲を括る/外す"
+                "title": "nekoaisle.encloseInGraveAccent ` で単語または選択範囲を括る/外す"
             },
             {
                 "command": "nekoaisle.encloseParenthesis",
-                "title": "() で単語または選択範囲を括る/外す"
+                "title": "nekoaisle.encloseParenthesis () で単語または選択範囲を括る/外す"
             },
             {
                 "command": "nekoaisle.encloseSquareBracket",
-                "title": "[] で単語または選択範囲を括る/外す"
+                "title": "nekoaisle.encloseSquareBracket [] で単語または選択範囲を括る/外す"
             },
             {
                 "command": "nekoaisle.encloseCurlyBracket",
-                "title": "{} で単語または選択範囲を括る/外す"
+                "title": "nekoaisle.encloseCurlyBracket {} で単語または選択範囲を括る/外す"
             },
             {
                 "command": "nekoaisle.encloseDoubleCurlyBracket",
-                "title": "{} で単語または選択範囲を括る/外す"
+                "title": "nekoaisle.encloseDoubleCurlyBracket {} で単語または選択範囲を括る/外す"
             },
             {
                 "command": "nekoaisle.encloseCComment",
-                "title": "/**/ で単語または選択範囲を括る/外す"
+                "title": "nekoaisle.encloseCComment /**/ で単語または選択範囲を括る/外す"
             },
             {
                 "command": "nekoaisle.encloseHtmlComment",
-                "title": "HTML コメント/外す"
+                "title": "nekoaisle.encloseHtmlComment HTML コメント/外す"
             },
             {
                 "command": "nekoaisle.encloseHtmlDiv",
-                "title": "<div class=\"\"></div> で単語または選択範囲を括る/外す"
+                "title": "nekoaisle.encloseHtmlDiv <div class=\"\"></div> で単語または選択範囲を括る/外す"
             }
         ]
     },

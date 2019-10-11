@@ -19,11 +19,11 @@
         "commands": [
             {
                 "command": "nekoaisle.toggleCharCase",
-                "title": "Toggle the case of the character"
+                "title": "nekoaisle.toggleCharCase カーソル位置の文字の大文字/小文字切り替え"
             },
             {
                 "command": "nekoaisle.toggleWordCase",
-                "title": "Toggle case by first letter"
+                "title": "nekoaisle.toggleWordCase カーソル位置の単語の大文字/小文字切り替え"
             }
         ]
     },

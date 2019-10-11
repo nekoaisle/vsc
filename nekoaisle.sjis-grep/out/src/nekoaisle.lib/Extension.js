@@ -16,10 +16,8 @@ class Extension {
         //		console.log(`${options.name} が起動しました。`);
         // この拡張機能が格納されているディレクトリ名
         this.extensionRoot = context.extensionPath;
-        // 設定の読み込み
-        if (options.config) {
-            this.config = vscode.workspace.getConfiguration(options.config);
-        }
+        // 起動オプションを記憶
+        this.options = options;
         // コマンドがあれば登録
         if (options.commands) {
             this.registerCommands(context, options.commands);
@@ -32,7 +30,8 @@ class Extension {
      * @return string 設定
      */
     getConfig(key, def) {
-        let ret = this.config.get(key, def);
+        let config = vscode.workspace.getConfiguration(this.options.config);
+        let ret = config.get(key, def);
         if (ret) {
             return ret;
         }

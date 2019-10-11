@@ -20,15 +20,15 @@
         "commands": [
             {
                 "command": "nekoaisle.selectWord",
-                "title": "Select Word"
+                "title": "nekoaisle.selectWord 単語選択"
             },
             {
                 "command": "nekoaisle.addCursor",
-                "title": "Add cursor"
+                "title": "nekoaisle.addCursor 次の行の同じ桁にカーソルを追加"
             },
             {
                 "command": "nekoaisle.delCursor",
-                "title": "Add cursor"
+                "title": "nekoaisle.delCursor 一番下のカーソルを削除"
             }
         ]
     },

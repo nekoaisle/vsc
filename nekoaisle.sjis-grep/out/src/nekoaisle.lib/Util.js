@@ -6,6 +6,7 @@ const os = require("os");
 const fs = require("fs");
 const path = require("path");
 const url = require("url");
+// import { Extension } from './Extension';
 const PathInfo_1 = require("./PathInfo");
 var Util;
 (function (Util) {
@@ -147,12 +148,21 @@ var Util;
     }
     Util.padNum = padNum;
     /**
+     * 数値を , 区切り文字列に変換
+     * @param val 数値
+     */
+    function formatNumber(val) {
+        let nf = Intl.NumberFormat();
+        return nf.format(val);
+    }
+    Util.formatNumber = formatNumber;
+    /**
      * 指定文字コードの文字種を取得
      * @param c 調べる文字コード
      */
     function getCharType(c) {
         let s = String.fromCharCode(c);
-        if ((c == 0x20) || (c == 9)) {
+        if ((c === 0x20) || (c === 9)) {
             // 空白
             return 1;
         }
@@ -181,7 +191,7 @@ var Util;
      */
     function encodeHtml(s) {
         return s.replace(/[&\'`"<>\s]/g, function (match) {
-            return {
+            const dic = {
                 '&': '&amp;',
                 "'": '&#x27;',
                 '`': '&#x60;',
@@ -192,12 +202,14 @@ var Util;
                 '\r\n': '<br />\r\n',
                 '\r': '<br />\r',
                 '\n': '<br />\n',
-            }[match];
+            };
+            return dic[match];
         });
     }
     Util.encodeHtml = encodeHtml;
     function decodeHtml(s) {
-        return s.replace(/&lt;/g, '<')
+        return s
+            .replace(/&lt;/g, '<')
             .replace(/&gt;/g, '>')
             .replace(/&quot;/g, '"')
             .replace(/&#039;/g, '\'')
@@ -224,12 +236,12 @@ var Util;
         let line = editor.document.lineAt(pos.line).text;
         let s = pos.character;
         let t = Util.getCharType(line.charCodeAt(s)); // カーソル位置の文字タイプ
-        while ((s > 0) && (t == Util.getCharType(line.charCodeAt(s - 1)))) {
+        while ((s > 0) && (t === Util.getCharType(line.charCodeAt(s - 1)))) {
             --s;
         }
         // 単語の終わりを探す
         let e = s;
-        while ((e < line.length) && (t == Util.getCharType(line.charCodeAt(e)))) {
+        while ((e < line.length) && (t === Util.getCharType(line.charCodeAt(e)))) {
             ++e;
         }
         let start = new vscode.Position(pos.line, s);
@@ -273,11 +285,11 @@ var Util;
      */
     function changeCharCase(c, mode) {
         let cas = getCharCase(c);
-        if (cas != '') {
+        if (cas !== '') {
             // 変換対象文字
-            if ((mode == 'togge') || (mode != cas)) {
+            if ((mode === 'togge') || (mode !== cas)) {
                 // トグルは必ず、それ以外は現在と違う時変換
-                if (cas == 'lower') {
+                if (cas === 'lower') {
                     // 小文字なので大文字に変換
                     c = c.toLocaleUpperCase();
                 }
@@ -311,9 +323,9 @@ var Util;
      * @returns string スネークケース文字列
      */
     function toSnakeCase(...args) {
-        let ary /*: string[]*/ = [];
+        let ary = [];
         for (let val of args) {
-            if (getClassName(val) == 'Array') {
+            if (getClassName(val) === 'Array') {
                 // 配列なら再起呼び出し
                 ary = ary.concat(toSnakeCase(val));
             }
@@ -390,6 +402,24 @@ var Util;
     }
     Util.getHomeDir = getHomeDir;
     /**
+     * 現在のワークフォルダーを取得
+     */
+    function getWorkFolder() {
+        // let dir: string;
+        // let folders = vscode.workspace.workspaceFolders;
+        // if (folders.length > 0) {
+        //   // ワークスペースフォルダーを取得
+        //   // 複数フォルダーあっても先頭のみ
+        //   let uri = folders[0].uri;
+        //   dir = uri.path;
+        // } else {
+        //   dir = process.cwd();
+        // }
+        // return dir;
+        return vscode.workspace.rootPath;
+    }
+    Util.getWorkFolder = getWorkFolder;
+    /**
      * shell コマンドを実行
      * @param cmd
      */
@@ -426,9 +456,9 @@ var Util;
         // Chromium を実行
         // Util.execCmd(`chromium-browser '${uri}'`);
         // コマンド実行
-        // vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(uri));
+        vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(uri));
         // 外部で開く
-        vscode.env.openExternal(vscode.Uri.parse(uri));
+        // vscode.env.openExternal(vscode.Uri.parse(uri));
     }
     Util.browsURL = browsURL;
     /**
@@ -448,27 +478,21 @@ var Util;
             // ファイル名が指定されなかったときは「存在しない」を返す
             return false;
         }
-        try {
-            fs.accessSync(path);
-        }
-        catch (e) {
-            // エラーが発生したので「存在しない」を返す
-            //		console.log(`catch ${e}`);
-            return false;
-        }
-        // 正常終了したので「存在する」を返す
-        return true;
+        return fs.existsSync(path);
     }
     Util.isExistsFile = isExistsFile;
     /**
      * テキストファイルの読み込み
      * @param fileName 読み込むファイル名
+     * @param silent   ファイルが存在しないときにメッセージを出さない
      * @return string 読み込んだファイルの内容
      */
-    function loadFile(fileName) {
+    function loadFile(fileName, silent = false) {
         console.log(`loadFile = "${fileName}"`);
         if (!isExistsFile(fileName)) {
-            putMess(`${fileName} が見つかりませんでした。`);
+            if (!silent) {
+                putMess(`${fileName} が見つかりませんでした。`);
+            }
             return null;
         }
         return fs.readFileSync(fileName, "utf-8");
@@ -487,9 +511,14 @@ var Util;
     /**
      * JSONファイルを読み込む
      * @param fileName ファイル名
+     * @param silent   ファイルが存在しないときにメッセージを出さない
+     * @return オブジェクト
      */
-    function loadFileJson(fileName) {
-        let source = Util.loadFile(fileName);
+    function loadFileJson(fileName, silent = false) {
+        let source = Util.loadFile(fileName, silent);
+        if (!source) {
+            return null;
+        }
         return decodeJson(source);
     }
     Util.loadFileJson = loadFileJson;
@@ -542,17 +571,118 @@ var Util;
     }
     Util.encodeJson = encodeJson;
     /**
+     * タグジャンプ文字列をファイル名と行番号に分解
+     * ex.
+     * cpss/ope/abcd.php(123)
+     * cpss/ope/abcd.php (123)
+     * cpss/ope/abcd.php:123
+     * cpss/ope/abcd.php: 123
+     *
+     * @param name タグジャンプ文字列
+     * @return タグジャンプ情報
+     */
+    function spritTagJumpName(name) {
+        let result = {
+            filename: '',
+        };
+        // ファイル名と行番号を分離
+        let res = [
+            /^(.*)\s*\(([0-9]+)\)$/,
+            /^(.*):\s*([0-9]+)$/,
+        ];
+        let reg = null;
+        for (let re of res) {
+            reg = re.exec(name);
+            if (reg) {
+                // 一致した
+                break;
+            }
+        }
+        let line;
+        if (reg) {
+            // 行番号が指定された
+            result.filename = reg[1];
+            result.lineNo = parseInt(reg[2]);
+        }
+        else {
+            result.filename = name;
+        }
+        return result;
+    }
+    Util.spritTagJumpName = spritTagJumpName;
+    /**
+     * タグジャンプ
+     * @param value タグジャンプ文字列
+     * @param pinfo 相対パス情報
+     */
+    function tagJump(value, cwd) {
+        // ファイル名と行番号に分割
+        let tagJump = Util.spritTagJumpName(value);
+        // ファイル名を正規化
+        // 絶対パスならそのまま
+        // ~から始まるときは $HOME に置換
+        // 相対ディレクトリのときはこのファイルのディレクトリからの相対
+        tagJump.filename = Util.normalizePath(tagJump.filename, cwd);
+        // ファイルを開く
+        openFile(tagJump.filename, true, tagJump.lineNo);
+    }
+    Util.tagJump = tagJump;
+    /**
+     * 指定エディターのカーソル位置を変更
+     * @param args カーソル位置情報
+     * @param editor エディター
+     */
+    function setCursorPos(args, editor) {
+        // エディターが省略されたらアクティブエディタ
+        if (!editor) {
+            editor = vscode.window.activeTextEditor;
+            if (!editor) {
+                return;
+            }
+        }
+        // 現在のカーソル位置
+        let option = Util.cloneObject(args);
+        let range = option.range;
+        if (range === undefined) {
+            // レンジは指定されていない
+            let pos = option.pos;
+            if (pos === undefined) {
+                // x が省略されたら0
+                let x = (option.x !== undefined) ? option.x : 0;
+                // yが省略された現在行
+                let y = (option.y !== undefined) ? option.y : editor.selection.start.line;
+                // 位置を作成
+                pos = new vscode.Position(y, x);
+            }
+            // 範囲を作成
+            range = new vscode.Range(pos, pos);
+        }
+        editor.selection = new vscode.Selection(range.start, range.end);
+        editor.revealRange(range);
+    }
+    Util.setCursorPos = setCursorPos;
+    /**
      * 指定ファイルを開く
      * create に true を指定するとファイルが存在しないときは作成する
      * @param fileName ファイル名
      * @param create true:新規作成する
+     * @param lineNo 開いた後にジャンプする行番号(1〜)
      */
-    function openFile(fileName, create) {
+    function openFile(fileName, create, lineNo) {
+        if (lineNo) {
+            // カーソル位置は0〜
+            --lineNo;
+        }
         // すでに開いていればそれをアクティブに
         for (let doc of vscode.workspace.textDocuments) {
             let fn = doc.fileName;
-            if (doc.fileName == fileName) {
-                vscode.window.showTextDocument(doc);
+            if (doc.fileName === fileName) {
+                vscode.window.showTextDocument(doc).then((editor) => {
+                    // 開いた
+                    if (typeof lineNo === "number") {
+                        setCursorPos({ y: lineNo }, editor);
+                    }
+                });
                 return true;
             }
         }
@@ -567,7 +697,12 @@ var Util;
         }
         // 新たに開く
         vscode.workspace.openTextDocument(fileName).then((doc) => {
-            return vscode.window.showTextDocument(doc);
+            vscode.window.showTextDocument(doc).then((editor) => {
+                // 開いた
+                if (typeof lineNo === "number") {
+                    setCursorPos({ y: lineNo }, editor);
+                }
+            });
         });
         // 上記は非同期処理なのでファイルが開く前に true が返る
         return true;
@@ -579,7 +714,7 @@ var Util;
      */
     function normalizeHome(name) {
         // ディレクトリ名が ~ で始まるときは環境変数 $HOME に置き換える
-        if (name.substr(0, 1) == '~') {
+        if (name.substr(0, 1) === '~') {
             name = path.join(getHomeDir(), name.substr(1));
         }
         return name;
@@ -610,7 +745,6 @@ var Util;
         return name;
     }
     Util.normalizePath = normalizePath;
-    ;
     /**
      * 指定ドキュメントのファイル名の拡張子を取得
      * @param doc ture を指定すると先頭の . を除去します
@@ -649,7 +783,7 @@ var Util;
             case 'Center': return vscode.OverviewRulerLane.Center;
             case 'Right': return vscode.OverviewRulerLane.Right;
             case 'Full': return vscode.OverviewRulerLane.Full;
-            default: return null;
+            default: return undefined;
         }
     }
     Util.strToOverviewRulerLane = strToOverviewRulerLane;
@@ -667,5 +801,30 @@ var Util;
         }
     }
     Util.strToDecorationRangeBehavior = strToDecorationRangeBehavior;
+    /**
+     * ルーラーを設定
+     * @param ranges ルーラーを設定する範囲
+     * @param color 色を示す文字列
+     * @param lane レーンを示す文字列 Left|Center|Right|Full
+     * @param editor 設定するエディター
+     * @return 今回設定した装飾タイプ
+     */
+    function setRuler(ranges, color, lane, editor) {
+        // 装飾を作成
+        let deco = vscode.window.createTextEditorDecorationType({
+            overviewRulerColor: color,
+            overviewRulerLane: strToOverviewRulerLane(lane),
+        });
+        // 装飾を設定
+        if (!editor) {
+            editor = vscode.window.activeTextEditor;
+        }
+        if (editor) {
+            editor.setDecorations(deco, ranges);
+        }
+        // 今回設定した装飾タイプを返す
+        return deco;
+    }
+    Util.setRuler = setRuler;
 })(Util = exports.Util || (exports.Util = {}));
 //# sourceMappingURL=Util.js.map

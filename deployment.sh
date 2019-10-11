@@ -35,7 +35,15 @@ function _exec {
 # @return 
 #==========================================================
 function job() {
-  rsync -av ./nekoaisl* $1:/home/cpss/.vscode-server/extensions/
+  _exec rsync -av ./nekoaisl* $1:/home/cpss/.vscode-server/extensions/
 }
 
-job campt-kiya
+if [[ $# -eq 0 ]]; then
+  # 引数なしは自分へ
+  _exec rsync -av ./nekoaisl* ~/.vscode/extensions/
+else
+  # 引数あり
+  for host in "$@"; do
+    job "$host"
+  done
+fi

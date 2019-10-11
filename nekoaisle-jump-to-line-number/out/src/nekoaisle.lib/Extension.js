@@ -14,17 +14,17 @@ class Extension {
      */
     constructor(context, options) {
         //		console.log(`${options.name} が起動しました。`);
-        this.config = null;
         // この拡張機能が格納されているディレクトリ名
         this.extensionRoot = context.extensionPath;
-        // 設定の読み込み
-        if (options.config) {
-            this.config = vscode.workspace.getConfiguration(options.config);
-        }
+        // 起動オプションを記憶
+        this.options = options;
         // コマンドがあれば登録
         if (options.commands) {
             this.registerCommands(context, options.commands);
         }
+    }
+    getConfiguration() {
+        return vscode.workspace.getConfiguration(this.options.config);
     }
     /**
      * settings.json からこの拡張機能用の設定を取得
@@ -33,11 +33,10 @@ class Extension {
      * @return string 設定
      */
     getConfig(key, def) {
-        if (this.config) {
-            let ret = this.config.get(key, def);
-            if (ret) {
-                return ret;
-            }
+        let config = this.getConfiguration();
+        let ret = config.get(key, def);
+        if (ret) {
+            return ret;
         }
         return def;
     }

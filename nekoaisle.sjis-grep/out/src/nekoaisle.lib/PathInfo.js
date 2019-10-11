@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
-const fs = require("fs");
 const Util_1 = require("./Util");
 /**
  * パス情報クラス
@@ -10,10 +9,11 @@ class PathInfo {
     /**
      * 構築
      * @param fileName ファイル名
+     * @param cwd カレントディレクトリ
      */
-    constructor(fileName) {
+    constructor(fileName, cwd) {
         // 〜で始まるときは環境変数 $HOME に置き換える
-        fileName = Util_1.Util.normalizePath(fileName);
+        fileName = Util_1.Util.normalizePath(fileName, cwd);
         // 記憶
         this.path = fileName;
         // ファイル名を分解
@@ -51,37 +51,17 @@ class PathInfo {
     }
     /**
      * ファイルが存在するか調べる
-     * @param path 調べるファイルの名前
+     * @return true:存在する
      */
-    isExistsFile(param) {
-        // ファイル名を作成
-        let path = this.getFileName(param.ext, param.dir);
-        // 空文字列チェック
-        if (path.length <= 0) {
-            // ファイル名が指定されなかったときは「存在しない」を返す
-            if (param.error) {
-                param.error(path);
-            }
-            return false;
-        }
-        else {
-            try {
-                fs.accessSync(path);
-                // 正常終了した
-                if (param.exists) {
-                    param.exists(path);
-                }
-                return true;
-            }
-            catch (e) {
-                // エラーが発生したのでreject
-                console.log(`catch ${e}`);
-                if (param.not) {
-                    param.not(path);
-                }
-                return false;
-            }
-        }
+    isExistsFile() {
+        return Util_1.Util.isExistsFile(this.path);
+    }
+    /**
+     * ディレクトリが存在するか調べる
+     * @return true:存在する
+     */
+    isExistsDir() {
+        return Util_1.Util.isExistsFile(this.path);
     }
 }
 exports.PathInfo = PathInfo;

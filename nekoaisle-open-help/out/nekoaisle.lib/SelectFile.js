@@ -34,7 +34,7 @@ class SelectFile {
                     // ディレクトリーか調べる
                     let da = a.substr(-1) === '/';
                     let db = b.substr(-1) === '/';
-                    if (da != db) {
+                    if (da !== db) {
                         // どちらかかがディレクトリ
                         return da ? -1 : 1;
                     }
@@ -45,7 +45,7 @@ class SelectFile {
                         return (a < b) ? -1 : (a > b) ? 1 : 0;
                     }
                 });
-                if (dirName != '/') {
+                if (dirName !== '/') {
                     // ルートディレクトリでなければ先頭に ../ を追加
                     files.unshift('../');
                 }
@@ -86,8 +86,6 @@ class SelectFile {
             });
         });
     }
-    ;
 }
 exports.SelectFile = SelectFile;
-;
 //# sourceMappingURL=SelectFile.js.map

@@ -587,7 +587,7 @@ export module Util {
   export function spritTagJumpName(name: string): SpritTagJumpNameResult {
     let result: SpritTagJumpNameResult = {
       filename: '',
-    }
+    };
     // ファイル名と行番号を分離
     let res = [
       /^(.*)\s*\(([0-9]+)\)$/,  // 末尾が "(123)" or " (123)"
@@ -636,8 +636,8 @@ export module Util {
   export interface SetCursorOption {
     x?: number;
     y?: number;
-    pos?: vscode.Position,
-    range?: vscode.Range,
+    pos?: vscode.Position;
+    range?: vscode.Range;
   }
 
   /**
