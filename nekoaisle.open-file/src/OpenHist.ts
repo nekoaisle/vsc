@@ -94,7 +94,12 @@ class OpenHist extends Extension {
   protected loadHistFile(): ListItemDic {
     let fn = this.getHistFilename();
     // 履歴ファイルの読み込み
-    return Util.loadFileJson(fn);
+    let dic = Util.loadFileJson(fn);
+    if (dic) {
+      return dic;
+    } else {
+      return {};
+    }
   }
 
   /**

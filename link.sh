@@ -80,35 +80,45 @@ function job {
 	# fi
 
 	# .git 削除
-	_exec rm -rf .git
+	# _exec rm -rf .git
+
+	# node_modules
+	if [[ ! -e node_modules ]]; then
+		npm install
+	fi
 
   popd >/dev/null
   echo
 	return
 }
 
-dirs=($(find ./ -maxdepth 1 -type d -name "nekoaisle-*"))
-for dir in "${dirs[@]}"; do
-	job "$dir"
-done
+# dirs=($(find ./ -maxdepth 1 -type d -name "nekoaisle*"))
+# for dir in "${dirs[@]}"; do
+# 	job "$dir"
 
-# job nekoaisle-command-menu
-# job nekoaisle-cpss-decorator
-# job nekoaisle-cpss-log-highlight
-# job nekoaisle-cpss-wizard
-# job nekoaisle-disp-char-code
-# job nekoaisle-encode
-# job nekoaisle-highlight-tsv
-# job nekoaisle-insert-code
-# job nekoaisle-jump-to-line-number
-# job nekoaisle-mark-jump
-# job nekoaisle-open-file
-# job nekoaisle-open-filer
-# job nekoaisle-open-help
-# job nekoaisle-open-previous-tab
-# job nekoaisle-select-word
-# job nekoaisle-toggle-char-case
-# job nekoaisle.sjis-grep
+# 	# dir=`realpath "${dir}"`
+# 	# name=`basename "${dir}"`
+# 	# ln -s "${dir}"
+# done
+
+job nekoaisle.command-menu
+job nekoaisle.cpss-decorator
+job nekoaisle.cpss-wizard
+job nekoaisle.disp-char-code
+job nekoaisle.encode
+job nekoaisle.insert-code
+job nekoaisle.jump-to-line-number
+job nekoaisle.mark-jump
+job nekoaisle.open-file
+job nekoaisle.open-filer
+job nekoaisle.open-help
+job nekoaisle.open-previous-tab
+job nekoaisle.select-word
+job nekoaisle.toggle-char-case
+job nekoaisle.sjis-grep
+
+# job nekoaisle.cpss-log-highlight
+# job nekoaisle.highlight-tsv
 # job nekoaisle.wz-editor-memo-file
 
 # mod_link nekoaisle.lib

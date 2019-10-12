@@ -58,7 +58,13 @@ class OpenHist extends nekoaisle_1.Extension {
     loadHistFile() {
         let fn = this.getHistFilename();
         // 履歴ファイルの読み込み
-        return nekoaisle_1.Util.loadFileJson(fn);
+        let dic = nekoaisle_1.Util.loadFileJson(fn);
+        if (dic) {
+            return dic;
+        }
+        else {
+            return {};
+        }
     }
     /**
      * 履歴ファイルの保存

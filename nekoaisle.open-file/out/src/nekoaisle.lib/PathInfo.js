@@ -29,7 +29,7 @@ class PathInfo {
             // 省略されたので現在のディレクトリを返す
             dir = this.info.dir;
         }
-        else if (dir.substr(0, 1) != '/') {
+        else if (dir.substr(0, 1) !== '/') {
             // /で始まらないときは相対ディレクトリなので現在のディレクトリ結合
             dir = path.join(this.info.dir, dir);
             // 絶対パスに変換
@@ -65,5 +65,4 @@ class PathInfo {
     }
 }
 exports.PathInfo = PathInfo;
-;
 //# sourceMappingURL=PathInfo.js.map
