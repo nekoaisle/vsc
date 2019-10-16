@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
@@ -57,14 +57,6 @@ class OpenPreviousTab extends nekoaisle_1.Extension {
                 break;
             }
         }
-        // for (let editor of vscode.window.visibleTextEditors) {
-        // 	if (editor.document.fileName == fileName) {
-        //         vscode.workspace.openTextDocument(fileName).then((doc: vscode.TextDocument) => {
-        // 			return vscode.window.showTextDocument(doc);
-        // 		});
-        // 		break;
-        // 	}
-        // }
     }
     /**
      * イベントハンドラ
@@ -72,15 +64,23 @@ class OpenPreviousTab extends nekoaisle_1.Extension {
     onEvent(e) {
         if (vscode.window.activeTextEditor) {
             // 現在のアクティブファイル名を取得
-            let fileName = vscode.window.activeTextEditor.document.fileName;
-            // 同違っていたら記憶
-            if (this.history[0].fileName != fileName) {
+            let editor = vscode.window.activeTextEditor;
+            let fileName = editor.document.fileName;
+            if (this.history.length === 0) {
+                // 初
+                this.history[0] = {
+                    fileName: fileName,
+                    editor: editor,
+                };
+            }
+            else if (this.history[0].fileName != fileName) {
+                // 同違っているので記憶
                 // 前回のアクティブタブを記憶
                 this.history[1] = this.history[0];
                 // 現在のアクティブタブを記憶
                 this.history[0] = {
-                    fileName: vscode.window.activeTextEditor.document.fileName,
-                    editor: vscode.window.activeTextEditor,
+                    fileName: fileName,
+                    editor: editor,
                 };
             }
         }

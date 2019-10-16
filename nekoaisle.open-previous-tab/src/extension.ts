@@ -1,3 +1,4 @@
+'use strict'
 import * as vscode from 'vscode';
 import {Util, Extension} from './nekoaisle.lib/nekoaisle';
 
@@ -68,14 +69,6 @@ class OpenPreviousTab extends Extension {
 				break;
 			}
 		}
-		// for (let editor of vscode.window.visibleTextEditors) {
-		// 	if (editor.document.fileName == fileName) {
-	    //         vscode.workspace.openTextDocument(fileName).then((doc: vscode.TextDocument) => {
-		// 			return vscode.window.showTextDocument(doc);
-        // 		});
-		// 		break;
-		// 	}
-		// }
 	}
 
 	/**
@@ -84,15 +77,23 @@ class OpenPreviousTab extends Extension {
 	protected onEvent(e: vscode.TextEditor) {
 		if (vscode.window.activeTextEditor) {
 			// 現在のアクティブファイル名を取得
-			let fileName = vscode.window.activeTextEditor.document.fileName;
-			// 同違っていたら記憶
-			if (this.history[0].fileName != fileName) {
+			let editor = vscode.window.activeTextEditor;
+			let fileName = editor.document.fileName;
+
+			if (this.history.length === 0) {
+				// 初
+				this.history[0] = {
+					fileName: fileName,
+					editor: editor,
+				};
+			} else if (this.history[0].fileName != fileName) {
+				// 同違っているので記憶
 				// 前回のアクティブタブを記憶
 				this.history[1] = this.history[0];
 				// 現在のアクティブタブを記憶
 				this.history[0] = {
-					fileName: vscode.window.activeTextEditor.document.fileName,
-					editor: vscode.window.activeTextEditor,
+					fileName: fileName,
+					editor: editor,
 				};
 			}
 		}
