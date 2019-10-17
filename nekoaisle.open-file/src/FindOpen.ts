@@ -70,7 +70,7 @@ class FindOpen extends Extension {
           return;
         }
 
-        Util.openFile(sel.detail, false);
+        Util.openFile(sel.description, false);
       });
     });
   }

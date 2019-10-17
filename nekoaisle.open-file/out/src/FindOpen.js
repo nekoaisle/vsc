@@ -61,7 +61,7 @@ class FindOpen extends nekoaisle_1.Extension {
                     // 未選択
                     return;
                 }
-                nekoaisle_1.Util.openFile(sel.detail, false);
+                nekoaisle_1.Util.openFile(sel.description, false);
             });
         });
     }
