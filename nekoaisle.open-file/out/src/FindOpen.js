@@ -37,7 +37,7 @@ class FindOpen extends nekoaisle_1.Extension {
             // let cwd = Util.getWorkFolder();
             // ファイル名を入力
             let pattern = yield vscode.window.showInputBox({
-                placeHolder: '検索するglobパターンを入力してください。',
+                placeHolder: '検索するglobパターンを入力してください。(複数指定は,区切り)',
             });
             if (!pattern || (pattern.length <= 0)) {
                 return;

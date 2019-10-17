@@ -32,7 +32,7 @@ class FindOpen extends Extension {
 
     // ファイル名を入力
     let pattern: string = await vscode.window.showInputBox({
-      placeHolder: '検索するglobパターンを入力してください。',
+      placeHolder: '検索するglobパターンを入力してください。(複数指定は,区切り)',
       // prompt: `絶対パスまたは ${cwd} からの相対で指定してください。`
     });
 
