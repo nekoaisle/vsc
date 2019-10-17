@@ -102,6 +102,11 @@
     "command": "nekoaisle.openFiler"
   },
   {
+    "label": "Z",
+    "description": "折返しの切り替え",
+    "command": "editor.action.toggleWordWrap"
+  },
+  {
     "label": "1〜9",
     "description": "行ジャンプ"
   },

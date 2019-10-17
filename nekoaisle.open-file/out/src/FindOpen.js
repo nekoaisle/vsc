@@ -1,4 +1,12 @@
 'use strict';
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const vscode = require("vscode");
 const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
 /**
@@ -24,6 +32,57 @@ class FindOpen extends nekoaisle_1.Extension {
      * エントリー
      */
     exec() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // // 基準ディレクトリを決める
+            // let cwd = Util.getWorkFolder();
+            // ファイル名を入力
+            let pattern = yield vscode.window.showInputBox({
+                placeHolder: '検索するglobパターンを入力してください。',
+            });
+            if (!pattern || (pattern.length <= 0)) {
+                return;
+            }
+            // // ファイル名を補正
+            // pattern = Util.normalizePath(pattern, vscode.workspace.rootPath);
+            // 除外ファイルを取得
+            let excludes = [
+                ...Object.keys((yield vscode.workspace.getConfiguration('search', null).get('exclude')) || {}),
+                ...Object.keys((yield vscode.workspace.getConfiguration('files', null).get('exclude')) || {})
+            ].join(',');
+            // ファイルを検索
+            const uris = yield vscode.workspace.findFiles(`{${pattern}}` /*, `{${excludes}}`*/);
+            if (uris.length === 0) {
+                nekoaisle_1.Util.putMess(`${pattern} は見つかりませんでした。`);
+                return;
+            }
+            // メニュ作成
+            let menu = [];
+            for (let uri of uris) {
+                let pinfo = new nekoaisle_1.PathInfo(uri.fsPath);
+                menu.push({
+                    label: pinfo.info.base,
+                    description: pinfo.path,
+                });
+            }
+            // メニュー選択
+            let options = {
+                placeHolder: '選択してください。',
+                matchOnDetail: false,
+                matchOnDescription: false
+            };
+            vscode.window.showQuickPick(menu, options).then((sel) => {
+                if (!sel) {
+                    // 未選択
+                    return;
+                }
+                nekoaisle_1.Util.openFile(sel.description, false);
+            });
+        });
+    }
+    /**
+     * エントリー
+     */
+    exec_ver1() {
         // 基準ディレクトリを決める
         let cwd = nekoaisle_1.Util.getWorkFolder();
         // ファイル名を入力
