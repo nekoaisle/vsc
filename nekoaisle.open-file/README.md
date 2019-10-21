@@ -46,8 +46,9 @@ workbench.action.files.openFile は GUI にてファイルを選択できてよ�
 * ファイル名: 行番号
 
 ### ■ `検索して開く` nekoaisle.findOpen
-InputBox に入力したファイルをワークスペース内で検索し一覧表示します。  
-一覧からファルを選択すると開きます。
+`2019-10-17 仕様変更`  
+InputBox に入力した glob パターンをワークスペース内で検索し見つかったものを一覧表示します。一覧からファルを選択すると開きます。
+
 
 入力されたパス名をディレクトリ名とベース名に分離し、ディレクトリ内に存在するすべてのファイル名を一覧表示します。また、ベース名にはワイルドカードも使用できます。
 
@@ -55,8 +56,9 @@ InputBox に入力したファイルをワークスペース内で検索し一�
 
 |           設定名           |                 機能                 | デフォルト値 |
 | -------------------------- | ------------------------------------ | ------------ |
-| nekoaisle-openHist.dir     | 一時ファイルを格納するディレクトリ名 | ~/temp       |
-| nekoaisle-openHist.base    | 一時ファイルのベース名               | temp         |
+| nekoaisle-openTemp.dir     | 一時ファイルを格納するディレクトリ名 | ~/temp       |
+| nekoaisle-openTemp.base    | 一時ファイルのベース名               | temp         |
+| nekoaisle-openHist.hist-file | 履歴ファイル名                     | modtime      |
 | nekoaisle-openHist.sort    | ソート方法                           | modtime      |
 | nekoaisle-openHist.sortDir | ソート方向                           | desc         |
 

@@ -20,6 +20,11 @@ interface ListItem {
 	hide?: boolean;										// メニューに表示しない
 }
 
+interface CommandParam {
+	command: string;
+	args: any[];
+}
+
 class CommandMenu extends Extension {
 	/**
 	 * 構築
@@ -31,6 +36,9 @@ class CommandMenu extends Extension {
 			commands: [{
 				command: 'nekoaisle.commandMenu',
 				callback: () => { this.entry(); }
+			},{
+				command: 'nekoaisle.multiCommand',
+				callback: (commands: CommandParam | CommandParam[]) => { this.multiCommand(commands); }
 			}]
 		});
 	}
@@ -86,6 +94,21 @@ class CommandMenu extends Extension {
 
 		// 開く
 		quickPick.show();
+	}
+
+	/**
+	 * 複数コマンド実行
+	 * @param commands コマンド
+	 */
+	protected async multiCommand(commands: CommandParam | CommandParam[]) {
+		let cmd: CommandParam[];
+		if (!Array.isArray(commands)) {
+			commands = [commands];
+		}
+		
+		for (let cmd of commands) {
+			await vscode.commands.executeCommand(cmd.command, cmd.args);
+		}
 	}
 
 	/**

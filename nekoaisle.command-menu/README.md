@@ -2,6 +2,8 @@
 
 ## 機能
 
+### nekoaisle.commandMenu
+
 任意のコマンドをメニュー表示し、選択したコマンドを実行します。
 
 コマンドの選択時、メニューの先頭文字と一致する文字を入力すると即コマンドが実行されますので、nekoaisle.commandMenu を任意のキーに割り当てておくことにより２ストロークキーのような動作をさせることができます。
@@ -9,6 +11,30 @@
 コマンドの選択は、メニュー先頭の1文字を入力した時、または、メニューからコマンドを選択してエンターを押し多彩です。
 
 全角文字を入力した際にも極力対応するようにしましたが不完全です。
+
+### nekoaisle.multiCommand
+
+複数のコマンドを実行する機能です。1キーで複数のアクションさせたいときに使用してください。
+
+keybindings.json 例
+```json
+[
+  {
+    "key": "ctrl+b",
+    "command": "nekoaisle.multiCommand",
+    "args": [
+      {
+        "command": "workbench.files.action.collapseExplorerFolders",
+        "args": [""]
+      },
+      {
+        "command": "workbench.files.action.focusFilesExplorer",
+        "args": [""]
+      }
+    ]
+  },
+]
+```
 
 ## 設定
 

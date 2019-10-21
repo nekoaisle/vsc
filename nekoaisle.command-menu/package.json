@@ -10,7 +10,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:nekoaisle.commandMenu"
+		"onCommand:nekoaisle.commandMenu",
+		"onCommand:nekoaisle.multiCommand"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -18,6 +19,9 @@
 			{
 				"command": "nekoaisle.commandMenu",
 				"title": "nekoaisle.commandMenu コマンドを一覧から選んで実行"
+			},{
+				"command": "nekoaisle.multiCommand",
+				"title": "nekoaisle.multiCommand 複数コマンド実行"
 			}
 		],
 		"configuration": {

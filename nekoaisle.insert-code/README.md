@@ -11,34 +11,35 @@
 
 ---
 ## コマンド
-|  コマンド  |       機能        |              設定              |
-| ---------- | ----------------- | ------------------------------ |
-| author     | 著者              | nekoaisle-insertCode.author    |
-| copyright  | 著者権所有者      | nekoaisle-insertCode.copyright |
-| selection  | 選択範囲          |                                |
-| clipboard  | クリップボード    |                                |
-| now.year   | 年                |                                |
-| now.month  | 月                |                                |
-| now.date   | 日                |                                |
-| now.hour   | 時                |                                |
-| now.min    | 分                |                                |
-| now.sec    | 秒                |                                |
-| now.ymdhis | 年-月-日 時:分:秒 |                                |
-| now.ymd    | 年-月-日          |                                |
-| now.his    | 時:分:秒          |                                |
-| pinfo.path | フルパス名        |                                |
-| pinfo.dir  | ディレクトリ名    |                                |
-| pinfo.base | ファイル名+拡張子 |                                |
-| pinfo.name | ファイル名        |                                |
-| pinfo.ext  | 拡張子            |                                |
-| class.base | CPSS Baseクラス名 |                                |
-| class.cpp  | C++クラス名       |                                |
-| class.sql  | SQL テーブル名    |                                |
-| ls.p       | フルパス          |                                |
-| ls.d       | ディレクトリ名    |                                |
-| ls.b       | ベース名          |                                |
-| ls.f       | 名前              |                                |
-| ls.e       | 拡張子            |                                |
+|  コマンド  |                機能                |              設定              |
+| ---------- | ---------------------------------- | ------------------------------ |
+| author     | 著者                               | nekoaisle-insertCode.author    |
+| copyright  | 著者権所有者                       | nekoaisle-insertCode.copyright |
+| selection  | 選択範囲                           |                                |
+| clipboard  | クリップボード                     |                                |
+| now.year   | 年                                 |                                |
+| now.month  | 月                                 |                                |
+| now.date   | 日                                 |                                |
+| now.hour   | 時                                 |                                |
+| now.min    | 分                                 |                                |
+| now.sec    | 秒                                 |                                |
+| now.ymdhis | 年-月-日 時:分:秒                  |                                |
+| now.ymd    | 年-月-日                           |                                |
+| now.his    | 時:分:秒                           |                                |
+| pinfo.path | フルパス名                         |                                |
+| pinfo.dir  | ディレクトリ名                     |                                |
+| pinfo.base | ファイル名+拡張子                  |                                |
+| pinfo.name | ファイル名                         |                                |
+| pinfo.ext  | 拡張子                             |                                |
+| class.base | CPSS Baseクラス名                  |                                |
+| class.cpp  | C++クラス名                        |                                |
+| class.sql  | SQL テーブル名                     |                                |
+| ls         | 編集中のファイルのディレクトリ一覧 |                                |
+| ls.p       | フルパス                           |                                |
+| ls.d       | ディレクトリ名                     |                                |
+| ls.b       | ベース名                           |                                |
+| ls.f       | 名前                               |                                |
+| ls.e       | 拡張子                             |                                |
 
 `ls.*コマンドは編集中のファイルのディレクトリーの一覧を取得します。`
 
@@ -93,21 +94,21 @@ filename, command, inline はいずれか1つを指定します。複数指定�
 
 #### 挿入位置
 
-|挿入位置      |キーワード                   |
-|--------------|-----------------------------|
-|ファイルの先頭|top, file-start, file-top    |
-|ファイルの末尾|bottom, file-end, file-bottom|
-|行頭          |home, line-start, line-top   |
-|行末          |end, line-end, line-bottom   |
-|次の行        |new, line-new, new-line      |
+|    挿入位置    |          キーワード           |
+| -------------- | ----------------------------- |
+| ファイルの先頭 | top, file-start, file-top     |
+| ファイルの末尾 | bottom, file-end, file-bottom |
+| 行頭           | home, line-start, line-top    |
+| 行末           | end, line-end, line-bottom    |
+| 次の行         | new, line-new, new-line       |
 
 #### メソッド
 挿入方法を選択します。
-|メソッド      |説明                         |
-|--------------|-----------------------------|
-|insert        |カーソル位置に挿入します     |
-|replace       |選択範囲を置き換えます       |
-|snippet       |スニペットとして挿入します   |
+| メソッド |            説明            |
+| -------- | -------------------------- |
+| insert   | カーソル位置に挿入します   |
+| replace  | 選択範囲を置き換えます     |
+| snippet  | スニペットとして挿入します |
 
 ※省略時は insert
 
@@ -126,16 +127,16 @@ filename, command, inline はいずれか1つを指定します。複数指定�
 #### "method": "snippet"
 メソッドに snippet を選択すると $1 や ${1:プレースホルダ} と言ったプレースホルダ機能に加え、下記の変数も使えます。
 
-|変数名           |置換内容                                      |
-|-----------------|----------------------------------------------|
-|$TM_SELECTED_TEXT|現在選択されたテキストや空の文字列            |
-|$TM_CURRENT_LINE |現在の行の内容                                |
-|$TM_CURRENT_WORD |カーソルの下の単語の内容、あるいは、空の文字列|
-|$TM_LINE_INDEX   |ゼロ・インデックスに基づく行番号              |
-|$TM_LINE_NUMBER  |1つのインデックスに基づく行番号               |
-|$TM_FILENAME     |現在のドキュメントのファイル名                |
-|$TM_DIRECTORY    |現在のドキュメントのディレクトリ              |
-|$TM_FILEPATH     |現在のドキュメントの完全なファイルパス        |
+|      変数名       |                    置換内容                    |
+| ----------------- | ---------------------------------------------- |
+| $TM_SELECTED_TEXT | 現在選択されたテキストや空の文字列             |
+| $TM_CURRENT_LINE  | 現在の行の内容                                 |
+| $TM_CURRENT_WORD  | カーソルの下の単語の内容、あるいは、空の文字列 |
+| $TM_LINE_INDEX    | ゼロ・インデックスに基づく行番号               |
+| $TM_LINE_NUMBER   | 1つのインデックスに基づく行番号                |
+| $TM_FILENAME      | 現在のドキュメントのファイル名                 |
+| $TM_DIRECTORY     | 現在のドキュメントのディレクトリ               |
+| $TM_FILEPATH      | 現在のドキュメントの完全なファイルパス         |
 
 $ をそのまま入力したい場合は \$ としてください。
 
