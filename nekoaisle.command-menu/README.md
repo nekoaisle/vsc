@@ -16,7 +16,15 @@
 
 複数のコマンドを実行する機能です。1キーで複数のアクションさせたいときに使用してください。
 
-keybindings.json 例
+コマンド引数の書式
+```ts
+interface CommandParam {
+	command: string;
+	args: any[];
+}
+```
+
+keybindings.json 例: ファイラーにフォーカスを移動し折りたたむ
 ```json
 [
   {
@@ -24,13 +32,13 @@ keybindings.json 例
     "command": "nekoaisle.multiCommand",
     "args": [
       {
-        "command": "workbench.files.action.collapseExplorerFolders",
+        "command": "workbench.files.action.focusFilesExplorer",
         "args": [""]
       },
       {
-        "command": "workbench.files.action.focusFilesExplorer",
+        "command": "workbench.files.action.collapseExplorerFolders",
         "args": [""]
-      }
+      },
     ]
   },
 ]
