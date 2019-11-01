@@ -37,8 +37,8 @@ class InsertFile extends Extension {
     if (vscode.window.activeTextEditor) {
       // アクティブなエディターのファイル名を分解
       start = editor.document.fileName;
-    } else if (vscode.workspace.rootPath) {
-      start = vscode.workspace.rootPath;
+    } else if (Util.getWorkFolder()) {
+      start = Util.getWorkFolder();
     } else {
       start = '~/';
     }

@@ -30,8 +30,8 @@ class OpenFile extends nekoaisle_1.Extension {
             // アクティブなエディターのファイル名を分解
             start = vscode.window.activeTextEditor.document.fileName;
         }
-        else if (vscode.workspace.rootPath) {
-            start = vscode.workspace.rootPath;
+        else if (nekoaisle_1.Util.getWorkFolder()) {
+            start = nekoaisle_1.Util.getWorkFolder();
         }
         else {
             start = '~/';

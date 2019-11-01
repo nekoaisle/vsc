@@ -41,7 +41,7 @@ class FindOpen extends Extension {
     }
 
     // // ファイル名を補正
-    // pattern = Util.normalizePath(pattern, vscode.workspace.rootPath);
+    // pattern = Util.normalizePath(pattern, Util.getWorkFolder());
 
     // 除外ファイルを取得
     let excludes: string = [
@@ -99,7 +99,7 @@ class FindOpen extends Extension {
       }
 
       // ファイル名を補正
-      file = Util.normalizePath(file, vscode.workspace.rootPath);
+      file = Util.normalizePath(file, Util.getWorkFolder());
 
       // ファイルを検索
       let files = this.findFile(file);
@@ -135,7 +135,7 @@ class FindOpen extends Extension {
   }
 
   public findFile(filename: string): string[] {
-    let pinfo = new PathInfo(filename, vscode.workspace.rootPath);
+    let pinfo = new PathInfo(filename, Util.getWorkFolder());
     // let cmd = `find ${pinfo.info.dir} -type f -name "${pinfo.info.base}" ! -path "*/instemole-php/*"`;
     let cmd = `find ${pinfo.info.dir} -type f -name "${pinfo.info.base}"`;
     let res = Util.execCmd(cmd);

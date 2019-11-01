@@ -26,7 +26,7 @@ class OpenTag extends nekoaisle_1.Extension {
     exec() {
         // アクティブなエディター取得
         let editor = vscode.window.activeTextEditor;
-        let cwd = vscode.workspace.rootPath;
+        let cwd = nekoaisle_1.Util.getWorkFolder();
         // 文字列が選択されていたらその文字列のファイルを開く
         let range = editor.selection;
         if (!range.isEmpty) {

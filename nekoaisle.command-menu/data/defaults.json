@@ -57,6 +57,11 @@
     "command": "nekoaisle.insertFile"
   },
   {
+    "label": "N",
+    "description": "新規ファイル編集",
+    "command": "nekoaisle.openNew"
+  },
+  {
     "label": "O",
     "description": "ファイル選択ダイアログ",
     "command": "workbench.action.files.openFile"

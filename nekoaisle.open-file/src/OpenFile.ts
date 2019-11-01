@@ -1,6 +1,6 @@
 'use strict';
 import * as vscode from 'vscode';
-import {Extension, SelectFile, PathInfo} from './nekoaisle.lib/nekoaisle';
+import {Extension, SelectFile, PathInfo, Util} from './nekoaisle.lib/nekoaisle';
 
 /**
  * エクステンション本体
@@ -31,8 +31,8 @@ class OpenFile extends Extension {
     if (vscode.window.activeTextEditor) {
       // アクティブなエディターのファイル名を分解
       start = vscode.window.activeTextEditor.document.fileName;
-    } else if (vscode.workspace.rootPath) {
-      start = vscode.workspace.rootPath;
+    } else if (Util.getWorkFolder()) {
+      start = Util.getWorkFolder();
     } else {
       start = '~/';
     }

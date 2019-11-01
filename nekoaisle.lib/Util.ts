@@ -401,20 +401,20 @@ export module Util {
    * 現在のワークフォルダーを取得
    */
   export function getWorkFolder() {
-    // let dir: string;
-    // let folders = vscode.workspace.workspaceFolders;
-    // if (folders.length > 0) {
-    //   // ワークスペースフォルダーを取得
-    //   // 複数フォルダーあっても先頭のみ
-    //   let uri = folders[0].uri;
-    //   dir = uri.path;
-    // } else {
-    //   dir = process.cwd();
-    // }
+    let dir: string;
+    let folders = vscode.workspace.workspaceFolders;
+    if (folders.length > 0) {
+      // ワークスペースフォルダーを取得
+      // 複数フォルダーあっても先頭のみ
+      let uri = folders[0].uri;
+      dir = uri.path;
+    } else {
+      dir = process.cwd();
+    }
 
-    // return dir;
+    return dir;
 
-    return vscode.workspace.rootPath;
+    // return vscode.workspace.rootPath;
   }
 
   /**
@@ -580,7 +580,7 @@ export module Util {
    * cpss/ope/abcd.php (123)
    * cpss/ope/abcd.php:123
    * cpss/ope/abcd.php: 123
-   * 
+   * /var/www/ragdoll/campt/libcampt/CamptPageOpe.php on line 591
    * @param name タグジャンプ文字列
    * @return タグジャンプ情報
    */
@@ -590,8 +590,9 @@ export module Util {
     };
     // ファイル名と行番号を分離
     let res = [
-      /^(.*)\s*\(([0-9]+)\)$/,  // 末尾が "(123)" or " (123)"
-      /^(.*):\s*([0-9]+)$/,     // 末尾が ":123" or ": 123"
+      /^(.*)\(([0-9]+)\)\s*$/,   // 末尾が "(123)" or " (123)"
+      /^(.*):\s*([0-9]+)\s*$/,      // 末尾が ":123" or ": 123"
+      /^(.*) on line ([0-9]+)\s*$/, // 末尾が " on line 591"
     ];
     let reg = null;
     for (let re of res) {
@@ -604,7 +605,7 @@ export module Util {
     let line: number;
     if (reg) {
       // 行番号が指定された
-      result.filename = reg[1];
+      result.filename = reg[1].trim();
       result.lineNo = parseInt(reg[2]);
     } else {
       result.filename = name;

@@ -43,7 +43,7 @@ class FindOpen extends nekoaisle_1.Extension {
                 return;
             }
             // // ファイル名を補正
-            // pattern = Util.normalizePath(pattern, vscode.workspace.rootPath);
+            // pattern = Util.normalizePath(pattern, Util.getWorkFolder());
             // 除外ファイルを取得
             let excludes = [
                 ...Object.keys((yield vscode.workspace.getConfiguration('search', null).get('exclude')) || {}),
@@ -94,7 +94,7 @@ class FindOpen extends nekoaisle_1.Extension {
                 return;
             }
             // ファイル名を補正
-            file = nekoaisle_1.Util.normalizePath(file, vscode.workspace.rootPath);
+            file = nekoaisle_1.Util.normalizePath(file, nekoaisle_1.Util.getWorkFolder());
             // ファイルを検索
             let files = this.findFile(file);
             if (files.length <= 0) {
@@ -125,7 +125,7 @@ class FindOpen extends nekoaisle_1.Extension {
         });
     }
     findFile(filename) {
-        let pinfo = new nekoaisle_1.PathInfo(filename, vscode.workspace.rootPath);
+        let pinfo = new nekoaisle_1.PathInfo(filename, nekoaisle_1.Util.getWorkFolder());
         // let cmd = `find ${pinfo.info.dir} -type f -name "${pinfo.info.base}" ! -path "*/instemole-php/*"`;
         let cmd = `find ${pinfo.info.dir} -type f -name "${pinfo.info.base}"`;
         let res = nekoaisle_1.Util.execCmd(cmd);

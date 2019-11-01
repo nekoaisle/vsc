@@ -948,6 +948,10 @@
 		"prefix": "printVar",
 		"body": "printVar('${1:name}', $1);",
 		"description": "printVar(名前, 値);"
+	},
+	"EchoDebug": {
+		"prefix": "EchoDebug",
+		"body": "EchoDebug('${1:変数}', $1); die();"
 	}
 
 }
