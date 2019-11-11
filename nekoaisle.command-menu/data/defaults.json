@@ -22,9 +22,34 @@
     "command": "editor.action.jumpToBracket"
   },
   {
+    "label": "*",
+    "description": "パネル位置のトグル",
+    "command": "workbench.action.togglePanelPosition"
+  },
+  {
+    "label": "B",
+    "description": "ファイルエクスプローラ折りたたみ",
+    "command": "nekoaisle.multiCommand",
+    "args": [
+      {
+        "command": "workbench.files.action.focusFilesExplorer",
+        "args": [""]
+      },
+      {
+        "command": "workbench.files.action.collapseExplorerFolders",
+        "args": [""]
+      }
+    ]
+  },
+  {
     "label": "C",
     "description": "計算結果をカーソル位置に挿入",
     "command": "nekoaisle.calc"
+  },
+  {
+    "label": "D",
+    "description": "ネーミング",
+    "command": "extension.codicTranslate"
   },
   {
     "label": "E",
@@ -47,6 +72,11 @@
     "command": "nekoaisle.insertCode"
   },
   {
+    "label": "J",
+    "description": "マーク位置へジャンプ",
+    "command": "nekoaisle.markjumpJump"
+  },
+  {
     "label": "K",
     "description": "関連ファイルを開く",
     "command": "nekoaisle.openRelated"
@@ -55,6 +85,11 @@
     "label": "L",
     "description": "ファイルを挿入",
     "command": "nekoaisle.insertFile"
+  },
+  {
+    "label": "M",
+    "description": "カーソル位置をマーク",
+    "command": "nekoaisle.markjumpMark"
   },
   {
     "label": "N",

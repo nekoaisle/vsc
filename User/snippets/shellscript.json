@@ -56,6 +56,14 @@
 		],
 		"description": "for 文"
 	},
+	"select": {
+		"prefix": "select",
+		"body": [
+			"select ${1:変数} in \"${2:配列}\"; do",
+			"done"
+		],
+		"description": "select var in \"${array[@\"; do"
+	},
 	"function": {
 		"prefix": "function",
 		"body": [
