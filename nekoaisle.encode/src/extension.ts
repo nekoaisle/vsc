@@ -11,7 +11,7 @@
  */
 'use strict';
 import * as vscode from 'vscode';
-import { Util, Extension, EditInsert, EditReplace, DateInfo } from './nekoaisle.lib/nekoaisle';
+import { Util, Extension, EditInsert, EditReplace, DateInfo, ExtensionCommand } from './nekoaisle.lib/nekoaisle';
 import { Parser } from "expr-eval";
 
 /**
@@ -29,8 +29,16 @@ export function deactivate() {
 }
 
 interface encloseResult {
-	range: vscode.Range,
+	range: vscode.Range;
 	str: string;
+};
+
+interface CommandInfo {
+	vscCommand?: string;
+	funcName?: string;
+	args?: string | string[];
+	label: string;
+	description?: string;
 };
 
 /**
@@ -38,249 +46,365 @@ interface encloseResult {
  */
 class MyExtention extends Extension {
 	/**
+	 * 機能データー
+	 */
+	static commandInfo: CommandInfo[]  = [
+		// 変換
+		{
+			label: '=== 変換 =======================================',
+		}, {
+			// 大文字
+			vscCommand: 'nekoaisle.toUpperCase',
+			funcName: 'encodeJob',
+			args: 'toUpperCase',
+			label: 'toUpperCase',
+			description: '大文字に変換',
+		}, {
+			// 小文字
+			vscCommand: 'nekoaisle.toLowerCase',
+			funcName: 'encodeJob',
+			args: 'toLowerCase',
+			label: 'toLowerCase',
+			description: '小文字に変換',
+		}, {
+			// 文字をASCIIコードに変換
+			vscCommand: 'nekoaisle.encodeASCII',
+			funcName: 'encodeJob',
+			args: "ASCII",
+			label: 'ASCII',
+			description: '文字をASCIIコードに変換',
+		}, {
+			// キャメルケースに変換
+			vscCommand: 'nekoaisle.encodeCamel',
+			funcName: 'encodeJob',
+			args: "Camel",
+			label: 'Camel',
+			description: 'キャメルケースに変換',
+		}, {
+			// スネークケースに変換
+			vscCommand: 'nekoaisle.encodeSnake',
+			funcName: 'encodeJob',
+			args: "Snake",
+			label: 'Snake',
+			description: 'スネークケースに変換',
+		}, {
+			// 式を評価
+			vscCommand: 'nekoaisle.encodeEval',
+			funcName: 'encodeJob',
+			args: "eval",
+			label: 'eval',
+			description: '式を計算結果に変換',
+		},
+
+		// 以下エンコード
+		{
+			label: '=== エンコード ====================================',
+		}, {
+			// HTML エンコード
+			vscCommand: 'nekoaisle.encodeHtml',
+			funcName: 'encodeJob',
+			args: 'HTML',
+			label: 'HTML',
+			description: '特殊文字を HTML エンティティに変換する',
+		}, {
+			// URL エンコード
+			vscCommand: 'nekoaisle.encodeUrl',
+			funcName: 'encodeJob',
+			args: 'URL',
+			label: 'URL',
+			description: '文字列を URL エンコードする',
+		}, {
+			// BASE64 エンコード
+			vscCommand: 'nekoaisle.encodeBase64',
+			funcName: 'encodeJob',
+			args: 'BASE64',
+			label: 'BASE64',
+			description: 'MIME base64 方式でデータをエンコードする',
+		}, {
+			// C言語文字列
+			vscCommand: 'nekoaisle.encodeCString',
+			funcName: 'encodeJob',
+			args: 'c-string', 
+			label: 'c-string',
+			description: 'C 言語と同様にスラッシュで文字列をクォートする',
+		}, {
+			// 正規表現
+			vscCommand: 'nekoaisle.encodePreg',
+			funcName: 'encodeJob',
+			args: 'preg', 
+			label: 'preg',
+			description: '正規表現文字をクオートする',
+		}, {
+			// '' の中身
+			vscCommand: 'nekoaisle.encodeContentsOfSingleQuotation',
+			funcName: 'encodeJob',
+			args: "'", 
+			label: "'",
+			description: "' を \\' にする",
+		}, {
+			// "" の中身
+			vscCommand: 'nekoaisle.encodeContentsOfDoubleQuotation',
+			funcName: 'encodeJob',
+			args: "'", 
+			label: '"',
+			description: '" を \\" にする',
+		}, {
+			// UNIXTIME
+			vscCommand: 'nekoaisle.encodeContentsOfUnixtime',
+			funcName: 'encodeJob',
+			args: "UNIXTIME", 
+			label: 'UNIXTIME',
+			description: '日時文字列をUNIXTIMEに変換',
+		}, {
+			// \n -> <br />
+			vscCommand: 'nekoaisle.encodeBr',
+			funcName: 'encodeJob',
+			args: "<br>", 
+			label: '<br>',
+			description: '\\n を <br />\\n にする',
+		}, {
+			// 16進数
+			vscCommand: 'nekoaisle.encodeHex',
+			funcName: 'encodeJob',
+			args: "Hex", 
+			label: 'Hex',
+			description: '10進数を16進数に変換',
+		}, {
+			// 2進数
+			vscCommand: 'nekoaisle.encodeBit',
+			funcName: 'encodeJob',
+			args: "Bit", 
+			label: 'Bit',
+			description: '10進数を2進数に変換',
+		},
+			
+		// 以下デコード
+		{
+			label: '=== デコード =====================================',
+		}, {
+			// HTML デコード
+			vscCommand: 'nekoaisle.decodeHtml',
+			funcName: 'decodeJob',
+			args: 'HTML', 
+			label: 'HTML decode',
+			description: 'HTML エンティティを適切な文字に変換する',
+		}, {
+			// URL デコード
+			vscCommand: 'nekoaisle.decodeUrl',
+			funcName: 'decodeJob',
+			args: 'URL', 
+			label: 'URL decode',
+			description: 'URL エンコードされた文字列をデコードする',
+		}, {
+			// BASE64 デコード
+			vscCommand: 'nekoaisle.decodeBase64',
+			funcName: 'decodeJob',
+			args: 'BASE64', 
+			label: 'BASE64 decode',
+			description: 'MIME base64 方式によりエンコードされたデータをデコードする',
+		}, {
+			// C言語文字列
+			vscCommand: 'nekoaisle.decodeCString',
+			funcName: 'decodeJob',
+			args: 'c-string', 
+			label: 'c-string decode',
+			description: 'C 言語文字列をアンクォートする',
+		}, {
+			// 正規表現
+			vscCommand: 'nekoaisle.decodePreg',
+			funcName: 'decodeJob',
+			args: 'preg', 
+			label: 'preg decode',
+			description: '正規表現文字をアンクオートする',
+		}, {
+			// '' の中身
+			vscCommand: 'nekoaisle.decodeContentsOfSingleQuotation',
+			funcName: 'decodeJob',
+			args: "'", 
+			label: "' decode",
+			description: "\\' を ' にする",
+		}, {
+			// "" の中身
+			vscCommand: 'nekoaisle.decodeContentsOfDoubleQuotation',
+			funcName: 'decodeJob',
+			args: "'", 
+			label: '" decode',
+			description: '\\" を " にする',
+		}, {
+			// UNIXTIME
+			vscCommand: 'nekoaisle.decodeContentsOfUnixtime',
+			funcName: 'decodeJob',
+			args: "UNIXTIME", 
+			label: 'UNIXTIME decode',
+			description: 'UNIXTIMEを日時文字列に変換',
+		}, {
+			// UNIXTIME
+			vscCommand: 'nekoaisle.decodeBr',
+			funcName: 'decodeJob',
+			args: "<br>", 
+			label: '<br> decode',
+			description: '<br /> を \\n にする',
+		}, {
+			// 16進数
+			vscCommand: 'nekoaisle.decodeHex',
+			funcName: 'decodeJob',
+			args: "Hex", 
+			label: 'Hex decode',
+			description: '16進数を10進数に変換',
+		}, {
+			// 2進数
+			vscCommand: 'nekoaisle.decodeBit',
+			funcName: 'decodeJob',
+			args: "Bit", 
+			label: 'Bit decode',
+			description: '2進数を10進数に変換',
+		},
+			
+		// 以下 enclose
+		{
+			label: '=== 括り =======================================',
+		}, {
+			// '' 括り
+			vscCommand: 'nekoaisle.encloseInSingleQuotation',
+			funcName: 'enclose',
+			args: ["'", "'"], 
+			label: "''",
+			description: '\' で単語または選択範囲を括る/外す',
+		}, {
+			// "" 括り
+			vscCommand: 'nekoaisle.encloseInDoubleQuotation',
+			funcName: 'enclose',
+			args: ['"', '"'], 
+			label: '""',
+			description: '" で単語または選択範囲を括る/外す',
+		}, {
+			// `` 括り
+			vscCommand: 'nekoaisle.encloseInGraveAccent',
+			funcName: 'enclose',
+			args: ['\u0060', '\u0060'], 
+			label: '``',
+			description: '\u0060 で単語または選択範囲を括る/外す',
+		}, {
+			// () 括り
+			vscCommand: 'nekoaisle.encloseParenthesis',
+			funcName: 'enclose',
+			args: ['(', ')'], 
+			label: '()',
+			description: '() で単語または選択範囲を括る/外す',
+		}, {
+			// [] 括り
+			vscCommand: 'nekoaisle.encloseSquareBracket',
+			funcName: 'enclose',
+			args: ['[', ']'], 
+			label: '[]',
+			description: '[] で単語または選択範囲を括る/外す',
+		}, {
+			// <> 括り
+			vscCommand: 'nekoaisle.encloseAngleBracket',
+			funcName: 'enclose',
+			args: ['<', '>'], 
+			label: '<>',
+			description: '<> で単語または選択範囲を括る/外す',
+		}, {
+			// {} 括り
+			vscCommand: 'nekoaisle.encloseCurlyBracket',
+			funcName: 'enclose',
+			args: ['{', '}'], 
+			label: '{}',
+			description: '{} で単語または選択範囲を括る/外す',
+		}, {
+			// {{}} 括り
+			vscCommand: 'nekoaisle.encloseDoubleCurlyBracket',
+			funcName: 'enclose',
+			args: ['{{', '}}'], 
+			label: '{{}}',
+			description: '{{}} で単語または選択範囲を括る/外す',
+		}, {
+			// /**/ 括り
+			vscCommand: 'nekoaisle.encloseCComment',
+			funcName: 'enclose',
+			args: ['/*', '*/'], 
+			label: '/**/',
+			description: '/**/ で単語または選択範囲を括る/外す',
+		}, {
+			// <!-- --> 括り
+			vscCommand: 'nekoaisle.encloseHtmlComment',
+			funcName: 'enclose',
+			args: ['<!-- ', ' -->'], 
+			label: '<!-- -->',
+			description: 'HTML コメント/外す',
+		}, {
+			// <div class=""></div> 括り
+			vscCommand: 'nekoaisle.encloseHtmlDiv',
+			funcName: 'enclose',
+			args: ['<div class="">\n', '\n</div>'], 
+			label: '<div class="">',
+			description: '<div class=""></div> で単語または選択範囲を括る/外す',
+		}
+	];
+
+	/**
 	 * 構築
 	 */
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
 			name: '選択範囲をエンコード',
 			config: 'encode',		// 通常はコマンドのサフィックス
-			commands: [
-				{
+			commands: ((): ExtensionCommand[] => {
+				// 戻り値
+				let cmds: ExtensionCommand[] = [];
+
+				// メニュー
+				cmds.push({
 					// メニュー表示
 					command: 'nekoaisle.encode',
-					callback: () => {
-						this.menu()
-					}
-				},
+					callback: () => { this.menu(); }
+				});
 
-				// 変換
-				{
-					// 大文字
-					command: 'nekoaisle.toUpperCase',
-					callback: () => {
-						this.encodeJob('UpperCase', vscode.window.activeTextEditor);
+				// 機能を登録
+				for (let data of MyExtention.commandInfo) {
+					if (!data.funcName) {
+						continue;
 					}
-				}, {
-					// 小文字
-					command: 'nekoaisle.toLowerCase',
-					callback: () => {
-						this.encodeJob('LowerCase', vscode.window.activeTextEditor);
-					}
-				}, {
-					// 文字をASCIIコードに変換
-					command: 'nekoaisle.encodeASCII',
-					callback: () => {
-						this.encodeJob("ASCII", vscode.window.activeTextEditor);
-					}
-				}, {
-					// キャメルケースに変換
-					command: 'nekoaisle.encodeCamel',
-					callback: () => {
-						this.encodeJob("Camel", vscode.window.activeTextEditor);
-					}
-				}, {
-					// スネークケースに変換
-					command: 'nekoaisle.encodeSnake',
-					callback: () => {
-						this.encodeJob("Snake", vscode.window.activeTextEditor);
-					}
-				}, {
-					// 式を評価
-					command: 'nekoaisle.encodeEval',
-					callback: () => {
-						this.encodeJob("eval", vscode.window.activeTextEditor);
-					}
-				},
 
-				// 以下エンコード
-				{
-					// HTML エンコード
-					command: 'nekoaisle.encodeHtml',
-					callback: () => {
-						this.encodeJob('HTML', vscode.window.activeTextEditor);
+					// コールバックを作成
+					let callback: () => void;
+					switch (data.funcName) {
+						// エンコーダー
+						case 'encodeJob': {
+							callback = () => {
+								let cmd = <string>data.args;
+								this.encodeJob(cmd, vscode.window.activeTextEditor);
+							}
+							break;
+						}
+						// デコーダー
+						case 'decodeJob': {
+							callback = () => {
+								let cmd = <string>data.args;
+								this.decodeJob(cmd, vscode.window.activeTextEditor);
+							}
+							break;
+						}
+						// エンクロージャ
+						case 'enclose': {
+							callback = () => {
+								let left = <string>data.args[0];
+								let right = <string>data.args[1];
+								this.enclose(left, right, vscode.window.activeTextEditor);
+							}
+							break;
+						}
 					}
-				}, {
-					// URL エンコード
-					command: 'nekoaisle.encodeUrl',
-					callback: () => {
-						this.encodeJob('URL', vscode.window.activeTextEditor);
-					}
-				}, {
-					// BASE64 エンコード
-					command: 'nekoaisle.encodeBase64',
-					callback: () => {
-						this.encodeJob('BASE64', vscode.window.activeTextEditor);
-					}
-				}, {
-					// C言語文字列
-					command: 'nekoaisle.encodeCString',
-					callback: () => {
-						this.encodeJob('c-string', vscode.window.activeTextEditor);
-					}
-				}, {
-					// 正規表現
-					command: 'nekoaisle.encodePreg',
-					callback: () => {
-						this.encodeJob('preg', vscode.window.activeTextEditor);
-					}
-				}, {
-					// '' の中身
-					command: 'nekoaisle.encodeContentsOfSingleQuotation',
-					callback: () => {
-						this.encodeJob("'", vscode.window.activeTextEditor);
-					}
-				}, {
-					// "" の中身
-					command: 'nekoaisle.encodeContentsOfDoubleQuotation',
-					callback: () => {
-						this.encodeJob("'", vscode.window.activeTextEditor);
-					}
-				}, {
-					// UNIXTIME
-					command: 'nekoaisle.encodeContentsOfUnixtime',
-					callback: () => {
-						this.encodeJob("UNIXTIME", vscode.window.activeTextEditor);
-					}
-				}, {
-					// 16進数
-					command: 'nekoaisle.encodeHex',
-					callback: () => {
-						this.encodeJob("Hex", vscode.window.activeTextEditor);
-					}
-				}, {
-					// 2進数
-					command: 'nekoaisle.encodeBit',
-					callback: () => {
-						this.encodeJob("Bit", vscode.window.activeTextEditor);
-					}
-				}, 
-				
-				// 以下デコード
-				{
-					// HTML デコード
-					command: 'nekoaisle.decodeHtml',
-					callback: () => {
-						this.decodeJob('HTML', vscode.window.activeTextEditor);
-					}
-				}, {
-					// URL デコード
-					command: 'nekoaisle.decodeUrl',
-					callback: () => {
-						this.decodeJob('URL', vscode.window.activeTextEditor);
-					}
-				}, {
-					// BASE64 デコード
-					command: 'nekoaisle.decodeBase64',
-					callback: () => {
-						this.decodeJob('BASE64', vscode.window.activeTextEditor);
-					}
-				}, {
-					// C言語文字列
-					command: 'nekoaisle.decodeCString',
-					callback: () => {
-						this.decodeJob('c-string', vscode.window.activeTextEditor);
-					}
-				}, {
-					// 正規表現
-					command: 'nekoaisle.decodePreg',
-					callback: () => {
-						this.decodeJob('preg', vscode.window.activeTextEditor);
-					}
-				}, {
-					// '' の中身
-					command: 'nekoaisle.decodeContentsOfSingleQuotation',
-					callback: () => {
-						this.decodeJob("'", vscode.window.activeTextEditor);
-					}
-				}, {
-					// "" の中身
-					command: 'nekoaisle.decodeContentsOfDoubleQuotation',
-					callback: () => {
-						this.decodeJob("'", vscode.window.activeTextEditor);
-					}
-				}, {
-					// UNIXTIME
-					command: 'nekoaisle.decodeContentsOfUnixtime',
-					callback: () => {
-						this.decodeJob("UNIXTIME", vscode.window.activeTextEditor);
-					}
-				}, {
-					// 16進数
-					command: 'nekoaisle.decodeHex',
-					callback: () => {
-						this.decodeJob("Hex", vscode.window.activeTextEditor);
-					}
-				}, {
-					// 2進数
-					command: 'nekoaisle.decodeBit',
-					callback: () => {
-						this.decodeJob("Bit", vscode.window.activeTextEditor);
-					}
-				},
-				
-				// 以下 enclose
-				{
-					// '' 括り
-					command: 'nekoaisle.encloseInSingleQuotation',
-					callback: () => {
-						this.enclose("'", "'", vscode.window.activeTextEditor);
-					}
-				}, {
-					// "" 括り
-					command: 'nekoaisle.encloseInDoubleQuotation',
-					callback: () => {
-						this.enclose('"', '"', vscode.window.activeTextEditor);
-					}
-				}, {
-					// `` 括り
-					command: 'nekoaisle.encloseInGraveAccent',
-					callback: () => {
-						this.enclose('\u0060', '\u0060', vscode.window.activeTextEditor);
-					}
-				}, {
-					// () 括り
-					command: 'nekoaisle.encloseParenthesis',
-					callback: () => {
-						this.enclose('(', ')', vscode.window.activeTextEditor);
-					}
-				}, {
-					// [] 括り
-					command: 'nekoaisle.encloseSquareBracket',
-					callback: () => {
-						this.enclose('[', ']', vscode.window.activeTextEditor);
-					}
-				}, {
-					// {} 括り
-					command: 'nekoaisle.encloseCurlyBracket',
-					callback: () => {
-						this.enclose('{', '}', vscode.window.activeTextEditor);
-					}
-				}, {
-					// {{}} 括り
-					command: 'nekoaisle.encloseDoubleCurlyBracket',
-					callback: () => {
-						this.enclose('{{', '}}', vscode.window.activeTextEditor);
-					}
-				}, {
-					// /**/ 括り
-					command: 'nekoaisle.encloseCComment',
-					callback: () => {
-						this.enclose('/*', '*/', vscode.window.activeTextEditor);
-					}
-				}, {
-					// <!-- --> 括り
-					command: 'nekoaisle.encloseHtmlComment',
-					callback: () => {
-						this.enclose('<!-- ', ' -->', vscode.window.activeTextEditor);
-					}
-				}, {
-					// <div class=""></div> 括り
-					command: 'nekoaisle.encloseHtmlDiv',
-					callback: () => {
-						this.enclose('<div class="">\n', '\n</div>',vscode.window.activeTextEditor);
-					}
+
+					// 登録するコマンド作成
+					cmds.push({
+						command: data.vscCommand,
+						callback: callback,
+					});
 				}
-			]
+				return cmds;
+			})()
 		});
 	}
 
@@ -288,50 +412,15 @@ class MyExtention extends Extension {
 	 * メニューから選択して実行
 	 */
 	public menu() {
-		let menu: vscode.QuickPickItem[] = [
-			{ label: 'toUpperCase', description: '大文字に変換' },
-			{ label: 'toLowerCase', description: '小文字に変換' },
-			{ label: 'ASCII', description: '文字をASCIIコードに変換' },
-			{ label: 'Camel', description: 'キャメルケースに変換' },
-			{ label: 'Snake', description: 'スネークケースに変換' },
-			{ label: 'eval', description: '式を計算結果に変換' },
+		// メニューを作成
+		let menu: vscode.QuickPickItem[] = [];
+		for (let data of MyExtention.commandInfo) {
+			menu.push({
+				label: data.label,
+				description: data.description,
+			});
+		}
 
-			{ label: 'HTML', description: '特殊文字を HTML エンティティに変換する' },
-			{ label: 'URL', description: '文字列を URL エンコードする' },
-			{ label: 'BASE64', description: 'MIME base64 方式でデータをエンコードする' },
-			{ label: 'c-string', description: 'C 言語と同様にスラッシュで文字列をクォートする' },
-			{ label: 'preg', description: '正規表現文字をクオートする' },
-			{ label: "'", description: "' を \\' にする" },
-			{ label: '"', description: '" を \\" にする' },
-			{ label: '<br>', description: '\\n を <br /> にする' },
-			{ label: 'UNIXTIME', description: '日時文字列をUNIXTIMEに変換' },
-			{ label: 'Hex', description: '10進数を16進数に変換' },
-			{ label: 'Bit', description: '10進数を2進数に変換' },
-			
-			{ label: "''", description: '\' で単語または選択範囲を括る/外す' },
-			{ label: '""', description: '" で単語または選択範囲を括る/外す' },
-			{ label: '``', description: '\u0060 で単語または選択範囲を括る/外す' },
-			{ label: '()', description: '() で単語または選択範囲を括る/外す' },
-			{ label: '[]', description: '[] で単語または選択範囲を括る/外す' },
-			{ label: '<>', description: '<> で単語または選択範囲を括る/外す' },
-			{ label: '{}', description: '{} で単語または選択範囲を括る/外す' },
-			{ label: '{{}}', description: '{{}} で単語または選択範囲を括る/外す' },
-			{ label: '/**/', description: '/**/ で単語または選択範囲を括る/外す' },
-			{ label: '<!-- -->', description: 'HTML コメント/外す' },
-			{ label: '<div class="">', description: '<div class=""></div> で単語または選択範囲を括る/外す' },
-
-			{ label: 'HTML decode', description: 'HTML エンティティを適切な文字に変換する' },
-			{ label: 'URL decode', description: 'URL エンコードされた文字列をデコードする' },
-			{ label: 'BASE64 decode', description: 'MIME base64 方式によりエンコードされたデータをデコードする' },
-			{ label: 'c-string decode', description: 'C 言語文字列をアンクォートする' },
-			{ label: 'preg decode', description: '正規表現文字をアンクオートする' },
-			{ label: "' decode", description: "\\' を ' にする" },
-			{ label: '" decode', description: '\\" を " にする' },
-			{ label: '<br> decode', description: '<br /> を \\n にする' },
-			{ label: 'UNIXTIME decode', description: 'UNIXTIMEを日時文字列に変換' },
-			{ label: 'Hex decode', description: '16進数を10進数に変換' },
-			{ label: 'Bit decode', description: '2進数を10進数に変換' },
-		];
 		// ファイルを選択
 		let popt = {
 			placeHolder: 'エンコードの種類を選択してください。',
@@ -375,14 +464,21 @@ class MyExtention extends Extension {
 	 */
 	protected encodeJob(type: string, editor: vscode.TextEditor): void {
 		let datas: EditReplace[] = [];
-		for (let range of editor.selections) {
+		for (let r of editor.selections) {
+			let range = Util.cloneObject(r);
 			let str: string;
 			if (!range.isEmpty) {
 				// 範囲選択されているのでそれを対象とする
 				str = editor.document.getText(range);
 			} else {
-				// 範囲選択されていないのでクリップボード
-				str = Util.getClipboard();
+				// // 範囲選択されていないのでクリップボード
+				// str = Util.getClipboard();
+
+				// // 範囲選択されていないのでカーソル位置の単語
+				// カーソル位置の単語の範囲を取得
+				range = Util.getCursorWordRange(editor, range.start);
+				// 単語の範囲の文字列を返す
+				str = editor.document.getText(range);
 			}
 
 			// エンコードする
@@ -412,8 +508,14 @@ class MyExtention extends Extension {
 				// 範囲選択されているのでそれを対象とする
 				str = editor.document.getText(range);
 			} else {
-				// 範囲選択されていないのでクリップボード
-				str = Util.getClipboard();
+				// // 範囲選択されていないのでクリップボード
+				// str = Util.getClipboard();
+
+				// // 範囲選択されていないのでカーソル位置の単語
+				// カーソル位置の単語の範囲を取得
+				let r = Util.getCursorWordRange(editor, range.start);
+				// 単語の範囲の文字列を返す
+				str = editor.document.getText(r);
 			}
 
 			// デコードする
@@ -442,7 +544,7 @@ class MyExtention extends Extension {
 			// toUpperCase
 			case 'toUpperCase': str = str.toLocaleUpperCase(); break;
 			// toLoweCase
-			case 'toLoweCase': str = str.toLocaleLowerCase(); break;
+			case 'toLowerCase': str = str.toLocaleLowerCase(); break;
 			// HTML encode
 			case 'HTML': str = Util.encodeHtml(str); break;
 			// URL encode

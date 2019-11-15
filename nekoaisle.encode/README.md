@@ -1,6 +1,6 @@
 ## nekoaisle.encode の機能
 
-### 選択範囲またはクリップボードの内容を変換します。
+### 選択範囲またはカーソル位置の単語の内容を変換します。
 1. 大文字に変換
 1. 小文字に変換
 1. スネークケースをキャメルケースに変換
@@ -8,7 +8,7 @@
 1. 文字をASCIIコードに変換
 1. 式を評価
 
-### 選択範囲またはクリップボードの内容を各種エンコード/デコードします。
+### 選択範囲またはカーソル位置の単語を各種エンコード/デコードします。
 1. HTML encode
 1. URL encode
 1. Base64 encode
@@ -73,6 +73,7 @@
 | nekoaisle.encloseInGraveAccen             | `` で括る/外す                       |
 | nekoaisle.encloseParenthesis              | () 括る/外す                         |
 | nekoaisle.encloseSquareBracket            | [] 括る/外す                         |
+| nekoaisle.encloseAngleBracket             | <> 括る/外す                         |
 | nekoaisle.encloseCurlyBracket             | {} 括る/外す                         |
 | nekoaisle.encloseDoubleCurlyBracket       | {{}} 括る/外す                       |
 | nekoaisle.encloseCComment                 | /**/ 括る/外す                       |
