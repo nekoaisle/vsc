@@ -1,6 +1,14 @@
 ## nekoaisle.encode の機能
 
-### 選択範囲またはカーソル位置の単語を各種エンコード/デコードします。
+### 選択範囲またはクリップボードの内容を変換します。
+1. 大文字に変換
+1. 小文字に変換
+1. スネークケースをキャメルケースに変換
+1. キャメルケースをスネークケースに変換
+1. 文字をASCIIコードに変換
+1. 式を評価
+
+### 選択範囲またはクリップボードの内容を各種エンコード/デコードします。
 1. HTML encode
 1. URL encode
 1. Base64 encode
@@ -9,6 +17,9 @@
 1. " 括り文字列内の " および \
 1. ' 括り文字列内の ' および \
 1. UNIXTIME/日時文字列
+1. 改行文字を <br />
+1. 10進数/16進数
+1. 10進数/2進数
 
 ### 単語または選択範囲を下記の文字で括る/外す
 1. ""
@@ -28,39 +39,45 @@
 上記いずれでもない場合は括ります。
 
 ## 使い方
-エンコード/デコードしたい文字列を選択し escape e を押します。  
-メニューが表示されますのでエンコード/デコードしたい種類を選んで enter を押してください。
+エンコード/デコードしたい文字列を選択しキーボードショートカットまたはコマンドパレットから下記コマンドを実行します。    
 
 ## コマンドおよびキーマップ
-|コマンド                                   |機能                  |キーマップ|
-|-------------------------------------------|----------------------|----------|
-|nekoaisle.encode                           |メニューを開く        |          |
-|nekoaisle.encodeHtml                       |HTML エンコード       |          |
-|nekoaisle.encodeUrl                        |URL エンコード        |          |
-|nekoaisle.encodeBase64                     |BASE64 エンコード     |          |
-|nekoaisle.encodeCString                    |C言語文字列 エンコード|          |
-|nekoaisle.encodePreg                       |正規表現 エンコード   |          |
-|nekoaisle.encodeContentsOfSingleQuotation  |'' の中身をエンコード |          |
-|nekoaisle.encodeContentsOfDoubleQuotation  |"" の中身をエンコード |          |
-|nekoaisle.encodeContentsOfUnixtime         |日時文字列をUNIXTIMEに|          |
-|nekoaisle.decodeHtml                       |HTML デコード         |          |
-|nekoaisle.decodeUrl                        |URL デコード          |          |
-|nekoaisle.decodeBase64                     |BASE64 デコード       |          |
-|nekoaisle.decodeCString                    |C言語文字列 デコード  |          |
-|nekoaisle.decodePreg                       |正規表現 デコード     |          |
-|nekoaisle.decodeContentsOfSingleQuotation  |'' の中身をデコード   |          |
-|nekoaisle.decodeContentsOfDoubleQuotation  |"" の中身をデコード   |          |
-|nekoaisle.decodeContentsOfUnixtime         |UNIXTIMEを日時文字列に|          |
-|nekoaisle.encloseInSingleQuotation         |'' で括る/外す        |          |
-|nekoaisle.encloseInDoubleQuotation         |"" で括る/外す        |          |
-|nekoaisle.encloseInGraveAccen              |`` で括る/外す        |          |
-|nekoaisle.encloseParenthesis               |() 括る/外す          |          |
-|nekoaisle.encloseSquareBracket             |[] 括る/外す          |          |
-|nekoaisle.encloseCurlyBracket              |{} 括る/外す          |          |
-|nekoaisle.encloseDoubleCurlyBracket        |{{}} 括る/外す        |          |
-|nekoaisle.encloseCComment                  |/**/ 括る/外す        |          |
-|nekoaisle.encloseHtmlComment               |<!-- --> 括る/外す    |          |
-|nekoaisle.encloseHtmlDiv                   |<div class=""></div> 括る/外す|          |
+|                 コマンド                  |                 機能                 |
+| ----------------------------------------- | ------------------------------------ |
+| nekoaisle.encode                          | メニューを開く                       |
+| nekoaisle.toUpperCase                     | 大文字に変換                         |
+| nekoaisle.toLowerCase                     | 小文字に変換                         |
+| nekoaisle.encodeSnake                     | スネークケースをキャメルケースに変換 |
+| nekoaisle.encodeCamel                     | キャメルケースをスネークケースに変換 |
+| nekoaisle.encodeASCII                     | 文字をASCIIコードに変換              |
+| nekoaisle.encodeEval                      | 式を評価                             |
+| nekoaisle.encodeHtml                      | HTML エンコード                      |
+| nekoaisle.encodeUrl                       | URL エンコード                       |
+| nekoaisle.encodeBase64                    | BASE64 エンコード                    |
+| nekoaisle.encodeCString                   | C言語文字列 エンコード               |
+| nekoaisle.encodePreg                      | 正規表現 エンコード                  |
+| nekoaisle.encodeContentsOfSingleQuotation | '' の中身をエンコード                |
+| nekoaisle.encodeContentsOfDoubleQuotation | "" の中身をエンコード                |
+| nekoaisle.encodeContentsOfUnixtime        | 日時文字列をUNIXTIMEに               |
+| nekoaisle.encodeEval                      | 式を評価                             |
+| nekoaisle.decodeHtml                      | HTML デコード                        |
+| nekoaisle.decodeUrl                       | URL デコード                         |
+| nekoaisle.decodeBase64                    | BASE64 デコード                      |
+| nekoaisle.decodeCString                   | C言語文字列 デコード                 |
+| nekoaisle.decodePreg                      | 正規表現 デコード                    |
+| nekoaisle.decodeContentsOfSingleQuotation | '' の中身をデコード                  |
+| nekoaisle.decodeContentsOfDoubleQuotation | "" の中身をデコード                  |
+| nekoaisle.decodeContentsOfUnixtime        | UNIXTIMEを日時文字列に               |
+| nekoaisle.encloseInSingleQuotation        | '' で括る/外す                       |
+| nekoaisle.encloseInDoubleQuotation        | "" で括る/外す                       |
+| nekoaisle.encloseInGraveAccen             | `` で括る/外す                       |
+| nekoaisle.encloseParenthesis              | () 括る/外す                         |
+| nekoaisle.encloseSquareBracket            | [] 括る/外す                         |
+| nekoaisle.encloseCurlyBracket             | {} 括る/外す                         |
+| nekoaisle.encloseDoubleCurlyBracket       | {{}} 括る/外す                       |
+| nekoaisle.encloseCComment                 | /**/ 括る/外す                       |
+| nekoaisle.encloseHtmlComment              | <!-- --> 括る/外す                   |
+| nekoaisle.encloseHtmlDiv                  | <div class=""></div> 括る/外す       |
 
 # 問題点
 カーソル位置がくくる文字だった場合の処理ができていない＞＜；  

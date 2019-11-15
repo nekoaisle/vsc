@@ -12,6 +12,7 @@
 'use strict';
 import * as vscode from 'vscode';
 import { Util, Extension, EditInsert, EditReplace, DateInfo } from './nekoaisle.lib/nekoaisle';
+import { Parser } from "expr-eval";
 
 /**
  * エクステンション活性化
@@ -51,8 +52,8 @@ class MyExtention extends Extension {
 						this.menu()
 					}
 				},
-				
-				// 以下エンコード
+
+				// 変換
 				{
 					// 大文字
 					command: 'nekoaisle.toUpperCase',
@@ -66,6 +67,33 @@ class MyExtention extends Extension {
 						this.encodeJob('LowerCase', vscode.window.activeTextEditor);
 					}
 				}, {
+					// 文字をASCIIコードに変換
+					command: 'nekoaisle.encodeASCII',
+					callback: () => {
+						this.encodeJob("ASCII", vscode.window.activeTextEditor);
+					}
+				}, {
+					// キャメルケースに変換
+					command: 'nekoaisle.encodeCamel',
+					callback: () => {
+						this.encodeJob("Camel", vscode.window.activeTextEditor);
+					}
+				}, {
+					// スネークケースに変換
+					command: 'nekoaisle.encodeSnake',
+					callback: () => {
+						this.encodeJob("Snake", vscode.window.activeTextEditor);
+					}
+				}, {
+					// 式を評価
+					command: 'nekoaisle.encodeEval',
+					callback: () => {
+						this.encodeJob("eval", vscode.window.activeTextEditor);
+					}
+				},
+
+				// 以下エンコード
+				{
 					// HTML エンコード
 					command: 'nekoaisle.encodeHtml',
 					callback: () => {
@@ -113,9 +141,21 @@ class MyExtention extends Extension {
 					callback: () => {
 						this.encodeJob("UNIXTIME", vscode.window.activeTextEditor);
 					}
-				},
+				}, {
+					// 16進数
+					command: 'nekoaisle.encodeHex',
+					callback: () => {
+						this.encodeJob("Hex", vscode.window.activeTextEditor);
+					}
+				}, {
+					// 2進数
+					command: 'nekoaisle.encodeBit',
+					callback: () => {
+						this.encodeJob("Bit", vscode.window.activeTextEditor);
+					}
+				}, 
 				
-				// 以下でコード
+				// 以下デコード
 				{
 					// HTML デコード
 					command: 'nekoaisle.decodeHtml',
@@ -163,6 +203,18 @@ class MyExtention extends Extension {
 					command: 'nekoaisle.decodeContentsOfUnixtime',
 					callback: () => {
 						this.decodeJob("UNIXTIME", vscode.window.activeTextEditor);
+					}
+				}, {
+					// 16進数
+					command: 'nekoaisle.decodeHex',
+					callback: () => {
+						this.decodeJob("Hex", vscode.window.activeTextEditor);
+					}
+				}, {
+					// 2進数
+					command: 'nekoaisle.decodeBit',
+					callback: () => {
+						this.decodeJob("Bit", vscode.window.activeTextEditor);
 					}
 				},
 				
@@ -239,6 +291,10 @@ class MyExtention extends Extension {
 		let menu: vscode.QuickPickItem[] = [
 			{ label: 'toUpperCase', description: '大文字に変換' },
 			{ label: 'toLowerCase', description: '小文字に変換' },
+			{ label: 'ASCII', description: '文字をASCIIコードに変換' },
+			{ label: 'Camel', description: 'キャメルケースに変換' },
+			{ label: 'Snake', description: 'スネークケースに変換' },
+			{ label: 'eval', description: '式を計算結果に変換' },
 
 			{ label: 'HTML', description: '特殊文字を HTML エンティティに変換する' },
 			{ label: 'URL', description: '文字列を URL エンコードする' },
@@ -249,9 +305,8 @@ class MyExtention extends Extension {
 			{ label: '"', description: '" を \\" にする' },
 			{ label: '<br>', description: '\\n を <br /> にする' },
 			{ label: 'UNIXTIME', description: '日時文字列をUNIXTIMEに変換' },
-			{ label: 'ASCII', description: '文字をASCIIコードに変換' },
-			{ label: 'Camel', description: 'キャメルケースに変換' },
-			{ label: 'Snake', description: 'スネークケースに変換' },
+			{ label: 'Hex', description: '10進数を16進数に変換' },
+			{ label: 'Bit', description: '10進数を2進数に変換' },
 			
 			{ label: "''", description: '\' で単語または選択範囲を括る/外す' },
 			{ label: '""', description: '" で単語または選択範囲を括る/外す' },
@@ -274,6 +329,8 @@ class MyExtention extends Extension {
 			{ label: '" decode', description: '\\" を " にする' },
 			{ label: '<br> decode', description: '<br /> を \\n にする' },
 			{ label: 'UNIXTIME decode', description: 'UNIXTIMEを日時文字列に変換' },
+			{ label: 'Hex decode', description: '16進数を10進数に変換' },
+			{ label: 'Bit decode', description: '2進数を10進数に変換' },
 		];
 		// ファイルを選択
 		let popt = {
@@ -329,7 +386,7 @@ class MyExtention extends Extension {
 			}
 
 			// エンコードする
-			str = this.encode(str, type, editor);
+			str = this.encode(str, type);
 
 			// 処理を配列に保存
 			datas.push({
@@ -379,7 +436,7 @@ class MyExtention extends Extension {
 	 * @param type 変換方法
 	 * @param editor 対象エディター
 	 */
-	protected encode(str: string, type: string, editor: vscode.TextEditor): string {
+	protected encode(str: string, type: string): string {
 		// 変換
 		switch (type) {
 			// toUpperCase
@@ -443,13 +500,30 @@ class MyExtention extends Extension {
 			case 'Snake': {
 				let a: string[] = [];
 				let re = /[A-Z][^A-Z]*/g;
-				let m;
+				let m: RegExpExecArray;
 				while (m = re.exec(str)) {
 					a.push(m[0].toLocaleLowerCase());
 				}
 				str = a.join('_');
 				break;
-			}	
+			}
+			// 式を評価
+			case 'eval': {
+				str = Parser.evaluate(str).toString();
+				break;
+			}
+			// 10進数を16進数に変換
+			case 'Hex': {
+				let n = parseInt(str, 10);
+				str = n.toString(16);
+				break;
+			}
+			// 10進数を2進数に変換
+			case 'Bit': {
+				let n = parseInt(str, 10);
+				str = n.toString(2);
+				break;
+			}
 		}
 		return str;
 	}
@@ -501,6 +575,18 @@ class MyExtention extends Extension {
 				str = di.ymdhis;
 				break;
 			}	
+			// 16進数を10進数に変換
+			case 'Hex': {
+				let n = parseInt(str, 16);
+				str = n.toString(10);
+				break;
+			}
+			// 2進数を10進数に変換
+			case 'Bit': {
+				let n = parseInt(str, 2);
+				str = n.toString(10);
+				break;
+			}
 		}
 
 		return str;
