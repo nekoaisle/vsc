@@ -43,6 +43,8 @@
 	{"key": "ctrl+shift+up"   ,"command": "-editor.action.insertCursorAbove", "when": "editorTextFocus" },
 	{"key": "ctrl+shift+down" ,"command": "-editor.action.insertCursorBelow", "when": "editorTextFocus" },
 
+	{"key": "ctrl+k", "command": "nekoaisle.multiClipboard.menu", "when": "editorTextFocus && !editorReadonly"},
+
 	// 以下はエクスプローラ
 	{"key": "shift+delete","command": "-deleteFile","when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsRoot && !explorerResourceMoveableToTrash && !explorerResourceReadonly && !inputFocus"},
 	{"key": "shift+insert","command": "filesExplorer.paste","when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"},
@@ -51,5 +53,9 @@
 	{"key": "ctrl+x"      ,"command": "filesExplorer.cut"  ,"when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !explorerResourceIsRoot && !inputFocus"},
 
 	// 以下自動挿入（最初の1つは挿入時に壊される…）
-	{"key": "shift+enter"     ,"command": "nekoaisle.selectWord", "when": "editorTextFocus"},
+	{
+		"key": "shift+enter",
+		"command": "nekoaisle.selectWord",
+		"when": "editorTextFocus"
+	},
 ]
