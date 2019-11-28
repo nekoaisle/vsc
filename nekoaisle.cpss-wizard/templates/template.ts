@@ -11,7 +11,8 @@
  */
 'use strict';
 import * as vscode from 'vscode';
-import {Util, Extension} from './nekoaisle.lib/nekoaisle';
+import {Util} from './nekoaisle.lib/Util';
+import {Extension} from './nekoaisle.lib/Extension';
 
 /**
  * エクステンション活性化

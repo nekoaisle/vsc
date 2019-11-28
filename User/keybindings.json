@@ -16,6 +16,7 @@
 	{"key": "ctrl+2","command": "nekoaisle.encloseInDoubleQuotation","when": "editorTextFocus && !editorReadonly"},
 	{"key": "ctrl+3","command": "editor.emmet.action.evaluateMathExpression"},
 	{"key": "ctrl+4","command": "-workbench.action.focusFourthEditorGroup"},
+	{"key": "ctrl+4","command": "nekoaisle.encode","when": "editorTextFocus && !editorReadonly"},
 	{"key": "ctrl+5","command": "-workbench.action.focusFifthEditorGroup"},
 	{"key": "ctrl+6","command": "-workbench.action.focusSixthEditorGroup"},
 	{"key": "ctrl+7","command": "nekoaisle.encloseInSingleQuotation","when": "editorTextFocus && !editorReadonly"},
@@ -25,9 +26,11 @@
 	{"key": "ctrl+e","command": "-workbench.action.quickOpen"},
 	{"key": "ctrl+e","command": "deleteAllRight", "when": "editorTextFocus && !editorReadonly"},
 	{"key": "ctrl+f","command": "closeFindWidget", "when": "editorFocus && findInputFocussed && findWidgetVisible"},
+	{"key": "ctrl+i","command": "nekoaisle.insertCode", "when": "editorTextFocus && !editorReadonly"},
+	{"key": "ctrl+l","command": "nekoaisle.insertCode.cmd", "args": "pinfo.base", "when": "editorTextFocus && !editorReadonly"},
 	{"key": "ctrl+q","command": "-workbench.action.quit"},
 	{"key": "ctrl+q","command": "nekoaisle.commandMenu", "when": "editorTextFocus"},
-	
+
 	{"key": "ctrl+shift+enter","command": "type", "args": { "text": "<br />" }, "when": "editorTextFocus && !editorReadonly && editorLangId == 'html'"},
 	{"key": "ctrl+shift+space","command": "type", "args": { "text": "&nbsp;" }, "when": "editorTextFocus && !editorReadonly && editorLangId == 'html'"},
 	{"key": "ctrl+shift+numpad_multiply", "command": "workbench.action.togglePanelPosition"},
@@ -51,6 +54,10 @@
 	{"key": "ctrl+v"      ,"command": "filesExplorer.paste","when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !inputFocus"},
 	{"key": "shift+delete","command": "filesExplorer.cut"  ,"when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !explorerResourceIsRoot && !inputFocus"},
 	{"key": "ctrl+x"      ,"command": "filesExplorer.cut"  ,"when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceReadonly && !explorerResourceIsRoot && !inputFocus"},
+
+	// 邪魔なので解除
+	{"key": "ctrl+tab", "command": "-workbench.action.openNextRecentlyUsedEditorInGroup"},
+	{"key": "ctrl+shift+tab","command": "-workbench.action.openPreviousRecentlyUsedEditorInGroup"},
 
 	// 以下自動挿入（最初の1つは挿入時に壊される…）
 	{

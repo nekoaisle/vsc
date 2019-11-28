@@ -1,11 +1,12 @@
 {
 	"fileheader": {
 		"label": "1: ファイルヘッダー",
-		"filename": "phtml/fileheader.phtml"
+		"filename": "php/fileheader.php",
+		"method": "snippet"
 	},
 	"function": {
 		"label": "8: function",
-		"filename": "phtml/function.phtml"
+		"filename": "php/function.php"
 	},
 	"EchoDebug": {
 		"label": "E: EchoDebug(選択範囲)",

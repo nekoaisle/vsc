@@ -6,8 +6,19 @@
 ---
 ## 使い方
 
-1. キー割り当てファイル(keybindings.json)に、"command": "nekoaisle.insertCode.cmd", "args": "コマンド" を記載してカーソル位置に挿入します。
-2. 任意のディレクトリに拡張子ごとのメニュー及びテンプレートを格納し、一覧の中から挿入したい項目を選択します。
+### 直接起動
+キー割り当てファイル(keybindings.json)に、"command": "nekoaisle.insertCode.cmd", "args": "コマンド" を記載してカーソル位置に挿入します。
+
+ex.  
+編集中のファイルのベース名をカーソル位置に挿入  
+```json
+{"key": "ctrl+l","command": "nekoaisle.insertCode.cmd", "args": "pinfo.base" }, "when": "editorTextFocus && !editorReadonly"},
+```
+
+### メニューから選択
+nekoaisle.insertCode を実行するとメニューが開きます。
+
+任意のディレクトリに拡張子ごとのメニュー及びテンプレートを格納し、一覧の中から挿入したい項目を選択します。
 
 ---
 ## コマンド
