@@ -1,7 +1,7 @@
 {
     "name": "select-word",
     "displayName": "Select Word",
-    "description": "カーソル位置の単語を選択",
+    "description": "単語選択, 矩形選択",
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {
@@ -20,15 +20,15 @@
         "commands": [
             {
                 "command": "nekoaisle.selectWord",
-                "title": "nekoaisle.selectWord 単語選択"
+                "title": "単語選択"
             },
             {
                 "command": "nekoaisle.addCursor",
-                "title": "nekoaisle.addCursor 次の行の同じ桁にカーソルを追加"
+                "title": "次の行の同じ桁にカーソルを追加"
             },
             {
                 "command": "nekoaisle.delCursor",
-                "title": "nekoaisle.delCursor 一番下のカーソルを削除"
+                "title": "一番下のカーソルを削除"
             }
         ]
     },

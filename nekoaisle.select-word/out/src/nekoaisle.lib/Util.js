@@ -368,6 +368,27 @@ var Util;
     }
     Util.getCharCase = getCharCase;
     /**
+     * 指定エディターの改行文字を取得
+     * @param edior エディタ
+     * @return 改行コード
+     */
+    function getEndOfLine(editor) {
+        let eol;
+        switch (editor.document.eol) {
+            // UNIX
+            case vscode.EndOfLine.LF:
+            default:
+                eol = "\n";
+                break;
+            // DOS
+            case vscode.EndOfLine.CRLF:
+                eol = "\r\n";
+                break;
+        }
+        return eol;
+    }
+    Util.getEndOfLine = getEndOfLine;
+    /**
      * 選択中の文字列を取得
      * @param editor 対象とするエディタ
      */
@@ -405,18 +426,19 @@ var Util;
      * 現在のワークフォルダーを取得
      */
     function getWorkFolder() {
-        // let dir: string;
-        // let folders = vscode.workspace.workspaceFolders;
-        // if (folders.length > 0) {
-        //   // ワークスペースフォルダーを取得
-        //   // 複数フォルダーあっても先頭のみ
-        //   let uri = folders[0].uri;
-        //   dir = uri.path;
-        // } else {
-        //   dir = process.cwd();
-        // }
-        // return dir;
-        return vscode.workspace.rootPath;
+        let dir;
+        let folders = vscode.workspace.workspaceFolders;
+        if (folders) {
+            // ワークスペースフォルダーを取得
+            // 複数フォルダーあっても先頭のみ
+            let uri = folders[0].uri;
+            dir = uri.path;
+        }
+        else {
+            dir = process.cwd();
+        }
+        return dir;
+        // return vscode.workspace.rootPath;
     }
     Util.getWorkFolder = getWorkFolder;
     /**
@@ -577,7 +599,7 @@ var Util;
      * cpss/ope/abcd.php (123)
      * cpss/ope/abcd.php:123
      * cpss/ope/abcd.php: 123
-     *
+     * /var/www/ragdoll/campt/libcampt/CamptPageOpe.php on line 591
      * @param name タグジャンプ文字列
      * @return タグジャンプ情報
      */
@@ -587,8 +609,9 @@ var Util;
         };
         // ファイル名と行番号を分離
         let res = [
-            /^(.*)\s*\(([0-9]+)\)$/,
-            /^(.*):\s*([0-9]+)$/,
+            /^(.*)\(([0-9]+)\)\s*$/,
+            /^(.*):\s*([0-9]+)\s*$/,
+            /^(.*) on line ([0-9]+)\s*$/,
         ];
         let reg = null;
         for (let re of res) {
@@ -601,7 +624,7 @@ var Util;
         let line;
         if (reg) {
             // 行番号が指定された
-            result.filename = reg[1];
+            result.filename = reg[1].trim();
             result.lineNo = parseInt(reg[2]);
         }
         else {
