@@ -56,18 +56,24 @@
 | nekoaisle.encodeBase64                    | BASE64 エンコード                    |
 | nekoaisle.encodeCString                   | C言語文字列 エンコード               |
 | nekoaisle.encodePreg                      | 正規表現 エンコード                  |
-| nekoaisle.encodeContentsOfSingleQuotation | '' の中身をエンコード                |
-| nekoaisle.encodeContentsOfDoubleQuotation | "" の中身をエンコード                |
-| nekoaisle.encodeContentsOfUnixtime        | 日時文字列をUNIXTIMEに               |
+| nekoaisle.encodeContentsOfSingleQuotation | ' を \' に変換                       |
+| nekoaisle.encodeContentsOfDoubleQuotation | " を \" に変換                       |
+| nekoaisle.encodeContentsOfUnixtime        | 日時文字列をUNIXTIMEに変換           |
+| nekoaisle.encodeBr                        | \n を <br />\n に変換                |
+| nekoaisle.encodeHex                       | 10進数を16進数に変換                 |
+| nekoaisle.encodeBit                       | 10進数を2進数に変換                  |
 | nekoaisle.encodeEval                      | 式を評価                             |
 | nekoaisle.decodeHtml                      | HTML デコード                        |
 | nekoaisle.decodeUrl                       | URL デコード                         |
 | nekoaisle.decodeBase64                    | BASE64 デコード                      |
 | nekoaisle.decodeCString                   | C言語文字列 デコード                 |
 | nekoaisle.decodePreg                      | 正規表現 デコード                    |
-| nekoaisle.decodeContentsOfSingleQuotation | '' の中身をデコード                  |
-| nekoaisle.decodeContentsOfDoubleQuotation | "" の中身をデコード                  |
-| nekoaisle.decodeContentsOfUnixtime        | UNIXTIMEを日時文字列に               |
+| nekoaisle.decodeContentsOfSingleQuotation | \' を ' に変換                       |
+| nekoaisle.decodeContentsOfDoubleQuotation | \" を " に変換                       |
+| nekoaisle.decodeContentsOfUnixtime        | UNIXTIMEを日時文字列に変換           |
+| nekoaisle.decodeBr                        | <br /> を \n に変換                  |
+| nekoaisle.decodeHex                       | 16進数を10進数に変換                 |
+| nekoaisle.decodeBin                       | 2進数を10進数に変換                  |
 | nekoaisle.encloseInSingleQuotation        | '' で括る/外す                       |
 | nekoaisle.encloseInDoubleQuotation        | "" で括る/外す                       |
 | nekoaisle.encloseInGraveAccen             | `` で括る/外す                       |

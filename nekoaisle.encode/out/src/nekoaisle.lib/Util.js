@@ -368,6 +368,27 @@ var Util;
     }
     Util.getCharCase = getCharCase;
     /**
+     * 指定エディターの改行文字を取得
+     * @param edior エディタ
+     * @return 改行コード
+     */
+    function getEndOfLine(editor) {
+        let eol;
+        switch (editor.document.eol) {
+            // UNIX
+            case vscode.EndOfLine.LF:
+            default:
+                eol = "\n";
+                break;
+            // DOS
+            case vscode.EndOfLine.CRLF:
+                eol = "\r\n";
+                break;
+        }
+        return eol;
+    }
+    Util.getEndOfLine = getEndOfLine;
+    /**
      * 選択中の文字列を取得
      * @param editor 対象とするエディタ
      */
@@ -407,7 +428,7 @@ var Util;
     function getWorkFolder() {
         let dir;
         let folders = vscode.workspace.workspaceFolders;
-        if (folders.length > 0) {
+        if (folders) {
             // ワークスペースフォルダーを取得
             // 複数フォルダーあっても先頭のみ
             let uri = folders[0].uri;
