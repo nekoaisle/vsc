@@ -28,7 +28,10 @@ class OpenTag extends Extension {
    */
   public exec() {
     // アクティブなエディター取得
-    let editor = vscode.window.activeTextEditor;
+    if (!vscode.window.activeTextEditor) {
+      return;
+    }
+    let editor: vscode.TextEditor = vscode.window.activeTextEditor;
     let cwd = Util.getWorkFolder();
 
     // 文字列が選択されていたらその文字列のファイルを開く
@@ -42,10 +45,11 @@ class OpenTag extends Extension {
       vscode.window.showInputBox({
         placeHolder: 'タグジャンプを入力してください。',
         prompt: `絶対パスまたは${cwd}からの相対で指定してください。`
-      }).then((file: string) => {
-        if ( file.length > 0 ) {
-          Util.tagJump(file, cwd);
+      }).then((file) => {
+        if (!file || (file.length <= 0 )) {
+          return;
         }
+        Util.tagJump(file, cwd);
       });
     }
   }

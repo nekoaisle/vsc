@@ -206,14 +206,17 @@ class OpenHist extends Extension {
       // 最終更新日時
       case 'modtime': {
         list.sort(function (a, b): number {
+          let a1 = (a.lastDate) ? a.lastDate : '';
+          let b1 = (b.lastDate) ? b.lastDate : '';
           let ret: number;
-          if (a.lastDate < b.lastDate) {
+          if (a1 < b1) {
             ret = -1;
-          } else if (a.lastDate > b.lastDate) {
+          } else if (a1 > b1) {
             ret = 1;
           } else {
             ret = 0;
           }
+          // 並べ替え方向を適用
           return ret * sortDir;
         });
         break;
@@ -233,6 +236,7 @@ class OpenHist extends Extension {
           } else {
             ret = 0;
           }
+          // 並べ替え方向を適用
           return ret * sortDir;
         });
         break;
@@ -274,7 +278,7 @@ class OpenHist extends Extension {
       matchOnDetail: false,
       matchOnDescription: false
     };
-    vscode.window.showQuickPick(menu, options).then((sel: vscode.QuickPickItem) => {
+    vscode.window.showQuickPick(menu, options).then((sel) => {
       if (!sel) {
         // 未選択
         return;

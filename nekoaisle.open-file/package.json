@@ -5,12 +5,13 @@
   "version": "0.0.1",
   "publisher": "nekoaisle",
   "engines": {
-    "vscode": "^1.14.0"
+    "vscode": "^1.40.0"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
+    "onCommand:nekoaisle.selectOpen",
     "onCommand:nekoaisle.openFile",
     "onCommand:nekoaisle.openRelated",
     "onCommand:nekoaisle.openNew",
@@ -22,12 +23,16 @@
     "onCommand:nekoaisle.findOpen",
     "*"
   ],
-  "main": "./out/src/extension",
+  "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
+        "command": "nekoaisle.selectOpen",
+        "title": "nekoaisle.selectOpen 既存ファイルを開きます。"
+      },
+      {
         "command": "nekoaisle.openFile",
-        "title": "nekoaisle.openFile 既存ファイルを開きます。"
+        "title": "nekoaisle.openFile 選択範囲またはカーソル位置のファイルを開きます。"
       },
       {
         "command": "nekoaisle.openRelated",
@@ -61,54 +66,28 @@
         "command": "nekoaisle.findOpen",
         "title": "nekoaisle.findOpen 検索して開く"
       }
-    ],
-    "configuration": {
-      "type": "object",
-      "title": "neko: ファイルオープン関連設定",
-      "properties": {
-        "nekoaisle-openTemp.dir": {
-          "type": "string",
-          "default": "~/temp",
-          "description": "一時ファイルを格納するディレクトリ名"
-        },
-        "nekoaisle-openTemp.base": {
-          "type": "string",
-          "default": "temp",
-          "description": "一時ファイルのベース名"
-        },
-        "nekoaisle-openHist.hist-file": {
-          "type": "string",
-          "default": "",
-          "description": "履歴ファイル名"
-        },
-        "nekoaisle-openHist.sort": {
-          "type": "string",
-          "default": "modtime",
-          "description": "ソート項目"
-        },
-        "nekoaisle-openHist.sortDir": {
-          "type": "array",
-          "default": [],
-          "description": "ソート方向"
-        }
-      }
-    }
+    ]
   },
   "scripts": {
-    "vscode:prepublish": "tsc -p ./",
-    "compile": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "node ./node_modules/vscode/bin/test"
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/mocha": "^2.2.32",
-    "@types/node": "^6.0.40",
-    "mocha": "^6.2.1",
-    "typescript": "^2.0.3",
-    "vscode": "^1.1.36"
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^10.12.21",
+    "@types/vscode": "^1.40.0",
+    "glob": "^7.1.4",
+    "mocha": "^6.1.4",
+    "typescript": "^3.3.1",
+    "tslint": "^5.12.1",
+    "vscode-test": "^1.0.2"
   },
   "dependencies": {
     "iconv-lite": "^0.5.0",
-    "jschardet": "^2.1.0"
+    "jschardet": "^2.1.1"
   }
 }

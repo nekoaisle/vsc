@@ -17,9 +17,7 @@ class OpenFile extends Extension {
       commands: [
         {
           command: `nekoaisle.openTemp`,
-          callback: () => {
-            this.exec()
-          }
+          callback: () => { this.exec(); }
         }
       ]
     });
@@ -53,15 +51,16 @@ class OpenFile extends Extension {
     };
 
     // ファイルを選択
-    vscode.window.showQuickPick(menu, popt).then((sel: string) => {
-      if ( sel ) {
-        // スペースで分解(3つ目がファイル名)
-        let fn = sel.split(' ')[2];
-        // ~ などファイル名を正規化
-        fn = Util.normalizePath(fn);
-        // ファイルを開く
-        Util.openFile(fn, true);
+    vscode.window.showQuickPick(menu, popt).then((sel) => {
+      if (!sel) {
+        return;
       }
+      // スペースで分解(3つ目がファイル名)
+      let fn = sel.split(' ')[2];
+      // ~ などファイル名を正規化
+      fn = Util.normalizePath(fn);
+      // ファイルを開く
+      Util.openFile(fn, true);
     });
   }
 }

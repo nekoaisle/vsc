@@ -4,7 +4,8 @@
 
 |             コマンド             |                     機能                     |
 | -------------------------------- | -------------------------------------------- |
-| nekoaisle.openFile               | ファイルを選択して開く                       |
+| nekoaisle.selectFile             | ファイルを選択して開く                       |
+| nekoaisle.openFile               | 選択範囲またはカーソル位置のファイルを開く   |
 | nekoaisle.openRelated            | 関連ファイルを開く                           |
 | nekoaisle.openNew                | ファイル名を指定して開く                     |
 | nekoaisle.openTemp               | 一時ファイルを開く                           |
@@ -14,16 +15,30 @@
 | nekoaisle.openTag                | タグジャンプ                                 |
 | nekoaisle.findOpen               | 検索して開く                                 |
 
-### ■ `ファイルを選択して開く` nekoaisle.openFile
+### ■ `ファイルを選択して開く` nekoaisle.selectFile
 メニューからファイルを選択して開く
 
-workbench.action.files.openFile は GUI にてファイルを選択できてよいのですが、ファイル名をキーボードから入力できず、GUI にこだわった Windows 的な使いにくさ(Windowsはテキスト入力もできるの100万倍マシですが…)があるので、コマンドラインとしてみました。
+workbench.action.files.openFile は GUI にてファイルを選択できてよいのですが、ファイル名をキーボードから入力できず、GUI にこだわった Windows 的な使いにくさ(Windowsはテキスト入力もできるので100万倍マシですが…)があるので、コマンドラインとしてみました。
+
+### ■ `選択範囲またはカーソル位置のファイルを開く` nekoaisle.openFile
+選択範囲がある時はそのファイル名、無い時はカーソル位置のファイル名ファイルを開きます。
+
+ただし、php については下記の例外があります。
+
+#### require_once(DOCUMENT_ROOT, '/hoge.php')
+ファイル名の先頭にワークスペースのフォルダ名を追加
+
+#### require_once(__DIR__, '/hoge.php')
+ファイル名の先頭に現在編集中のファイルのディレクトリー名を追加
+
+#### require_once(dirname(__FILE__) . '/hoge.php');
+ファイル名の先頭に現在編集中のファイルのディレクトリー名を追加
 
 ### ■ `関連ファイルを開く` nekoaisle.openRelated 
 現在編集中のファイルと対になるファイルを開く、ファイルが存在しないときは作成してから開く
 
 ### ■ `ファイル名を指定して開く`  nekoaisle.openNew 
-ファイル名を入力して新規ファイルを開く、ファイルが存在しないときには作成してから開く
+ファイル名を入力してファイルを開く、ファイルが存在しないときには作成してから開く
 
 ### ■ `一時ファイルを開く` nekoaisle.openTemp
 拡張子をメニューから選択して一時ファイルを開く、ファイルが存在しないときは作成してから開く
@@ -39,11 +54,12 @@ workbench.action.files.openFile は GUI にてファイルを選択できてよ�
 ### ■ `タグジャンプ` nekoaisle.openTag
 
 選択範囲またはInputBoxにて入力した文字列を調べてタグジャンプします。  
-対応する形式は下記の４種です。
+対応している形式は下記です。
 * ファイル名(行番号)
 * ファイル名 (行番号)
 * ファイル名:行番号
 * ファイル名: 行番号
+* ファイル名 on line 行番号
 
 ### ■ `検索して開く` nekoaisle.findOpen
 `2019-10-17 仕様変更`  

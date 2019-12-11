@@ -31,7 +31,7 @@ class FindOpen extends Extension {
     // let cwd = Util.getWorkFolder();
 
     // ファイル名を入力
-    let pattern: string = await vscode.window.showInputBox({
+    let pattern = await vscode.window.showInputBox({
       placeHolder: '検索するglobパターンを入力してください。(複数指定は,区切り)',
       // prompt: `絶対パスまたは ${cwd} からの相対で指定してください。`
     });
@@ -52,7 +52,7 @@ class FindOpen extends Extension {
     // ファイルを検索
     const uris = await vscode.workspace.findFiles(`{${pattern}}`/*, `{${excludes}}`*/);
     if (uris.length === 0) {
-      Util.putMess(`${pattern} は見つかりませんでした。`)
+      Util.putMess(`${pattern} は見つかりませんでした。`);
       return;
     }
 
@@ -72,8 +72,8 @@ class FindOpen extends Extension {
       matchOnDetail: false,
       matchOnDescription: false
     };
-    vscode.window.showQuickPick(menu, options).then((sel: vscode.QuickPickItem) => {
-      if (!sel) {
+    vscode.window.showQuickPick(menu, options).then((sel) => {
+      if (!sel || !sel.description) {
         // 未選択
         return;
       }
@@ -93,7 +93,7 @@ class FindOpen extends Extension {
     vscode.window.showInputBox({
       placeHolder: '検索するファイル名を入力してください。',
       prompt: `絶対パスまたは ${cwd} からの相対で指定してください。`
-    }).then((file: string) => {
+    }).then((file) => {
       if (!file || (file.length <= 0)) {
         return;
       }
@@ -123,8 +123,8 @@ class FindOpen extends Extension {
         matchOnDetail: false,
         matchOnDescription: false
       };
-      vscode.window.showQuickPick(menu, options).then((sel: vscode.QuickPickItem) => {
-        if (!sel) {
+      vscode.window.showQuickPick(menu, options).then((sel) => {
+        if (!sel || !sel.description) {
           // 未選択
           return;
         }

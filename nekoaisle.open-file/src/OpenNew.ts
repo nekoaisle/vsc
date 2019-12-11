@@ -17,9 +17,7 @@ class OpenNew extends Extension {
 			commands: [
 				{
 					command: 'nekoaisle.openNew',
-					callback: () => {
-						this.exec()
-					}
+					callback: () => { this.exec(); }
 				}
 			]
 		});
@@ -29,8 +27,12 @@ class OpenNew extends Extension {
 	 * エントリー
 	 */
 	public exec() {
+		if (!vscode.window.activeTextEditor) {
+			return;
+		}
+		let editor: vscode.TextEditor = vscode.window.activeTextEditor;
 		// アクティブなエディターのファイル名を分解
-		let pinfo = new PathInfo(vscode.window.activeTextEditor.document.fileName);
+		let pinfo = new PathInfo(editor.document.fileName);
 		// ディレクトリー名を取得
 		let dirName = pinfo.getDirName();
 
@@ -38,8 +40,8 @@ class OpenNew extends Extension {
 		vscode.window.showInputBox({
 			placeHolder: '開くファイル名を入力してください。',
 			prompt: `絶対パスまたは${pinfo.getDirName()}からの相対で指定してください。`
-		}).then((file: string) => {
-			if ( file.length <= 0 ) {
+		}).then((file) => {
+			if (!file || (file.length <= 0)) {
 				// ファイル名が入力されなかった
 				return;
 			}

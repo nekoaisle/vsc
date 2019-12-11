@@ -13,7 +13,7 @@ class OpenRelated extends Extension {
       commands: [
         {
           command: 'nekoaisle.openRelated',
-          callback: () => { this.exec() }
+          callback: () => { this.exec(); }
         }
       ]
     });
@@ -23,7 +23,11 @@ class OpenRelated extends Extension {
    * エントリー
    */
   public exec() {
-    let fileName = vscode.window.activeTextEditor.document.fileName;
+    if (!vscode.window.activeTextEditor) {
+      return;
+    }
+    let editor: vscode.TextEditor = vscode.window.activeTextEditor;
+    let fileName = editor.document.fileName;
     let pinfo = new PathInfo(fileName);
 
     let candidates: string[] = [];
@@ -73,7 +77,7 @@ class OpenRelated extends Extension {
       // 候補を順に探して存在するものを開く
       for (let fn of candidates) {
         if (Util.openFile(fn)) {
-          return
+          return;
         }
       }
 
@@ -87,19 +91,19 @@ class OpenRelated extends Extension {
     // pc ディレクトリの .html が存在すれば開く
     let htmlPC = pinfo.getFileName('.html', 'pc');
     if (Util.openFile(htmlPC)) {
-      return
+      return;
     }
 
     // sp ディレクトリの .html が存在すれば開く
     let htmlSP = pinfo.getFileName('.html', 'sp');
     if (Util.openFile(htmlSP)) {
-      return
+      return;
     }
 
     // 同一ディレクトリの .phtml が存在すれば開く
     let phtml = pinfo.getFileName('.phtml');
     if (Util.openFile(phtml)) {
-      return
+      return;
     }
 
     // pc ディレクトリが存在するか調べる
@@ -107,7 +111,7 @@ class OpenRelated extends Extension {
     if (Util.isExistsFile(dirPC)) {
       // 存在したら pc/xxx.html を新規作成
       Util.openFile(htmlPC, true);
-      return
+      return;
     }
 
     // sp ディレクトリが存在するか調べる
@@ -115,12 +119,12 @@ class OpenRelated extends Extension {
     if (Util.isExistsFile(dirSP)) {
       // 存在したら sp/xxx.html を新規作成
       Util.openFile(htmlSP, true);
-      return
+      return;
     }
 
     // 同一ディレクトリに .phtml を強制作成
     Util.openFile(phtml, true);
-    return
+    return;
   }
 
   /**

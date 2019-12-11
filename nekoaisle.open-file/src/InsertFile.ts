@@ -20,7 +20,7 @@ class InsertFile extends Extension {
         {
           command: 'nekoaisle.insertFile',
           callback: () => {
-            this.exec()
+            this.exec();
           }
         }
       ]
@@ -31,7 +31,11 @@ class InsertFile extends Extension {
    * エントリー
    */
   public exec() {
-    let editor = vscode.window.activeTextEditor;
+    if (!vscode.window.activeTextEditor) {
+      return;
+    }
+    let editor: vscode.TextEditor = vscode.window.activeTextEditor;
+
     // 開始ディレクトリを取得
     let start: string;
     if (vscode.window.activeTextEditor) {
@@ -44,7 +48,7 @@ class InsertFile extends Extension {
     }
 
     // ファイル名情報を取得
-    const pinfo = new PathInfo(start);; 
+    const pinfo = new PathInfo(start);
     // ディレクトリー名を取得
     const dirName = pinfo.getDirName();
 
@@ -53,7 +57,7 @@ class InsertFile extends Extension {
     selectFile.selectFile(dirName, title).then((file: string) => {
       if (file.length > 0) {
         // ファイルを読み込む
-        fs.readFile(file, (err: NodeJS.ErrnoException, data: Buffer) => {
+        fs.readFile(file, (err, data) => {
           if (err) {
             console.error(err);
           } else {
