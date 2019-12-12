@@ -36,18 +36,47 @@ class MyExtention extends nekoaisle_1.Extension {
             name: 'マルチクリップボード',
             config: '',
             commands: [
-                { command: 'nekoaisle.multiClipboard.menu', callback: () => { this.menu(); } },
-                { command: 'nekoaisle.multiClipboard..copy', callback: () => { this.copy(); } },
-                { command: 'nekoaisle.multiClipboard..paste', callback: () => { this.paste(); } },
-                { command: 'nekoaisle.multiClipboard..push', callback: () => { this.push(); } },
-                { command: 'nekoaisle.multiClipboard..pop', callback: () => { this.pop(); } }
+                {
+                    command: 'nekoaisle.multiClipboard.menu',
+                    callback: () => { this.menu(); }
+                },
+                {
+                    command: 'nekoaisle.multiClipboard.copy',
+                    callback: () => { this.copy(); }
+                },
+                {
+                    command: 'nekoaisle.multiClipboard.cut',
+                    callback: () => { this.cut(); }
+                },
+                {
+                    command: 'nekoaisle.multiClipboard.paste',
+                    callback: () => { this.paste(); }
+                },
+                {
+                    command: 'nekoaisle.multiClipboard.push',
+                    callback: () => { this.push(); }
+                },
+                {
+                    command: 'nekoaisle.multiClipboard.pop',
+                    callback: () => { this.pop(); }
+                },
+                {
+                    command: 'nekoaisle.multiClipboard.fromClipboard',
+                    callback: () => { this.fromClipboard(); }
+                },
+                {
+                    command: 'nekoaisle.multiClipboard.toClipboard',
+                    callback: () => { this.toClipboard(); }
+                }
             ]
         });
         // クリップボード
-        this.clipbords = {};
-        for (let n = 0; n < 10; ++n) {
+        this.clipboards = {};
+        this.slots = 10;
+        // クリップボードを初期化
+        for (let n = 0; n < this.slots; ++n) {
             let key = n.toString();
-            this.clipbords[key] = [];
+            this.clipboards[key] = [];
         }
     }
     /**
@@ -79,6 +108,14 @@ class MyExtention extends nekoaisle_1.Extension {
                 label: 'o',
                 description: 'pop スロット末尾をペーストして削除'
             },
+            {
+                label: 'f',
+                description: 'fromClipboard クリップボードをコピー'
+            },
+            {
+                label: 't',
+                description: 'toClipboard クリップボードへコピー'
+            },
         ];
         let options = {
             placeHolder: 'コマンドを選択してください。'
@@ -103,6 +140,12 @@ class MyExtention extends nekoaisle_1.Extension {
                     return true;
                 case 'o':
                     _this.pop();
+                    return true;
+                case 'f':
+                    _this.fromClipboard();
+                    return true;
+                case 't':
+                    _this.toClipboard();
                     return true;
             }
             return false;
@@ -160,14 +203,14 @@ class MyExtention extends nekoaisle_1.Extension {
          * @param editor エディター
          */
         const job = (key, editor) => {
-            if (this.clipbords[key] === undefined) {
+            if (this.clipboards[key] === undefined) {
                 // そんな名前のスロットはない
                 return false;
             }
             // 全カーソル位置の文字列を取得
-            let clipbord = this.getText(editor);
+            let clipboard = this.getText(editor);
             // 保存
-            this.clipbords[key] = clipbord;
+            this.clipboards[key] = clipboard;
             // 
             return true;
         };
@@ -184,14 +227,14 @@ class MyExtention extends nekoaisle_1.Extension {
          * @param editor エディター
          */
         const job = (key, editor) => {
-            if (this.clipbords[key] === undefined) {
+            if (this.clipboards[key] === undefined) {
                 // そんな名前のスロットはない
                 return false;
             }
             // 全カーソル位置の文字列を取得
-            let clipbord = this.getText(editor);
+            let clipboard = this.getText(editor);
             // 保存
-            this.clipbords[key] = clipbord;
+            this.clipboards[key] = clipboard;
             // 対象文字列を削除
             this.delText(editor);
             //
@@ -211,9 +254,9 @@ class MyExtention extends nekoaisle_1.Extension {
          */
         const job = (slot, editor) => {
             // 全カーソル位置の文字列を取得
-            let clipbord = this.getText(editor);
+            let clipboard = this.getText(editor);
             // 保存
-            this.clipbords[slot] = this.clipbords[slot].concat(clipbord);
+            this.clipboards[slot] = this.clipboards[slot].concat(clipboard);
             // 
             return true;
         };
@@ -230,14 +273,14 @@ class MyExtention extends nekoaisle_1.Extension {
          * @param editor エディター
          */
         const job = (slot, editor) => {
-            if (this.clipbords[slot].length === 0) {
+            if (this.clipboards[slot].length === 0) {
                 // そのスロットは空
                 return false;
             }
             // 全カーソル位置の文字列を取得
-            let clipbord = this.getText(editor);
+            let clipboard = this.getText(editor);
             // 保存
-            this.clipbords[slot] = this.clipbords[slot].concat(clipbord);
+            this.clipboards[slot] = this.clipboards[slot].concat(clipboard);
             // 対象文字列を削除
             this.delText(editor);
             //
@@ -256,7 +299,7 @@ class MyExtention extends nekoaisle_1.Extension {
          * @param editor エディター
          */
         const job = (slot, editor) => {
-            let clipboard = this.clipbords[slot];
+            let clipboard = this.clipboards[slot];
             if (clipboard.length === 0) {
                 // そのスロットは空
                 return false;
@@ -286,7 +329,7 @@ class MyExtention extends nekoaisle_1.Extension {
          * @param editor エディター
          */
         const job = (slot, editor) => {
-            let clipboard = this.clipbords[slot];
+            let clipboard = this.clipboards[slot];
             if (clipboard.length === 0) {
                 // そのスロットは空
                 return false;
@@ -302,6 +345,60 @@ class MyExtention extends nekoaisle_1.Extension {
                 }
                 this.putText(editor, text);
             }
+            // 
+            return true;
+        };
+        // スロットを選択
+        this.showQuickPick(false, job);
+    }
+    /**
+     * 選択範囲もしくは行を指定スロットにコピー
+     */
+    fromClipboard() {
+        /**
+         * コピー処理
+         * @param slot スロット名
+         * @param editor エディター
+         */
+        const job = (key, editor) => {
+            if (this.clipboards[key] === undefined) {
+                // そんな名前のスロットはない
+                return false;
+            }
+            // クリップボードを取得
+            let text = nekoaisle_1.Util.getClipboard();
+            // 改行文字が\n 以外ならば変換
+            const cr = nekoaisle_1.Util.getEndOfLine(editor);
+            if (cr !== "\n") {
+                text = text.replace(cr, "\n");
+            }
+            // 保存
+            this.clipboards[key] = [text];
+            // 
+            return true;
+        };
+        // スロットを選択
+        this.showQuickPick(true, job);
+    }
+    /**
+     * 指定スロットをクリップボードへ
+     */
+    toClipboard() {
+        /**
+         * 処理
+         * @param slot スロット名
+         * @param editor エディター
+         */
+        const job = (slot, editor) => {
+            let clipboard = this.clipboards[slot];
+            if (clipboard.length === 0) {
+                // そのスロットは空
+                return false;
+            }
+            // 行を現在のドキュメント改行コードで連結
+            let cr = nekoaisle_1.Util.getEndOfLine(editor);
+            let text = clipboard.join(cr);
+            nekoaisle_1.Util.putClipboard(text);
             // 
             return true;
         };
@@ -388,47 +485,58 @@ class MyExtention extends nekoaisle_1.Extension {
      * @return QuickPick
      */
     showQuickPick(allowBlank, callback) {
+        if (!vscode.window.activeTextEditor) {
+            return null;
+        }
+        const editor = vscode.window.activeTextEditor;
         // メーニューを作成
         let menu = [];
-        for (let key in this.clipbords) {
+        const cr = nekoaisle_1.Util.getEndOfLine(editor);
+        for (let key in this.clipboards) {
             let item = {
                 label: key,
             };
-            let clipbord = this.clipbords[key];
-            if (clipbord.length > 0) {
+            let clipboard = this.clipboards[key];
+            if (clipboard.length > 0) {
                 // 保存されているので説明などを設定
-                // 説明は最初の空でない行の先頭64文字
-                let desc = "";
-                for (let line of clipbord) {
-                    // トリム
-                    let l = line.trim();
-                    if (l.length > 0) {
-                        // 空行ではない
-                        desc = l;
-                        break;
+                // 末尾が改行だったら除去,末尾が改行だと１行増えてしまう
+                let clipboard = this.clipboards[key].map((value) => {
+                    if (value.substr(-1) === "\n") {
+                        value = value.slice(0, -1);
                     }
+                    return value;
+                });
+                // 段落を連結してから行で分解
+                let lines = clipboard.join(cr).split(cr);
+                // lines = lines.map<string>((line) => {
+                // 	return line.trim();
+                // });
+                // item.description = lines.join("cr");
+                let desc = ""; // 最初の空でない行の先頭64文字
+                lines = lines.map((line) => {
+                    // 前後の空白を除去
+                    line = line.trim();
+                    // 説明文を抽出
+                    if (desc.length === 0) {
+                        if ((desc.length === 0) && (line.length !== 0)) {
+                            // 最初に見つけた空行以外が説明
+                            desc = line.substr(0, 64);
+                        }
+                    }
+                    return line;
+                });
+                if (desc.length === 0) {
+                    // 空行のみだった
+                    desc = `${lines.length}行の空行`;
                 }
-                switch (desc.length) {
-                    case 0: {
-                        // 空行のみだった
-                        desc = `${clipbord.length}行の空行`;
-                        break;
-                    }
-                    case 1: {
-                        // 1行のみ
-                        desc = desc.substr(0, 64);
-                        break;
-                    }
-                    default: {
-                        // 複数行
-                        desc = desc.substr(0, 32);
-                        desc = ` ${desc} (${clipbord.length}行)`;
-                        break;
-                    }
+                else if (lines.length === 1) {
+                    // 1行のみ
+                }
+                else {
+                    // 複数行
+                    desc = ` ${desc} (${lines.length}行)`;
                 }
                 item.description = desc;
-                // 詳細は最初の5行
-                // item.detail = lines.slice(0, 5).join("\n");
             }
             else if (!allowBlank) {
                 // 空行許可が指定されていない
@@ -450,7 +558,7 @@ class MyExtention extends nekoaisle_1.Extension {
                 let picks = quickPick.selectedItems;
                 if (picks.length === 1) {
                     let slot = picks[0].label;
-                    if (this.clipbords[slot]) {
+                    if (this.clipboards[slot]) {
                         // スロット名は有効なので実行
                         callback(slot, editor);
                     }
@@ -472,7 +580,7 @@ class MyExtention extends nekoaisle_1.Extension {
                 let slot = value.substr(0, 1);
                 // 全角→半角に変換
                 slot = this.zenToHan(slot);
-                if (this.clipbords[slot]) {
+                if (this.clipboards[slot]) {
                     // スロット名は有効なので実行
                     if (callback(slot, editor)) {
                         // 実行したのでクイックピックを閉じる

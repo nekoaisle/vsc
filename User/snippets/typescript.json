@@ -283,6 +283,18 @@
 			"}",
 		],
 		"description": "関数定義"
+	},
+	"editor": {
+		"prefix": "editor",
+		"body": [
+			"if (!vscode.window.activeTextEditor) {",
+			"\treturn;",
+			"}",
+			"const editor: vscode.TextEditor = vscode.window.activeTextEditor;"
+		],
+		"description": "if (!vscode.window.activeTextEditor) {"
 	}
+
 	
+
 }

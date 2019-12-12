@@ -1,7 +1,7 @@
 {
 	"name": "nekoaisle-multi-clipboard",
 	"displayName": "マルチクリップボード",
-	"description": "This is like a multi-clipboard.",
+	"description": "疑似マルチクリップボード",
 	"version": "0.0.1",
 	"license": "MIT License",
 	"repository": "hogehoge",
@@ -18,7 +18,9 @@
 		"onCommand:nekoaisle.multiClipboard.paste",
 		"onCommand:nekoaisle.multiClipboard.add",
 		"onCommand:nekoaisle.multiClipboard.push",
-		"onCommand:nekoaisle.multiClipboard.pop"
+		"onCommand:nekoaisle.multiClipboard.pop",
+		"onCommand:nekoaisle.multiClipboard.fromClipboard",
+		"onCommand:nekoaisle.multiClipboard.toClipboard"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -50,6 +52,14 @@
 			{
 				"command": "nekoaisle.multiClipboard.pop",
 				"title": "スロット末尾をペーストして削除"
+			},
+			{
+				"command": "nekoaisle.multiClipboard.fromClipboard",
+				"title": "クリップボードをコピー"
+			},
+			{
+				"command": "nekoaisle.multiClipboard.toClipboard",
+				"title": "クリップボードにコピー"
 			}
 		]
 	},

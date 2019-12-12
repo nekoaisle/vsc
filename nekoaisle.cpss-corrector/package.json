@@ -10,16 +10,22 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:nekoaisle.cpssCorrector"
+		"onCommand:nekoaisle.cpssCorrector",
+		"onCommand:nekoaisle.cpssCorrector-paren"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
 				"command": "nekoaisle.cpssCorrector",
-				"title": "cpss-corrector"
+				"title": "nekoaisle.cpssCorrector 旧書式のCPSSソースを校正"
+			},
+			{
+				"command": "nekoaisle.cpssCorrector-paren",
+				"title": "nekoaisle.cpssCorrector-paren 丸括弧の前後のスペースを除去"
 			}
-		]
+			
+				]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

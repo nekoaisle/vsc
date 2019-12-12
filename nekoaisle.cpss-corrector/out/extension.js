@@ -12,6 +12,7 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const Util_1 = require("./nekoaisle.lib/Util");
 const Extension_1 = require("./nekoaisle.lib/Extension");
 /**
  * エクステンション活性化
@@ -42,6 +43,10 @@ class MyExtention extends Extension_1.Extension {
                 {
                     command: 'nekoaisle.cpssCorrector',
                     callback: () => { this.exec(); }
+                },
+                {
+                    command: 'nekoaisle.cpssCorrector-paren',
+                    callback: () => { this.paren(); }
                 }
             ]
         });
@@ -54,6 +59,16 @@ class MyExtention extends Extension_1.Extension {
         if (editor) {
             this.correctMethodHeader(editor);
         }
+    }
+    paren() {
+        if (!vscode.window.activeTextEditor) {
+            return;
+        }
+        const editor = vscode.window.activeTextEditor;
+        // 全テキストの取得
+        let text = editor.document.getText();
+        text = this.correctParen(text);
+        Util_1.Util.replaceAllText(editor, text);
     }
     /**
      * メソッドのヘッダーを修正
@@ -118,6 +133,19 @@ class MyExtention extends Extension_1.Extension {
             conv = conv.replace(search, replace);
         }
         return conv;
+    }
+    /**
+     * () を校正
+     * @param text 処理対象
+     * @return 処理後の文字列
+     */
+    correctParen(text) {
+        // '( ' -> '(' 開き括弧の後ろのスペースを除去
+        text = text.replace(/\(\s+/g, '(');
+        // ' )' -> ')' 閉じ括弧の前のスペースを除去
+        text = text.replace(/\s+\)/g, ')');
+        //
+        return text;
     }
 }
 //# sourceMappingURL=extension.js.map

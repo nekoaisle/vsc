@@ -43,6 +43,10 @@ class MyExtention extends Extension {
 				{
 					command: 'nekoaisle.cpssCorrector',	// コマンド
 					callback: () => { this.exec(); }
+				},
+				{
+					command: 'nekoaisle.cpssCorrector-paren',	// コマンド
+					callback: () => { this.paren(); }
 				}
 			]
 		});
@@ -56,6 +60,18 @@ class MyExtention extends Extension {
 		if (editor) {
 			this.correctMethodHeader(editor);
 		}
+	}
+
+	public paren() {
+		if (!vscode.window.activeTextEditor) {
+			return;
+		}
+		const editor: vscode.TextEditor = vscode.window.activeTextEditor;
+
+		// 全テキストの取得
+		let text = editor.document.getText();
+		text = this.correctParen(text);
+		Util.replaceAllText(editor, text);
 	}
 
 	/**
@@ -138,5 +154,17 @@ class MyExtention extends Extension {
 		return conv;
 	}
 
-
+	/**
+	 * () を校正
+	 * @param text 処理対象
+	 * @return 処理後の文字列
+	 */
+	public correctParen(text: string): string {
+		// '( ' -> '(' 開き括弧の後ろのスペースを除去
+		text = text.replace(/\(\s+/g, '(');
+		// ' )' -> ')' 閉じ括弧の前のスペースを除去
+		text = text.replace(/\s+\)/g, ')');
+		//
+		return text;
+	}
 }

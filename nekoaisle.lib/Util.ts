@@ -260,6 +260,18 @@ export module Util {
   }
 
   /**
+   * 指定エディターの全テキストを置き換える
+   * @param editor 処理対象
+   * @param text 置き換える文字列
+   */
+  export function replaceAllText(editor: vscode.TextEditor, text: string) {
+    editor.edit((edit) => {
+      let range = new vscode.Range(0, 0, editor.document.lineCount, 0);
+      edit.replace(range, text);
+    });
+  }
+
+  /**
    * 指定文字列の先頭文字によって大文字・小文字を切り替える
    * @param c 対象となる文字
    * @return string 結果
@@ -445,6 +457,7 @@ export module Util {
    * @param cmd 
    */
   export function execCmd(cmd: string): string {
+    console.log(`exec ${cmd}`);
     return ("" + chproc.execSync(cmd)).trim();
   }
 
@@ -453,6 +466,24 @@ export module Util {
    */
   export function getClipboard() {
     return execCmd('xclip -o -selection c');
+  }
+
+  /**
+   * クリップボードに設定
+   * @param text 設定する文字列
+   */
+  export function putClipboard(text: string) {
+    // 一時ファイルに保存
+    let dir = os.tmpdir();
+    let rand = Math.floor(Math.random() * 1000000000);
+    let fn = path.join(dir, `nekoaisle.${rand}`);
+    saveFile(fn, text);
+
+    // コマンド実行
+    execCmd(`xclip -i -selection c ${fn}`);
+
+    // 一時ファイルを削除
+    deleteFile(fn);
   }
 
   /**
