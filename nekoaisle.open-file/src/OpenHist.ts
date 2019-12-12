@@ -3,20 +3,6 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { Util, Extension, PathInfo, DateInfo } from './nekoaisle.lib/nekoaisle';
 
-// /**
-//  * エクステンション活性化
-//  * @param context 
-//  */
-// export function activate(context: vscode.ExtensionContext) {
-//   let ext = new OpenHist(context);
-// }
-
-// /**
-//  * 非活性化
-//  */
-// export function deactivate() {
-// }
-
 interface ListItem {
   baseName: string;
   dirName: string;
@@ -27,6 +13,10 @@ interface ListItem {
 interface ListItemDic {
   [key: string]: ListItem;
 }
+
+interface SortFuncs {
+  [key: string]: (a: ListItem, b: ListItem) => number;
+};
 
 /**
  * エクステンション本体
@@ -55,7 +45,11 @@ class OpenHist extends Extension {
         },{
           command: 'nekoaisle.openHistCompensateDate',	// コマンド
           callback: () => { this.compensateDate(); }
-        }
+        },
+        {
+          command: 'nekoaisle.openHistRemoveNonexistentFile',	// コマンド
+          callback: () => { this.removeNonexistentFile(); }
+        }          
       ]
     });
 
@@ -64,6 +58,9 @@ class OpenHist extends Extension {
 
     // ファイルが閉じられる時
     vscode.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, this, subscriptions);
+
+    // ファイルが保存される時
+    vscode.workspace.onDidSaveTextDocument(this.onDidCloseTextDocument, this, subscriptions);
 
     // カーソル位置が変わった(ファイルごとのカーソル位置を記憶するため)
     vscode.window.onDidChangeTextEditorSelection(this.onDidChangeTextEditorSelection, this, subscriptions);
@@ -110,7 +107,9 @@ class OpenHist extends Extension {
     let fn = this.getHistFilename();
     // 履歴ファイルの書き込み
     Util.saveFileJson(fn, data);
-    Util.putMess(`編集履歴を ${fn} に保存しました。`);
+    if (!this.getConfig('silent', true)) {
+      vscode.window.setStatusBarMessage(`編集履歴を ${fn} に保存しました。`, 1 * 1000);
+    }
   }
 
   protected lineNos: { [key: string]: number } = {};
@@ -199,66 +198,63 @@ class OpenHist extends Extension {
     // ソート
     let sortType: string = this.getConfig('sort', 'modtime');
     let sortDir: number = (<string>this.getConfig('sortDir', 'desc') === 'asc') ? 1 : -1;
+
+    // ソート関数群
+    const sortFuncs: SortFuncs = {
+      // 最終更新日時
+      'modtime': (a: ListItem, b: ListItem): number => {
+        let a1 = (a.lastDate) ? a.lastDate : '';
+        let b1 = (b.lastDate) ? b.lastDate : '';
+        let ret: number;
+        if (a1 < b1) {
+          ret = -1;
+        } else if (a1 > b1) {
+          ret = 1;
+        } else {
+          ret = 0;
+        }
+        // 並べ替え方向を適用
+        return ret * sortDir;
+      },
+      // ファイル名
+      // 大文字小文字を区別せずファイル名でソート
+      // ファイル名が同じならディレクトリー名でソート
+      'filename': (a: ListItem, b: ListItem): number => {
+        let ret: number;
+        let a1 = (`${a.baseName} ${a.dirName}`).toUpperCase();
+        let b1 = (`${b.baseName} ${b.dirName}`).toUpperCase();
+        if (a1 < b1) {
+          ret = -1;
+        } else if (a1 > b1) {
+          ret = 1;
+        } else {
+          ret = 0;
+        }
+        // 並べ替え方向を適用
+        return ret * sortDir;
+      },
+      // パス名
+      // 大文字小文字を区別せずパス名でソート
+      'pathname': (a: ListItem, b: ListItem): number => {
+        let ret: number;
+        let a1 = (`${a.dirName}/${a.baseName}`).toUpperCase();
+        let b1 = (`${b.dirName}/${b.baseName}`).toUpperCase();
+        if (a1 < b1) {
+          ret = -1;
+        } else if (a1 > b1) {
+          ret = 1;
+        } else {
+          ret = 0;
+        }
+        return ret * sortDir;
+      }
+    };
+
     // modtime: 最終更新日時
     // filename: ファイル名
     // pathname: パス名
-    switch (sortType) {
-      // 最終更新日時
-      case 'modtime': {
-        list.sort(function (a, b): number {
-          let a1 = (a.lastDate) ? a.lastDate : '';
-          let b1 = (b.lastDate) ? b.lastDate : '';
-          let ret: number;
-          if (a1 < b1) {
-            ret = -1;
-          } else if (a1 > b1) {
-            ret = 1;
-          } else {
-            ret = 0;
-          }
-          // 並べ替え方向を適用
-          return ret * sortDir;
-        });
-        break;
-      }
-      // ファイル名
-      case 'filename': {
-        // 大文字小文字を区別せずファイル名でソート
-        // ファイル名が同じならディレクトリー名でソート
-        list.sort(function (a, b): number {
-          let ret: number;
-          let a1 = (`${a.baseName} ${a.dirName}`).toUpperCase();
-          let b1 = (`${b.baseName} ${b.dirName}`).toUpperCase();
-          if (a1 < b1) {
-            ret = -1;
-          } else if (a1 > b1) {
-            ret = 1;
-          } else {
-            ret = 0;
-          }
-          // 並べ替え方向を適用
-          return ret * sortDir;
-        });
-        break;
-      }
-      // パス名
-      case 'pathname': {
-        // 大文字小文字を区別せずパス名でソート
-        list.sort(function (a, b): number {
-          let ret: number;
-          let a1 = (`${a.dirName}/${a.baseName}`).toUpperCase();
-          let b1 = (`${b.dirName}/${b.baseName}`).toUpperCase();
-          if (a1 < b1) {
-            ret = -1;
-          } else if (a1 > b1) {
-            ret = 1;
-          } else {
-            ret = 0;
-          }
-          return ret * sortDir;
-        });
-        break;
-      }
+    if (sortFuncs[sortType]) {
+      list = list.sort(sortFuncs[sortType]);
     }
 
     // メニューを作成
@@ -320,7 +316,7 @@ class OpenHist extends Extension {
           // 最終更新日時取得
           let mtime = new DateInfo(stat.mtime);
           // 設定
-          hist.lastDate = mtime.format('%Y/%M/%D %H:%I:%S');
+          hist.lastDate = mtime.format('%Y-%M-%D %H:%I:%S');
           // 保存
           makes[fileName] = hist;
           // 更新数をカウントアップ
@@ -352,7 +348,29 @@ class OpenHist extends Extension {
     }
     Util.putMess(mess);
   }
-  
+ 
+  /**
+   * 履歴ファイルから存在しないファイルを除去
+   */
+  public removeNonexistentFile() {
+    // 履歴ファイルを読み込む
+    let list: ListItemDic = this.loadHistFile();
+    let count = 0;
+    for (let fileName in list) {
+      if (!Util.isExistsFile(fileName)) {
+        delete list[fileName];
+        ++count;
+      }
+    }
+
+    if (count) {
+      this.saveHistFile(list);
+      Util.putMess(`${count}個の履歴を削除しました。`);
+    } else {
+      Util.putMess(`すべてのファイルは存在しています。`);
+    }
+  }
+
 }
 
 export = OpenHist;

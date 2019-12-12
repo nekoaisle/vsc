@@ -90,7 +90,7 @@ export class Extension {
 	 */
 	public registerCommands(context: vscode.ExtensionContext, commands: ExtensionCommand[]) {
 		for ( let cmd of commands ) {
-			let disp = vscode.commands.registerCommand(cmd.command, cmd.callback );
+			let disp = vscode.commands.registerCommand(cmd.command, cmd.callback);
 			context.subscriptions.push(disp);
 		}
 	}

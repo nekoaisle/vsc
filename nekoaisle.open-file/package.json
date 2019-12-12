@@ -55,8 +55,12 @@
         "title": "nekoaisle.openHist 過去に編集したことのあるファイルを選択し開きます。"
       },
       {
+        "command": "nekoaisle.openHistRemoveNonexistentFile",
+        "title": "nekoaisle.openHistRemoveNonexistentFile 編集履歴からすでに存在しないファイルを除去します。"
+      },
+      {
         "command": "nekoaisle.openHistCompensateDate",
-        "title": "nekoaisle.openHistCompensateDate 編集履歴からすでに存在しないファイルを除去します。"
+        "title": "nekoaisle.openHistCompensateDate 日付を補完する"
       },
       {
         "command": "nekoaisle.openTag",
@@ -66,7 +70,58 @@
         "command": "nekoaisle.findOpen",
         "title": "nekoaisle.findOpen 検索して開く"
       }
-    ]
+    ],
+    "configuration": {
+      "properties": {
+        "nekoaisle-openHist.hist-file": {
+          "type": "string",
+          "description": "履歴を保存するファイル名",
+          "default": "~/Documents/openHist.json"
+        },
+        "nekoaisle-openHist.silent": {
+          "type": "boolean",
+          "description": "保存時にメッセージをステータスバーに表示する",
+          "default": false
+        },
+        "nekoaisle-openHist.sort": {
+          "type": "string",
+          "description": "並べ替えタイプ",
+          "enum": [
+            "modtime",
+            "filename",
+            "pathname"
+          ],
+          "enumDescriptions": [
+            "最終変更日時",
+            "大文字小文字を区別せずファイル名でソート、ファイル名が同じならディレクトリー名でソート",
+            "大文字小文字を区別せずパス名でソート"
+          ]
+        },
+        "nekoaisle-openHist.sortDir": {
+          "type": "string",
+          "description": "並べ替え方向",
+          "default": "desc",
+          "enum": [
+            "desc",
+            "asc"
+          ],
+          "enumDescriptions": [
+            "降順",
+            "昇順"
+          ]
+        },
+        "nekoaisle-openTemp.dir": {
+          "type": "string",
+          "description": "一時ファイルの格納ディレクトリ名",
+          "default": "~/temp"
+        },
+        "nekoaisle-openTemp.base": {
+          "type": "string",
+          "description": "一時ファイルのベース名",
+          "default": "temp"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -88,6 +143,7 @@
   },
   "dependencies": {
     "iconv-lite": "^0.5.0",
-    "jschardet": "^2.1.1"
+    "jschardet": "^2.1.1",
+    "trash": "^6.1.1"
   }
 }

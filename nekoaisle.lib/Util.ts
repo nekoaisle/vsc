@@ -533,6 +533,32 @@ export module Util {
   }
 
   /**
+   * ファイルを削除
+   * @param fileName 削除するファイル名
+   */
+  export function deleteFile(fileName: string) {
+    console.log(`deleteFile = "${fileName}"`);
+    return fs.unlinkSync(fileName);
+  }
+
+  /**
+   * ファイルをゴミ箱に移動(非同期です)
+   * 
+   * ここに入れてしまうとすべてのプロジェクトでlibraryが必要になるので
+   * コピペして使ってください。
+   * ※これを使うには
+   * $ npm install trash
+   * import * as trash from 'trash'; 
+   * 
+   * @param fileName 削除するファイル名
+   */
+  // export function trashFile(fileName: string) {
+    // trash(fileName).then(() => {
+    //   console.log(`deleteFile = "${fileName}"`);
+    // });
+  // }
+
+  /**
    * JSONファイルを読み込む
    * @param fileName ファイル名
    * @param silent   ファイルが存在しないときにメッセージを出さない

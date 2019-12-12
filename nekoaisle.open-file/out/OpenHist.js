@@ -2,6 +2,7 @@
 const vscode = require("vscode");
 const fs = require("fs");
 const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
+;
 /**
  * エクステンション本体
  */
@@ -20,6 +21,10 @@ class OpenHist extends nekoaisle_1.Extension {
                 }, {
                     command: 'nekoaisle.openHistCompensateDate',
                     callback: () => { this.compensateDate(); }
+                },
+                {
+                    command: 'nekoaisle.openHistRemoveNonexistentFile',
+                    callback: () => { this.removeNonexistentFile(); }
                 }
             ]
         });
@@ -28,6 +33,8 @@ class OpenHist extends nekoaisle_1.Extension {
         let subscriptions = [];
         // ファイルが閉じられる時
         vscode.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, this, subscriptions);
+        // ファイルが保存される時
+        vscode.workspace.onDidSaveTextDocument(this.onDidCloseTextDocument, this, subscriptions);
         // カーソル位置が変わった(ファイルごとのカーソル位置を記憶するため)
         vscode.window.onDidChangeTextEditorSelection(this.onDidChangeTextEditorSelection, this, subscriptions);
         // create a combined disposable from both event subscriptions
@@ -74,7 +81,9 @@ class OpenHist extends nekoaisle_1.Extension {
         let fn = this.getHistFilename();
         // 履歴ファイルの書き込み
         nekoaisle_1.Util.saveFileJson(fn, data);
-        nekoaisle_1.Util.putMess(`編集履歴を ${fn} に保存しました。`);
+        if (!this.getConfig('silent', true)) {
+            vscode.window.setStatusBarMessage(`編集履歴を ${fn} に保存しました。`, 1 * 1000);
+        }
     }
     /**
      * カーソル位置が変わった(ファイルごとのカーソル位置を記憶するため)
@@ -150,72 +159,67 @@ class OpenHist extends nekoaisle_1.Extension {
         // ソート
         let sortType = this.getConfig('sort', 'modtime');
         let sortDir = (this.getConfig('sortDir', 'desc') === 'asc') ? 1 : -1;
+        // ソート関数群
+        const sortFuncs = {
+            // 最終更新日時
+            'modtime': (a, b) => {
+                let a1 = (a.lastDate) ? a.lastDate : '';
+                let b1 = (b.lastDate) ? b.lastDate : '';
+                let ret;
+                if (a1 < b1) {
+                    ret = -1;
+                }
+                else if (a1 > b1) {
+                    ret = 1;
+                }
+                else {
+                    ret = 0;
+                }
+                // 並べ替え方向を適用
+                return ret * sortDir;
+            },
+            // ファイル名
+            // 大文字小文字を区別せずファイル名でソート
+            // ファイル名が同じならディレクトリー名でソート
+            'filename': (a, b) => {
+                let ret;
+                let a1 = (`${a.baseName} ${a.dirName}`).toUpperCase();
+                let b1 = (`${b.baseName} ${b.dirName}`).toUpperCase();
+                if (a1 < b1) {
+                    ret = -1;
+                }
+                else if (a1 > b1) {
+                    ret = 1;
+                }
+                else {
+                    ret = 0;
+                }
+                // 並べ替え方向を適用
+                return ret * sortDir;
+            },
+            // パス名
+            // 大文字小文字を区別せずパス名でソート
+            'pathname': (a, b) => {
+                let ret;
+                let a1 = (`${a.dirName}/${a.baseName}`).toUpperCase();
+                let b1 = (`${b.dirName}/${b.baseName}`).toUpperCase();
+                if (a1 < b1) {
+                    ret = -1;
+                }
+                else if (a1 > b1) {
+                    ret = 1;
+                }
+                else {
+                    ret = 0;
+                }
+                return ret * sortDir;
+            }
+        };
         // modtime: 最終更新日時
         // filename: ファイル名
         // pathname: パス名
-        switch (sortType) {
-            // 最終更新日時
-            case 'modtime': {
-                list.sort(function (a, b) {
-                    let a1 = (a.lastDate) ? a.lastDate : '';
-                    let b1 = (b.lastDate) ? b.lastDate : '';
-                    let ret;
-                    if (a1 < b1) {
-                        ret = -1;
-                    }
-                    else if (a1 > b1) {
-                        ret = 1;
-                    }
-                    else {
-                        ret = 0;
-                    }
-                    // 並べ替え方向を適用
-                    return ret * sortDir;
-                });
-                break;
-            }
-            // ファイル名
-            case 'filename': {
-                // 大文字小文字を区別せずファイル名でソート
-                // ファイル名が同じならディレクトリー名でソート
-                list.sort(function (a, b) {
-                    let ret;
-                    let a1 = (`${a.baseName} ${a.dirName}`).toUpperCase();
-                    let b1 = (`${b.baseName} ${b.dirName}`).toUpperCase();
-                    if (a1 < b1) {
-                        ret = -1;
-                    }
-                    else if (a1 > b1) {
-                        ret = 1;
-                    }
-                    else {
-                        ret = 0;
-                    }
-                    // 並べ替え方向を適用
-                    return ret * sortDir;
-                });
-                break;
-            }
-            // パス名
-            case 'pathname': {
-                // 大文字小文字を区別せずパス名でソート
-                list.sort(function (a, b) {
-                    let ret;
-                    let a1 = (`${a.dirName}/${a.baseName}`).toUpperCase();
-                    let b1 = (`${b.dirName}/${b.baseName}`).toUpperCase();
-                    if (a1 < b1) {
-                        ret = -1;
-                    }
-                    else if (a1 > b1) {
-                        ret = 1;
-                    }
-                    else {
-                        ret = 0;
-                    }
-                    return ret * sortDir;
-                });
-                break;
-            }
+        if (sortFuncs[sortType]) {
+            list = list.sort(sortFuncs[sortType]);
         }
         // メニューを作成
         let menu = [];
@@ -273,7 +277,7 @@ class OpenHist extends nekoaisle_1.Extension {
                     // 最終更新日時取得
                     let mtime = new nekoaisle_1.DateInfo(stat.mtime);
                     // 設定
-                    hist.lastDate = mtime.format('%Y/%M/%D %H:%I:%S');
+                    hist.lastDate = mtime.format('%Y-%M-%D %H:%I:%S');
                     // 保存
                     makes[fileName] = hist;
                     // 更新数をカウントアップ
@@ -304,6 +308,27 @@ class OpenHist extends nekoaisle_1.Extension {
             mess = '最終更新日時の設定されていないファイルはありませんでした。';
         }
         nekoaisle_1.Util.putMess(mess);
+    }
+    /**
+     * 履歴ファイルから存在しないファイルを除去
+     */
+    removeNonexistentFile() {
+        // 履歴ファイルを読み込む
+        let list = this.loadHistFile();
+        let count = 0;
+        for (let fileName in list) {
+            if (!nekoaisle_1.Util.isExistsFile(fileName)) {
+                delete list[fileName];
+                ++count;
+            }
+        }
+        if (count) {
+            this.saveHistFile(list);
+            nekoaisle_1.Util.putMess(`${count}個の履歴を削除しました。`);
+        }
+        else {
+            nekoaisle_1.Util.putMess(`すべてのファイルは存在しています。`);
+        }
     }
 }
 module.exports = OpenHist;
