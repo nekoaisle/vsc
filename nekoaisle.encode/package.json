@@ -56,6 +56,9 @@
     "contributes": {
         "commands": [
             {
+                "command": "nekoaisle.encode",
+                "title": "変換メニューを開く"
+            }, {
                 "command": "nekoaisle.toUpperCase",
                 "title": "大文字に変換"
             }, {

@@ -10,6 +10,7 @@
 	{"key": "ctrl+down" ,"command": "nekoaisle.addCursor", "when": "editorTextFocus"},
 	{"key": "ctrl+[","command": "-editor.action.outdentLines","when": "editorTextFocus && !editorReadonly"},
 	{"key": "ctrl+[","command": "nekoaisle.encloseCurlyBracket", "when": "editorTextFocus"},
+	{"key": "ctrl+[","command": "editor.emmet.action.matchTag", "when": "editorTextFocus && editorLangId == 'html'"},
 	{"key": "ctrl+]","command": "-editor.action.indentLines","when": "editorTextFocus && !editorReadonly"},
 	{"key": "ctrl+]","command": "nekoaisle.toggleCharCase", "when": "editorTextFocus"},
 	{"key": "ctrl+1","command": "-workbench.action.focusFirstEditorGroup"},

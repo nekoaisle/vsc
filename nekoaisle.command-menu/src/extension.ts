@@ -161,7 +161,7 @@ class CommandMenu extends Extension {
 				}
 
 				let equ = false;
-				for (let l of item.languageID) {
+				for (let l of langs) {
 					if (l === langID) {
 						equ = true;
 						break;

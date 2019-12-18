@@ -31,6 +31,7 @@ class MyExtention extends Extension {
 	// クリップボード
 	private clipboards: { [key: string]: string[] } = {};
 	private readonly slots: number = 10;
+	private lastSlot: string = "0";
 
 	/**
 	 * 構築
@@ -120,9 +121,6 @@ class MyExtention extends Extension {
 				description: 'toClipboard クリップボードへコピー'
 			},
 		];
-		let options: vscode.QuickPickOptions = {
-			placeHolder: 'コマンドを選択してください。'
-		};
 
 		let _this = this;
 		const exec = (key: string): boolean => {
@@ -530,7 +528,9 @@ class MyExtention extends Extension {
 		// メーニューを作成
 		let menu: vscode.QuickPickItem[] = [];
 		const cr = Util.getEndOfLine(editor);
-
+		// quickPick.selectedItems を設定しても何も起こらない
+		// let selectedItem: vscode.QuickPickItem | null = null;
+	
 		for (let key in this.clipboards) {
 			let item: vscode.QuickPickItem = {
 				label: key,
@@ -582,6 +582,11 @@ class MyExtention extends Extension {
 				continue;
 			}
 			menu.push(item);
+
+			// if (key === this.lastSlot) {
+			// 	// このアイテムが初期選択位置
+			// 	selectedItem = item;
+			// }
 		}
 
 		// QuickPick オブジェクトを作成
@@ -590,6 +595,9 @@ class MyExtention extends Extension {
 		quickPick.items = menu;
 		quickPick.matchOnDetail = false;
 		quickPick.matchOnDescription = false;
+		// if (selectedItem) {
+		// 	quickPick.selectedItems = [selectedItem];
+		// }
 
 		// エンターを押した処理を設定
 		quickPick.onDidAccept(() => {
@@ -602,6 +610,8 @@ class MyExtention extends Extension {
 					if (this.clipboards[slot]) {
 						// スロット名は有効なので実行
 						callback(slot, editor);
+						// スロット名を記憶(次回のデフォルト)
+						this.lastSlot = slot;
 					}
 				}
 			}
@@ -628,6 +638,8 @@ class MyExtention extends Extension {
 						// 実行したのでクイックピックを閉じる
 						quickPick.hide();
 					}
+					// スロット名を記憶(次回のデフォルト)
+					this.lastSlot = slot;
 				}
 			}
 		});

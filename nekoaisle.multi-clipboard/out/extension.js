@@ -73,6 +73,7 @@ class MyExtention extends nekoaisle_1.Extension {
         // クリップボード
         this.clipboards = {};
         this.slots = 10;
+        this.lastSlot = "0";
         // クリップボードを初期化
         for (let n = 0; n < this.slots; ++n) {
             let key = n.toString();
@@ -117,9 +118,6 @@ class MyExtention extends nekoaisle_1.Extension {
                 description: 'toClipboard クリップボードへコピー'
             },
         ];
-        let options = {
-            placeHolder: 'コマンドを選択してください。'
-        };
         let _this = this;
         const exec = (key) => {
             switch (key) {
@@ -492,6 +490,8 @@ class MyExtention extends nekoaisle_1.Extension {
         // メーニューを作成
         let menu = [];
         const cr = nekoaisle_1.Util.getEndOfLine(editor);
+        // quickPick.selectedItems を設定しても何も起こらない
+        // let selectedItem: vscode.QuickPickItem | null = null;
         for (let key in this.clipboards) {
             let item = {
                 label: key,
@@ -543,6 +543,10 @@ class MyExtention extends nekoaisle_1.Extension {
                 continue;
             }
             menu.push(item);
+            // if (key === this.lastSlot) {
+            // 	// このアイテムが初期選択位置
+            // 	selectedItem = item;
+            // }
         }
         // QuickPick オブジェクトを作成
         const quickPick = vscode.window.createQuickPick();
@@ -550,6 +554,9 @@ class MyExtention extends nekoaisle_1.Extension {
         quickPick.items = menu;
         quickPick.matchOnDetail = false;
         quickPick.matchOnDescription = false;
+        // if (selectedItem) {
+        // 	quickPick.selectedItems = [selectedItem];
+        // }
         // エンターを押した処理を設定
         quickPick.onDidAccept(() => {
             let editor = vscode.window.activeTextEditor;
@@ -561,6 +568,8 @@ class MyExtention extends nekoaisle_1.Extension {
                     if (this.clipboards[slot]) {
                         // スロット名は有効なので実行
                         callback(slot, editor);
+                        // スロット名を記憶(次回のデフォルト)
+                        this.lastSlot = slot;
                     }
                 }
             }
@@ -586,6 +595,8 @@ class MyExtention extends nekoaisle_1.Extension {
                         // 実行したのでクイックピックを閉じる
                         quickPick.hide();
                     }
+                    // スロット名を記憶(次回のデフォルト)
+                    this.lastSlot = slot;
                 }
             }
         });

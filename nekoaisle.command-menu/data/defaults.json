@@ -98,13 +98,13 @@
   },
   {
     "label": "O",
-    "description": "ファイル選択ダイアログ",
-    "command": "workbench.action.files.openFile"
+    "description": "ファイルを開く",
+    "command": "nekoaisle.openFile"
   },
   {
     "label": "O",
-    "description": "ファイルを開く",
-    "command": "nekoaisle.openFile"
+    "description": "ファイル選択ダイアログ",
+    "command": "workbench.action.files.openFile"
   },
   {
     "label": "P",
