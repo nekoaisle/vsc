@@ -13,6 +13,7 @@
 import * as vscode from 'vscode';
 import { Util, Extension, EditInsert, EditReplace, DateInfo, ExtensionCommand } from './nekoaisle.lib/nekoaisle';
 import { Parser } from "expr-eval";
+import { stringify } from 'querystring';
 
 /**
  * エクステンション活性化
@@ -465,7 +466,7 @@ class MyExtention extends Extension {
 	protected encodeJob(type: string, editor: vscode.TextEditor): void {
 		let datas: EditReplace[] = [];
 		for (let r of editor.selections) {
-			let range = Util.cloneObject(r);
+			let range: vscode.Selection = Util.cloneObject(r);
 			let str: string;
 			if (!range.isEmpty) {
 				// 範囲選択されているのでそれを対象とする
@@ -475,10 +476,21 @@ class MyExtention extends Extension {
 				// str = Util.getClipboard();
 
 				// // 範囲選択されていないのでカーソル位置の単語
-				// カーソル位置の単語の範囲を取得
-				range = Util.getCursorWordRange(editor, range.start);
-				// 単語の範囲の文字列を返す
-				str = editor.document.getText(range);
+				switch (type) {
+					// 式の時は式に使える文字列
+					case "eval": {
+						str = editor.document.lineAt(range.anchor.line).text;
+						str = this.getExpression(str, range.anchor.character);
+						break;
+					}
+						// カーソル位置の単語
+						default: {
+						// カーソル位置の単語の範囲を取得
+						let wordRange = Util.getCursorWordRange(editor, range.start);
+						// 単語の範囲の文字列を返す
+						str = editor.document.getText(wordRange);
+					}
+				}
 			}
 
 			// エンコードする
@@ -611,7 +623,11 @@ class MyExtention extends Extension {
 			}
 			// 式を評価
 			case 'eval': {
-				str = Parser.evaluate(str).toString();
+				try {
+					str = Parser.evaluate(str).toString();
+				} catch (e) {
+					str = "error!";
+				}
 				break;
 			}
 			// 10進数を16進数に変換
@@ -874,5 +890,50 @@ class MyExtention extends Extension {
 	
 		//
 		return ret;
+	}
+
+	/**
+	 * 指定行の指定位置付近の式を取得
+	 * @param str 行
+	 * @param pos 
+	 * @return 式
+	 */
+	public getExpression(str: string, x: number): string {
+		// カーソル位置直前のホワイトスペースをスキップ
+		let c: string;
+		do {
+			c = str.charAt(x - 1);
+			if (" \t=".indexOf(c) < 0) {
+				// ホワイトスペースや = 以外なのでこの位置
+				break;
+			}
+			// 起点を1文字前へ
+			--x;
+			// = 以外ならループ
+		} while (c !== "=")
+
+		// 開始位置と終了位置を探す
+		const chars = "01234567890abcdefghijklmnopqrstuvwxyz.+-*/%&|^(),!?[]<> \t";
+		let s = x;
+		while (s > 0) {
+			let c = str.charAt(s - 1).toLowerCase();
+			if (chars.indexOf(c) < 0) {
+				// 開始位置発見
+				break;
+			}
+			// 開始位置を1文字前へ
+			--s;
+		}
+		let e = x;
+		while (e < stringify.length) {
+			if (chars.indexOf(str.charAt(e)) < 0) {
+				// 終了位置発見
+				break;
+			}
+			// 終了位置を1文字前へ
+			++e;
+		}
+
+		return str.substring(s, e);
 	}
 }

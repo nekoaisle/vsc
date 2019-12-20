@@ -1,7 +1,7 @@
 # Change Log
-All notable changes to the "encode" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## 2019-12-20
 
-## [Unreleased]
-- Initial release
+### eval
+- 選択範囲がいない際はカーソル位置の式を計算するようにした。
+- カーソル位置の前に = がある場合は = より前の式を計算するようにした。

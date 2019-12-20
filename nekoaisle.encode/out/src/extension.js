@@ -14,6 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
 const expr_eval_1 = require("expr-eval");
+const querystring_1 = require("querystring");
 /**
  * エクステンション活性化
  * @param context
@@ -178,10 +179,21 @@ class MyExtention extends nekoaisle_1.Extension {
                 // // 範囲選択されていないのでクリップボード
                 // str = Util.getClipboard();
                 // // 範囲選択されていないのでカーソル位置の単語
-                // カーソル位置の単語の範囲を取得
-                range = nekoaisle_1.Util.getCursorWordRange(editor, range.start);
-                // 単語の範囲の文字列を返す
-                str = editor.document.getText(range);
+                switch (type) {
+                    // 式の時は式に使える文字列
+                    case "eval": {
+                        str = editor.document.lineAt(range.anchor.line).text;
+                        str = this.getExpression(str, range.anchor.character);
+                        break;
+                    }
+                    // カーソル位置の単語
+                    default: {
+                        // カーソル位置の単語の範囲を取得
+                        let wordRange = nekoaisle_1.Util.getCursorWordRange(editor, range.start);
+                        // 単語の範囲の文字列を返す
+                        str = editor.document.getText(wordRange);
+                    }
+                }
             }
             // エンコードする
             str = this.encode(str, type);
@@ -321,7 +333,12 @@ class MyExtention extends nekoaisle_1.Extension {
             }
             // 式を評価
             case 'eval': {
-                str = expr_eval_1.Parser.evaluate(str).toString();
+                try {
+                    str = expr_eval_1.Parser.evaluate(str).toString();
+                }
+                catch (e) {
+                    str = "error!";
+                }
                 break;
             }
             // 10進数を16進数に変換
@@ -591,6 +608,48 @@ class MyExtention extends nekoaisle_1.Extension {
         }
         //
         return ret;
+    }
+    /**
+     * 指定行の指定位置付近の式を取得
+     * @param str 行
+     * @param pos
+     * @return 式
+     */
+    getExpression(str, x) {
+        // カーソル位置直前のホワイトスペースをスキップ
+        let c;
+        do {
+            c = str.charAt(x - 1);
+            if (" \t=".indexOf(c) < 0) {
+                // ホワイトスペースや = 以外なのでこの位置
+                break;
+            }
+            // 起点を1文字前へ
+            --x;
+            // = 以外ならループ
+        } while (c !== "=");
+        // 開始位置と終了位置を探す
+        const chars = "01234567890abcdefghijklmnopqrstuvwxyz.+-*/%&|^(),!?[]<> \t";
+        let s = x;
+        while (s > 0) {
+            let c = str.charAt(s - 1).toLowerCase();
+            if (chars.indexOf(c) < 0) {
+                // 開始位置発見
+                break;
+            }
+            // 開始位置を1文字前へ
+            --s;
+        }
+        let e = x;
+        while (e < querystring_1.stringify.length) {
+            if (chars.indexOf(str.charAt(e)) < 0) {
+                // 終了位置発見
+                break;
+            }
+            // 終了位置を1文字前へ
+            ++e;
+        }
+        return str.substring(s, e);
     }
 }
 /**
