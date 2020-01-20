@@ -146,7 +146,7 @@ class InsertCode extends Extension {
     }
 
     // この拡張子のメニューを読み込む
-    fn = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
+    fn = `${tempDir}/list-${ext}.json`;
     let items: ListItem[] = Util.loadFileJson(fn, true);
     if (items) {
       // 共通メニューに追加

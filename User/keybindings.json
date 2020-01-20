@@ -65,4 +65,8 @@
 		"command": "nekoaisle.selectWord",
 		"when": "editorTextFocus"
 	},
+	{
+		"key": "ctrl+shift+r",
+		"command": "workbench.action.reloadWindow",
+	},
 ]

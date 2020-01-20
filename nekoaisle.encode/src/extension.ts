@@ -818,28 +818,38 @@ class MyExtention extends Extension {
 		// @@todo 上記の現象を回避するため syncReplace と syncInsert は統合する必要がある 
 		let sels: vscode.Selection[] = editor.selections;
 		sels = sels.sort((a: vscode.Selection, b: vscode.Selection): number => {
-			// 整数部:行番号、小数部:桁番号/10000
-			// ※1行が10,000文字を超えると誤動作しますm(_ _)m
-			// そういうファイルでこの機能が必要になるとは思いませんが…
-			let an = a.start.line + (a.start.character / 10000);
-			let bn = b.start.line + (b.start.character / 10000);
-			let d = an - bn;
-			if (d < 0) {
+			if (a.start.line < b.start.line) {
 				return 1;
-			} else if (a == b) {
-				return 0;
-			} else {
+			} else if (a.start.line > b.start.line) {
 				return -1;
+			} else if (a.start.character < b.start.character) {
+				return 1;
+			} else if (a.start.character > b.start.character) {
+				return -1;
+			} else {
+				return 0;
 			}
 		});
 
 		// 全カーソルについて処理
 		let ary: EditReplace[] = [];
+		let sel2: vscode.Selection[] = [];
 		for (let sel of sels) {
 			ary.push(this.encloseSub(sel, start, end, editor));
+			// カーソル位置を開始文字数分戻す
+			sel2.push(
+				new vscode.Selection(
+					sel.start.translate(0, - start.length),
+					sel.end.translate(0, - start.length),
+				)
+			);
 		}
 		// 編集実行
 		this.syncReplace(editor, ary);
+
+		// 選択範囲を設定
+		editor.selections = sel2;
+
 	}
 
 	protected encloseSub(sel: vscode.Selection, start: string, end: string, editor: vscode.TextEditor): encloseResult {

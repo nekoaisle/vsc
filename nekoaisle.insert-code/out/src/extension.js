@@ -107,7 +107,7 @@ class InsertCode extends nekoaisle_1.Extension {
             return;
         }
         // この拡張子のメニューを読み込む
-        fn = `${tempDir}/list-${pinfo.info.ext.substr(1)}.json`;
+        fn = `${tempDir}/list-${ext}.json`;
         let items = nekoaisle_1.Util.loadFileJson(fn, true);
         if (items) {
             // 共通メニューに追加

@@ -458,6 +458,7 @@ var Util;
      * @param cmd
      */
     function execCmd(cmd) {
+        console.log(`exec ${cmd}`);
         return ("" + chproc.execSync(cmd)).trim();
     }
     Util.execCmd = execCmd;
@@ -468,6 +469,22 @@ var Util;
         return execCmd('xclip -o -selection c');
     }
     Util.getClipboard = getClipboard;
+    /**
+     * クリップボードに設定
+     * @param text 設定する文字列
+     */
+    function putClipboard(text) {
+        // 一時ファイルに保存
+        let dir = os.tmpdir();
+        let rand = Math.floor(Math.random() * 1000000000);
+        let fn = path.join(dir, `nekoaisle.${rand}`);
+        saveFile(fn, text);
+        // コマンド実行
+        execCmd(`xclip -i -selection c ${fn}`);
+        // 一時ファイルを削除
+        deleteFile(fn);
+    }
+    Util.putClipboard = putClipboard;
     /**
      * 指定uriをブラウザーで開く
      * @param uri 開く uri

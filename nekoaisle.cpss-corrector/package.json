@@ -11,6 +11,8 @@
 	],
 	"activationEvents": [
 		"onCommand:nekoaisle.cpssCorrector",
+		"onCommand:nekoaisle.cpssCorrector-header",
+		"onCommand:nekoaisle.cpssCorrector-control",
 		"onCommand:nekoaisle.cpssCorrector-paren"
 	],
 	"main": "./out/extension.js",
@@ -19,6 +21,14 @@
 			{
 				"command": "nekoaisle.cpssCorrector",
 				"title": "nekoaisle.cpssCorrector 旧書式のCPSSソースを校正"
+			},
+			{
+				"command": "nekoaisle.cpssCorrector-header",
+				"title": "nekoaisle.cpssCorrector-header 関数ヘッダー修正"
+			},
+			{
+				"command": "nekoaisle.cpssCorrector-control",
+				"title": "nekoaisle.cpssCorrector-control 制御構造修正"
 			},
 			{
 				"command": "nekoaisle.cpssCorrector-paren",
