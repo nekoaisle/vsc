@@ -261,6 +261,18 @@ var Util;
     }
     Util.getCursorWord = getCursorWord;
     /**
+     * 指定エディターの全テキストを置き換える
+     * @param editor 処理対象
+     * @param text 置き換える文字列
+     */
+    function replaceAllText(editor, text) {
+        editor.edit((edit) => {
+            let range = new vscode.Range(0, 0, editor.document.lineCount, 0);
+            edit.replace(range, text);
+        });
+    }
+    Util.replaceAllText = replaceAllText;
+    /**
      * 指定文字列の先頭文字によって大文字・小文字を切り替える
      * @param c 対象となる文字
      * @return string 結果
@@ -426,19 +438,19 @@ var Util;
      * 現在のワークフォルダーを取得
      */
     function getWorkFolder() {
-        let dir;
-        let folders = vscode.workspace.workspaceFolders;
-        if (folders) {
-            // ワークスペースフォルダーを取得
-            // 複数フォルダーあっても先頭のみ
-            let uri = folders[0].uri;
-            dir = uri.path;
-        }
-        else {
-            dir = process.cwd();
+        let dir = process.cwd();
+        let editor = vscode.window.activeTextEditor;
+        if (editor) {
+            let uri = editor.document.uri;
+            if (uri) {
+                let folder = vscode.workspace.getWorkspaceFolder(uri);
+                if (folder) {
+                    uri = folder.uri;
+                    dir = uri.path;
+                }
+            }
         }
         return dir;
-        // return vscode.workspace.rootPath;
     }
     Util.getWorkFolder = getWorkFolder;
     /**
@@ -446,6 +458,7 @@ var Util;
      * @param cmd
      */
     function execCmd(cmd) {
+        console.log(`exec ${cmd}`);
         return ("" + chproc.execSync(cmd)).trim();
     }
     Util.execCmd = execCmd;
@@ -456,6 +469,22 @@ var Util;
         return execCmd('xclip -o -selection c');
     }
     Util.getClipboard = getClipboard;
+    /**
+     * クリップボードに設定
+     * @param text 設定する文字列
+     */
+    function putClipboard(text) {
+        // 一時ファイルに保存
+        let dir = os.tmpdir();
+        let rand = Math.floor(Math.random() * 1000000000);
+        let fn = path.join(dir, `nekoaisle.${rand}`);
+        saveFile(fn, text);
+        // コマンド実行
+        execCmd(`xclip -i -selection c ${fn}`);
+        // 一時ファイルを削除
+        deleteFile(fn);
+    }
+    Util.putClipboard = putClipboard;
     /**
      * 指定uriをブラウザーで開く
      * @param uri 開く uri

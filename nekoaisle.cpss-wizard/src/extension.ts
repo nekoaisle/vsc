@@ -56,7 +56,8 @@ class Options {
 	public constructor(config: vscode.WorkspaceConfiguration, defaults: Options) {
 		// ファイル名
 		// package.json の contributes.configuration.properties.cpssWizard.wizard を設定したらユーザー定義がなくてもデフォルト値を使ってくれなくなった＞＜；
-		let wizard = config.get('wizard', defaults.wizard);
+		// let wizard = config.get('wizard', defaults.wizard);
+		let wizard = config.get('wizard', '');
 		if (wizard == '') {
 			wizard = defaults.wizard;
 		}
@@ -71,6 +72,10 @@ class Options {
 
 		//
 		this.sqlDir = Util.normalizePath(config.get('sqlDir', defaults.sqlDir));
+		if (!fs.existsSync(this.sqlDir)) {
+			this.sqlDir = Util.normalizePath('~/');
+		}
+
 		this.php = Util.normalizePath(config.get('php', defaults.php));
 		this.outFile = Util.normalizePath(config.get('outFile', defaults.outFile));
 		this.charset = config.get('charset', defaults.charset);
@@ -194,11 +199,12 @@ class CpssWizard extends Extension {
 	protected defaultOptions: Options = {
 		wizard: "",					// 拡張機能の保存フォルダーは動的に取得
 		templateDir: "",			// 拡張機能の保存フォルダーは動的に取得
-		sqlDir: '~/',
+		sqlDir: '/var/www/ragdoll/Installer/CREATE_TABLE/ver3',
 		php: '/usr/bin/php',
 		outFile: "php://stdout",
 		author: "木屋善夫",
-		charset: 'Shift_JIS',
+		// charset: 'Shift_JIS',
+		charset: 'UTF-8',
 	};
 
 	/**

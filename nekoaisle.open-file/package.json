@@ -13,6 +13,7 @@
   "activationEvents": [
     "onCommand:nekoaisle.selectOpen",
     "onCommand:nekoaisle.openFile",
+    "onCommand:nekoaisle.openLog",
     "onCommand:nekoaisle.openRelated",
     "onCommand:nekoaisle.openNew",
     "onCommand:nekoaisle.openTemp",
@@ -33,6 +34,10 @@
       {
         "command": "nekoaisle.openFile",
         "title": "nekoaisle.openFile 選択範囲またはカーソル位置のファイルを開きます。"
+      },
+      {
+        "command": "nekoaisle.openLog",
+        "title": "nekoaisle.openLog CPSSのログファイルを開きます。"
       },
       {
         "command": "nekoaisle.openRelated",
@@ -73,6 +78,11 @@
     ],
     "configuration": {
       "properties": {
+        "nekoaisle-openLog.logDir": {
+          "type": "string",
+          "description": "ログが保管されているディレクトリ",
+          "default": "log/dbg"
+        },
         "nekoaisle-openHist.hist-file": {
           "type": "string",
           "description": "履歴を保存するファイル名",

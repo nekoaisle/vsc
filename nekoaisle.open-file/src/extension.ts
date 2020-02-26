@@ -1,6 +1,7 @@
 'use strict';
 import * as vscode from 'vscode';
 import OpenFile = require( './OpenFile' );
+import OpenLog = require( './OpenLog' );
 import OpenRelated = require( './OpenRelated' );
 import OpenNew = require( './OpenNew' );
 import OpenTemp = require('./OpenTemp');
@@ -15,6 +16,7 @@ import FindOpen = require('./FindOpen');
  */
 export function activate(context: vscode.ExtensionContext) {
   new OpenFile(context);
+  new OpenLog(context);
   new OpenRelated(context);
   new OpenNew(context);
   new OpenTemp(context);

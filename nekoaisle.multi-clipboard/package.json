@@ -5,6 +5,7 @@
 	"version": "0.0.1",
 	"license": "MIT License",
 	"repository": "hogehoge",
+	"publisher": "nekoaisle",
 	"engines": {
 		"vscode": "^1.40.0"
 	},
@@ -20,7 +21,8 @@
 		"onCommand:nekoaisle.multiClipboard.push",
 		"onCommand:nekoaisle.multiClipboard.pop",
 		"onCommand:nekoaisle.multiClipboard.fromClipboard",
-		"onCommand:nekoaisle.multiClipboard.toClipboard"
+		"onCommand:nekoaisle.multiClipboard.toClipboard",
+		"*"
 	],
 	"main": "./out/extension.js",
 	"contributes": {

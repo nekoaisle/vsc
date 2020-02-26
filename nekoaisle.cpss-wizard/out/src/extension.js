@@ -33,7 +33,8 @@ class Options {
         this.htmls = []; // html出力ディレクトリ名
         // ファイル名
         // package.json の contributes.configuration.properties.cpssWizard.wizard を設定したらユーザー定義がなくてもデフォルト値を使ってくれなくなった＞＜；
-        let wizard = config.get('wizard', defaults.wizard);
+        // let wizard = config.get('wizard', defaults.wizard);
+        let wizard = config.get('wizard', '');
         if (wizard == '') {
             wizard = defaults.wizard;
         }
@@ -46,6 +47,9 @@ class Options {
         this.templateDir = nekoaisle_1.Util.normalizePath(templateDir);
         //
         this.sqlDir = nekoaisle_1.Util.normalizePath(config.get('sqlDir', defaults.sqlDir));
+        if (!fs.existsSync(this.sqlDir)) {
+            this.sqlDir = nekoaisle_1.Util.normalizePath('~/');
+        }
         this.php = nekoaisle_1.Util.normalizePath(config.get('php', defaults.php));
         this.outFile = nekoaisle_1.Util.normalizePath(config.get('outFile', defaults.outFile));
         this.charset = config.get('charset', defaults.charset);
@@ -181,11 +185,12 @@ class CpssWizard extends nekoaisle_1.Extension {
         this.defaultOptions = {
             wizard: "",
             templateDir: "",
-            sqlDir: '~/',
+            sqlDir: '/var/www/ragdoll/Installer/CREATE_TABLE/ver3',
             php: '/usr/bin/php',
             outFile: "php://stdout",
             author: "木屋善夫",
-            charset: 'Shift_JIS',
+            // charset: 'Shift_JIS',
+            charset: 'UTF-8',
         };
     }
     /**

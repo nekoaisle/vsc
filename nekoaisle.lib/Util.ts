@@ -436,20 +436,19 @@ export module Util {
    * 現在のワークフォルダーを取得
    */
   export function getWorkFolder() {
-    let dir: string;
-    let folders = vscode.workspace.workspaceFolders;
-    if (folders) {
-      // ワークスペースフォルダーを取得
-      // 複数フォルダーあっても先頭のみ
-      let uri = folders[0].uri;
-      dir = uri.path;
-    } else {
-      dir = process.cwd();
+    let dir: string = process.cwd();
+    let editor = vscode.window.activeTextEditor;
+    if (editor) {
+      let uri = editor.document.uri;
+      if (uri) {
+        let folder = vscode.workspace.getWorkspaceFolder(uri);
+        if (folder) {
+          uri = folder.uri;
+          dir = uri.path;
+        }
+      }
     }
-
     return dir;
-
-    // return vscode.workspace.rootPath;
   }
 
   /**

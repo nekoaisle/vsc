@@ -23,8 +23,13 @@
   },
   {
     "label": "*",
-    "description": "パネル位置のトグル",
-    "command": "workbench.action.togglePanelPosition"
+    "description": "パネル位置を右に",
+    "command": "workbench.action.positionPanelRight"
+  },
+  {
+    "label": "-",
+    "description": "マルチクリップボード",
+    "command": "nekoaisle.multiClipboard"
   },
   {
     "label": "B",
@@ -72,6 +77,11 @@
     "command": "nekoaisle.insertCode"
   },
   {
+    "label": "I",
+    "description": "ファイルを挿入",
+    "command": "nekoaisle.insertFile"
+  },
+  {
     "label": "J",
     "description": "マーク位置へジャンプ",
     "command": "nekoaisle.markjumpJump"
@@ -83,8 +93,8 @@
   },
   {
     "label": "L",
-    "description": "ファイルを挿入",
-    "command": "nekoaisle.insertFile"
+    "description": "ログファイルを開く",
+    "command": "nekoaisle.openLog"
   },
   {
     "label": "M",

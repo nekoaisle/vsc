@@ -13,7 +13,8 @@
 		"onCommand:nekoaisle.cpssCorrector",
 		"onCommand:nekoaisle.cpssCorrector-header",
 		"onCommand:nekoaisle.cpssCorrector-control",
-		"onCommand:nekoaisle.cpssCorrector-paren"
+		"onCommand:nekoaisle.cpssCorrector-paren",
+		"onCommand:nekoaisle.cpssCorrector-mulrem"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -33,9 +34,12 @@
 			{
 				"command": "nekoaisle.cpssCorrector-paren",
 				"title": "nekoaisle.cpssCorrector-paren 丸括弧の前後のスペースを除去"
+			},
+			{
+				"command": "nekoaisle.cpssCorrector-mulrem",
+				"title": "nekoaisle.cpssCorrector-mulrem 複数行 // を /** */ に変換"
 			}
-			
-				]
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

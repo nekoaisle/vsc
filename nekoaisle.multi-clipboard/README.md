@@ -29,14 +29,22 @@
 ### pop
 メニューから選択したスロットの末尾の行をを貼り付けて削除します。
 
+### fromClipboard
+メニューから選択したスロットにクリップボードの内容をコピー
+
+### toClipboard
+メニューから選択したスロットの内容をクリップボードにコピー
+
 ## コマンド
 
-|            コマンド            |                 機能                 |
-| ------------------------------ | ------------------------------------ |
-| nekoaisle.multiClipboard.copy  | 指定スロットにコピー                 |
-| nekoaisle.multiClipboard.cut   | 指定スロットにコピーして削除         |
-| nekoaisle.multiClipboard.add   | 指定スロットの末尾に追加             |
-| nekoaisle.multiClipboard.push  | 指定スロットの末尾に追加して削除     |
-| nekoaisle.multiClipboard.paste | 指定スロットの内容をペースト         |
-| nekoaisle.multiClipboard.pop   | 指定スロットの末尾をペーストして削除 |
+|                コマンド                |                  機能                  |
+| -------------------------------------- | -------------------------------------- |
+| nekoaisle.multiClipboard.copy          | 指定スロットにコピー                   |
+| nekoaisle.multiClipboard.cut           | 指定スロットにコピーして削除           |
+| nekoaisle.multiClipboard.add           | 指定スロットの末尾に追加               |
+| nekoaisle.multiClipboard.push          | 指定スロットの末尾に追加して削除       |
+| nekoaisle.multiClipboard.paste         | 指定スロットの内容をペースト           |
+| nekoaisle.multiClipboard.pop           | 指定スロットの末尾をペーストして削除   |
+| nekoaisle.multiClipboard.fromClipboard | 指定スロットへクリップボードをコピー   |
+| nekoaisle.multiClipboard.toClipboard   | 指定スロットからクリップボードへコピー |
 

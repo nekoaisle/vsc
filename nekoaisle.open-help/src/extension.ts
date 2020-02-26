@@ -51,7 +51,12 @@ class MyExtension extends Extension {
     let editor = vscode.window.activeTextEditor;
     
     // カーソル位置の単語を取得
-    let word = Util.getCursorWord(editor);
+    let word: string;
+    if (editor.selection.isEmpty) {
+      word = Util.getCursorWord(editor);
+    } else {
+      word = editor.document.getText(editor.selection);
+    }
     
     // デフォルトのリストファイル名
     let deffn = this.joinExtensionRoot("data/openHelp.json");

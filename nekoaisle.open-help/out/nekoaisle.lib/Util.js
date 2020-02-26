@@ -261,6 +261,18 @@ var Util;
     }
     Util.getCursorWord = getCursorWord;
     /**
+     * 指定エディターの全テキストを置き換える
+     * @param editor 処理対象
+     * @param text 置き換える文字列
+     */
+    function replaceAllText(editor, text) {
+        editor.edit((edit) => {
+            let range = new vscode.Range(0, 0, editor.document.lineCount, 0);
+            edit.replace(range, text);
+        });
+    }
+    Util.replaceAllText = replaceAllText;
+    /**
      * 指定文字列の先頭文字によって大文字・小文字を切り替える
      * @param c 対象となる文字
      * @return string 結果
@@ -368,6 +380,27 @@ var Util;
     }
     Util.getCharCase = getCharCase;
     /**
+     * 指定エディターの改行文字を取得
+     * @param edior エディタ
+     * @return 改行コード
+     */
+    function getEndOfLine(editor) {
+        let eol;
+        switch (editor.document.eol) {
+            // UNIX
+            case vscode.EndOfLine.LF:
+            default:
+                eol = "\n";
+                break;
+            // DOS
+            case vscode.EndOfLine.CRLF:
+                eol = "\r\n";
+                break;
+        }
+        return eol;
+    }
+    Util.getEndOfLine = getEndOfLine;
+    /**
      * 選択中の文字列を取得
      * @param editor 対象とするエディタ
      */
@@ -405,18 +438,19 @@ var Util;
      * 現在のワークフォルダーを取得
      */
     function getWorkFolder() {
-        // let dir: string;
-        // let folders = vscode.workspace.workspaceFolders;
-        // if (folders.length > 0) {
-        //   // ワークスペースフォルダーを取得
-        //   // 複数フォルダーあっても先頭のみ
-        //   let uri = folders[0].uri;
-        //   dir = uri.path;
-        // } else {
-        //   dir = process.cwd();
-        // }
-        // return dir;
-        return vscode.workspace.rootPath;
+        let dir;
+        let folders = vscode.workspace.workspaceFolders;
+        if (folders) {
+            // ワークスペースフォルダーを取得
+            // 複数フォルダーあっても先頭のみ
+            let uri = folders[0].uri;
+            dir = uri.path;
+        }
+        else {
+            dir = process.cwd();
+        }
+        return dir;
+        // return vscode.workspace.rootPath;
     }
     Util.getWorkFolder = getWorkFolder;
     /**
@@ -424,6 +458,7 @@ var Util;
      * @param cmd
      */
     function execCmd(cmd) {
+        console.log(`exec ${cmd}`);
         return ("" + chproc.execSync(cmd)).trim();
     }
     Util.execCmd = execCmd;
@@ -434,6 +469,22 @@ var Util;
         return execCmd('xclip -o -selection c');
     }
     Util.getClipboard = getClipboard;
+    /**
+     * クリップボードに設定
+     * @param text 設定する文字列
+     */
+    function putClipboard(text) {
+        // 一時ファイルに保存
+        let dir = os.tmpdir();
+        let rand = Math.floor(Math.random() * 1000000000);
+        let fn = path.join(dir, `nekoaisle.${rand}`);
+        saveFile(fn, text);
+        // コマンド実行
+        execCmd(`xclip -i -selection c ${fn}`);
+        // 一時ファイルを削除
+        deleteFile(fn);
+    }
+    Util.putClipboard = putClipboard;
     /**
      * 指定uriをブラウザーで開く
      * @param uri 開く uri
@@ -509,6 +560,31 @@ var Util;
     }
     Util.saveFile = saveFile;
     /**
+     * ファイルを削除
+     * @param fileName 削除するファイル名
+     */
+    function deleteFile(fileName) {
+        console.log(`deleteFile = "${fileName}"`);
+        return fs.unlinkSync(fileName);
+    }
+    Util.deleteFile = deleteFile;
+    /**
+     * ファイルをゴミ箱に移動(非同期です)
+     *
+     * ここに入れてしまうとすべてのプロジェクトでlibraryが必要になるので
+     * コピペして使ってください。
+     * ※これを使うには
+     * $ npm install trash
+     * import * as trash from 'trash';
+     *
+     * @param fileName 削除するファイル名
+     */
+    // export function trashFile(fileName: string) {
+    // trash(fileName).then(() => {
+    //   console.log(`deleteFile = "${fileName}"`);
+    // });
+    // }
+    /**
      * JSONファイルを読み込む
      * @param fileName ファイル名
      * @param silent   ファイルが存在しないときにメッセージを出さない
@@ -577,7 +653,7 @@ var Util;
      * cpss/ope/abcd.php (123)
      * cpss/ope/abcd.php:123
      * cpss/ope/abcd.php: 123
-     *
+     * /var/www/ragdoll/campt/libcampt/CamptPageOpe.php on line 591
      * @param name タグジャンプ文字列
      * @return タグジャンプ情報
      */
@@ -587,8 +663,9 @@ var Util;
         };
         // ファイル名と行番号を分離
         let res = [
-            /^(.*)\s*\(([0-9]+)\)$/,
-            /^(.*):\s*([0-9]+)$/,
+            /^(.*)\(([0-9]+)\)\s*$/,
+            /^(.*):\s*([0-9]+)\s*$/,
+            /^(.*) on line ([0-9]+)\s*$/,
         ];
         let reg = null;
         for (let re of res) {
@@ -601,7 +678,7 @@ var Util;
         let line;
         if (reg) {
             // 行番号が指定された
-            result.filename = reg[1];
+            result.filename = reg[1].trim();
             result.lineNo = parseInt(reg[2]);
         }
         else {

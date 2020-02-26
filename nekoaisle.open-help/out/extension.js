@@ -42,7 +42,13 @@ class MyExtension extends nekoaisle_1.Extension {
         //
         let editor = vscode.window.activeTextEditor;
         // カーソル位置の単語を取得
-        let word = nekoaisle_1.Util.getCursorWord(editor);
+        let word;
+        if (editor.selection.isEmpty) {
+            word = nekoaisle_1.Util.getCursorWord(editor);
+        }
+        else {
+            word = editor.document.getText(editor.selection);
+        }
         // デフォルトのリストファイル名
         let deffn = this.joinExtensionRoot("data/openHelp.json");
         let defaults = nekoaisle_1.Util.loadFileJson(deffn);

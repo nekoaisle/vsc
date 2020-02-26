@@ -1,6 +1,7 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 const OpenFile = require("./OpenFile");
+const OpenLog = require("./OpenLog");
 const OpenRelated = require("./OpenRelated");
 const OpenNew = require("./OpenNew");
 const OpenTemp = require("./OpenTemp");
@@ -14,6 +15,7 @@ const FindOpen = require("./FindOpen");
  */
 function activate(context) {
     new OpenFile(context);
+    new OpenLog(context);
     new OpenRelated(context);
     new OpenNew(context);
     new OpenTemp(context);

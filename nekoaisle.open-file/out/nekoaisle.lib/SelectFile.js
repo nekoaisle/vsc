@@ -14,8 +14,10 @@ class SelectFile {
     /**
      * ファイル選択
      * @param dirName ディレクトリー名
+     * @param title   タイトル名
+     * @param asc     昇順にソート
      */
-    selectFile(dirName, title) {
+    selectFile(dirName, title, asc = true) {
         return new Promise((resolve, reject) => {
             // 非同期の処理
             let files;
@@ -42,7 +44,7 @@ class SelectFile {
                         // 両方ディレクトリかファイルなので名前で比較
                         a = a.toLocaleUpperCase();
                         b = b.toLocaleUpperCase();
-                        return (a < b) ? -1 : (a > b) ? 1 : 0;
+                        return ((a < b) ? -1 : (a > b) ? 1 : 0) * (asc ? 1 : -1);
                     }
                 });
                 if (dirName !== '/') {
