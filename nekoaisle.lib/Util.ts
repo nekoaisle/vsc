@@ -260,6 +260,15 @@ export module Util {
   }
 
   /**
+   * カーソル位置の行を取得
+   * @param editor 対象とするエディタ
+   */
+  export function getCursorLine(editor: vscode.TextEditor): string {
+    // 単語の範囲の文字列を返す
+    return editor.document.lineAt(editor.selection.active.line).text;
+  }
+
+  /**
    * 指定エディターの全テキストを置き換える
    * @param editor 処理対象
    * @param text 置き換える文字列
@@ -404,7 +413,10 @@ export module Util {
   export function getSelectString(editor?: vscode.TextEditor): string {
     if (!editor) {
       // editor が省略されたので現在のエディタ
-      editor = <vscode.TextEditor>vscode.window.activeTextEditor;
+      editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return '';
+      }
     }
 
     let range = editor.selection;

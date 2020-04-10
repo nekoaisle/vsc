@@ -9,9 +9,3 @@
 # @date      {{now.year}}-{{now.month}}-{{now.date}}
 # @author    {{author}}
 #
-
-# 使用法を表示
-# 
-# @params number リターンコード
-# @params string エラーメッセージ(省略可)
-# @return シェルスクリプトを終了するので戻りません

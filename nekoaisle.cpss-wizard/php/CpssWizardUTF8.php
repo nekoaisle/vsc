@@ -27,7 +27,7 @@ class CpssWizard
 	 * オプションの取得
 	 * 
 	 * @param string  $option オプション名
-	 * @param boolean $error === TRUE 取得出来なかったときにはエラーにする
+	 * @param boolean $error === true 取得出来なかったときにはエラーにする
 	 * @return string オプション
 	 */
 	function getOption($option, $error = NULL)
@@ -524,7 +524,7 @@ __USAGE__;
 				$a['name'],				// 'V_NAME'
 				$n,						// 'm_strName'
 				$a['type'],				// 'VARCHAR'
-				'TRUE',					// TRUE
+				'true',					// true
 				$a['default'],			// ''
 				$a['title'],			// 'メールマガジン名'
 				(string)($a['size'])	// 64
@@ -585,7 +585,7 @@ __USAGE__;
 				'TYPE'    => 'text',
 				'DEFAULT' => '',
 				'TITLE'   => 'ID',
-				'LESS'    => TRUE,
+				'LESS'    => true,
 				'MAXLEN'  => 64,
 				'ATTRIB'  => 'size="48"',
 				'search'  => 'like',
@@ -598,7 +598,7 @@ _EOL_;
 				'DEFAULT' => '',
 				'TITLE'   => '状態',
 				'MAXLEN'  =>   3,
-				'LESS'    => TRUE,
+				'LESS'    => true,
 				'OPTION'  => [''=>''],
 				'search'  => 'status',
 			],
@@ -610,7 +610,7 @@ _EOL_;
 				'TYPE'    => 'text',
 				'DEFAULT' => ___default___,
 				'TITLE'   => '___title___',
-				'LESS'    => FALSE,
+				'LESS'    => false,
 				'MINNUM'  => 0,
 				'MAXNUM'  => 9999999,
 				'search'  => 'like',
@@ -622,11 +622,11 @@ _EOL_;
 				'TAG'     => 'textarea',
 				'DEFAULT' => ___default___,
 				'TITLE'   => '___title___',
-				'LESS'    => FALSE,
+				'LESS'    => false,
 				'MAXLEN'  => 4096,
 				'ATTRIB'  => 'rows="5"',
 				'CTRL'    => "\t\r\n",
-				'HTML'    => TRUE,			// <>"' を許可
+				'HTML'    => true,			// <>"' を許可
 				'search'  => 'like',
 			],
 _EOL_;
@@ -637,7 +637,7 @@ _EOL_;
 				'TYPE'    => 'text',
 				'DEFAULT' => ___default___,
 				'TITLE'   => '___title___',
-				'LESS'    => FALSE,
+				'LESS'    => false,
 				'search'  => 'like',
 			],
 _EOL_;
@@ -648,7 +648,7 @@ _EOL_;
 				'DEFAULT' => ___default___,
 				'TITLE'   => '___title___',
 				'MAXLEN'  =>   3,
-				'LESS'    => TRUE,
+				'LESS'    => true,
 				'OPTION'  => [''=>''],
 				'search'  => 'status',
 			],
@@ -662,7 +662,7 @@ _EOL_;
 				'TITLE'   => '___title___(最小)',
 				'DTFMT'   => 'YmdHis',
 				'DSPFMT'  => 'Y/m/d H:i:s',
-				'LESS'    => TRUE,
+				'LESS'    => true,
 				'ATTRIB'  => 'data-cpss="datetime"',
 				'search'  => 'between ___name____END',
 				'head'    => '開始日時',
@@ -676,10 +676,10 @@ _EOL_;
 				'TITLE'   => '___title___(最大)',
 				'DTFMT'   => 'YmdHis',
 				'DSPFMT'  => 'Y/m/d H:i:s',
-				'LESS'    => TRUE,
+				'LESS'    => true,
 				'ATTRIB'  => 'data-cpss="datetime"',
 				'search'  => 'between',
-				'combine' => TRUE,
+				'combine' => true,
 				'style'   => 'width:12em;',
 				'prefix'  => ' ～ ',
 			],
@@ -897,7 +897,7 @@ _EOL_;
 				'TAG'     => 'static',
 				'DEFAULT' => '',
 				'TITLE'   => 'ID',
-				'LESS'    => TRUE,
+				'LESS'    => true,
 				'MAXLEN'  => 64,
 				'ATTRIB'  => 'size="48"',
 			],
@@ -919,7 +919,7 @@ _EOL_;
 				'TYPE'    => 'text',
 				'DEFAULT' => ___default___,
 				'TITLE'   => '___title___',
-				'LESS'    => FALSE,
+				'LESS'    => false,
 				'ATTRIB'  => 'data-cpss="datetime"',
 				'format'  => 'Y-m-d H:i:s',
 			],
@@ -930,7 +930,7 @@ _EOL_;
 				'TAG'     => 'text',
 				'DEFAULT' => ___default___,
 				'TITLE'   => '___title___',
-				'LESS'    => FALSE,
+				'LESS'    => false,
 				'MINNUM'  => 0,
 				'MAXNUM'  => 9999999,
 			],
@@ -941,11 +941,11 @@ _EOL_;
 				'TAG'     => 'textarea',
 				'DEFAULT' => ___default___,
 				'TITLE'   => '___title___',
-				'LESS'    => FALSE,
+				'LESS'    => false,
 				'MAXLEN'  => 4095,
 				'ATTRIB'  => 'rows="5"',
 				'CTRL'    => "\t\r\n",
-				'HTML'    => TRUE,			// <>"' を許可
+				'HTML'    => true,			// <>"' を許可
 			],
 _EOL_;
 		$temple['VARCHAR'] = <<<_EOL_
@@ -955,7 +955,7 @@ _EOL_;
 				'TYPE'    => 'text',
 				'DEFAULT' => ___default___,
 				'TITLE'   => '___title___',
-				'LESS'    => FALSE,
+				'LESS'    => false,
 			],
 _EOL_;
 		$temple['CHAR'] = <<<_EOL_
@@ -965,7 +965,7 @@ _EOL_;
 				'TYPE'    => 'text',
 				'DEFAULT' => ___default___,
 				'TITLE'   => '___title___',
-				'LESS'    => FALSE,
+				'LESS'    => false,
 			],
 _EOL_;
 
@@ -1078,7 +1078,7 @@ _EOL_;
 		$dir = dirname($filename);
 
 		// 名前を分解
-		if (strpos($basename, '_') === FALSE) {
+		if (strpos($basename, '_') === false) {
 			// スネークケースではないのでキャメルケースとして分解
 			$splitName = $this->splitCamel($basename);
 			if ($splitName[count($splitName)-1] == 'base') {
@@ -1112,7 +1112,7 @@ _EOL_;
 		if (preg_match('/^[0-9_\s]*(.*)$/', $sqlBase, $m) === 1) {
 			$sqlBase = $m[1];
 		}
-		if (strpos($sqlBase, '_') === FALSE) {
+		if (strpos($sqlBase, '_') === false) {
 			// スネークケースではないのでキャメルケースとして分解
 			$tableName = $this->splitCamel($sqlBase);
 		} else {
@@ -1169,7 +1169,7 @@ _EOL_;
 		// Class 名を設定
 		// ファイル名にスペースを含むときはその後ろから(sql がこれに当たる)
 		$i = strpos($basename, ' ');
-		if ($i !== FALSE) {
+		if ($i !== false) {
 			$replace['___class___'] = substr($basename, $i + 1);
 		} else {
 			$replace['___class___'] = $basename;
