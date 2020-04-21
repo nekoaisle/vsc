@@ -1,5 +1,6 @@
 // 既定値を上書きするには、このファイル内にキー バインドを挿入します
 [
+	{"key": "f1", "command": "-workbench.action.showCommands"},
 	{"key": "f1" ,"command": "nekoaisle.commandMenu", "when": "editorTextFocus"},
 	{"key": "f2" ,"command": "-editor.action.rename", "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"},
 	{"key": "f2" ,"command": "nekoaisle.openHelp", "when": "editorTextFocus"},
@@ -89,6 +90,10 @@
 	{"key": "tab", "command": "-insertBestCompletion", "when": "atEndOfWord && !hasOtherSuggestions && !inSnippetMode && !suggestWidgetVisible && config.editor.tabCompletion == 'on'"},
 	{"key": "shift+tab", "command": "-insertPrevSuggestion", "when": "hasOtherSuggestions && textInputFocus && !inSnippetMode && !suggestWidgetVisible && config.editor.tabCompletion == 'on'"},
 	{"key": "tab", "command": "-insertSnippet", "when": "editorTextFocus && hasSnippetCompletions && !editorTabMovesFocus && !inSnippetMode" },
+
+	// Windowsキーを全て無効化
+	{"key": "ctrl+meta+w", "command": "-workbench.action.toggleTabsVisibility"},
+	{"key": "meta+enter", "command": "-workbench.notebook.cell.execute", "when": "inputFocus && notebookEditorFocused"},
 
 	// ctr+k 群を全て無効化
 	{"key": "ctrl+k ctrl+up", "command": "-workbench.action.focusAboveGroup"},

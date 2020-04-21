@@ -6,6 +6,85 @@ import {Extension, SelectFile, PathInfo, Util} from './nekoaisle.lib/nekoaisle';
  * エクステンション本体
  */
 class OpenFile extends Extension {
+  // '' と "" を $1 を使って1回で取得したいのだが何故かマッチしないという＞＜；
+  // re = /^\s*require_once\(\s*DOCUMENT_ROOT\s*\.\s*('|")([^$1]+)$1\s*\)/;
+  static readonly conds = [
+    // require_once(DOCUMENT_ROOT . '')
+    {
+      re: /^\s*require_once\(\s*DOCUMENT_ROOT\s*\.\s*'\/([^']+)'\s*\)/,
+      func: OpenFile.addWorkspace
+    },
+    // require_once(DOCUMENT_ROOT . "")
+    {
+      re: /^\s*require_once\(\s*DOCUMENT_ROOT\s*\.\s*"\/([^"]+)"\s*\)/,
+      func: OpenFile.addWorkspace
+    },
+    // require_once(__DIR__ . '')
+    {
+      re: /^\s*require_once\(\s*__DIR__\s*\.\s*'\/([^']+)'\s*\)/,
+      func: OpenFile.addDocumentDir,
+    },
+    // require_once(__DIR__ . "")
+    {
+      re: /^\s*require_once\(\s*__DIR__\s*\.\s*"\/([^"]+)"\s*\)/,
+      func: OpenFile.addDocumentDir,
+    },
+    // require_once(dirname(__FILE__) . '/hoge.php');
+    {
+      re: /^\s*require_once\(\s*dirname\(\s*__FILE__\s*\)\s*\.\s*'\/([^']+)'\s*\)/,
+      func: OpenFile.addDocumentDir,
+    },
+    // require_once(dirname(__FILE__) . "/hoge.php");
+    {
+      re: /^\s*require_once\(\s*dirname\(\s*__FILE__\s*\)\s*\.\s*"\/([^"]+)"\s*\)/,
+      func: OpenFile.addDocumentDir,
+    },
+
+    // require_once　DOCUMENT_ROOT . ''
+    {
+      re: /^\s*require_once\s*DOCUMENT_ROOT\s*\.\s*'\/([^']+)'/,
+      func: OpenFile.addWorkspace
+    },
+    // require_once DOCUMENT_ROOT . ""
+    {
+      re: /^\s*require_once\s*DOCUMENT_ROOT\s*\.\s*"\/([^"]+)"/,
+      func: OpenFile.addWorkspace
+    },
+    // require_once __DIR__ . ''
+    {
+      re: /^\s*require_once\s*__DIR__\s*\.\s*'\/([^']+)'/,
+      func: OpenFile.addDocumentDir,
+    },
+    // require_once __DIR__ . ""
+    {
+      re: /^\s*require_once\s*__DIR__\s*\.\s*"\/([^"]+)"/,
+      func: OpenFile.addDocumentDir,
+    },
+    // require_once dirname(__FILE__) . '/hoge.php';
+    {
+      re: /^\s*require_once\s*dirname\(\s*__FILE__\s*\)\s*\.\s*'\/([^']+)'/,
+      func: OpenFile.addDocumentDir,
+    },
+    // require_once dirname(__FILE__) . "/hoge.php";
+    {
+      re: /^\s*require_once\s*dirname\(\s*__FILE__\s*\)\s*\.\s*"\/([^"]+)"/,
+      func: OpenFile.addDocumentDir,
+    },
+  ];
+
+  // ワークスペースのディレクトリ名を追加
+  protected static addWorkspace(fileName: string): string {
+    const dirName = Util.getWorkFolder();
+    return dirName + '/' + fileName;
+  }
+
+  // アクティブエディタのディレクトリを付加
+  protected static addDocumentDir(fileName: string, editor: vscode.TextEditor): string {
+    const pinfo = new PathInfo(editor.document.fileName);
+    const dirName = pinfo.getDirName();
+    return `${dirName}/${fileName}`;
+  }
+
   /**
    * 構築
    */
@@ -67,18 +146,6 @@ class OpenFile extends Extension {
       return;
     }
 
-    // ワークスペースのディレクトリ名を追加
-    const addWorkspace = function (fileName: string): string {
-      const dirName = Util.getWorkFolder();
-      return dirName + '/' + fileName;
-    };
-    // アクティブエディタのディレクトリを付加
-    const addDocumentDir = function (fileName: string, editor: vscode.TextEditor): string {
-      const pinfo = new PathInfo(editor.document.fileName);
-      const dirName = pinfo.getDirName();
-      return `${dirName}/${fileName}`;
-    };
-
     // 現在のカーソル位置を取得
     let pos = editor.selection.active;
     // カーソル位置の行を取得
@@ -89,9 +156,15 @@ class OpenFile extends Extension {
     if (!editor.selection.isEmpty) {
       // 選択範囲があるのでそれを取得
       fileName = editor.document.getText(editor.selection);
-      if (fileName.substr(0, 1) !== '/') {
+      if (fileName.substr(0, 1) === '/') {
+        // 絶対の場合はワークスペースからの相対もありうる
+        if (!Util.isExistsFile(fileName)) {
+          // 存在しないのでワークスペース相対
+          fileName = OpenFile.addWorkspace(fileName.substr(1));
+        }
+      } else {
         // 相対ディレクトリ
-        fileName = addDocumentDir(fileName, editor);
+        fileName = OpenFile.addDocumentDir(fileName, editor);
       }
       // 絶対パスに変換
       fileName = Util.normalizePath(fileName, '');
@@ -102,42 +175,7 @@ class OpenFile extends Extension {
       // 言語ごとの処理
       switch (editor.document.languageId) {
         case "php": {
-          // '' と "" を $1 を使って1回で取得したいのだが何故かマッチしないという＞＜；
-          // re = /^\s*require_once\(\s*DOCUMENT_ROOT\s*\.\s*('|")([^$1]+)$1\s*\)/;
-          const conds = [
-            // require_once(DOCUMENT_ROOT, '')
-            {
-              re: /^\s*require_once\(\s*DOCUMENT_ROOT\s*\.\s*'\/([^']+)'\s*\)/,
-              func: addWorkspace
-            },
-            // require_once(DOCUMENT_ROOT, "")
-            {
-              re: /^\s*require_once\(\s*DOCUMENT_ROOT\s*\.\s*"\/([^"]+)"\s*\)/,
-              func: addWorkspace
-            },
-            // require_once(__DIR__, '')
-            {
-              re: /^\s*require_once\(\s*__DIR__\s*\.\s*'\/([^']+)'\s*\)/,
-              func: addDocumentDir,
-            },
-            // require_once(__DIR__, "")
-            {
-              re: /^\s*require_once\(\s*__DIR__\s*\.\s*"\/([^"]+)"\s*\)/,
-              func: addDocumentDir,
-            },
-            // require_once(dirname(__FILE__) . '/hoge.php');
-            {
-              re: /^\s*require_once\(\s*dirname\(\s*__FILE__\s*\)\s*\.\s*'\/([^']+)'\s*\)/,
-              func: addDocumentDir,
-            },
-            // require_once(dirname(__FILE__) . "/hoge.php");
-            {
-              re: /^\s*require_once\(\s*dirname\(\s*__FILE__\s*\)\s*\.\s*"\/([^"]+)"\s*\)/,
-              func: addDocumentDir,
-            },
-          ];
-
-          for (let cond of conds) {
+          for (let cond of OpenFile.conds) {
             let res = cond.re.exec(line);
             if (res) {
               fileName = cond.func(res[1], editor);

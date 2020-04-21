@@ -147,6 +147,11 @@
     "command": "workbench.action.showEditorsInGroup"
   },
   {
+    "label": "V",
+    "description": "エディターグループのサイズをリセット",
+    "command": "workbench.action.evenEditorWidths"
+  },
+  {
     "label": "W",
     "description": "一時ファイルを開く",
     "command": "nekoaisle.openTemp"

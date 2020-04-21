@@ -34,8 +34,8 @@ class SelectFile {
             }
             // 除外ファイルを取得
             let excludes = [
-                ...Object.keys(vscode.workspace.getConfiguration('search', null).get('exclude') || {}),
-                ...Object.keys(vscode.workspace.getConfiguration('files', null).get('exclude') || {})
+                ...Object.keys(vscode.workspace.getConfiguration('search').get('exclude') || {}),
+                ...Object.keys(vscode.workspace.getConfiguration('files').get('exclude') || {})
             ].join(',');
             // 辞書にする
             for (let exclud of excludes.split(',')) {
