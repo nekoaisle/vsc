@@ -29,7 +29,7 @@ class CommandMenu extends nekoaisle_1.Extension {
             config: 'nekoaisle-commandMenu',
             commands: [{
                     command: 'nekoaisle.commandMenu',
-                    callback: () => { this.entry(); }
+                    callback: (menuName) => { this.entry(menuName); }
                 }, {
                     command: 'nekoaisle.multiCommand',
                     callback: (commands) => { this.multiCommand(commands); }
@@ -39,9 +39,14 @@ class CommandMenu extends nekoaisle_1.Extension {
     /**
      * エントリー
      */
-    entry() {
-        // メニューの読み込み
-        let menuInfo = this.loadMenuInfo();
+    entry(menuName = 'default') {
+        // メニューJsonの読み込み
+        let menuInfo = this.loadMenuInfo(menuName);
+        if (menuInfo.length === 0) {
+            nekoaisle_1.Util.putMess(`menuName が見つかりません。`);
+            return;
+        }
+        // メニューの作成
         let menu = this.makeMenu(menuInfo);
         // QuickPick オブジェクトを作成
         const quickPick = vscode.window.createQuickPick();
@@ -100,13 +105,35 @@ class CommandMenu extends nekoaisle_1.Extension {
     }
     /**
      * メニューを読み込む
+     * @param menuName メニュー名もしくはメニューファイル名
      */
-    loadMenuInfo() {
+    loadMenuInfo(menuName = 'default') {
+        let menu = [];
         // デフォルトの読み込み
         let fn = this.joinExtensionRoot("data/defaults.json");
-        let defaults = nekoaisle_1.Util.loadFileJson(fn);
-        // メニューの読み込み
-        return this.getConfig('menu', defaults);
+        let menus = nekoaisle_1.Util.loadFileJson(fn);
+        if (menus && menus[menuName]) {
+            menu = menus[menuName];
+        }
+        // ユーザー設定メニューの読み込み
+        let userMenus = this.getConfig('menus', null);
+        // ユーザーメニューを上書き
+        if (userMenus && userMenus[menuName]) {
+            // 拡張メニューをデフォルトにかぶせる
+            let adds = userMenus[menuName];
+            for (let key in adds) {
+                menu[key] = adds[key];
+            }
+        }
+        // 指定メニューの存在チェック
+        if (!menus || !menus[menuName]) {
+            if (!menus) {
+                // 指定メニューが見つからない
+                return [];
+            }
+        }
+        // メニューを返す
+        return menus[menuName];
     }
     /**
      * メニューの作成

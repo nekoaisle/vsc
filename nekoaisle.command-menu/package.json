@@ -28,8 +28,8 @@
 			"type": "object",
 			"title": "neko: コマンドメニュー設定",
 			"properties": {
-				"nekoaisle-commandMenu.menu": {
-					"type": "array",
+				"nekoaisle-commandMenu.menus": {
+					"type": "object",
 					"default": null,
 					"description": "メニューアイテム配列"
 				}

@@ -7,6 +7,7 @@ import {Util, Extension, ExtensionCommand} from './nekoaisle.lib/nekoaisle';
  * @param context 
  */
 export function activate(context: vscode.ExtensionContext) {
+  /* tslint:disable:no-unused-expression */
   let ext = new MyExtention(context);
 }
 

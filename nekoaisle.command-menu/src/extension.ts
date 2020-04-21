@@ -35,7 +35,7 @@ class CommandMenu extends Extension {
 			config: 'nekoaisle-commandMenu',
 			commands: [{
 				command: 'nekoaisle.commandMenu',
-				callback: () => { this.entry(); }
+				callback: (menuName?: string) => { this.entry(menuName); }
 			},{
 				command: 'nekoaisle.multiCommand',
 				callback: (commands: CommandParam | CommandParam[]) => { this.multiCommand(commands); }
@@ -46,9 +46,14 @@ class CommandMenu extends Extension {
 	/**
 	 * エントリー
 	 */
-	protected entry() {
-		// メニューの読み込み
-		let menuInfo = this.loadMenuInfo();
+	protected entry(menuName: string = 'default') {
+		// メニューJsonの読み込み
+		let menuInfo = this.loadMenuInfo(menuName);
+		if (menuInfo.length === 0) {
+			Util.putMess(`menuName が見つかりません。`);
+			return;
+		}
+		// メニューの作成
 		let menu = this.makeMenu(menuInfo);
 
 		// QuickPick オブジェクトを作成
@@ -113,14 +118,39 @@ class CommandMenu extends Extension {
 
 	/**
 	 * メニューを読み込む
+	 * @param menuName メニュー名もしくはメニューファイル名
 	 */
-	protected loadMenuInfo(): ListItem[] {
+	protected loadMenuInfo(menuName: string = 'default'): ListItem[] {
+		let menu: ListItem[] = [];
+
 		// デフォルトの読み込み
 		let fn = this.joinExtensionRoot("data/defaults.json");
-		let defaults = Util.loadFileJson(fn);
+		let menus = Util.loadFileJson(fn);
+		if (menus && menus[menuName]) {
+			menu = menus[menuName];
+		}
+		
+		// ユーザー設定メニューの読み込み
+		let userMenus: {[key: string]: ListItem[]} | null = this.getConfig<{[key: string]: ListItem[]} | null>('menus', null);
+		// ユーザーメニューを上書き
+		if (userMenus && userMenus[menuName]) {
+			// 拡張メニューをデフォルトにかぶせる
+			let adds = userMenus[menuName];
+			for (let key in adds) {
+				menu[key] = adds[key];
+			}
+		}
 
-		// メニューの読み込み
-		return this.getConfig('menu', defaults);
+		// 指定メニューの存在チェック
+		if (!menus || !menus[menuName]) {
+			if (!menus) {
+				// 指定メニューが見つからない
+				return [];
+			}
+		}
+
+		// メニューを返す
+		return menus[menuName];
 	}
 
 	/**

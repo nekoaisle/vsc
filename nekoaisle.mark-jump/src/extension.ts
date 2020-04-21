@@ -2,56 +2,116 @@ import * as vscode from 'vscode';
 import { Util, Extension } from './nekoaisle.lib/nekoaisle';
 
 export function activate(context: vscode.ExtensionContext) {
-  let myExtension = new MyExtension(context);
-  context.subscriptions.push(myExtension);
+  /* tslint:disable:no-unused-expression */
+  new MyExtension(context);
+}
+
+// this method is called when your extension is deactivated
+export function deactivate() {
 }
 
 /**
  * ファイルごとの情報
  */
-class Data {
-  protected _mark: vscode.Position;
+class Mark {
+  protected _pos: vscode.Position;
+  public deco: vscode.TextEditorDecorationType;
+
+  get pos(): vscode.Position {
+    return MyExtension.normalizePos(this._pos);
+  } 
+  set pos(pos: vscode.Position) {
+    this._pos = new vscode.Position(pos.line, 0);
+  } 
+}
+  
+class FileData {
   protected _last: vscode.Position;
   protected _cursor: vscode.Position;
 
-  protected normalizePos(pos: vscode.Position): vscode.Position {
+  public marks: Mark[] = [];
+
+  get last(): vscode.Position {
+    return MyExtension.normalizePos(this._last);
+  } 
+  set last(pos: vscode.Position) {
+    this._last = new vscode.Position(pos.line, 0);
+  } 
+
+  get cursor(): vscode.Position {
+    return MyExtension.normalizePos(this._cursor);
+  } 
+  set cursor(pos: vscode.Position) {
+    this._cursor = new vscode.Position(pos.line, 0);
+  } 
+
+  /**
+   * すでに存在しているか調べる
+   * @param pos 
+   * @return true:存在する
+   */
+  public isExists(pos): boolean {
+    for (let key in this.marks) {
+      let mark = this.marks[key];
+      if (mark.pos.isEqual(pos)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * 指定スロットにマークを設定
+   * @param slot スロット番号
+   * @param pos 座標
+   */
+  public setMark(slot: number, pos: vscode.Position) {
+    // マークを取得
+    let mark;
+    if (!this.marks[slot]) {
+      // 新規なら作成
+      mark = new Mark;
+      this.marks[slot] = mark;
+    } else {
+      // 既存の修飾をクリア
+      mark = this.marks[slot];
+      mark.deco.dispose();
+      mark.deco = null;
+    }
+
+    // マークを設定
+    mark.pos = pos;
+
+    // 修飾を設定
+    // レンジを作成
+    let ranges = [new vscode.Range(mark.pos, mark.pos)];
+    // 装飾を設定
+    mark.deco = Util.setRuler(ranges, 'blue', 'Left');
+  }
+
+  /**
+   * 指定スロットのマーク位置を取得
+   * @param slot スロット番号
+   */
+  public getMark(slot: number): vscode.Position {
+    return this.marks[slot].pos;
+  }
+
+}
+
+class MyExtension extends Extension {
+  protected disposable: vscode.Disposable;
+  // ファイル名ごとのマークした位置
+  protected fileDatas: { [key: string]: FileData } = {};
+
+  public static normalizePos(pos: vscode.Position): vscode.Position {
     if (pos) {
       return pos;
     } else {
       return null;
     }
   }
-
-  get mark(): vscode.Position {
-    return this.normalizePos(this._mark);
-  } 
-  get last(): vscode.Position {
-    return this.normalizePos(this._last);
-  } 
-  get cursor(): vscode.Position {
-    return this.normalizePos(this._cursor);
-  } 
-
-  set mark(pos: vscode.Position) {
-    this._mark = new vscode.Position(pos.line, 0);
-  } 
-  set last(pos: vscode.Position) {
-    this._last = new vscode.Position(pos.line, 0);
-  } 
-  set cursor(pos: vscode.Position) {
-    this._cursor = new vscode.Position(pos.line, 0);
-  } 
-}
   
-// this method is called when your extension is deactivated
-export function deactivate() {
-}
-
-class MyExtension extends Extension {
-  protected disposable: vscode.Disposable;
-  // ファイル名ごとのマークした位置
-  protected data = {};
-
   /**
    * 現在のカーソル位置を取得
    * @return 現在のカーソル位置
@@ -75,17 +135,17 @@ class MyExtension extends Extension {
    * 指定したファイルに関するデータを取得
    * @param filename ファイル名
    */
-  protected getData(filename?: string): Data {
+  protected getData(filename?: string): FileData {
     // ファイル名が省略されたら現在アクティブなエディタのファイル名
     if (!filename) {
-      let filename = vscode.window.activeTextEditor.document.fileName;
+      filename = vscode.window.activeTextEditor.document.fileName;
     }
 
     // まだデータオブジェクトが構築されていなければ作成
-    if (!this.data[filename]) {
-      this.data[filename] = new Data();
+    if (!this.fileDatas[filename]) {
+      this.fileDatas[filename] = new FileData();
     }
-    return this.data[filename];
+    return this.fileDatas[filename];
   }
 
   /**
@@ -99,12 +159,12 @@ class MyExtension extends Extension {
         // カーソル位置を記憶
         {
           command: 'nekoaisle.markjumpMark',
-          callback: () => { this.markCursor(); }
+          callback: (slot?: number) => { this.markCursor(slot); }
         },
         // 記憶した位置にジャンプ
         {
           command: 'nekoaisle.markjumpJump',
-          callback: () => { this.jumpMark(); }
+          callback: (slot?: number) => { this.jumpMark(slot); }
         },
         // 前回のカーソル位置に戻る
         {
@@ -118,68 +178,101 @@ class MyExtension extends Extension {
     let subscriptions: vscode.Disposable[] = [];
     vscode.window.onDidChangeTextEditorSelection(this.onChangeSelection, this, subscriptions);
 
+    vscode.workspace.onDidCloseTextDocument((doc: vscode.TextDocument) => {
+      let filename = doc.fileName;
+      delete this.fileDatas[filename];
+    });
+
     // create a combined disposable from both event subscriptions
     this.disposable = vscode.Disposable.from(...subscriptions);
 
     // このファイルのデータを取得
     if (vscode.window.activeTextEditor) {
-      let data = this.getData();
+      let fileData = this.getData();
       // 現在のカーソル位置を記憶
-      data.cursor = this.getCsrPos();
+      fileData.cursor = this.getCsrPos();
     }
   }
-
-  protected attachedDecorations: vscode.TextEditorDecorationType[] = [];
-
-
-
 
   // カーソル位置を記憶
-  protected markCursor() {
-    let editor = vscode.window.activeTextEditor;
+  protected async markCursor(slot?: number) {
+    // 現在のカーソル位置を取得
+    let pos = this.getCsrPos();
 
     // このファイルのデータを取得
-    let data = this.getData();
-    // 現在位置を記憶
-    data.mark = this.getCsrPos();
+    let fileData = this.getData();
 
-    // 前回設定した装飾をクリア
-    for (let deco of this.attachedDecorations) {
-      deco.dispose();
+    // スロットを選択
+    if (typeof (slot) === 'undefined') {
+      if (fileData.marks.length === 0) {
+        // スロットがないので0固定
+        slot = 0;
+      } else if (fileData.isExists(pos)) {
+        // すでにマークされている
+
+      } else {
+        let item = await this.selectSlot(fileData, true);
+        if (!item) {
+          return;
+        }
+        slot = parseInt(item.label) - 1;
+      }
     }
-    this.attachedDecorations = [];
-    // レンジを作成
-    let ranges = [new vscode.Range(data.mark, data.mark)];
-    // 装飾を設定
-    let deco = Util.setRuler(ranges, 'blue', 'Left');
-    // 今回設定した装飾を記憶
-    this.attachedDecorations.push(deco);
+
+    // 現在位置を記憶
+    fileData.setMark(slot, pos);
   }
 
-  // カーソル位置にジャンプ
-  protected jumpMark() {
+  /**
+   * カーソル位置にジャンプ
+   */
+  protected async jumpMark(slot?: number) {
     // このファイルのデータを取得
-    let data = this.getData();
-    // マークした位置を取得
-    if (data.mark) {
-      // 同じ位置へはジャンプしない
-      let cur = this.getCsrPos();
-      if (!cur.isEqual(data.mark)) {
-        // ジャンプ前の位置を記憶
-        data.last = cur;
-        // 記憶していた位置にジャンプ
-        this.setCsrPos(data.mark);
+    let fileData = this.getData();
+
+    // スロットを選択
+    if (typeof (slot) === 'undefined') {
+      // スロットが指定されていないので選択
+      switch (fileData.marks.length) {
+        case 0: {
+          // マークされていないので終了
+          return;
+        }
+        case 1: {
+          // １つしかないので0固定
+          slot = 0;
+          break;
+        }
+        default: {
+          // ダイアログを開いて選択
+          let item = await this.selectSlot(fileData, false);
+          if (!item) {
+            return;
+          }
+          slot = parseInt(item.label) - 1;
+        }
       }
+    }
+
+    // マークした位置を取得
+    let pos = fileData.getMark(slot);
+    // 同じ位置へはジャンプしない
+    let cur = this.getCsrPos();
+    if (!cur.isEqual(pos)) {
+      // ジャンプ前の位置を記憶
+      fileData.last = cur;
+      // 記憶していた位置にジャンプ
+      this.setCsrPos(pos);
     }
   }
 
   // 最後にジャンプした位置に戻る
   protected jumpLast() {
     // このファイルのデータを取得
-    let data = this.getData();
-    if (data.last) {
+    let fileData = this.getData();
+    if (fileData.last) {
       // 最後にジャンプした位置にジャンプ
-      this.setCsrPos(data.last);
+      this.setCsrPos(fileData.last);
     }
   }
 
@@ -192,14 +285,14 @@ class MyExtension extends Extension {
     let cur = e.selections[0].active;
     
     // このファイルのデータを取得
-    let data = this.getData();
-    if (data.cursor) {
-      if (data.cursor.line != cur.line) {
+    let fileData = this.getData();
+    if (fileData.cursor) {
+      if (fileData.cursor.line !== cur.line) {
         // 行が移動したので前回位置として記憶
-        data.last = data.cursor;
+        fileData.last = fileData.cursor;
       }
     }
-    data.cursor = cur;
+    fileData.cursor = cur;
   }
 
   /**
@@ -207,5 +300,42 @@ class MyExtension extends Extension {
    */
   public dispose() {
     this.disposable.dispose();
+  }
+
+  /**
+   * スロットを選択
+   * 
+   * label にスロット番号+1 を返します。
+   * 
+   * @param fileData このファイル用のデータ
+   * @param addNew メニューの末尾に追加を表示
+   */
+  public async selectSlot(fileData: FileData, addNew: boolean): Promise<vscode.QuickPickItem> {
+    let editor = vscode.window.activeTextEditor;
+
+    // メーニューを作成
+    let menu: vscode.QuickPickItem[] = [];
+    let key: any;
+    for (key in fileData.marks) {
+      key = parseInt(key);  // 文字列を数値に変換
+      let line = fileData.marks[key].pos.line;
+      let text = editor.document.lineAt(line).text;
+      menu.push({
+        label: (key + 1).toString(),        // １から始まる数字
+        description: `${line+1}: ${text}`,  // 行番号: 行の内容
+      });
+    }
+    // 新規作成
+    menu.push({
+      label: (key + 2).toString(),
+      description: '追加',
+    });
+
+    let options: vscode.QuickPickOptions = {
+      placeHolder: '選択してください。',
+      matchOnDetail: true,
+      matchOnDescription: false
+    };
+    return vscode.window.showQuickPick(menu, options);
   }
 }

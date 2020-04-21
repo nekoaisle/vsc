@@ -15,6 +15,7 @@ import FindOpen = require('./FindOpen');
  * @param context 
  */
 export function activate(context: vscode.ExtensionContext) {
+  /* tslint:disable:no-unused-expression */
   new OpenFile(context);
   new OpenLog(context);
   new OpenRelated(context);
