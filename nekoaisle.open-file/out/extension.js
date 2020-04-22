@@ -14,6 +14,7 @@ const FindOpen = require("./FindOpen");
  * @param context
  */
 function activate(context) {
+    /* tslint:disable:no-unused-expression */
     new OpenFile(context);
     new OpenLog(context);
     new OpenRelated(context);

@@ -56,6 +56,9 @@ class OpenHist extends Extension {
     // イベントハンドラーを登録
     let subscriptions: vscode.Disposable[] = [];
 
+    // ファイルが開かれた時
+    vscode.workspace.onDidOpenTextDocument(this.onDidOpenTextDocument, this, subscriptions);
+
     // ファイルが閉じられる時
     vscode.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, this, subscriptions);
 
@@ -113,6 +116,7 @@ class OpenHist extends Extension {
   }
 
   protected lineNos: { [key: string]: number } = {};
+
   /**
    * カーソル位置が変わった(ファイルごとのカーソル位置を記憶するため)
    * onWillCloseTextDocumentが無いのでカーソル父が取れない
@@ -126,6 +130,23 @@ class OpenHist extends Extension {
 
     let lineNo = e.selections[0].anchor.line;
     this.lineNos[name] = lineNo;
+  }
+
+  /**
+   * ファイルが開かれたときのイベントハンドラ
+   * @param doc テキストドキュメント 
+   */
+  protected onDidOpenTextDocument(doc: vscode.TextDocument) {
+    if (doc.fileName.match(/^Untitled-[0-9]+/)) {
+      // ファイル名が決まっていない時は何もしない
+      return;
+    }
+
+    // ファイル名を分解
+    let pinfo = new PathInfo(doc.fileName);
+
+    // 履歴に登録
+    this.registHistory(pinfo);
   }
 
   /**
@@ -153,6 +174,16 @@ class OpenHist extends Extension {
       return;
     }
 
+    // 履歴に登録
+    this.registHistory(pinfo);
+  }
+
+
+  /**
+   * 履歴に記録
+   * @param pinfo パス情報
+   */
+  public registHistory(pinfo: PathInfo) {
     // 履歴ファイルを読み込む
     let list: ListItemDic = this.loadHistFile();
 

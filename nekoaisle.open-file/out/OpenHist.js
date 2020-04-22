@@ -31,6 +31,8 @@ class OpenHist extends nekoaisle_1.Extension {
         this.lineNos = {};
         // イベントハンドラーを登録
         let subscriptions = [];
+        // ファイルが開かれた時
+        vscode.workspace.onDidOpenTextDocument(this.onDidOpenTextDocument, this, subscriptions);
         // ファイルが閉じられる時
         vscode.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, this, subscriptions);
         // ファイルが保存される時
@@ -99,6 +101,20 @@ class OpenHist extends nekoaisle_1.Extension {
         this.lineNos[name] = lineNo;
     }
     /**
+     * ファイルが開かれたときのイベントハンドラ
+     * @param doc テキストドキュメント
+     */
+    onDidOpenTextDocument(doc) {
+        if (doc.fileName.match(/^Untitled-[0-9]+/)) {
+            // ファイル名が決まっていない時は何もしない
+            return;
+        }
+        // ファイル名を分解
+        let pinfo = new nekoaisle_1.PathInfo(doc.fileName);
+        // 履歴に登録
+        this.registHistory(pinfo);
+    }
+    /**
      * ファイルが閉じられたときのイベントハンドラ
      * @param doc テキストドキュメント
      */
@@ -121,6 +137,14 @@ class OpenHist extends nekoaisle_1.Extension {
             */
             return;
         }
+        // 履歴に登録
+        this.registHistory(pinfo);
+    }
+    /**
+     * 履歴に記録
+     * @param pinfo パス情報
+     */
+    registHistory(pinfo) {
         // 履歴ファイルを読み込む
         let list = this.loadHistFile();
         // このファイルの情報を取得
