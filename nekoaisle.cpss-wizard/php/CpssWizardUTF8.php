@@ -457,7 +457,13 @@ __USAGE__;
 					// 行定義ではない
 					continue;
 				}
+
+				$s = explode('_', $a[1]);
+				array_shift($s);
+				$s = implode('_', $s);
+
 				$a['name'   ] = $a[1];					// 名前
+				$a['name_suffix'] = $s;					// 名前のサフィックス V_ などを除去
 				$a['type'   ] = strtoupper($a[2]);		// 型
 				$a['size'   ] = (int)$a[3] + (int)$a[4] + ((int)$a[4] ? 1 : 0);	// サイズ
 				$a['default'] = (strlen($a[7]) > 0) ? $a[7] : "''";
@@ -762,6 +768,7 @@ _EOL_;
 			// 置換
 			$rep = [
 				'___name___'    => $a['name'],
+				'___name_suffix___'    => $a['name_suffix'],
 				'___default___' => $a['default'],
 				'___title___'   => $a['title'],
 				'___maxlen___'  => (string)($a['size']),
@@ -1032,10 +1039,11 @@ _EOL_;
 
 			// 置換
 			$rep = [
-				'___name___'    => $a['name'],
-				'___default___' => $a['default'],
-				'___title___'   => $a['title'],
-				'___maxlen___'  => (string)($a['size']),
+				'___name___'        => $a['name'],
+				'___name_suffix___' => $a['name_suffix'],
+				'___default___'     => $a['default'],
+				'___title___'       => $a['title'],
+				'___maxlen___'      => (string)($a['size']),
 			];
 			
 			$src[] = str_replace(array_keys($rep), array_values($rep), $tmp);

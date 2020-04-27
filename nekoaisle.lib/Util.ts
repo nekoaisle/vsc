@@ -448,19 +448,20 @@ export module Util {
    * 現在のワークフォルダーを取得
    */
   export function getWorkFolder() {
-    let dir: string = process.cwd();
-    let editor = vscode.window.activeTextEditor;
-    if (editor) {
-      let uri = editor.document.uri;
-      if (uri) {
-        let folder = vscode.workspace.getWorkspaceFolder(uri);
-        if (folder) {
-          uri = folder.uri;
-          dir = uri.path;
-        }
-      }
-    }
-    return dir;
+    // let dir: string = process.cwd();
+    // let editor = vscode.window.activeTextEditor;
+    // if (editor) {
+    //   let uri = editor.document.uri;
+    //   if (uri) {
+    //     let folder = vscode.workspace.getWorkspaceFolder(uri);
+    //     if (folder) {
+    //       uri = folder.uri;
+    //       dir = uri.path;
+    //     }
+    //   }
+    // }
+    // return dir;
+    return vscode.workspace.rootPath;
   }
 
   /**

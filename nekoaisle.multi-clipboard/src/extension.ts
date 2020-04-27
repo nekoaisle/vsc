@@ -280,11 +280,6 @@ class MyExtention extends Extension {
 		 * @param editor エディター
 		 */
 		const job = (slot: string, editor: vscode.TextEditor): boolean => {
-			if (this.clipboards[slot].length === 0) {
-				// そのスロットは空
-				return false;
-			}
-
 			// 全カーソル位置の文字列を取得
 			let clipboard = this.getText(editor);
 
@@ -475,20 +470,53 @@ class MyExtention extends Extension {
 	 */
 	public putText(editor: vscode.TextEditor, text: string) {
 		// すべてのカーソルについて処理
+		// ※非同期で編集すると最初の編集以外が無視される
+		// for (let sel of editor.selections) {
+		// 	// 選択範囲を置換
+		// 	editor.edit(function (edit) {
+		// 		if (sel.isEmpty) {
+		// 			// 選択していないので貼り付け
+		// 			edit.insert(sel.anchor, text);
+		// 		} else {
+		// 			// 選択範囲と置換
+		// 			// edit.replace だと選択されたままになる
+		// 			edit.delete(sel);
+		// 			edit.insert(sel.start, text);
+		// 		}
+		// 	});
+		// }
+
+		// すべてのカーソルについて処理
+		let sels: vscode.Selection[] = [];
 		for (let sel of editor.selections) {
-			// 選択範囲を置換
-			editor.edit(function (edit) {
+			sels.unshift(sel);
+		}
+
+		let i = 0;
+		let e = (sel: vscode.Selection) => {
+			editor.edit(editor2 => {
 				if (sel.isEmpty) {
-					// 選択していないので貼り付け
-					edit.insert(sel.anchor, text);
+					editor2.insert(sel.anchor, text);
 				} else {
 					// 選択範囲と置換
 					// edit.replace だと選択されたままになる
-					edit.delete(sel);
-					edit.insert(sel.start, text);
+					editor2.delete(sel);
+					editor2.insert(sel.start, text);
+				}
+			}).then((val: boolean) => {
+				if (val) {
+					// 成功しているの次の編集操作
+					++i;
+					if (sels[i]) {
+						e(sels[i]);
+					}
 				}
 			});
-		}
+		};
+
+		// 起動
+		e(sels[i]);
+
 	}
 
 	/**
