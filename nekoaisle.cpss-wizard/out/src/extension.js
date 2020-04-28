@@ -83,7 +83,7 @@ class CpssWizard extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: 'Cpss Wizard',
-            config: 'cpssWizard',
+            config: 'nekoaisle-cpssWizard',
             commands: [
                 {
                     command: 'nekoaisle.cpssWizard',

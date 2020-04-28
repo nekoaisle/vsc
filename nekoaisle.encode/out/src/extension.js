@@ -41,7 +41,7 @@ class MyExtention extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: '選択範囲をエンコード',
-            config: 'encode',
+            config: 'nekoaisle-encode',
             commands: (() => {
                 // 戻り値
                 let cmds = [];

@@ -28,6 +28,10 @@ class OpenHist extends nekoaisle_1.Extension {
                 }
             ]
         });
+        /**
+         * デフォルトの履歴ファイル名を取得
+         */
+        this.defaultHistFile = '~/Documents/openHist.json';
         this.lineNos = {};
         // イベントハンドラーを登録
         let subscriptions = [];
@@ -41,12 +45,6 @@ class OpenHist extends nekoaisle_1.Extension {
         vscode.window.onDidChangeTextEditorSelection(this.onDidChangeTextEditorSelection, this, subscriptions);
         // create a combined disposable from both event subscriptions
         this.disposable = vscode.Disposable.from(...subscriptions);
-    }
-    /**
-     * デフォルトの履歴ファイル名を取得
-     */
-    get defaultHistFile() {
-        return nekoaisle_1.Util.normalizePath('~/Documents/openHist.json');
     }
     /**
      * 履歴ファイルのファイル名取得

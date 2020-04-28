@@ -350,7 +350,7 @@ class MyExtention extends Extension {
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
 			name: '選択範囲をエンコード',
-			config: 'encode',		// 通常はコマンドのサフィックス
+			config: 'nekoaisle-encode',		// 通常はコマンドのサフィックス
 			commands: ((): ExtensionCommand[] => {
 				// 戻り値
 				let cmds: ExtensionCommand[] = [];

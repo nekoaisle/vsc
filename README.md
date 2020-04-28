@@ -9,7 +9,7 @@
 | nekoaisle.insert-code         | コードテンプレートを挿入                       |
 | nekoaisle.jump-to-line-number | 行番号ジャンプ                                 |
 | nekoaisle.mark-jump           | 行マーク＆ジャンプ                             |
-| nekoaisle.multi-clipbord      | 疑似クリップボード                             |
+| nekoaisle.multi-clipboard     | 疑似クリップボード                             |
 | nekoaisle.open-file           | ファイルを開く関連詰め合わせ                   |
 | nekoaisle.open-filer          | 編集中のファイルのディレクトリをファイラで開く |
 | nekoaisle.open-help           | 拡張子ごとのURLを開く                          |
@@ -17,7 +17,6 @@
 | nekoaisle.select-word         | カーソル位置の単語を選択、矩形選択             |
 | nekoaisle.toggle-char-case    | 大文字・小文字変換                             |
 | nekoaisle.lib                 | TypeScript用library                            |
-| nekoaisle.sjis-grep           | 残骸                                           |
 | nekoaisle.wz-editor-memo-file | 残骸                                           |
 | User/keybindings.json         | キーバインディング                             |
 | User/snippets                 | 各種スニペット                                 |
@@ -33,6 +32,18 @@
 ```console
 $ cd ~/Documents
 $ git clone https://github.com/nekoaisle/vsc.git
+```
+
+ダウンロードした各ディレクトリにて npm i を実行して node_modules をインストール
+```console
+$ pushd vsc/nekoaisle-command-menu
+$ npm i
+$ popd 
+```
+
+VSCode のエクステンション格納ディレクトリにシンボリックリンクを設定  
+※ mv しても OK
+```console
 $ cd ~/.vscode/extentions
 $ ln -s ../../Documents/vsc/nekoaisle-command-menu nekoaisle-command-menu
 $ ln -s ../../Documents/vsc/nekoaisle-disp-char-code nekoaisle-disp-char-code
@@ -41,7 +52,7 @@ $ ln -s ../../Documents/vsc/nekoaisle-highlight-tsv nekoaisle-highlight-tsv
 $ ln -s ../../Documents/vsc/nekoaisle-insert-code nekoaisle-insert-code
 $ ln -s ../../Documents/vsc/nekoaisle-jump-to-line-number nekoaisle-jump-to-line-number
 $ ln -s ../../Documents/vsc/nekoaisle-mark-jump nekoaisle-mark-jump
-$ ln -s ../../Documents/vsc/nekoaisle.multi-clipbord nekoaisle.multi-clipbord
+$ ln -s ../../Documents/vsc/nekoaisle.multi-clipboard nekoaisle.multi-clipboard
 $ ln -s ../../Documents/vsc/nekoaisle-open-file nekoaisle-open-file
 $ ln -s ../../Documents/vsc/nekoaisle-open-filer nekoaisle-open-filer
 $ ln -s ../../Documents/vsc/nekoaisle-open-help nekoaisle-open-help

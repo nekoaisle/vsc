@@ -26,7 +26,7 @@ class SelectWord extends Extension {
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
 			name: 'カーソル位置の単語を選択/その他',
-			config: 'selectWord',		// 通常はコマンドのサフィックス
+			config: 'nekoaisle-selectWord',		// 通常はコマンドのサフィックス
 			commands: [
 				{
 					command: 'nekoaisle.selectWord',	// 単語選択

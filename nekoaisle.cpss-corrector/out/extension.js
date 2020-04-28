@@ -38,7 +38,7 @@ class MyExtention extends Extension_1.Extension {
     constructor(context) {
         super(context, {
             name: 'CPSSソース訂正',
-            config: '',
+            config: 'nekoaisle-cpssCorrector',
             commands: [
                 {
                     command: 'nekoaisle.cpssCorrector',

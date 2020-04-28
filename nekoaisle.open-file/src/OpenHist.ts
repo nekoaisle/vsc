@@ -27,9 +27,7 @@ class OpenHist extends Extension {
   /**
    * デフォルトの履歴ファイル名を取得
    */
-  protected get defaultHistFile(): string {
-    return Util.normalizePath('~/Documents/openHist.json');
-  }
+  protected readonly defaultHistFile: string = '~/Documents/openHist.json';
 
   /**
    * 構築

@@ -26,7 +26,7 @@ class OpenPreviousTab extends Extension {
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
 			name: '拡張機能名',
-			config: 'toggleTab',
+			config: 'nekoaisle-toggleTab',
 			commands: [
 				{
 					command: 'nekoaisle.toggleTab',

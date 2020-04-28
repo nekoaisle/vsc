@@ -213,7 +213,7 @@ class CpssWizard extends Extension {
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
 			name: 'Cpss Wizard',
-			config: 'cpssWizard',
+			config: 'nekoaisle-cpssWizard',
 			commands: [
 				{
 					command: 'nekoaisle.cpssWizard',

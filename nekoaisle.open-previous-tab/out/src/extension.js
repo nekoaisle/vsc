@@ -18,7 +18,7 @@ class OpenPreviousTab extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: '拡張機能名',
-            config: 'toggleTab',
+            config: 'nekoaisle-toggleTab',
             commands: [
                 {
                     command: 'nekoaisle.toggleTab',

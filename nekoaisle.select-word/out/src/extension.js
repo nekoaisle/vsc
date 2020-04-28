@@ -26,7 +26,7 @@ class SelectWord extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: 'カーソル位置の単語を選択/その他',
-            config: 'selectWord',
+            config: 'nekoaisle-selectWord',
             commands: [
                 {
                     command: 'nekoaisle.selectWord',

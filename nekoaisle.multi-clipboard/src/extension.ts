@@ -39,7 +39,7 @@ class MyExtention extends Extension {
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
 			name: 'マルチクリップボード',
-			config: '',		// 通常はコマンドのサフィックス
+			config: 'nekoaisle-multiClipboard',		// 通常はコマンドのサフィックス
 			commands: [
 				{
 					command: 'nekoaisle.multiClipboard.menu',

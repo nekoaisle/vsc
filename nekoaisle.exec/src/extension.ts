@@ -43,7 +43,7 @@ class MyExtention extends Extension {
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
 			name: '任意のシェルコマンドを実行',
-			config: '',		// 通常はコマンドのサフィックス
+			config: 'nekoaisle-exec',		// 通常はコマンドのサフィックス
 			commands: [
 				{
 					command: 'nekoaisle.exec',	// コマンド

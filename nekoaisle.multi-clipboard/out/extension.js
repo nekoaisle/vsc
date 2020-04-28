@@ -34,7 +34,7 @@ class MyExtention extends nekoaisle_1.Extension {
     constructor(context) {
         super(context, {
             name: 'マルチクリップボード',
-            config: '',
+            config: 'nekoaisle-multiClipboard',
             commands: [
                 {
                     command: 'nekoaisle.multiClipboard.menu',

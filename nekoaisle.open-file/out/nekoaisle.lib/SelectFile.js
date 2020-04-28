@@ -57,6 +57,12 @@ class SelectFile {
             try {
                 files = fs.readdirSync(dirName);
                 files = files.filter((value) => {
+                    // ファイルの存在を確認
+                    let full = path.join(dirName, value);
+                    if (!fs.existsSync(full)) {
+                        // 存在しなければ除外
+                        return false;
+                    }
                     if (this.excludes[value]) {
                         // 除外
                         return false;

@@ -38,7 +38,7 @@ class MyExtention extends Extension_1.Extension {
     constructor(context) {
         super(context, {
             name: '任意のシェルコマンドを実行',
-            config: '',
+            config: 'nekoaisle-exec',
             commands: [
                 {
                     command: 'nekoaisle.exec',

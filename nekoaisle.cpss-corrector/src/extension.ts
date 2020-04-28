@@ -39,7 +39,7 @@ class MyExtention extends Extension {
 	constructor(context: vscode.ExtensionContext) {
 		super(context, {
 			name: 'CPSSソース訂正',
-			config: '',		// 通常はコマンドのサフィックス
+			config: 'nekoaisle-cpssCorrector',		// 通常はコマンドのサフィックス
 			commands: [
 				{
 					command: 'nekoaisle.cpssCorrector',	// コマンド
