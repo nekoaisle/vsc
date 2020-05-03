@@ -3,7 +3,7 @@
 	"displayName": "nekoaisle-calc",
 	"description": "コマンドライン電卓",
 	"version": "0.0.1",
-	"icon": "logo.png",
+	"publisher": "nekoaisle",
 	"engines": {
 		"vscode": "^1.39.0"
 	},

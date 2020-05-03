@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -141,6 +142,7 @@ class SelectFile {
             let files;
             try {
                 files = fs.readdirSync(dirName)
+                    // ディレクトリ名の末尾に / を付ける
                     .map((name) => {
                     let statas = fs.statSync(path.join(dirName, name));
                     if (statas.isDirectory()) {
@@ -148,6 +150,7 @@ class SelectFile {
                     }
                     return name;
                 })
+                    // 並べ替える
                     .sort((a, b) => {
                     // ディレクトリーか調べる
                     let da = a.substr(-1) === '/';

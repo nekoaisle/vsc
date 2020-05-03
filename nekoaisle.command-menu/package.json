@@ -3,6 +3,7 @@
 	"displayName": "コマンドメニュー",
 	"description": "コマンドを一覧から選んで実行",
 	"version": "0.0.1",
+	"publisher": "nekoaisle",
 	"engines": {
 		"vscode": "^1.38.0"
 	},

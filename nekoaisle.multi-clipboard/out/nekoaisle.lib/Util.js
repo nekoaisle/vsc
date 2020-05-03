@@ -450,20 +450,20 @@ var Util;
      * 現在のワークフォルダーを取得
      */
     function getWorkFolder() {
-        // let dir: string = process.cwd();
-        // let editor = vscode.window.activeTextEditor;
-        // if (editor) {
-        //   let uri = editor.document.uri;
-        //   if (uri) {
-        //     let folder = vscode.workspace.getWorkspaceFolder(uri);
-        //     if (folder) {
-        //       uri = folder.uri;
-        //       dir = uri.path;
-        //     }
-        //   }
-        // }
-        // return dir;
-        return vscode.workspace.rootPath;
+        let dir = process.cwd();
+        let editor = vscode.window.activeTextEditor;
+        if (editor) {
+            let uri = editor.document.uri;
+            if (uri) {
+                let folder = vscode.workspace.getWorkspaceFolder(uri);
+                if (folder) {
+                    uri = folder.uri;
+                    dir = uri.path;
+                }
+            }
+        }
+        return dir;
+        // return vscode.workspace.rootPath;
     }
     Util.getWorkFolder = getWorkFolder;
     /**

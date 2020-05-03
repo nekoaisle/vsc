@@ -5,7 +5,7 @@
     "version": "0.0.1",
     "publisher": "nekoaisle",
     "engines": {
-        "vscode": "^1.14.0"
+        "vscode": "^1.38.0"
     },
     "categories": [
         "Other"
@@ -58,138 +58,179 @@
             {
                 "command": "nekoaisle.encode",
                 "title": "変換メニューを開く"
-            }, {
+            },
+            {
                 "command": "nekoaisle.toUpperCase",
                 "title": "大文字に変換"
-            }, {
+            },
+            {
                 "command": "nekoaisle.toLowerCase",
                 "title": "小文字に変換"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeASCII",
                 "title": "文字をASCIIコードに変換"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeCamel",
                 "title": "キャメルケースに変換"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeSnake",
                 "title": "スネークケースに変換"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeEval",
                 "title": "式を計算結果に変換"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeHtml",
                 "title": "特殊文字を HTML エンティティに変換する"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeUrl",
                 "title": "文字列を URL エンコードする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeBase64",
                 "title": "MIME base64 方式でデータをエンコードする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeCString",
                 "title": "C 言語と同様にスラッシュで文字列をクォートする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodePreg",
                 "title": "正規表現文字をクオートする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeContentsOfSingleQuotation",
                 "title": "' を \\' にする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeContentsOfDoubleQuotation",
                 "title": "\" を \\\" にする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeContentsOfUnixtime",
                 "title": "日時文字列をUNIXTIMEに変換"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeBr",
                 "title": "\\n を <br />\\n にする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeHex",
                 "title": "10進数を16進数に変換"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encodeBit",
                 "title": "10進数を2進数に変換"
-            }, {
+            },
+            {
                 "command": "nekoaisle.decodeHtml",
                 "title": "HTML エンティティを適切な文字に変換する"
-            }, {
+            },
+            {
                 "command": "nekoaisle.decodeUrl",
                 "title": "URL エンコードされた文字列をデコードする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.decodeBase64",
                 "title": "MIME base64 方式によりエンコードされたデータをデコードする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.decodeCString",
                 "title": "C 言語文字列をアンクォートする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.decodePreg",
                 "title": "正規表現文字をアンクオートする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.decodeContentsOfSingleQuotation",
                 "title": "\\' を ' にする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.decodeContentsOfDoubleQuotation",
                 "title": "\\\" を \" にする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.decodeContentsOfUnixtime",
                 "title": "UNIXTIMEを日時文字列に変換"
-            }, {
+            },
+            {
                 "command": "nekoaisle.decodeBr",
                 "title": "<br /> を \\n にする"
-            }, {
+            },
+            {
                 "command": "nekoaisle.decodeHex",
                 "title": "16進数を10進数に変換"
-            }, {
+            },
+            {
                 "command": "nekoaisle.decodeBit",
                 "title": "2進数を10進数に変換"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encloseInSingleQuotation",
                 "title": "' で単語または選択範囲を括る/外す"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encloseInDoubleQuotation",
                 "title": "\" で単語または選択範囲を括る/外す"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encloseInGraveAccent",
-                "title": "\u0060 で単語または選択範囲を括る/外す"
-            }, {
+                "title": "` で単語または選択範囲を括る/外す"
+            },
+            {
                 "command": "nekoaisle.encloseParenthesis",
                 "title": "() で単語または選択範囲を括る/外す"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encloseSquareBracket",
                 "title": "[] で単語または選択範囲を括る/外す"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encloseAngleBracket",
                 "title": "<> で単語または選択範囲を括る/外す"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encloseCurlyBracket",
                 "title": "{} で単語または選択範囲を括る/外す"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encloseDoubleCurlyBracket",
                 "title": "{{}} で単語または選択範囲を括る/外す"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encloseCComment",
                 "title": "/**/ で単語または選択範囲を括る/外す"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encloseHtmlComment",
                 "title": "HTML コメント/外す"
-            }, {
+            },
+            {
                 "command": "nekoaisle.encloseHtmlDiv",
                 "title": "<div class=\"\"></div> で単語または選択範囲を括る/外す"
             }
         ]
     },
     "scripts": {
-        "vscode:prepublish": "tsc -p ./",
-        "compile": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "node ./node_modules/vscode/bin/test"
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile",
+        "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
-        "@types/mocha": "^2.2.32",
-        "@types/node": "^6.0.40",
-        "mocha": "^6.2.1",
-        "typescript": "^2.0.3",
-        "vscode": "^1.1.36"
+        "@types/mocha": "^5.2.6",
+        "@types/node": "^10.12.21",
+        "@types/vscode": "^1.38.0",
+        "mocha": "^6.1.4",
+        "typescript": "^3.3.1",
+        "vscode-test": "^1.2.0"
     },
     "dependencies": {
         "expr-eval": "^2.0.2"
