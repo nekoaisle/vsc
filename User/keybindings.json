@@ -1,7 +1,7 @@
 // 既定値を上書きするには、このファイル内にキー バインドを挿入します
 [
 	{"key": "f1", "command": "-workbench.action.showCommands"},
-	{"key": "f1" ,"command": "nekoaisle.commandMenu", "when": "editorTextFocus"},
+	{"key": "f1" ,"command": "nekoaisle.commandMenu"},
 	{"key": "f2" ,"command": "-editor.action.rename", "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"},
 	{"key": "f2" ,"command": "nekoaisle.openHelp", "when": "editorTextFocus"},
 	// {"key": "f5", "command": "workbench.action.debug.start","when": "!inDebugMode"},

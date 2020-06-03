@@ -860,7 +860,7 @@ _EOL_;
 		// 列に設定する HtmlViewコマンド
 		$strs[] = <<<_EOL_
 			// 列に設定する HtmlViewコマンド
-			// 指定されていない列は "'@{$row['name']} set"
+			// 指定されていない列は "'@HOGE set"
 			'COMMAND' => [
 				'V_ID' => "'@V_ID input' set @ value",
 _EOL_;
