@@ -7,6 +7,7 @@ const nekoaisle_1 = require("./nekoaisle.lib/nekoaisle");
  * @param context
  */
 function activate(context) {
+    /* tslint:disable:no-unused-expression */
     let ext = new MyExtention(context);
 }
 exports.activate = activate;

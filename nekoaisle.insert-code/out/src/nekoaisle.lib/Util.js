@@ -261,6 +261,15 @@ var Util;
     }
     Util.getCursorWord = getCursorWord;
     /**
+     * カーソル位置の行を取得
+     * @param editor 対象とするエディタ
+     */
+    function getCursorLine(editor) {
+        // 単語の範囲の文字列を返す
+        return editor.document.lineAt(editor.selection.active.line).text;
+    }
+    Util.getCursorLine = getCursorLine;
+    /**
      * 指定エディターの全テキストを置き換える
      * @param editor 処理対象
      * @param text 置き換える文字列
@@ -408,6 +417,9 @@ var Util;
         if (!editor) {
             // editor が省略されたので現在のエディタ
             editor = vscode.window.activeTextEditor;
+            if (!editor) {
+                return '';
+            }
         }
         let range = editor.selection;
         return editor.document.getText(range);
@@ -438,16 +450,17 @@ var Util;
      * 現在のワークフォルダーを取得
      */
     function getWorkFolder() {
-        let dir;
-        let folders = vscode.workspace.workspaceFolders;
-        if (folders) {
-            // ワークスペースフォルダーを取得
-            // 複数フォルダーあっても先頭のみ
-            let uri = folders[0].uri;
-            dir = uri.path;
-        }
-        else {
-            dir = process.cwd();
+        let dir = process.cwd();
+        let editor = vscode.window.activeTextEditor;
+        if (editor) {
+            let uri = editor.document.uri;
+            if (uri) {
+                let folder = vscode.workspace.getWorkspaceFolder(uri);
+                if (folder) {
+                    uri = folder.uri;
+                    dir = uri.path;
+                }
+            }
         }
         return dir;
         // return vscode.workspace.rootPath;
