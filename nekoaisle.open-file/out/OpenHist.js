@@ -25,6 +25,10 @@ class OpenHist extends nekoaisle_1.Extension {
                 {
                     command: 'nekoaisle.openHistRemoveNonexistentFile',
                     callback: () => { this.removeNonexistentFile(); }
+                },
+                {
+                    command: 'nekoaisle.openHistRemoveExtGit',
+                    callback: () => { this.removeExtGit(); }
                 }
             ]
         });
@@ -143,6 +147,10 @@ class OpenHist extends nekoaisle_1.Extension {
      * @param pinfo パス情報
      */
     registHistory(pinfo) {
+        // .git で終わるファイルは無視する
+        if (pinfo.info.ext === '.git') {
+            return;
+        }
         // 履歴ファイルを読み込む
         let list = this.loadHistFile();
         // このファイルの情報を取得
@@ -168,10 +176,10 @@ class OpenHist extends nekoaisle_1.Extension {
      */
     exec() {
         //
-        let editor = vscode.window.activeTextEditor;
-        if (!editor) {
-            return;
-        }
+        // let editor = <vscode.TextEditor>vscode.window.activeTextEditor;
+        // if (!editor) {
+        //   return;
+        // }
         // 履歴ファイルの読み込み
         let dic = this.loadHistFile();
         let list = [];
@@ -340,6 +348,27 @@ class OpenHist extends nekoaisle_1.Extension {
         let count = 0;
         for (let fileName in list) {
             if (!nekoaisle_1.Util.isExistsFile(fileName)) {
+                delete list[fileName];
+                ++count;
+            }
+        }
+        if (count) {
+            this.saveHistFile(list);
+            nekoaisle_1.Util.putMess(`${count}個の履歴を削除しました。`);
+        }
+        else {
+            nekoaisle_1.Util.putMess(`すべてのファイルは存在しています。`);
+        }
+    }
+    /**
+     * 履歴ファイルから .git で終わるファイルを削除
+     */
+    removeExtGit() {
+        // 履歴ファイルを読み込む
+        let list = this.loadHistFile();
+        let count = 0;
+        for (let fileName in list) {
+            if (fileName.substr(-4) === '.git') {
                 delete list[fileName];
                 ++count;
             }

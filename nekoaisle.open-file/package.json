@@ -20,6 +20,8 @@
     "onCommand:nekoaisle.insertFile",
     "onCommand:nekoaisle.openHist",
     "onCommand:nekoaisle.openHistCompensateDate",
+    "onCommand:nekoaisle.openHistRemoveNonexistentFile",
+    "onCommand:nekoaisle.openHistRemoveExtGit",
     "onCommand:nekoaisle.openTag",
     "onCommand:nekoaisle.findOpen",
     "*"
@@ -62,6 +64,10 @@
       {
         "command": "nekoaisle.openHistRemoveNonexistentFile",
         "title": "nekoaisle.openHistRemoveNonexistentFile 編集履歴からすでに存在しないファイルを除去します。"
+      },
+      {
+        "command": "nekoaisle.openHistRemoveExtGit",
+        "title": "nekoaisle.openHistRemoveExtGit 編集履歴からすでに .git ファイルを除去します。"
       },
       {
         "command": "nekoaisle.openHistCompensateDate",

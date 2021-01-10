@@ -50,6 +50,7 @@ class MyExtension extends Extension {
     // }
 
     // 計算
+    // eval は危険だが何でもあり。式を入力するのは自分なので＾＾；
     let ev;
     try {
       ev = eval(`${exp}`);
@@ -58,6 +59,13 @@ class MyExtension extends Extension {
       Util.putMess(`計算できませんでした。 ${exp}`);
       return;
     }
+
+    // 安全のためシェルに計算させます。
+    // ev = eval(`${exp}`); // 整数のみ
+    // let ev = Util.execCmd(`echo $((${exp}))`);
+    // awk にて計算
+    // let ev = Util.execCmd(`awk 'BEGIN { print ${exp} }'`);
+
     let value: number = parseFloat(ev);
     if (isNaN(value)) {
       // 計算できない文字列だった

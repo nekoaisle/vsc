@@ -47,6 +47,10 @@ class OpenHist extends Extension {
         {
           command: 'nekoaisle.openHistRemoveNonexistentFile',	// コマンド
           callback: () => { this.removeNonexistentFile(); }
+        },
+        {
+          command: 'nekoaisle.openHistRemoveExtGit',	// コマンド
+          callback: () => { this.removeExtGit(); }
         }          
       ]
     });
@@ -182,6 +186,11 @@ class OpenHist extends Extension {
    * @param pinfo パス情報
    */
   public registHistory(pinfo: PathInfo) {
+    // .git で終わるファイルは無視する
+    if (pinfo.info.ext === '.git') {
+      return;
+    }
+
     // 履歴ファイルを読み込む
     let list: ListItemDic = this.loadHistFile();
 
@@ -212,10 +221,10 @@ class OpenHist extends Extension {
    */
   public exec() {
     //
-    let editor = <vscode.TextEditor>vscode.window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
+    // let editor = <vscode.TextEditor>vscode.window.activeTextEditor;
+    // if (!editor) {
+    //   return;
+    // }
     
     // 履歴ファイルの読み込み
     let dic: ListItemDic = this.loadHistFile();
@@ -400,6 +409,28 @@ class OpenHist extends Extension {
     }
   }
 
+  /**
+   * 履歴ファイルから .git で終わるファイルを削除
+   */
+  public removeExtGit() {
+    // 履歴ファイルを読み込む
+    let list: ListItemDic = this.loadHistFile();
+    let count = 0;
+    for (let fileName in list) {
+      if (fileName.substr(-4) === '.git') {
+        delete list[fileName];
+        ++count;
+      }
+    }
+
+    if (count) {
+      this.saveHistFile(list);
+      Util.putMess(`${count}個の履歴を削除しました。`);
+    } else {
+      Util.putMess(`すべてのファイルは存在しています。`);
+    }
+  }
+  
 }
 
 export = OpenHist;

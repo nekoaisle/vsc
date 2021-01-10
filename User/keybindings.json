@@ -1,9 +1,9 @@
 // 既定値を上書きするには、このファイル内にキー バインドを挿入します
 [
 	{"key": "f1", "command": "-workbench.action.showCommands"},
-	{"key": "f1" ,"command": "nekoaisle.commandMenu"},
-	{"key": "f2" ,"command": "-editor.action.rename", "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"},
-	{"key": "f2" ,"command": "nekoaisle.openHelp", "when": "editorTextFocus"},
+	{"key": "f1", "command": "nekoaisle.commandMenu"},
+	{"key": "f2", "command": "-editor.action.rename", "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"},
+	{"key": "f2", "command": "nekoaisle.openHelp", "when": "editorTextFocus"},
 	// {"key": "f5", "command": "workbench.action.debug.start","when": "!inDebugMode"},
 	// {"key": "f5", "command": "workbench.action.debug.continue","when": "debugState != 'stopped'"},
 	// {"key": "f5" ,"command": "editor.action.toggleColumnSelection", "when": "editorTextFocus && debugState != 'stopped'"},
@@ -15,9 +15,9 @@
 	{"key": "f10","command": "nekoaisle.toggleTab", "when": "editorTextFocus && debugState != 'stopped'"},
 	// {"key": "f10","command": "workbench.action.openNextRecentlyUsedEditorInGroup", "when": "editorTextFocus"},
 
-	{"key": "shift+f1","command": "nekoaisle.multiClipboard.menu", "when": "editorTextFocus && !editorReadonly"},
-	{"key": "shift+f2","command": "editor.action.rename","when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"},
-	{"key": "shift+f5", "command": "workbench.action.debug.stop","when": "debugState == 'running'"},
+	{"key": "shift+f1", "command": "nekoaisle.multiClipboard.menu", "when": "editorTextFocus && !editorReadonly"},
+	{"key": "shift+f2", "command": "editor.action.rename", "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"},
+	{"key": "shift+f5", "command": "workbench.action.debug.stop", "when": "debugState == 'running'"},
 	{"key": "shift+f9","command": "-editor.debug.action.toggleInlineBreakpoint","when": "editorTextFocus"},
 	{"key": "shift+enter","command": "nekoaisle.selectWord","when": "editorTextFocus"},
 	{"key": "shift+insert","command": "-editor.action.selectionClipboardPaste"},
@@ -48,12 +48,11 @@
 	{"key": "ctrl+f","command": "closeFindWidget", "when": "editorFocus && findInputFocussed && findWidgetVisible"},
 	{"key": "ctrl+i","command": "nekoaisle.insertCode", "when": "editorTextFocus && !editorReadonly"},
 	{"key": "ctrl+l","command": "nekoaisle.insertCode.cmd", "args": "pinfo.base", "when": "editorTextFocus && !editorReadonly"},
-	{"key": "ctrl+o", "command": "nekoaisle.selectOpen", "when": "editorTextFocus"},
-	{"key": "ctrl+p", "command": "nekoaisle.cpssWizard", "when": "editorTextFocus && !editorReadonly"},
-	{"key": "ctrl+q", "command": "-workbench.action.quit"},
-	{"key": "ctrl+q", "command": "workbench.action.closeActiveEditor", "when": "editorTextFocus"},
-	{"key": "ctrl+t", "command": "-workbench.action.showAllSymbols"},
-	{"key": "ctrl+t", "command": "nekoaisle.openTag"},
+	{"key": "ctrl+o","command": "nekoaisle.selectOpen", "when": "editorTextFocus"},
+	{"key": "ctrl+q","command": "-workbench.action.quit"},
+	{"key": "ctrl+q","command": "workbench.action.closeActiveEditor", "when": "editorTextFocus"},
+	{"key": "ctrl+t","command": "-workbench.action.showAllSymbols"},
+	{"key": "ctrl+t","command": "nekoaisle.openTag"},
 
 	{"key": "ctrl+shift+enter","command": "type", "args": { "text": "<br />" }, "when": "editorTextFocus && !editorReadonly && editorLangId == 'html'"},
 	{"key": "ctrl+shift+space","command": "type", "args": { "text": "&nbsp;" }, "when": "editorTextFocus && !editorReadonly && editorLangId == 'html'"},
@@ -78,6 +77,7 @@
 	{"key": "ctrl+shift+t", "command": "-workbench.action.reopenClosedEditor"},
 	{"key": "ctrl+shift+t", "command": "workbench.action.showAllSymbols"},
 	// {"key": "ctrl+k k", "command": "nekoaisle.exec", "arg": "yomu.sh"},
+	{"key": "ctrl+shift+[IntlRo]", "command": "editor.emmet.action.matchTag", "when": "editorTextFocus && editorLangId == 'html'"},
 
 	// 以下はエクスプローラ
 	{"key": "shift+delete" ,"command": "-deleteFile","when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsRoot && !explorerResourceMoveableToTrash && !explorerResourceReadonly && !inputFocus"},
